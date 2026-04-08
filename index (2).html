@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Performance Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0a0a0f; --bg2: #111118; --bg3: #18181f; --bg4: #1e1e27;
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+  --accent: #7c6dfa; --accent2: #a998ff; --glow: rgba(124,109,250,0.15);
+  --text: #f0eff8; --text2: #9896a8; --text3: #5c5b6b;
+  --red: #f05252; --redbg: rgba(240,82,82,0.1);
+  --amber: #f59e0b; --amberbg: rgba(245,158,11,0.1);
+  --green: #34d399; --greenbg: rgba(52,211,153,0.1);
+  --blue: #60a5fa; --bluebg: rgba(96,165,250,0.1);
+  --fd: 'Syne', sans-serif; --fm: 'DM Mono', monospace;
+  --r: 10px; --rl: 16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fm);font-size:13px;line-height:1.6;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{flex:1;min-width:0;padding:36px 40px;max-width:1000px}
+
+/* LOGO */
+.logo{padding:28px 20px 20px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.logo-mark{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.2}
+.logo-sub{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:.06em}
+
+/* NAV */
+.nav-sec{padding:8px 12px 4px;font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);font-family:var(--fm);font-size:13px;border-left:2px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{color:var(--text);background:var(--bg3)}
+.nav-item.active{color:var(--accent2);border-left-color:var(--accent);background:var(--glow)}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0}
+.nav-item.active .nav-dot{opacity:1}
+.sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
+.ctx-label{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.ctx-sel{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--fm);font-size:12px;padding:6px 8px;border-radius:var(--r);cursor:pointer;outline:none;margin-bottom:10px}
+.ctx-sel:focus{border-color:var(--accent)}
+
+/* SCREENS */
+.screen{display:none}.screen.on{display:block}
+.panel{display:none}.panel.on{display:block}
+
+/* ONBOARDING */
+.prog-wrap{display:flex;gap:6px;margin-bottom:2rem}
+.prog-seg{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background .3s}
+.prog-seg.done{background:var(--text)}.prog-seg.cur{background:var(--text2)}
+.s-num{font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.s-title{font-family:var(--fd);font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-bottom:6px}
+.s-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:1.5rem}
+
+/* FORM */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+input[type=text],select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--fm);font-size:13px;padding:9px 12px;border-radius:var(--r);outline:none;transition:border-color .15s}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+select option{background:var(--bg3)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.err{font-size:12px;color:var(--red);margin-top:6px;display:none}
+
+/* TAGS */
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.tag{font-size:12px;padding:5px 13px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
+.tag:hover{border-color:var(--border2);color:var(--text);background:var(--bg3)}
+.tag.on{background:var(--glow);color:var(--accent2);border-color:rgba(124,109,250,.3);font-weight:500}
+
+/* CHANNEL CARDS */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin-bottom:1.5rem}
+.ch-card{border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s;background:var(--bg2)}
+.ch-card:hover{border-color:var(--border2);background:var(--bg3)}
+.ch-card.on{border-color:rgba(124,109,250,.4);background:var(--glow)}
+.ch-name{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.ch-desc{font-size:11px;color:var(--text3)}
+
+/* SCORE */
+.score-row{display:flex;align-items:center;gap:10px}
+.score-row input[type=range]{flex:1;accent-color:var(--accent)}
+.score-val{font-size:14px;font-weight:500;color:var(--text);min-width:22px}
+
+/* BUTTONS */
+.btn{font-family:var(--fm);font-size:12px;padding:7px 16px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--bg4);color:var(--text);border-color:var(--border2)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn-p{background:var(--glow);border-color:rgba(124,109,250,.3);color:var(--accent2)}
+.btn-p:hover{background:rgba(124,109,250,.25);color:var(--accent2)}
+.btn-n{font-family:var(--fm);font-size:13px;padding:9px 22px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-weight:500;cursor:pointer;transition:all .15s}
+.btn-n:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-b{font-family:var(--fm);font-size:13px;padding:9px 16px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer}
+.btn-row{display:flex;gap:10px;margin-top:1.5rem;align-items:center}
+
+/* SPINNER */
+.spin-wrap{text-align:center;padding:4rem 0}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-msg{font-size:14px;color:var(--text2)}
+.spin-sub{font-size:12px;color:var(--text3);margin-top:6px}
+
+/* DASHBOARD */
+.dash-header{display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.co-init{width:44px;height:44px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;font-weight:700;color:var(--text);flex-shrink:0}
+.co-name{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--text)}
+.co-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.period-sel{font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--r);background:transparent;color:var(--text2);cursor:pointer;margin-left:auto;font-family:var(--fm)}
+
+/* PAGE TITLE */
+.page-title{font-family:var(--fd);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--text3);margin-bottom:1.5rem}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;position:relative;overflow:hidden;transition:border-color .2s}
+.mc:hover{border-color:var(--border2)}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
+.mc:hover::before{opacity:1}
+.mc-lbl{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.mc-val{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.mc-delta{font-size:11px;margin-top:5px}
+.up{color:var(--green)}.dn{color:var(--red)}.neu{color:var(--text3)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px 24px;margin-bottom:16px}
+.card-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+
+/* CHANNEL PERF */
+.ch-perf-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.ch-perf-row:last-child{border-bottom:none}
+.ch-perf-name{font-size:13px;font-weight:500;color:var(--text);width:120px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.ch-score{font-size:13px;font-weight:500;color:var(--text);width:32px;text-align:right;flex-shrink:0}
+
+/* PILLS */
+.pill{font-size:10px;padding:3px 8px;border-radius:20px;font-family:var(--fm);white-space:nowrap;flex-shrink:0;letter-spacing:.03em}
+.p-red{background:var(--redbg);color:var(--red);border:1px solid rgba(240,82,82,.2)}
+.p-amber{background:var(--amberbg);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.p-green{background:var(--greenbg);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.p-blue{background:var(--bluebg);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.p-purple{background:var(--glow);color:var(--accent2);border:1px solid rgba(124,109,250,.2)}
+.p-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+
+/* ACTION CARDS */
+.action-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:16px 20px;margin-bottom:10px;display:flex;gap:16px;align-items:flex-start;transition:border-color .15s}
+.action-card:hover{border-color:var(--border2)}
+.action-card.h{border-left:3px solid var(--red)}
+.action-card.m{border-left:3px solid var(--amber)}
+.action-card.l{border-left:3px solid var(--green)}
+.action-body{flex:1}
+.action-title{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
+.action-why{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.action-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* INSIGHT ROW */
+.insight-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.insight-row:last-child{border-bottom:none}
+.ins-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ins-text{font-size:13px;color:var(--text);flex:1}
+.ins-src{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* LEGEND */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.legend-box{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* UPDATE FORM */
+.update-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:16px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--accent);color:var(--accent2);font-family:var(--fm);font-size:12px;padding:11px 18px;border-radius:var(--r);z-index:999;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* MOBILE */
+.mobile-bar{display:none;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.ham{background:none;border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:16px}
+@media(max-width:768px){
+  .mobile-bar{display:flex}
+  .sidebar{position:fixed;left:0;top:0;height:100vh;z-index:100;transform:translateX(-100%);transition:transform .25s}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:20px 16px}
+  .grid2{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel.on{animation:fadeUp .2s ease}
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="mobile-bar">
+  <span style="font-family:var(--fd);font-size:14px;font-weight:700">Marketing Intelligence</span>
+  <button class="ham" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+</div>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Marketing<br>Intelligence</div>
+    <div class="logo-sub">prestandaverktyg</div>
+  </div>
+
+  <div id="nav-onboard">
+    <div class="nav-sec">Kom igång</div>
+    <div class="nav-item active" onclick="goStep(1)"><span class="nav-dot"></span>Företagsinformation</div>
+    <div class="nav-item" onclick="goStep(2)"><span class="nav-dot"></span>Välj kanaler</div>
+    <div class="nav-item" onclick="goStep(3)"><span class="nav-dot"></span>Sätt betyg</div>
+  </div>
+
+  <div id="nav-dash" style="display:none">
+    <div class="nav-sec">Dashboard</div>
+    <div class="nav-item active" onclick="nav('overview',this)"><span class="nav-dot"></span>Översikt</div>
+    <div class="nav-item" onclick="nav('channels',this)"><span class="nav-dot"></span>Kanalanalys</div>
+    <div class="nav-item" onclick="nav('actions',this)"><span class="nav-dot"></span>Åtgärder</div>
+    <div class="nav-sec">Inställningar</div>
+    <div class="nav-item" onclick="nav('update',this)"><span class="nav-dot"></span>Uppdatera data</div>
+    <div class="nav-item" onclick="restart()"><span class="nav-dot"></span>Nytt företag</div>
+  </div>
+
+  <div class="sidebar-bottom" id="sb-context" style="display:none">
+    <div class="ctx-label">Tidsperiod</div>
+    <select class="ctx-sel" onchange="setPeriod(this.value)">
+      <option value="month">Senaste månaden</option>
+      <option value="quarter">Senaste kvartalet</option>
+      <option value="year">Senaste året</option>
+    </select>
+    <div class="ctx-label">Roll</div>
+    <select class="ctx-sel">
+      <option>Marknadschef</option>
+      <option>VD / Grundare</option>
+      <option>Annonsansvarig</option>
+      <option>Innehållsstrateg</option>
+      <option>Konsult</option>
+    </select>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ── ONBOARDING ── -->
+<div id="sc-onboard" class="screen on">
+  <div class="prog-wrap" id="prog">
+    <div class="prog-seg cur"></div>
+    <div class="prog-seg"></div>
+    <div class="prog-seg"></div>
+    <div class="prog-seg"></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div id="s1" class="screen on">
+    <div class="s-num">Steg 1 av 3</div>
+    <div class="s-title">Berätta om ditt företag</div>
+    <div class="s-sub">Vi anpassar verktyget efter er verksamhet och ger relevanta åtgärdsförslag.</div>
+    <div class="field"><label>Företagets namn</label><input type="text" id="f-name" placeholder="T.ex. Björk & Partners AB"></div>
+    <div class="field"><label>Vad säljer eller erbjuder ni?</label><textarea id="f-desc" placeholder="T.ex. Vi säljer ekologiska hudvårdsprodukter online och i butik. Vår målgrupp är kvinnor 25–45 år som värdesätter hållbarhet."></textarea></div>
+    <div class="field">
+      <label>Bransch</label>
+      <div class="tags" id="ind-tags">
+        <span class="tag" onclick="togInd(this)">E-handel</span>
+        <span class="tag" onclick="togInd(this)">Lokal verksamhet</span>
+        <span class="tag" onclick="togInd(this)">B2B / tjänster</span>
+        <span class="tag" onclick="togInd(this)">Restaurang / mat</span>
+        <span class="tag" onclick="togInd(this)">Hälsa & wellness</span>
+        <span class="tag" onclick="togInd(this)">Fastighet</span>
+        <span class="tag" onclick="togInd(this)">Teknik / SaaS</span>
+        <span class="tag" onclick="togInd(this)">Utbildning</span>
+        <span class="tag" onclick="togInd(this)">Annat</span>
+      </div>
+    </div>
+    <div id="e1" class="err">Fyll i företagsnamn och vad ni erbjuder.</div>
+    <div class="btn-row"><button class="btn-n" onclick="next(2)">Nästa →</button></div>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="s2" class="screen">
+    <div class="s-num">Steg 2 av 3</div>
+    <div class="s-title">Vilka kanaler är ni aktiva i?</div>
+    <div class="s-sub">Välj alla kanaler där ni har eller vill ha närvaro. Vi mäter prestanda per kanal.</div>
+    <div class="ch-grid" id="ch-grid">
+      <div class="ch-card" onclick="togCh(this,'Instagram')"><div class="ch-name">Instagram</div><div class="ch-desc">Bilder, reels & stories</div></div>
+      <div class="ch-card" onclick="togCh(this,'Facebook')"><div class="ch-name">Facebook</div><div class="ch-desc">Inlägg & annonser</div></div>
+      <div class="ch-card" onclick="togCh(this,'LinkedIn')"><div class="ch-name">LinkedIn</div><div class="ch-desc">B2B & nätverk</div></div>
+      <div class="ch-card" onclick="togCh(this,'TikTok')"><div class="ch-name">TikTok</div><div class="ch-desc">Kortvideos & trends</div></div>
+      <div class="ch-card" onclick="togCh(this,'Google Ads')"><div class="ch-name">Google Ads</div><div class="ch-desc">Betalda sökannonser</div></div>
+      <div class="ch-card" onclick="togCh(this,'Google organiskt')"><div class="ch-name">Google organiskt</div><div class="ch-desc">SEO & söktrafik</div></div>
+      <div class="ch-card" onclick="togCh(this,'Lokalpress')"><div class="ch-name">Lokalpress</div><div class="ch-desc">Tidning, radio & tv</div></div>
+      <div class="ch-card" onclick="togCh(this,'E-post')"><div class="ch-name">E-post</div><div class="ch-desc">Nyhetsbrev & utskick</div></div>
+      <div class="ch-card" onclick="togCh(this,'YouTube')"><div class="ch-name">YouTube</div><div class="ch-desc">Video & tutorials</div></div>
+      <div class="ch-card" onclick="togCh(this,'Podcast')"><div class="ch-name">Podcast</div><div class="ch-desc">Ljud & sponsring</div></div>
+    </div>
+    <div id="e2" class="err">Välj minst en kanal.</div>
+    <div class="btn-row">
+      <button class="btn-b" onclick="next(1)">← Tillbaka</button>
+      <button class="btn-n" onclick="next(3)">Nästa →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="s3" class="screen">
+    <div class="s-num">Steg 3 av 3</div>
+    <div class="s-title">Hur presterar ni idag?</div>
+    <div class="s-sub">Skatta er nuvarande närvaro och prestanda i varje kanal. 1 = mycket svag, 10 = mycket stark. Verktyget ger sedan konkreta åtgärdsförslag baserat på era svar.</div>
+    <div id="score-fields"></div>
+    <div id="e3" class="err">Fyll i betyg för alla kanaler.</div>
+    <div class="btn-row">
+      <button class="btn-b" onclick="next(2)">← Tillbaka</button>
+      <button class="btn-n" onclick="analyze()">Analysera →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: loading -->
+  <div id="s4" class="screen">
+    <div class="spin-wrap">
+      <div class="spinner"></div>
+      <div class="spin-msg" id="spin-msg">Analyserar er prestanda...</div>
+      <div class="spin-sub" id="spin-sub">Identifierar förbättringsområden</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="sc-dash" class="screen">
+
+  <div class="dash-header">
+    <div class="co-init" id="co-init">MI</div>
+    <div>
+      <div class="co-name" id="co-name">Företaget</div>
+      <div class="co-sub" id="co-sub">Bransch · kanaler</div>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div id="panel-overview" class="panel on">
+    <div class="page-title">Översikt</div>
+    <div class="page-sub">Prestandasammanfattning för alla kanaler</div>
+    <div class="metrics" id="ov-metrics"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Prestanda per kanal</div>
+        <div id="ov-ch-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Viktigaste insikter</div>
+        <div id="ov-insights"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Kanalfördelning</div>
+      <div style="position:relative;height:220px"><canvas id="ov-chart"></canvas></div>
+      <div class="legend" id="ov-legend"></div>
+    </div>
+  </div>
+
+  <!-- Channels -->
+  <div id="panel-channels" class="panel">
+    <div class="page-title">Kanalanalys</div>
+    <div class="page-sub">Detaljerad prestanda och råd per kanal</div>
+    <div id="ch-detail-cards"></div>
+  </div>
+
+  <!-- Actions -->
+  <div id="panel-actions" class="panel">
+    <div class="page-title">Åtgärdsförslag</div>
+    <div class="page-sub" id="actions-sub">Prioriterade åtgärder baserade på er prestanda</div>
+    <div id="actions-list"></div>
+  </div>
+
+  <!-- Update -->
+  <div id="panel-update" class="panel">
+    <div class="page-title">Uppdatera prestandadata</div>
+    <div class="page-sub">Justera betygen när er prestanda förändras — åtgärdsförslagen uppdateras automatiskt.</div>
+    <div class="update-wrap">
+      <div id="update-fields"></div>
+      <button class="btn-n" onclick="applyUpdate()">Spara uppdatering</button>
+    </div>
+  </div>
+
+</div>
+</main>
+</div>
+
+<script>
+const ST = { name:'', desc:'', industry:'', channels:[], scores:{} };
+const selCh = new Set();
+let ovChart = null;
+
+// ── ONBOARDING ──
+function togInd(el) {
+  document.querySelectorAll('#ind-tags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  ST.industry = el.textContent;
+}
+
+function togCh(card, name) {
+  card.classList.toggle('on');
+  selCh.has(name) ? selCh.delete(name) : selCh.add(name);
+}
+
+function goStep(n) {
+  showOnboardStep('s'+n);
+  updateProg(n);
+}
+
+function next(n) {
+  if(n===2) {
+    const nm=document.getElementById('f-name').value.trim();
+    const dc=document.getElementById('f-desc').value.trim();
+    if(!nm||!dc){document.getElementById('e1').style.display='block';return;}
+    document.getElementById('e1').style.display='none';
+    ST.name=nm; ST.desc=dc;
+  }
+  if(n===3) {
+    if(selCh.size===0){document.getElementById('e2').style.display='block';return;}
+    document.getElementById('e2').style.display='none';
+    ST.channels=[...selCh];
+    buildScoreFields();
+  }
+  showOnboardStep('s'+n);
+  updateProg(n);
+}
+
+function analyze() {
+  let ok=true;
+  ST.channels.forEach(ch=>{if(!document.getElementById('sc-'+ch))ok=false;});
+  if(!ok){document.getElementById('e3').style.display='block';return;}
+  ST.channels.forEach(ch=>{
+    const el=document.getElementById('sc-'+ch);
+    ST.scores[ch]=parseInt(el?el.value:5);
+  });
+  document.getElementById('e3').style.display='none';
+  showOnboardStep('s4');
+  updateProg(4);
+  const msgs=['Analyserar kanalernas prestanda...','Jämför mot branschsnitt...','Genererar åtgärdsförslag...','Bygger din dashboard...'];
+  const subs=['Bearbetar dina svar','Identifierar förbättringsområden','Prioriterar efter potential','Nästan klart...'];
+  let i=0;
+  const iv=setInterval(()=>{
+    if(i<msgs.length){
+      document.getElementById('spin-msg').textContent=msgs[i];
+      document.getElementById('spin-sub').textContent=subs[i];
+      i++;
+    } else { clearInterval(iv); buildDash(); }
+  }, 700);
+}
+
+function showOnboardStep(id) {
+  document.querySelectorAll('#sc-onboard .screen').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('on');
+}
+
+function updateProg(n) {
+  document.querySelectorAll('.prog-seg').forEach((s,i)=>{
+    s.classList.remove('cur','done');
+    if(i<n-1) s.classList.add('done');
+    else if(i===n-1) s.classList.add('cur');
+  });
+}
+
+function buildScoreFields() {
+  const wrap=document.getElementById('score-fields');
+  wrap.innerHTML='';
+  ST.channels.forEach(ch=>{
+    const div=document.createElement('div');div.className='field';
+    div.innerHTML=`<label>${ch}</label><div class="score-row"><input type="range" min="1" max="10" step="1" value="5" id="sc-${ch}" oninput="document.getElementById('sv-${ch}').textContent=this.value"><span class="score-val" id="sv-${ch}">5</span><span style="font-size:11px;color:var(--text3)">/10</span></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+// ── DASHBOARD ──
+function buildDash() {
+  const init=ST.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('co-init').textContent=init;
+  document.getElementById('co-name').textContent=ST.name;
+  document.getElementById('co-sub').textContent=(ST.industry||'Generellt')+' · '+ST.channels.length+' kanaler';
+  renderOverview();
+  renderChannelCards();
+  renderActions();
+  renderUpdateFields();
+  document.getElementById('sc-onboard').classList.remove('on');
+  document.getElementById('sc-dash').classList.add('on');
+  document.getElementById('nav-onboard').style.display='none';
+  document.getElementById('nav-dash').style.display='block';
+  document.getElementById('sb-context').style.display='block';
+  toast('Dashboard klar för '+ST.name);
+}
+
+function nav(id, el) {
+  document.querySelectorAll('#nav-dash .nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  if(el) el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('on');
+  if(id==='channels'||id==='overview') { setTimeout(()=>{ if(ovChart) ovChart.resize(); },50); }
+}
+
+function scoreColor(s) { return s>=7?'#34d399':s>=4?'#f59e0b':'#f05252'; }
+function scoreBadge(s) { return s>=7?['p-green','Bra']:s>=4?['p-amber','Medel']:['p-red','Svag']; }
+function avgScore() { const v=Object.values(ST.scores); return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:0; }
+function weakCh() { return ST.channels.filter(ch=>ST.scores[ch]<5).sort((a,b)=>ST.scores[a]-ST.scores[b]); }
+function strongCh() { return ST.channels.filter(ch=>ST.scores[ch]>=7); }
+
+function renderOverview() {
+  const avg=avgScore(), weak=weakCh().length, strong=strongCh().length;
+  document.getElementById('ov-metrics').innerHTML=`
+    <div class="mc"><div class="mc-lbl">Snittbetyg</div><div class="mc-val">${avg.toFixed(1)}</div><div class="mc-delta ${avg>=6?'up':avg>=4?'neu':'dn'}">${avg>=6?'Bra prestanda':avg>=4?'Förbättringsbar':'Behöver åtgärd'}</div></div>
+    <div class="mc"><div class="mc-lbl">Aktiva kanaler</div><div class="mc-val">${ST.channels.length}</div><div class="mc-delta neu">Totalt</div></div>
+    <div class="mc"><div class="mc-lbl">Starka</div><div class="mc-val">${strong}</div><div class="mc-delta up">Betyg 7+</div></div>
+    <div class="mc"><div class="mc-lbl">Svaga</div><div class="mc-val">${weak}</div><div class="mc-delta dn">Under 5</div></div>`;
+
+  const list=document.getElementById('ov-ch-list');
+  list.innerHTML='';
+  [...ST.channels].sort((a,b)=>ST.scores[b]-ST.scores[a]).forEach(ch=>{
+    const s=ST.scores[ch];
+    const [bc,bl]=scoreBadge(s);
+    const div=document.createElement('div');div.className='ch-perf-row';
+    div.innerHTML=`<div class="ch-perf-name">${ch}</div><div class="bar-track"><div class="bar-fill" style="width:${s*10}%;background:${scoreColor(s)}"></div></div><div class="ch-score">${s}</div><span class="pill ${bc}" style="margin-left:6px">${bl}</span>`;
+    list.appendChild(div);
+  });
+
+  const ins=generateInsights();
+  const insList=document.getElementById('ov-insights');
+  insList.innerHTML='';
+  ins.slice(0,5).forEach(i=>{
+    const div=document.createElement('div');div.className='insight-row';
+    div.innerHTML=`<div class="ins-dot" style="background:${i.color}"></div><div><div class="ins-text">${i.text}</div><div class="ins-src">${i.src}</div></div>`;
+    insList.appendChild(div);
+  });
+
+  const labels=ST.channels;
+  const scores=labels.map(ch=>ST.scores[ch]);
+  if(ovChart) ovChart.destroy();
+  ovChart=new Chart(document.getElementById('ov-chart'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'Betyg',data:scores,backgroundColor:scores.map(s=>scoreColor(s)+'33'),borderColor:scores.map(s=>scoreColor(s)),borderWidth:1.5,borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false},ticks:{color:'#5c5b6b',font:{size:11},autoSkip:false,maxRotation:30}},
+      y:{min:0,max:10,grid:{color:'rgba(92,91,107,0.15)'},ticks:{color:'#5c5b6b',font:{size:11},stepSize:2}}
+    }}
+  });
+  document.getElementById('ov-legend').innerHTML=`
+    <div class="legend-item"><div class="legend-box" style="background:#34d399"></div>Stark (7–10)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#f59e0b"></div>Medel (4–6)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#f05252"></div>Svag (1–3)</div>`;
+}
+
+function generateInsights() {
+  const ins=[];
+  const sorted=[...ST.channels].sort((a,b)=>ST.scores[a]-ST.scores[b]);
+  if(sorted.length>0){ const w=sorted[0],s=ST.scores[w]; ins.push({text:`${w} är er svagaste kanal (${s}/10) — här finns störst förbättringspotential.`,src:'Kanalanalys',color:'#f05252'}); }
+  const best=[...ST.channels].sort((a,b)=>ST.scores[b]-ST.scores[a])[0];
+  if(best) ins.push({text:`${best} presterar starkast (${ST.scores[best]}/10) — fortsätt investera här.`,src:'Kanalanalys',color:'#34d399'});
+  if(ST.channels.includes('Google organiskt')&&ST.scores['Google organiskt']<6) ins.push({text:'Er organiska Google-synlighet är svag — SEO-insatser ger långsiktig trafik utan annonskostnad.',src:'Google organiskt',color:'#f59e0b'});
+  if(ST.channels.includes('Lokalpress')&&ST.scores['Lokalpress']<5) ins.push({text:'Lokalpress är oanvänd potential — lokala medier har hög trovärdighet och når målgrupper digitala kanaler missar.',src:'Lokalpress',color:'#f59e0b'});
+  if(ST.channels.includes('E-post')&&ST.scores['E-post']<6) ins.push({text:'E-post har branschens högsta ROI — ett aktivt nyhetsbrev kan öka återköp och lojalitet markant.',src:'E-post',color:'#60a5fa'});
+  if(!ST.channels.includes('E-post')) ins.push({text:'Ni saknar e-postkanal — det är den enda kanalen ni äger helt själva, oberoende av algoritmer.',src:'Rekommendation',color:'#f05252'});
+  ins.push({text:`Ni är aktiva i ${ST.channels.length} kanaler — ${ST.channels.length>5?'bred närvaro, fokusera på djup i de starkaste kanalerna':'överväg att lägga till fler kanaler för ökad räckvidd'}.`,src:'Kanalstrategi',color:'#60a5fa'});
+  return ins;
+}
+
+function renderChannelCards() {
+  const cards=document.getElementById('ch-detail-cards');
+  cards.innerHTML='';
+  [...ST.channels].sort((a,b)=>ST.scores[a]-ST.scores[b]).forEach(ch=>{
+    const s=ST.scores[ch];
+    const [bc,bl]=scoreBadge(s);
+    const tip=channelTip(ch,s);
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="flex:1"><div style="font-family:var(--fd);font-size:15px;font-weight:700;color:var(--text)">${ch}</div></div><span class="pill ${bc}">${bl} — ${s}/10</span></div><div class="bar-track" style="margin-bottom:14px"><div class="bar-fill" style="width:${s*10}%;background:${scoreColor(s)}"></div></div><div style="font-size:13px;color:var(--text2);line-height:1.7">${tip}</div>`;
+    cards.appendChild(div);
+  });
+}
+
+function channelTip(ch, s) {
+  const tips={
+    'Instagram':{l:'Låg närvaro på Instagram. Prioritera dagliga stories och 3–4 reels/vecka. Konsekvent publicering ökar organisk räckvidd — algoritmens viktigaste signal är aktivitet.',m:'Godkänd närvaro. Testa mer interaktivt innehåll — polls, Q&A och kollaborationer med mikro-influencers i er nisch.',h:'Stark Instagram-närvaro. Fokusera nu på djupare engagemang och konverteringsoptimering via bio-länk och shoppable posts.'},
+    'Facebook':{l:'Facebook används lite. Kör betalda annonser med lokal targeting — organisk räckvidd är begränsad men annonspriset är lågt jämfört med Instagram.',m:'Medelprestanda. Testa video-innehåll och Events — Facebook prioriterar dessa organiskt framför statiska inlägg.',h:'Bra Facebook-närvaro. Nyttja retargeting-annonser för att konvertera besökare som redan känner till er.'},
+    'LinkedIn':{l:'Svag LinkedIn-närvaro. Publicera branschinsikter och case studies 3 gånger/vecka. Personliga inlägg från grundare/VD presterar 3x bättre än företagssideinlägg.',m:'Godkänd LinkedIn-aktivitet. Testa längre artiklar och engagera aktivt i kommentarsfält — synlighet skapas av interaktion, inte bara publicering.',h:'Stark LinkedIn-närvaro. Nyttja LinkedIn Ads för account-based marketing mot specifika företag och roller.'},
+    'TikTok':{l:'TikTok är outnyttjad. Börja med 5 videor/vecka med trendljud. Algoritmen gynnar nya konton med konsekvent publicering — kvantitet slår kvalitet i starten.',m:'Lovande TikTok-start. Analysera toppers och dubbla ner på de videoformat och ämnen som ger flest visningar.',h:'Bra TikTok-närvaro. Testa TikTok Shop eller länka till landningssida via bio för att konvertera trafiken.'},
+    'Google Ads':{l:'Svag Google Ads-närvaro. Starta med 5–10 exakta sökord nära köpintention, litet dagbudget och tydlig konverteringsuppföljning. Mät innan du skalar.',m:'Godkänd Ads-prestanda. Optimera Quality Score och testa responsiva sökannonser med fler annonsversioner för bättre CTR.',h:'Stark Google Ads. Utöka med Performance Max-kampanjer och remarketing för bredare räckvidd till lägre CPM.'},
+    'Google organiskt':{l:'Låg organisk synlighet. Börja med Google Företagsprofil (gratis), optimera titel- och metabeskrivningar och starta med 2 SEO-optimerade blogginlägg per månad.',m:'Medel SEO-prestanda. Bygg bakåtlänkar och optimera era topp-10 landningssidor för konvertering — trafik utan konvertering är bortkastad.',h:'Stark SEO. Satsa på featured snippets, schema markup och content clusters för att dominera era nyckelord.'},
+    'Lokalpress':{l:'Lokalpress är outnyttjad. Kontakta redaktioner med en lokal nyhet eller erbjud er som expertröst inom er bransch. En artikel ger hög trovärdighet till noll annonskostnad.',m:'Viss lokal mediakontakt. Bygg relationer med 2–3 lokala journalister och skicka regelbundna pressreleasar vid nyheter.',h:'Bra lokal medienärvaro. Testa sponsrade artiklar och event-samarbeten med lokaltidningen för ytterligare exponering.'},
+    'E-post':{l:'Svag e-postprestanda. Bygg listan med lead magnet, skicka minst 2 gånger/månad och sätt upp ett automatiserat välkomstflöde. E-post ger branschens högsta ROI.',m:'Godkänd e-postaktivitet. Testa automatiserade flöden — välkomstserie, cart abandonment och win-back-kampanjer ger intäkter utan löpande arbete.',h:'Stark e-postnärvaro. Fokusera på personalisering, segmentering och A/B-test av ämnesrader för att maximera öppningsfrekvensen.'},
+    'YouTube':{l:'YouTube är outnyttjad. Publicera 2 videos/månad — tutorials, FAQ eller behind the scenes. YouTube är världens näst största sökmotor och ger långsiktig organisk trafik.',m:'Lovande YouTube-start. Förbättra thumbnails och titlar för CTR — 80% av klicken avgörs av dessa två faktorer.',h:'Bra YouTube-närvaro. Nyttja YouTube Ads och integrera videorna på er hemsida för förbättrad SEO och konvertering.'},
+    'Podcast':{l:'Podcast är outnyttjad. Börja som gäst i andras podcasts — snabbare väg till ny publik än att starta från noll. Kontakta 5 relevanta podcasts denna månad.',m:'Viss podcast-aktivitet. Etablera ett konsekvent publiceringsschema och marknadsför varje avsnitt aktivt i era sociala kanaler.',h:'Stark podcast-närvaro. Nyttja sponsringsplatser och bygg samarbeten med kompletterande podcasts i er nisch.'}
+  };
+  const t=tips[ch];
+  if(t) return s<5?t.l:s<7?t.m:t.h;
+  return s<5?`${ch} behöver förstärkning. Sätt upp ett konsekvent publiceringsschema och definiera tydliga mål per kanal.`:s<7?`${ch} är på godkänd nivå. Fokusera på optimering och konsistens för att nå nästa nivå.`:`${ch} presterar starkt. Fortsätt investera här och mät konvertering noggrant.`;
+}
+
+function renderActions() {
+  const actions=generateActions();
+  document.getElementById('actions-sub').textContent=`${actions.length} åtgärdsförslag sorterade efter potential — baserade på er kanaldata.`;
+  const list=document.getElementById('actions-list');
+  list.innerHTML='';
+  actions.forEach((a,i)=>{
+    const div=document.createElement('div');div.className=`action-card ${a.p}`;
+    div.innerHTML=`<div class="action-body"><div class="action-title">${a.title}</div><div class="action-why">${a.why}</div><div class="action-meta"><span class="pill p-gray">${a.ch}</span><span class="pill ${a.p==='h'?'p-red':a.p==='m'?'p-amber':'p-green'}">${a.p==='h'?'Hög prioritet':a.p==='m'?'Medel':'Lägre'}</span><span class="pill p-blue">${a.effort}</span><button class="btn btn-p" onclick="markDone(this)" style="margin-left:auto">Markera åtgärdad</button></div></div>`;
+    list.appendChild(div);
+  });
+}
+
+function generateActions() {
+  const acts=[];
+  [...ST.channels].sort((a,b)=>ST.scores[a]-ST.scores[b]).forEach(ch=>{
+    const s=ST.scores[ch];
+    if(s<4) acts.push({title:`Stärk ${ch}-närvaron omgående`,why:channelTip(ch,s),ch,p:'h',effort:'Hög insats'});
+    else if(s<7) acts.push({title:`Optimera ${ch} för bättre resultat`,why:channelTip(ch,s),ch,p:'m',effort:'Medel insats'});
+  });
+  if(!ST.channels.includes('E-post')) acts.push({title:'Starta e-postlista och nyhetsbrev',why:'E-post är den enda kanalen ni äger helt själva. Algoritmer styr räckvidd i sociala medier — e-postlistan är alltid er, oavsett vad som händer.',ch:'E-post',p:'h',effort:'Låg insats'});
+  if(!ST.channels.includes('Lokalpress')&&['Lokal verksamhet','Restaurang / mat','Hälsa & wellness'].includes(ST.industry)) acts.push({title:'Öka synlighet i lokalpress och lokal media',why:'Er bransch gynnas starkt av lokal trovärdighet. En artikel i lokaltidningen kan ge fler konverteringar än månaders annonsering på sociala medier.',ch:'Lokalpress',p:'h',effort:'Låg insats'});
+  const sc=strongCh();
+  if(sc.length>0) acts.push({title:`Fördjupa investeringen i ${sc[0]}`,why:`${sc[0]} är er starkaste kanal (${ST.scores[sc[0]]}/10). Extra resurser här ger bäst ROI — stark kanal ger exponentiell avkastning på marginell ökning.`,ch:sc[0],p:'m',effort:'Medel insats'});
+  if(ST.channels.includes('Google organiskt')&&!ST.channels.includes('Google Ads')&&ST.scores['Google organiskt']<7) acts.push({title:'Komplettera SEO med Google Ads',why:'Organisk söktrafik är långsiktig men långsam. Google Ads ger omedelbar synlighet för era viktigaste sökord medan SEO byggs parallellt.',ch:'Google',p:'m',effort:'Medel insats'});
+  if(acts.length===0) acts.push({title:'Underhåll och dokumentera er kanalstrategi',why:'Era kanaler presterar bra. Fokusera nu på att dokumentera vad som fungerar och sätta mätbara mål per kanal.',ch:'Alla',p:'l',effort:'Låg insats'});
+  return acts.slice(0,8);
+}
+
+function markDone(btn) {
+  btn.textContent='Åtgärdad ✓';
+  btn.className='btn';
+  btn.style.cssText='color:var(--green);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)';
+  btn.disabled=true;
+  toast('Åtgärd markerad som klar');
+}
+
+function renderUpdateFields() {
+  const wrap=document.getElementById('update-fields');
+  wrap.innerHTML='';
+  ST.channels.forEach(ch=>{
+    const s=ST.scores[ch];
+    const div=document.createElement('div');div.className='field';
+    div.innerHTML=`<label>${ch} — nuvarande: <span id="uv-${ch}" style="color:var(--accent2)">${s}/10</span></label><div class="score-row"><input type="range" min="1" max="10" step="1" value="${s}" id="us-${ch}" oninput="document.getElementById('uv-${ch}').textContent=this.value+'/10'"></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function applyUpdate() {
+  ST.channels.forEach(ch=>{ const el=document.getElementById('us-'+ch); if(el) ST.scores[ch]=parseInt(el.value); });
+  renderOverview();
+  renderChannelCards();
+  renderActions();
+  nav('overview', document.querySelector('#nav-dash .nav-item'));
+  toast('Data uppdaterad — dashboarden är omräknad');
+}
+
+function setPeriod(v) { toast('Tidsperiod: '+document.querySelector('.ctx-sel').options[document.querySelector('.ctx-sel').selectedIndex].text); }
+
+function restart() {
+  if(!confirm('Starta om med ett nytt företag? All data raderas.')) return;
+  ST.name='';ST.desc='';ST.industry='';ST.channels=[];ST.scores={};
+  selCh.clear();
+  document.querySelectorAll('.ch-card').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
+  document.getElementById('f-name').value='';
+  document.getElementById('f-desc').value='';
+  document.getElementById('sc-dash').classList.remove('on');
+  document.getElementById('sc-onboard').classList.add('on');
+  document.getElementById('nav-dash').style.display='none';
+  document.getElementById('sb-context').style.display='none';
+  document.getElementById('nav-onboard').style.display='block';
+  showOnboardStep('s1');
+  updateProg(1);
+  document.querySelectorAll('#nav-onboard .nav-item').forEach((n,i)=>{ n.classList.toggle('active',i===0); });
+}
+
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
