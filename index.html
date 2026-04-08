@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Intelligence — Beslutsstöd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #18181f;
+  --bg4: #1e1e27;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #7c6dfa;
+  --accent2: #a998ff;
+  --accent-glow: rgba(124,109,250,0.15);
+  --text: #f0eff8;
+  --text2: #9896a8;
+  --text3: #5c5b6b;
+  --red: #f05252;
+  --red-bg: rgba(240,82,82,0.1);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.1);
+  --green: #34d399;
+  --green-bg: rgba(52,211,153,0.1);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96,165,250,0.1);
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.logo-mark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.logo-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.nav-section {
+  padding: 8px 12px 4px;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  color: var(--text2);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+.nav-item:hover { color: var(--text); background: var(--bg3); }
+.nav-item.active { color: var(--accent2); border-left-color: var(--accent); background: var(--accent-glow); }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.5; flex-shrink: 0; }
+.nav-item.active .nav-dot { opacity: 1; }
+.nav-badge { margin-left: auto; font-size: 10px; background: var(--accent-glow); color: var(--accent2); border-radius: 20px; padding: 1px 7px; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.context-row { display: flex; flex-direction: column; gap: 8px; }
+.ctx-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+.ctx-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  outline: none;
+}
+.ctx-select:focus { border-color: var(--accent); }
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 36px;
+  max-width: 1100px;
+}
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.page-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* ── METRICS ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.metric {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.metric::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.metric:hover::before { opacity: 1; }
+.metric-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.metric-val { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
+.metric-sub { font-size: 11px; color: var(--text2); margin-top: 6px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.2px;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ── SIGNALS ── */
+.signal-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  transition: border-color 0.15s;
+}
+.signal-row:hover { border-color: var(--border2); }
+.sig-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sig-body { flex: 1; min-width: 0; }
+.sig-title { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sig-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── PILLS / BADGES ── */
+.pill {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+.pill-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(240,82,82,0.2); }
+.pill-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+.pill-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.pill-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+.pill-purple { background: var(--accent-glow); color: var(--accent2); border: 1px solid rgba(124,109,250,0.2); }
+
+/* ── DECISIONS ── */
+.dec-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+.dec-card:hover { border-color: var(--border2); }
+.dec-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.dec-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.dec-meta { display: flex; gap: 16px; font-size: 11px; color: var(--text3); margin-bottom: 12px; flex-wrap: wrap; }
+.dec-meta span { display: flex; align-items: center; gap: 5px; }
+.dec-meta span::before { content: '—'; opacity: 0.3; }
+.dec-meta span:first-child::before { content: ''; }
+
+.progress-track {
+  height: 3px;
+  background: var(--bg4);
+  border-radius: 2px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.dec-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.btn:hover { border-color: var(--border2); background: var(--bg4); color: var(--text); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.btn-accent {
+  background: var(--accent-glow);
+  border-color: rgba(124,109,250,0.3);
+  color: var(--accent2);
+}
+.btn-accent:hover { background: rgba(124,109,250,0.25); color: var(--accent2); }
+
+/* ── TIMELINE ── */
+.tl-item { display: flex; gap: 16px; margin-bottom: 20px; }
+.tl-spine { display: flex; flex-direction: column; align-items: center; }
+.tl-node { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.tl-line { width: 1px; flex: 1; background: var(--border); margin-top: 6px; min-height: 24px; }
+.tl-content { flex: 1; padding-bottom: 4px; }
+.tl-date { font-size: 10px; color: var(--text3); letter-spacing: 0.08em; margin-bottom: 4px; }
+.tl-title { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--text); }
+.tl-desc { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+/* ── TEMPLATES ── */
+.tpl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tpl-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tpl-card:hover { border-color: var(--accent); background: var(--accent-glow); }
+.tpl-symbol { font-size: 22px; margin-bottom: 10px; }
+.tpl-name { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text); }
+.tpl-desc { font-size: 11px; color: var(--text3); margin-top: 5px; line-height: 1.5; }
+
+/* ── TEAM ── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.team-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.member-name { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--text); }
+.member-role { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.member-load { font-size: 11px; color: var(--text2); margin-top: 8px; }
+
+/* ── FORM ── */
+.form-wrap {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-full { margin-bottom: 14px; }
+.form-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+input[type=text], input[type=date], select, textarea {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 80px; }
+select option { background: var(--bg3); }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+.filter-btn:hover { border-color: var(--border2); color: var(--text2); }
+.filter-btn.active { border-color: var(--accent); background: var(--accent-glow); color: var(--accent2); }
+.search-input {
+  flex: 1;
+  max-width: 220px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--border2); }
+.search-input::placeholder { color: var(--text3); }
+
+/* ── CHARTS ── */
+.chart-wrap { position: relative; width: 100%; }
+
+/* ── URGENT ROW ── */
+.urgent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg3);
+  border: 1px solid rgba(240,82,82,0.2);
+  border-left: 3px solid var(--red);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+.urgent-body { flex: 1; }
+.urgent-title { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--text); }
+.urgent-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  color: var(--accent2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── SECTION DIVIDER ── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── LEGEND ── */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); }
+.legend-box { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { width: 0; overflow: hidden; position: fixed; z-index: 100; }
+  .main { padding: 20px 16px; }
+  .grid2 { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ── MOBILE NAV ── */
+.mobile-header {
+  display: none;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: space-between;
+}
+.hamburger { background: none; border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+@media (max-width: 768px) {
+  .mobile-header { display: flex; }
+  .sidebar { width: 220px; }
+  .sidebar.closed { width: 0; }
+}
+
+/* fade-in */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.panel.active { animation: fadeUp 0.25s ease; }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="mobile-header">
+  <span>MI — Beslutsstöd</span>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+</div>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Marketing<br>Intelligence</div>
+    <div class="logo-sub">v2.0 — beslutsstöd</div>
+  </div>
+
+  <div class="nav-section">Huvudvy</div>
+  <div class="nav-item active" onclick="nav('dash',this)"><span class="nav-dot"></span>Dashboard</div>
+  <div class="nav-item" onclick="nav('signals',this)"><span class="nav-dot"></span>Signaler <span class="nav-badge" id="nb-sig">7</span></div>
+  <div class="nav-item" onclick="nav('decisions',this)"><span class="nav-dot"></span>Beslut <span class="nav-badge" id="nb-dec">4</span></div>
+
+  <div class="nav-section">Analys</div>
+  <div class="nav-item" onclick="nav('timeline',this)"><span class="nav-dot"></span>Tidslinje</div>
+  <div class="nav-item" onclick="nav('templates',this)"><span class="nav-dot"></span>Mallar</div>
+
+  <div class="nav-section">Organisation</div>
+  <div class="nav-item" onclick="nav('team',this)"><span class="nav-dot"></span>Team</div>
+  <div class="nav-item" onclick="nav('sources',this)"><span class="nav-dot"></span>Källor</div>
+  <div class="nav-item" onclick="nav('add',this)"><span class="nav-dot"></span>+ Nytt beslut</div>
+
+  <div class="sidebar-bottom">
+    <div class="context-row">
+      <div>
+        <div class="ctx-label">Bransch</div>
+        <select class="ctx-select" onchange="setIndustry(this.value)">
+          <option value="generic">Generellt</option>
+          <option value="ecom">E-handel</option>
+          <option value="b2b">B2B / SaaS</option>
+          <option value="agency">Byrå</option>
+          <option value="retail">Detaljhandel</option>
+          <option value="health">Hälsa & wellness</option>
+          <option value="startup">Startup</option>
+        </select>
+      </div>
+      <div>
+        <div class="ctx-label">Roll</div>
+        <select class="ctx-select" onchange="setRole(this.value)">
+          <option>Marknadschef</option>
+          <option>Innehållsstrateg</option>
+          <option>Annonsansvarig</option>
+          <option>Analytiker</option>
+          <option>VD / Grundare</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ── DASHBOARD ── -->
+<div id="panel-dash" class="panel active">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Översikt — signaler, beslut & status</div>
+    </div>
+    <span class="pill pill-green" id="ind-label" style="font-size:12px;padding:5px 12px">Generellt</span>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric"><div class="metric-label">Öppna beslut</div><div class="metric-val" id="d-open">4</div><div class="metric-sub">Kräver åtgärd</div></div>
+    <div class="metric"><div class="metric-label">Signaler idag</div><div class="metric-val">7</div><div class="metric-sub">Från 5 källor</div></div>
+    <div class="metric"><div class="metric-label">Slutförda</div><div class="metric-val" id="d-done">3</div><div class="metric-sub">Senaste 30 dagar</div></div>
+    <div class="metric"><div class="metric-label">Riskflaggade</div><div class="metric-val" id="d-risk">1</div><div class="metric-sub">Omedelbar åtgärd</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Beslutsstatus</div>
+      <div class="chart-wrap" style="height:160px"><canvas id="statusChart"></canvas></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#60a5fa"></div>Öppna</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f59e0b"></div>Pågående</div>
+        <div class="legend-item"><div class="legend-box" style="background:#34d399"></div>Klara</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f05252"></div>Risk</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Signalprioritet — vecka</div>
+      <div class="chart-wrap" style="height:160px"><canvas id="signalChart"></canvas></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#f05252"></div>Hög</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f59e0b"></div>Medel</div>
+        <div class="legend-item"><div class="legend-box" style="background:#34d399"></div>Låg</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠ Brådskande — kräver åtgärd</div>
+    <div class="urgent-row">
+      <div class="urgent-body">
+        <div class="urgent-title">Krishantering: negativa omnämnanden +40%</div>
+        <div class="urgent-meta">Social Listening · Ansvarig: Sara M. · Deadline: 8 maj</div>
+      </div>
+      <span class="pill pill-red">Hög risk</span>
+      <button class="btn btn-accent" onclick="nav('decisions',document.querySelectorAll('.nav-item')[2])">Visa</button>
+    </div>
+    <div class="urgent-row">
+      <div class="urgent-body">
+        <div class="urgent-title">Konkurrentkampanj lanserad — kräver svar</div>
+        <div class="urgent-meta">LinkedIn Ads · Ansvarig: Marcus R. · Deadline: 10 maj</div>
+      </div>
+      <span class="pill pill-amber">Öppen</span>
+      <button class="btn btn-accent" onclick="nav('decisions',document.querySelectorAll('.nav-item')[2])">Visa</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SIGNALS ── -->
+<div id="panel-signals" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Signaler</div><div class="page-sub">Insamlade marknadsföringssignaler</div></div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterSig('all',this)">Alla</button>
+    <button class="filter-btn" onclick="filterSig('hög',this)">Hög</button>
+    <button class="filter-btn" onclick="filterSig('medel',this)">Medel</button>
+    <button class="filter-btn" onclick="filterSig('låg',this)">Låg</button>
+    <input class="search-input" placeholder="Sök signal..." oninput="searchSigs(this.value)">
+  </div>
+  <div id="sig-list">
+    <div class="signal-row" data-prio="hög"><div class="sig-dot" style="background:var(--red)"></div><div class="sig-body"><div class="sig-title">Konkurrentkampanj lanserad</div><div class="sig-meta">LinkedIn Ads · 2 timmar sedan</div></div><span class="pill pill-red">Hög</span></div>
+    <div class="signal-row" data-prio="medel"><div class="sig-dot" style="background:var(--amber)"></div><div class="sig-body"><div class="sig-title">Sökvolym ökar: "hållbar förpackning"</div><div class="sig-meta">Google Trends · 5 timmar sedan</div></div><span class="pill pill-amber">Medel</span></div>
+    <div class="signal-row" data-prio="hög"><div class="sig-dot" style="background:var(--red)"></div><div class="sig-body"><div class="sig-title">Negativa omnämnanden ökade 40%</div><div class="sig-meta">Social Listening · 6 timmar sedan</div></div><span class="pill pill-red">Hög</span></div>
+    <div class="signal-row" data-prio="medel"><div class="sig-dot" style="background:var(--amber)"></div><div class="sig-body"><div class="sig-title">Ny branschrapport publicerad</div><div class="sig-meta">PR Newswire · 1 dag sedan</div></div><span class="pill pill-amber">Medel</span></div>
+    <div class="signal-row" data-prio="låg"><div class="sig-dot" style="background:var(--green)"></div><div class="sig-body"><div class="sig-title">Ny insiktsstudie om målgrupp 25–34</div><div class="sig-meta">Statista · 2 dagar sedan</div></div><span class="pill pill-green">Låg</span></div>
+    <div class="signal-row" data-prio="medel"><div class="sig-dot" style="background:var(--amber)"></div><div class="sig-body"><div class="sig-title">CPM-kostnader ökade på Meta</div><div class="sig-meta">Meta Ads · 3 dagar sedan</div></div><span class="pill pill-amber">Medel</span></div>
+    <div class="signal-row" data-prio="låg"><div class="sig-dot" style="background:var(--green)"></div><div class="sig-body"><div class="sig-title">Influencer-avtal löper ut snart</div><div class="sig-meta">Intern CRM · 4 dagar sedan</div></div><span class="pill pill-green">Låg</span></div>
+  </div>
+</div>
+
+<!-- ── DECISIONS ── -->
+<div id="panel-decisions" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Beslut</div><div class="page-sub">Spåra och hantera marknadsföringsbeslut</div></div>
+    <button class="btn btn-accent" onclick="nav('add',document.querySelectorAll('.nav-item')[7])">+ Nytt beslut</button>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterDec('all',this)">Alla</button>
+    <button class="filter-btn" onclick="filterDec('öppen',this)">Öppna</button>
+    <button class="filter-btn" onclick="filterDec('pågående',this)">Pågående</button>
+    <button class="filter-btn" onclick="filterDec('klar',this)">Klara</button>
+    <button class="filter-btn" onclick="filterDec('risk',this)">Risk</button>
+  </div>
+  <div id="dec-list">
+    <div class="dec-card" data-status="risk">
+      <div class="dec-header"><div class="dec-title">Krishantering: negativa omnämnanden</div><span class="pill pill-red">Risk</span></div>
+      <div class="dec-meta"><span>Sara M.</span><span>Deadline: 8 maj</span><span>Social Listening</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:15%"></div></div>
+      <div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>
+    </div>
+    <div class="dec-card" data-status="öppen">
+      <div class="dec-header"><div class="dec-title">Svara på konkurrentkampanj</div><span class="pill pill-blue">Öppen</span></div>
+      <div class="dec-meta"><span>Marcus R.</span><span>Deadline: 10 maj</span><span>LinkedIn Ads</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+      <div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>
+    </div>
+    <div class="dec-card" data-status="pågående">
+      <div class="dec-header"><div class="dec-title">Innehållsstrategi kring hållbarhet</div><span class="pill pill-amber">Pågående</span></div>
+      <div class="dec-meta"><span>Lena H.</span><span>Deadline: 30 maj</span><span>Google Trends</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+      <div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>
+    </div>
+    <div class="dec-card" data-status="öppen">
+      <div class="dec-header"><div class="dec-title">Öka budget för social media Q3</div><span class="pill pill-blue">Öppen</span></div>
+      <div class="dec-meta"><span>Anna K.</span><span>Deadline: 15 maj</span><span>Meta Ads</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
+      <div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>
+    </div>
+    <div class="dec-card" data-status="klar">
+      <div class="dec-header"><div class="dec-title">Förnya influencer-avtal</div><span class="pill pill-green">Klar</span></div>
+      <div class="dec-meta"><span>Jonas P.</span><span>Avslutad: 3 maj</span><span>CRM</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+      <div class="dec-actions"><button class="btn" disabled>Slutförd</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TIMELINE ── -->
+<div id="panel-timeline" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Tidslinje</div><div class="page-sub">Kronologiskt revisionsspår av signaler och beslut</div></div>
+  </div>
+  <div id="tl-list">
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--red)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">Idag, 08:30</div><div class="tl-title">Signal: Konkurrentkampanj lanserad</div><div class="tl-desc">Hög prioritet · LinkedIn Ads · Kopplad till öppet beslut</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--red)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">Idag, 06:12</div><div class="tl-title">Signal: Negativa omnämnanden +40%</div><div class="tl-desc">Hög prioritet · Social Listening · Riskflagga satt</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--amber)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">Igår, 14:20</div><div class="tl-title">Beslut påbörjat: Innehållsstrategi hållbarhet</div><div class="tl-desc">Ansvarig: Lena H. · Status: Pågående</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--accent)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">3 maj, 10:05</div><div class="tl-title">Beslut slutfört: Influencer-avtal förnyat</div><div class="tl-desc">Ansvarig: Jonas P. · Källa: CRM-signal</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--amber)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">1 maj, 09:00</div><div class="tl-title">Signal: CPM-kostnader ökade på Meta</div><div class="tl-desc">Medel prioritet · Kopplad till budgetöversyn Q3</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--green)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">28 apr, 11:30</div><div class="tl-title">Beslut skapat: Budget social media Q3</div><div class="tl-desc">Ansvarig: Anna K. · Deadline: 15 maj</div></div></div>
+    <div class="tl-item"><div class="tl-spine"><div class="tl-node" style="background:var(--green)"></div></div><div class="tl-content"><div class="tl-date">25 apr, 15:00</div><div class="tl-title">Signal: Sökvolym ökar — hållbar förpackning</div><div class="tl-desc">Låg prioritet · Google Trends · Utlöste innehållsstrategi</div></div></div>
+  </div>
+</div>
+
+<!-- ── TEMPLATES ── -->
+<div id="panel-templates" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Branschmallar</div><div class="page-sub">Ladda ett startpaket anpassat för din verksamhet</div></div>
+  </div>
+  <div class="tpl-grid">
+    <div class="tpl-card" onclick="loadTemplate('ecom')"><div class="tpl-symbol">🛒</div><div class="tpl-name">E-handel</div><div class="tpl-desc">Konvertering, ROAS, cart abandonment, säsong</div></div>
+    <div class="tpl-card" onclick="loadTemplate('b2b')"><div class="tpl-symbol">🏢</div><div class="tpl-name">B2B / SaaS</div><div class="tpl-desc">Pipeline, MQL/SQL, churn, account-based</div></div>
+    <div class="tpl-card" onclick="loadTemplate('agency')"><div class="tpl-symbol">💼</div><div class="tpl-name">Byrå</div><div class="tpl-desc">Klientrapporter, pitch, retainer, kapacitet</div></div>
+    <div class="tpl-card" onclick="loadTemplate('retail')"><div class="tpl-symbol">🏪</div><div class="tpl-name">Detaljhandel</div><div class="tpl-desc">Trafik, lokal annonsering, kampanjcykler</div></div>
+    <div class="tpl-card" onclick="loadTemplate('health')"><div class="tpl-symbol">💊</div><div class="tpl-name">Hälsa & wellness</div><div class="tpl-desc">Förtroende, community, reglering, SEO</div></div>
+    <div class="tpl-card" onclick="loadTemplate('startup')"><div class="tpl-symbol">🚀</div><div class="tpl-name">Startup</div><div class="tpl-desc">PMF, tillväxt, brand awareness, budget</div></div>
+  </div>
+  <div id="tpl-feedback"></div>
+</div>
+
+<!-- ── TEAM ── -->
+<div id="panel-team" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Team</div><div class="page-sub">Roller och ansvarsfördelning</div></div>
+  </div>
+  <div class="team-grid" id="team-grid">
+    <div class="team-card"><div class="avatar" style="background:rgba(96,165,250,0.15);color:#60a5fa">AK</div><div class="member-name">Anna K.</div><div class="member-role">Marknadschef</div><div class="member-load">2 öppna beslut</div></div>
+    <div class="team-card"><div class="avatar" style="background:rgba(52,211,153,0.15);color:#34d399">MR</div><div class="member-name">Marcus R.</div><div class="member-role">Annonsansvarig</div><div class="member-load">1 öppet beslut</div></div>
+    <div class="team-card"><div class="avatar" style="background:rgba(245,158,11,0.15);color:#f59e0b">LH</div><div class="member-name">Lena H.</div><div class="member-role">Innehållsstrateg</div><div class="member-load">1 pågående</div></div>
+    <div class="team-card"><div class="avatar" style="background:rgba(240,82,82,0.15);color:#f05252">SM</div><div class="member-name">Sara M.</div><div class="member-role">Community Manager</div><div class="member-load">1 riskflaggat</div></div>
+    <div class="team-card"><div class="avatar" style="background:rgba(124,109,250,0.15);color:#a998ff">JP</div><div class="member-name">Jonas P.</div><div class="member-role">Partnerskap</div><div class="member-load">1 klar</div></div>
+  </div>
+
+  <div class="section-title">Lägg till teammedlem</div>
+  <div class="form-wrap" style="max-width:480px">
+    <div class="form-grid">
+      <div><label class="form-label">Namn</label><input type="text" placeholder="Förnamn Efternamn" id="m-name"></div>
+      <div><label class="form-label">Roll</label><input type="text" placeholder="T.ex. SEO-specialist" id="m-role"></div>
+    </div>
+    <button class="btn btn-accent" onclick="addMember()">Lägg till</button>
+  </div>
+</div>
+
+<!-- ── SOURCES ── -->
+<div id="panel-sources" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">OSINT-källor</div><div class="page-sub">Aktivera och hantera informationskällor</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px" id="sources-grid">
+    <div class="tpl-card" data-on="true" onclick="toggleSource(this)" style="border-color:var(--accent)"><div class="tpl-symbol">📊</div><div class="tpl-name">Google Trends</div><div class="tpl-desc">Sökbeteende & trender</div><div class="pill pill-green" style="margin-top:10px;display:inline-block">Aktiv</div></div>
+    <div class="tpl-card" data-on="true" onclick="toggleSource(this)" style="border-color:var(--accent)"><div class="tpl-symbol">🔗</div><div class="tpl-name">LinkedIn Ads</div><div class="tpl-desc">Konkurrensdata</div><div class="pill pill-green" style="margin-top:10px;display:inline-block">Aktiv</div></div>
+    <div class="tpl-card" data-on="true" onclick="toggleSource(this)" style="border-color:var(--accent)"><div class="tpl-symbol">💬</div><div class="tpl-name">Social Listening</div><div class="tpl-desc">Sentimentanalys</div><div class="pill pill-green" style="margin-top:10px;display:inline-block">Aktiv</div></div>
+    <div class="tpl-card" data-on="true" onclick="toggleSource(this)" style="border-color:var(--accent)"><div class="tpl-symbol">📰</div><div class="tpl-name">PR Newswire</div><div class="tpl-desc">Pressreleasar</div><div class="pill pill-green" style="margin-top:10px;display:inline-block">Aktiv</div></div>
+    <div class="tpl-card" data-on="true" onclick="toggleSource(this)" style="border-color:var(--accent)"><div class="tpl-symbol">📈</div><div class="tpl-name">Statista</div><div class="tpl-desc">Marknadsdata</div><div class="pill pill-green" style="margin-top:10px;display:inline-block">Aktiv</div></div>
+    <div class="tpl-card" data-on="false" onclick="toggleSource(this)"><div class="tpl-symbol">📣</div><div class="tpl-name">Meta Ads</div><div class="tpl-desc">Annonsdata</div><div class="pill" style="margin-top:10px;display:inline-block;background:var(--bg4);color:var(--text3);border:1px solid var(--border)">Inaktiv</div></div>
+    <div class="tpl-card" data-on="false" onclick="toggleSource(this)"><div class="tpl-symbol">🔍</div><div class="tpl-name">SEMrush</div><div class="tpl-desc">SEO & konkurrens</div><div class="pill" style="margin-top:10px;display:inline-block;background:var(--bg4);color:var(--text3);border:1px solid var(--border)">Inaktiv</div></div>
+    <div class="tpl-card" data-on="false" onclick="toggleSource(this)"><div class="tpl-symbol">🗺️</div><div class="tpl-name">Reddit</div><div class="tpl-desc">Konsumentinsikter</div><div class="pill" style="margin-top:10px;display:inline-block;background:var(--bg4);color:var(--text3);border:1px solid var(--border)">Inaktiv</div></div>
+  </div>
+</div>
+
+<!-- ── ADD DECISION ── -->
+<div id="panel-add" class="panel">
+  <div class="page-header">
+    <div><div class="page-title">Nytt beslut</div><div class="page-sub">Registrera ett nytt marknadsföringsbeslut</div></div>
+  </div>
+  <div class="form-wrap">
+    <div class="form-full">
+      <label class="form-label">Beslutsbeskrivning</label>
+      <input type="text" placeholder="Beskriv beslutet kortfattat..." id="new-title">
+    </div>
+    <div class="form-grid">
+      <div><label class="form-label">Prioritet</label>
+        <select id="new-prio"><option>Hög</option><option>Medel</option><option>Låg</option></select></div>
+      <div><label class="form-label">Status</label>
+        <select id="new-status"><option value="öppen">Öppen</option><option value="pågående">Pågående</option><option value="risk">Risk</option></select></div>
+      <div><label class="form-label">Ansvarig</label>
+        <input type="text" placeholder="Namn..." id="new-owner"></div>
+      <div><label class="form-label">Deadline</label>
+        <input type="date" id="new-deadline"></div>
+    </div>
+    <div class="form-full">
+      <label class="form-label">Kopplad signal / källa</label>
+      <input type="text" placeholder="T.ex. Google Trends, Social Listening..." id="new-source">
+    </div>
+    <div class="form-full">
+      <label class="form-label">Anteckningar</label>
+      <textarea placeholder="Bakgrund, kontext, alternativ att överväga..." id="new-notes"></textarea>
+    </div>
+    <button class="btn btn-accent" style="font-size:13px;padding:9px 22px" onclick="addDecision()">Spara beslut</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── NAV ──
+function nav(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.add('closed');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('closed');
+}
+
+// ── INDUSTRY / ROLE ──
+const indMap = { generic:'Generellt', ecom:'E-handel', b2b:'B2B / SaaS', agency:'Byrå', retail:'Detaljhandel', health:'Hälsa & wellness', startup:'Startup' };
+function setIndustry(v) { document.getElementById('ind-label').textContent = indMap[v] || v; }
+function setRole(v) { /* context only */ }
+
+// ── SIGNAL FILTER ──
+function filterSig(prio, btn) {
+  document.querySelectorAll('#sig-list .signal-row').forEach(r => {
+    r.style.display = (prio === 'all' || r.dataset.prio === prio) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('#panel-signals .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function searchSigs(q) {
+  document.querySelectorAll('#sig-list .signal-row').forEach(r => {
+    r.style.display = r.querySelector('.sig-title').textContent.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none';
+  });
+}
+
+// ── DECISION FILTER ──
+function filterDec(status, btn) {
+  document.querySelectorAll('#dec-list .dec-card').forEach(c => {
+    c.style.display = (status === 'all' || c.dataset.status === status) ? 'block' : 'none';
+  });
+  document.querySelectorAll('#panel-decisions .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── ADVANCE DECISION STATUS ──
+const statusCycle = ['öppen', 'pågående', 'klar'];
+const statusLabel = { öppen: 'Öppen', pågående: 'Pågående', klar: 'Klar', risk: 'Risk' };
+const statusPill  = { öppen: 'pill-blue', pågående: 'pill-amber', klar: 'pill-green', risk: 'pill-red' };
+const statusProg  = { öppen: 0, pågående: 50, klar: 100, risk: 15 };
+
+function advanceDec(btn) {
+  const card = btn.closest('.dec-card');
+  const cur = card.dataset.status;
+  if (cur === 'klar') return;
+  const next = cur === 'risk' ? 'öppen' : statusCycle[(statusCycle.indexOf(cur) + 1) % statusCycle.length];
+  card.dataset.status = next;
+  const pill = card.querySelector('.pill');
+  pill.textContent = statusLabel[next];
+  pill.className = 'pill ' + statusPill[next];
+  card.querySelector('.progress-fill').style.width = statusProg[next] + '%';
+  if (next === 'klar') { btn.disabled = true; btn.textContent = 'Slutförd'; }
+  updateStats();
+  toast('Status uppdaterad → ' + statusLabel[next]);
+}
+
+function updateStats() {
+  const cards = document.querySelectorAll('#dec-list .dec-card');
+  let open = 0, done = 0, risk = 0;
+  cards.forEach(c => {
+    if (c.dataset.status === 'öppen' || c.dataset.status === 'pågående') open++;
+    if (c.dataset.status === 'klar') done++;
+    if (c.dataset.status === 'risk') risk++;
+  });
+  document.getElementById('d-open').textContent = open;
+  document.getElementById('d-done').textContent = done;
+  document.getElementById('d-risk').textContent = risk;
+  document.getElementById('nb-dec').textContent = open;
+  statusChart.data.datasets[0].data = [
+    [...cards].filter(c=>c.dataset.status==='öppen').length,
+    [...cards].filter(c=>c.dataset.status==='pågående').length,
+    done, risk
+  ];
+  statusChart.update();
+}
+
+// ── ADD DECISION ──
+function addDecision() {
+  const title = document.getElementById('new-title').value.trim();
+  if (!title) { toast('Ange en beslutsbeskrivning'); return; }
+  const owner = document.getElementById('new-owner').value.trim() || '—';
+  const deadline = document.getElementById('new-deadline').value || '—';
+  const source = document.getElementById('new-source').value.trim() || '—';
+  const statusRaw = document.getElementById('new-status').value;
+  const list = document.getElementById('dec-list');
+  const div = document.createElement('div');
+  div.className = 'dec-card'; div.dataset.status = statusRaw;
+  div.innerHTML = `<div class="dec-header"><div class="dec-title">${title}</div><span class="pill ${statusPill[statusRaw]}">${statusLabel[statusRaw]}</span></div><div class="dec-meta"><span>${owner}</span><span>Deadline: ${deadline}</span><span>${source}</span></div><div class="progress-track"><div class="progress-fill" style="width:${statusProg[statusRaw]}%"></div></div><div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>`;
+  list.prepend(div);
+  ['new-title','new-owner','new-source','new-notes'].forEach(id => document.getElementById(id).value = '');
+  updateStats();
+  addTimelineEntry('Beslut skapat: ' + title, 'Ansvarig: ' + owner + ' · Status: ' + statusLabel[statusRaw], statusRaw);
+  nav('decisions', document.querySelectorAll('.nav-item')[2]);
+  toast('Beslut sparat!');
+}
+
+// ── ADD TEAM MEMBER ──
+const avatarColors = [
+  ['rgba(96,165,250,0.15)','#60a5fa'], ['rgba(52,211,153,0.15)','#34d399'],
+  ['rgba(245,158,11,0.15)','#f59e0b'], ['rgba(124,109,250,0.15)','#a998ff'],
+  ['rgba(240,82,82,0.15)','#f05252']
+];
+function addMember() {
+  const name = document.getElementById('m-name').value.trim();
+  const role = document.getElementById('m-role').value.trim() || '—';
+  if (!name) { toast('Ange ett namn'); return; }
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const c = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+  const card = document.createElement('div'); card.className = 'team-card';
+  card.innerHTML = `<div class="avatar" style="background:${c[0]};color:${c[1]}">${initials}</div><div class="member-name">${name}</div><div class="member-role">${role}</div><div class="member-load">0 beslut</div>`;
+  document.getElementById('team-grid').appendChild(card);
+  document.getElementById('m-name').value = ''; document.getElementById('m-role').value = '';
+  toast(name + ' tillagd i teamet');
+}
+
+// ── TOGGLE SOURCE ──
+function toggleSource(card) {
+  const on = card.dataset.on === 'true';
+  card.dataset.on = !on;
+  const pill = card.querySelector('.pill');
+  if (!on) {
+    card.style.borderColor = 'var(--accent)';
+    pill.className = 'pill pill-green'; pill.textContent = 'Aktiv';
+  } else {
+    card.style.borderColor = '';
+    pill.className = 'pill'; pill.style.cssText = 'margin-top:10px;display:inline-block;background:var(--bg4);color:var(--text3);border:1px solid var(--border)';
+    pill.textContent = 'Inaktiv';
+  }
+}
+
+// ── TEMPLATES ──
+const tplData = {
+  ecom: { name:'E-handel', decisions:[
+    {t:'Optimera checkout-flödet',o:'Anna K.',d:'20 maj',s:'Google Analytics',st:'öppen'},
+    {t:'Black Friday-strategi Q4',o:'Marcus R.',d:'1 jun',s:'Historisk data',st:'öppen'},
+    {t:'Minska cart abandonment',o:'Lena H.',d:'15 maj',s:'Hotjar',st:'pågående'}
+  ]},
+  b2b: { name:'B2B / SaaS', decisions:[
+    {t:'Minska churn bland SME-kunder',o:'Anna K.',d:'25 maj',s:'CRM-data',st:'risk'},
+    {t:'Lansera account-based kampanj',o:'Marcus R.',d:'1 jun',s:'LinkedIn',st:'öppen'},
+    {t:'Optimera MQL→SQL-konvertering',o:'Lena H.',d:'30 maj',s:'HubSpot',st:'pågående'}
+  ]},
+  agency: { name:'Byrå', decisions:[
+    {t:'Pitch ny storkund Q2',o:'Anna K.',d:'12 maj',s:'Intern pipeline',st:'öppen'},
+    {t:'Förnya retaineravtal',o:'Jonas P.',d:'20 maj',s:'CRM',st:'pågående'},
+    {t:'Kapacitetsplanering juni',o:'Sara M.',d:'1 jun',s:'Intern planering',st:'öppen'}
+  ]},
+  retail: { name:'Detaljhandel', decisions:[
+    {t:'Lokal annonsering sommarkampanj',o:'Marcus R.',d:'15 maj',s:'Google Ads',st:'öppen'},
+    {t:'Sortimentsbeslut höst',o:'Lena H.',d:'30 maj',s:'Försäljningsdata',st:'pågående'},
+    {t:'Pop-up event planering',o:'Anna K.',d:'10 jun',s:'Trendanalys',st:'öppen'}
+  ]},
+  health: { name:'Hälsa & wellness', decisions:[
+    {t:'Trustbuilding-kampanj',o:'Lena H.',d:'20 maj',s:'Sentimentanalys',st:'öppen'},
+    {t:'Regelverksanpassning annonsering',o:'Marcus R.',d:'1 jun',s:'Branschrapport',st:'risk'},
+    {t:'Community-strategi',o:'Sara M.',d:'15 maj',s:'Social Listening',st:'pågående'}
+  ]},
+  startup: { name:'Startup', decisions:[
+    {t:'Validera product-market fit',o:'Anna K.',d:'10 maj',s:'Användarintervjuer',st:'risk'},
+    {t:'Growth hacking-experiment',o:'Marcus R.',d:'25 maj',s:'A/B-testdata',st:'öppen'},
+    {t:'Brand awareness-kampanj',o:'Lena H.',d:'1 jun',s:'Google Trends',st:'öppen'}
+  ]}
+};
+
+function loadTemplate(key) {
+  const tpl = tplData[key]; if (!tpl) return;
+  const list = document.getElementById('dec-list');
+  tpl.decisions.forEach(d => {
+    const div = document.createElement('div'); div.className = 'dec-card'; div.dataset.status = d.st;
+    div.innerHTML = `<div class="dec-header"><div class="dec-title">${d.t}</div><span class="pill ${statusPill[d.st]}">${statusLabel[d.st]}</span></div><div class="dec-meta"><span>${d.o}</span><span>Deadline: ${d.d}</span><span>${d.s}</span></div><div class="progress-track"><div class="progress-fill" style="width:${statusProg[d.st]}%"></div></div><div class="dec-actions"><button class="btn" onclick="advanceDec(this)">Uppdatera status</button></div>`;
+    list.prepend(div);
+  });
+  updateStats();
+  document.getElementById('tpl-feedback').innerHTML = `<div class="card" style="border-color:rgba(52,211,153,0.3)"><div style="font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--green)">Mall laddad: ${tpl.name}</div><div style="font-size:12px;color:var(--text2);margin-top:4px">${tpl.decisions.length} beslut tillagda i beslutsvyn.</div></div>`;
+  toast('Mall laddad: ' + tpl.name);
+}
+
+// ── TIMELINE ──
+function addTimelineEntry(title, desc, statusRaw) {
+  const colors = { öppen:'var(--blue)', pågående:'var(--amber)', klar:'var(--green)', risk:'var(--red)' };
+  const now = new Date().toLocaleString('sv-SE', {hour:'2-digit',minute:'2-digit'});
+  const item = document.createElement('div'); item.className = 'tl-item';
+  item.innerHTML = `<div class="tl-spine"><div class="tl-node" style="background:${colors[statusRaw]||'var(--accent)'}"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-date">Idag, ${now}</div><div class="tl-title">${title}</div><div class="tl-desc">${desc}</div></div>`;
+  document.getElementById('tl-list').prepend(item);
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── CHARTS ──
+const statusChart = new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: { labels: ['Öppna','Pågående','Klara','Risk'], datasets: [{ data: [2,1,1,1], backgroundColor: ['#60a5fa','#f59e0b','#34d399','#f05252'], borderWidth: 0, hoverOffset: 4 }] },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '68%' }
+});
+new Chart(document.getElementById('signalChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Mån','Tis','Ons','Tor','Fre'],
+    datasets: [
+      { label: 'Hög', data: [1,2,0,1,2], backgroundColor: '#f05252' },
+      { label: 'Medel', data: [2,1,2,1,2], backgroundColor: '#f59e0b' },
+      { label: 'Låg', data: [1,0,1,2,1], backgroundColor: '#34d399' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { stacked: true, grid: { display: false, color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#5c5b6b', font: { size: 11 } } },
+      y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#5c5b6b', font: { size: 11 }, stepSize: 1 } }
+    }
+  }
+});
+</script>
+</body>
+</html>
