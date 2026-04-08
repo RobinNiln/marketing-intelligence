@@ -5,378 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marknadsföringsrådgivaren – Tim&Robin</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --purple-50:#EEEDFE;--purple-100:#CECBF6;--purple-600:#534AB7;--purple-800:#3C3489;--purple-900:#26215C;
+  --teal-50:#E1F5EE;--teal-100:#9FE1CB;--teal-600:#0F6E56;--teal-800:#085041;
+  --gray-50:#F1EFE8;--gray-100:#D3D1C7;--gray-600:#5F5E5A;
+  --amber-50:#FAEEDA;--amber-100:#FAC775;--amber-600:#854F0B;
+  --bg:#ffffff;--bg-secondary:#F7F6F2;--text:#1a1a1a;--text-muted:#5F5E5A;
+  --border:rgba(0,0,0,0.12);--radius:12px;--radius-sm:8px;
+}
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-secondary);color:var(--text);min-height:100vh; }
 
-  :root {
-    --purple-50: #EEEDFE; --purple-100: #CECBF6; --purple-600: #534AB7; --purple-800: #3C3489; --purple-900: #26215C;
-    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-600: #0F6E56; --teal-800: #085041;
-    --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-600: #993C1D; --coral-800: #712B13;
-    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-400: #888780; --gray-600: #5F5E5A; --gray-800: #444441;
-    --amber-50: #FAEEDA; --amber-100: #FAC775; --amber-600: #854F0B;
-    --bg: #ffffff; --bg-secondary: #F7F6F2; --text: #1a1a1a; --text-muted: #5F5E5A;
-    --border: rgba(0,0,0,0.12); --radius: 12px; --radius-sm: 8px;
-  }
+/* LOGIN */
+#login-screen { min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem; }
+.login-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center; }
+.login-logo { width:56px;height:56px;background:var(--purple-900);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:white;letter-spacing:1px;margin:0 auto 1.25rem; }
+.login-card h1 { font-size:20px;font-weight:600;margin-bottom:0.4rem; }
+.login-card p { font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6; }
+.login-card input { width:100%;font-family:inherit;font-size:14px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);margin-bottom:0.75rem;text-align:center;letter-spacing:0.1em; }
+.login-card input:focus { outline:none;border-color:var(--purple-600); }
+.login-btn { width:100%;background:var(--purple-800);color:white;border:none;border-radius:var(--radius-sm);padding:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s; }
+.login-btn:hover { background:var(--purple-900); }
+.login-error { font-size:13px;color:#A32D2D;margin-top:0.75rem;display:none; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-secondary);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+/* HEADER */
+header { background:var(--purple-900);color:white;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem; }
+.header-brand { display:flex;align-items:center;gap:12px; }
+.header-logo { width:38px;height:38px;background:var(--purple-600);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:white;letter-spacing:1px; }
+.header-title { font-size:17px;font-weight:600; }
+.header-sub { font-size:12px;opacity:0.65;margin-top:2px; }
+.header-badge { background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;font-size:12px;padding:5px 13px;border-radius:20px; }
 
-  header {
-    background: var(--purple-900);
-    color: white;
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+.container { max-width:900px;margin:0 auto;padding:2rem 1.5rem; }
+.section-title { font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:1rem; }
+.form-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem; }
+.form-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group { display:flex;flex-direction:column;gap:6px; }
+.form-group.full { grid-column:1/-1; }
+label { font-size:13px;font-weight:500;color:var(--text-muted); }
+input,textarea,select { font-family:inherit;font-size:14px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);transition:border-color 0.15s;width:100%; }
+input:focus,textarea:focus,select:focus { outline:none;border-color:var(--purple-600);background:var(--bg); }
+textarea { resize:vertical;min-height:80px;line-height:1.6; }
 
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+.checkbox-grid { display:flex;flex-wrap:wrap;gap:8px;margin-top:4px; }
+.checkbox-item { display:flex;align-items:center;gap:6px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:20px;padding:6px 12px;cursor:pointer;transition:all 0.15s;font-size:13px;user-select:none; }
+.checkbox-item:hover { border-color:var(--purple-600); }
+.checkbox-item input { width:auto;margin:0; }
+.checkbox-item.checked { background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800); }
 
-  .header-logo {
-    width: 40px;
-    height: 40px;
-    background: var(--purple-600);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    color: white;
-    letter-spacing: 1px;
-  }
+.pill-options { display:flex;flex-wrap:wrap;gap:8px; }
+.pill-btn { background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all 0.15s;color:var(--text);font-family:inherit; }
+.pill-btn:hover { border-color:var(--purple-600); }
+.pill-btn.active { background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800);font-weight:500; }
 
-  .header-title { font-size: 18px; font-weight: 600; }
-  .header-sub { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+.cta-btn { background:var(--purple-800);color:white;border:none;border-radius:var(--radius-sm);padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;width:100%;font-family:inherit; }
+.cta-btn:hover { background:var(--purple-900); }
+.cta-btn:active { transform:scale(0.99); }
+.cta-btn:disabled { opacity:0.5;cursor:not-allowed;transform:none; }
 
-  .header-badge {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 20px;
-  }
+.loading-state { text-align:center;padding:3rem 2rem;display:none; }
+.spinner { width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--purple-600);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem; }
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state p { color:var(--text-muted);font-size:14px; }
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
+#stream-preview { display:none;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem; }
+#stream-preview h2 { font-size:15px;font-weight:600;margin-bottom:1rem;color:var(--purple-800); }
+#stream-text { font-size:14px;line-height:1.8;color:var(--text-muted);white-space:pre-wrap;font-family:inherit;min-height:80px; }
+.stream-cursor { display:inline-block;width:2px;height:1em;background:var(--purple-600);animation:blink 0.8s infinite;vertical-align:text-bottom;margin-left:2px; }
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-
-  .form-card {
-    background: var(--bg);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  @media (max-width: 600px) {
-    .form-grid { grid-template-columns: 1fr; }
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .form-group.full { grid-column: 1 / -1; }
-
-  label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-
-  input, textarea, select {
-    font-family: inherit;
-    font-size: 14px;
-    background: var(--bg-secondary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    color: var(--text);
-    transition: border-color 0.15s;
-    width: 100%;
-  }
-
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--purple-600);
-    background: var(--bg);
-  }
-
-  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-
-  .checkbox-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg-secondary);
-    border: 0.5px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 13px;
-    user-select: none;
-  }
-
-  .checkbox-item:hover { border-color: var(--purple-600); }
-  .checkbox-item input { width: auto; margin: 0; }
-
-  .checkbox-item.checked {
-    background: var(--purple-50);
-    border-color: var(--purple-600);
-    color: var(--purple-800);
-  }
-
-  .budget-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .budget-btn {
-    background: var(--bg-secondary);
-    border: 0.5px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-    color: var(--text);
-    font-family: inherit;
-  }
-
-  .budget-btn:hover { border-color: var(--purple-600); }
-  .budget-btn.active {
-    background: var(--purple-50);
-    border-color: var(--purple-600);
-    color: var(--purple-800);
-    font-weight: 500;
-  }
-
-  .cta-btn {
-    background: var(--purple-800);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 14px 28px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    width: 100%;
-    font-family: inherit;
-  }
-
-  .cta-btn:hover { background: var(--purple-900); }
-  .cta-btn:active { transform: scale(0.99); }
-  .cta-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  #result-section { display: none; }
-
-  .result-card {
-    background: var(--bg);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .result-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1rem;
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .result-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .icon-purple { background: var(--purple-50); }
-  .icon-teal { background: var(--teal-50); }
-  .icon-coral { background: var(--coral-50); }
-  .icon-amber { background: var(--amber-50); }
-
-  .result-header h2 { font-size: 16px; font-weight: 600; }
-  .result-header p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-
-  .result-content {
-    font-size: 14px;
-    line-height: 1.75;
-    color: var(--text);
-  }
-
-  .result-content h3 {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 1rem 0 0.4rem;
-    color: var(--purple-800);
-  }
-
-  .result-content ul {
-    padding-left: 1.2rem;
-    margin: 0.4rem 0;
-  }
-
-  .result-content li { margin-bottom: 0.3rem; }
-
-  .result-content strong { font-weight: 600; }
-
-  .channel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
-    margin-top: 0.75rem;
-  }
-
-  .channel-card {
-    background: var(--bg-secondary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-  }
-
-  .channel-card .channel-name { font-size: 13px; font-weight: 600; }
-  .channel-card .channel-prio {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-top: 4px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    display: inline-block;
-  }
-
-  .prio-hog { background: var(--teal-50); color: var(--teal-600); }
-  .prio-med { background: var(--amber-50); color: var(--amber-600); }
-  .prio-lag { background: var(--gray-50); color: var(--gray-600); }
-
-  .cta-footer {
-    background: linear-gradient(135deg, var(--purple-900), var(--purple-800));
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    color: white;
-    text-align: center;
-    margin-top: 1.5rem;
-  }
-
-  .cta-footer h3 { font-size: 18px; font-weight: 600; margin-bottom: 0.5rem; }
-  .cta-footer p { font-size: 14px; opacity: 0.8; margin-bottom: 1.25rem; line-height: 1.6; }
-
-  .cta-footer-btn {
-    background: white;
-    color: var(--purple-900);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 12px 28px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.15s;
-  }
-
-  .cta-footer-btn:hover { opacity: 0.9; }
-
-  .loading-state {
-    text-align: center;
-    padding: 3rem 2rem;
-    display: none;
-  }
-
-  .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--purple-600);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 1rem;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-state p { color: var(--text-muted); font-size: 14px; }
-
-  .error-msg {
-    background: #FFF0F0;
-    border: 0.5px solid #F09595;
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #791F1F;
-    margin-top: 1rem;
-    display: none;
-  }
-
-  .reset-btn {
-    background: none;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 20px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-family: inherit;
-    margin-top: 1rem;
-    transition: all 0.15s;
-  }
-
-  .reset-btn:hover { border-color: var(--purple-600); color: var(--text); }
-
-
+#result-section { display:none; }
+.result-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1rem; }
+.result-header { display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid var(--border); }
+.result-icon { width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+.icon-purple { background:var(--purple-50); } .icon-teal { background:var(--teal-50); } .icon-amber { background:var(--amber-50); }
+.result-header h2 { font-size:16px;font-weight:600; }
+.result-header p { font-size:13px;color:var(--text-muted);margin-top:2px; }
+.channel-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-top:0.75rem; }
+.channel-card { background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px; }
+.channel-card .channel-name { font-size:13px;font-weight:600; }
+.channel-prio { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;padding:2px 8px;border-radius:10px;display:inline-block; }
+.prio-hog { background:var(--teal-50);color:var(--teal-600); }
+.prio-med { background:var(--amber-50);color:var(--amber-600); }
+.prio-lag { background:var(--gray-50);color:var(--gray-600); }
+.cta-footer { background:var(--purple-900);border-radius:var(--radius);padding:1.75rem;color:white;text-align:center;margin-top:1.5rem; }
+.cta-footer h3 { font-size:18px;font-weight:600;margin-bottom:0.5rem; }
+.cta-footer p { font-size:14px;opacity:0.8;margin-bottom:1.25rem;line-height:1.6; }
+.cta-footer-btn { background:white;color:var(--purple-900);border:none;border-radius:var(--radius-sm);padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit; }
+.cta-footer-btn:hover { opacity:0.9; }
+.error-msg { background:#FFF0F0;border:0.5px solid #F09595;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#791F1F;margin-top:1rem;display:none; }
+.reset-btn { background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;cursor:pointer;color:var(--text-muted);font-family:inherit;margin-top:1rem;transition:all 0.15s; }
+.reset-btn:hover { border-color:var(--purple-600);color:var(--text); }
+.saved-banner { background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--teal-800);margin-bottom:1rem;display:none;align-items:center;gap:8px; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">T&R</div>
+    <h1>Marknadsföringsrådgivaren</h1>
+    <p>Ange lösenordet för att komma åt verktyget.</p>
+    <input id="password-input" type="password" placeholder="Lösenord" autocomplete="current-password" />
+    <button class="login-btn" onclick="checkPassword()">Logga in</button>
+    <div class="login-error" id="login-error">Fel lösenord, försök igen.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
 <header>
   <div class="header-brand">
     <div class="header-logo">T&R</div>
@@ -389,9 +128,11 @@
 </header>
 
 <div class="container">
-
-  <!-- FORM SECTION -->
   <div id="form-section">
+    <div id="saved-banner" class="saved-banner">
+      <svg width="14" height="14" viewBox="0 0 14 14"><polyline points="1.5,7 5,10.5 12.5,3" fill="none" stroke="#085041" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Din senaste analys visas nedan. Scrolla ner eller gör en ny analys.
+    </div>
 
     <div class="form-card">
       <p class="section-title">Om företaget</p>
@@ -408,6 +149,42 @@
           <label for="description">Beskriv kort vad ni gör / säljer</label>
           <textarea id="description" placeholder="t.ex. Vi erbjuder totalentreprenad för villor och BRF:er i Stockholmsregionen, med fokus på kök, bad och tillbyggnader..."></textarea>
         </div>
+        <div class="form-group">
+          <label for="website">Webbadress (frivilligt)</label>
+          <input id="website" type="url" placeholder="https://www.ertforetag.se" />
+        </div>
+        <div class="form-group">
+          <label for="company-size">Antal anställda</label>
+          <select id="company-size">
+            <option value="">Välj storlek...</option>
+            <option value="Soloföretagare / enmansföretag">Soloföretagare</option>
+            <option value="2–10 anställda">2–10 anställda</option>
+            <option value="11–50 anställda">11–50 anställda</option>
+            <option value="51–200 anställda">51–200 anställda</option>
+            <option value="Över 200 anställda">Över 200 anställda</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="turnover">Ungefärlig årsomsättning</label>
+          <select id="turnover">
+            <option value="">Välj omsättning...</option>
+            <option value="Under 1 mkr">Under 1 mkr</option>
+            <option value="1–5 mkr">1–5 mkr</option>
+            <option value="5–20 mkr">5–20 mkr</option>
+            <option value="20–100 mkr">20–100 mkr</option>
+            <option value="Över 100 mkr">Över 100 mkr</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Säsongsvariationer</label>
+          <div class="pill-options">
+            <button class="pill-btn" data-group="season" data-val="Ingen tydlig säsong">Ingen tydlig säsong</button>
+            <button class="pill-btn" data-group="season" data-val="Vår/sommar är högsäsong">Vår/sommar är högsäsong</button>
+            <button class="pill-btn" data-group="season" data-val="Höst/vinter är högsäsong">Höst/vinter är högsäsong</button>
+            <button class="pill-btn" data-group="season" data-val="Julen är viktig period">Julen är viktig</button>
+            <button class="pill-btn" data-group="season" data-val="Stor variation beroende på väder eller event">Stor variation</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -415,7 +192,7 @@
       <p class="section-title">Målgrupp & geografi</p>
       <div class="form-grid">
         <div class="form-group full">
-          <label>Vem vill ni nå? (välj alla som stämmer)</label>
+          <label>Vem vill ni nå?</label>
           <div class="checkbox-grid" id="audience-grid">
             <label class="checkbox-item"><input type="checkbox" value="Privatpersoner (B2C)"> Privatpersoner (B2C)</label>
             <label class="checkbox-item"><input type="checkbox" value="Företag (B2B)"> Företag (B2B)</label>
@@ -464,20 +241,20 @@
       <div class="form-grid">
         <div class="form-group full">
           <label>Ungefärlig månadsbudget för marknadsföring</label>
-          <div class="budget-options" id="budget-options">
-            <button class="budget-btn" data-val="Under 5 000 kr/mån">Under 5 000 kr</button>
-            <button class="budget-btn" data-val="5 000–15 000 kr/mån">5 000–15 000 kr</button>
-            <button class="budget-btn" data-val="15 000–50 000 kr/mån">15 000–50 000 kr</button>
-            <button class="budget-btn" data-val="50 000–150 000 kr/mån">50 000–150 000 kr</button>
-            <button class="budget-btn" data-val="Över 150 000 kr/mån">Över 150 000 kr</button>
-            <button class="budget-btn" data-val="Vet ej / diskutera">Vet ej</button>
+          <div class="pill-options">
+            <button class="pill-btn" data-group="budget" data-val="Under 5 000 kr/mån">Under 5 000 kr</button>
+            <button class="pill-btn" data-group="budget" data-val="5 000–15 000 kr/mån">5 000–15 000 kr</button>
+            <button class="pill-btn" data-group="budget" data-val="15 000–50 000 kr/mån">15 000–50 000 kr</button>
+            <button class="pill-btn" data-group="budget" data-val="50 000–150 000 kr/mån">50 000–150 000 kr</button>
+            <button class="pill-btn" data-group="budget" data-val="Över 150 000 kr/mån">Över 150 000 kr</button>
+            <button class="pill-btn" data-group="budget" data-val="Vet ej / vill diskutera">Vet ej</button>
           </div>
         </div>
         <div class="form-group full">
-          <label>Vad har ni gjort tidigare? (välj alla som stämmer)</label>
+          <label>Vad har ni gjort tidigare?</label>
           <div class="checkbox-grid" id="history-grid">
             <label class="checkbox-item"><input type="checkbox" value="Google Ads"> Google Ads</label>
-            <label class="checkbox-item"><input type="checkbox" value="Meta / Facebook-annonser"> Meta / Facebook-annonser</label>
+            <label class="checkbox-item"><input type="checkbox" value="Meta / Facebook-annonser"> Meta / Facebook</label>
             <label class="checkbox-item"><input type="checkbox" value="SEO / organisk sökning"> SEO</label>
             <label class="checkbox-item"><input type="checkbox" value="Sociala medier organiskt"> Sociala medier organiskt</label>
             <label class="checkbox-item"><input type="checkbox" value="E-postmarknadsföring"> E-post</label>
@@ -489,127 +266,125 @@
       </div>
     </div>
 
-    <div id="error-msg" class="error-msg">Något gick fel. Kontrollera att du fyllt i de viktigaste fälten och försök igen.</div>
-
-    <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">
-      Analysera och ta fram marknadsföringsplan →
-    </button>
+    <div id="error-msg" class="error-msg"></div>
+    <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">Analysera och ta fram marknadsföringsplan →</button>
   </div>
 
-  <!-- LOADING -->
   <div class="loading-state" id="loading-state">
     <div class="spinner"></div>
-    <p>Analyserar ert företag och tar fram rekommendationer...</p>
+    <p>Analyserar ert företag...</p>
   </div>
 
-  <!-- RESULT SECTION -->
+  <div id="stream-preview">
+    <h2>Genererar er analys...</h2>
+    <div id="stream-text"></div>
+  </div>
+
   <div id="result-section">
     <div id="result-content"></div>
-
     <div class="cta-footer">
       <h3>Redo att sätta strategin i rörelse?</h3>
       <p>Tim&Robin hjälper er med produktion, medieköp och löpande optimering. Boka ett kostnadsfritt strategisamtal så tar vi det därifrån.</p>
       <button class="cta-footer-btn" onclick="openContact()">Boka samtal med Tim&Robin</button>
     </div>
-
-    <div style="text-align:center;">
+    <div style="text-align:center">
       <button class="reset-btn" onclick="resetForm()">← Gör en ny analys</button>
     </div>
   </div>
-
+</div>
 </div>
 
 <script>
-let selectedBudget = '';
+const PROXY_URL = 'https://timrobin-proxy-production.up.railway.app/api/analyze';
+const STORAGE_KEY = 'tr_last_result';
+const SESSION_KEY = 'tr_authed';
+const ACCESS_PASSWORD = 'timrobin2024';
 
-document.querySelectorAll('.budget-btn').forEach(btn => {
+// LOGIN
+function checkPassword() {
+  const val = document.getElementById('password-input').value;
+  if (val === ACCESS_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+  }
+}
+document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadSaved();
+}
+if (sessionStorage.getItem(SESSION_KEY)) showApp();
+
+// PILLS & CHECKBOXES
+const pillSelections = {};
+document.querySelectorAll('.pill-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.budget-btn').forEach(b => b.classList.remove('active'));
+    const g = btn.dataset.group;
+    document.querySelectorAll(`.pill-btn[data-group="${g}"]`).forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    selectedBudget = btn.dataset.val;
+    pillSelections[g] = btn.dataset.val;
   });
 });
-
 document.querySelectorAll('.checkbox-item').forEach(item => {
   const cb = item.querySelector('input[type=checkbox]');
-  item.addEventListener('click', (e) => {
-    if (e.target !== cb) {
-      cb.checked = !cb.checked;
-    }
-    item.classList.toggle('checked', cb.checked);
-  });
-  cb.addEventListener('change', () => {
-    item.classList.toggle('checked', cb.checked);
-  });
+  item.addEventListener('click', e => { if (e.target !== cb) cb.checked = !cb.checked; item.classList.toggle('checked', cb.checked); });
+  cb.addEventListener('change', () => item.classList.toggle('checked', cb.checked));
 });
-
-function getChecked(gridId) {
-  return Array.from(document.querySelectorAll(`#${gridId} input:checked`))
-    .map(cb => cb.value).join(', ') || 'Ej specificerat';
+function getChecked(id) {
+  return Array.from(document.querySelectorAll(`#${id} input:checked`)).map(c => c.value).join(', ') || 'Ej specificerat';
 }
 
+// PROMPT
 function buildPrompt() {
-  const company = document.getElementById('company').value.trim() || 'Okänt företag';
-  const industry = document.getElementById('industry').value.trim() || 'Ej angiven';
-  const description = document.getElementById('description').value.trim() || 'Ej angiven';
-  const geography = document.getElementById('geography').value.trim() || 'Ej angiven';
-  const audienceExtra = document.getElementById('audience-extra').value.trim() || '';
-  const challenge = document.getElementById('challenge').value.trim() || 'Ej angiven';
-  const goal = document.getElementById('goal').value.trim() || 'Ej angiven';
-  const usp = document.getElementById('usp').value.trim() || 'Ej angiven';
-  const competitors = document.getElementById('competitors').value.trim() || 'Ej angiven';
-  const audiences = getChecked('audience-grid');
-  const history = getChecked('history-grid');
-  const budget = selectedBudget || 'Ej angiven';
-
+  const v = id => document.getElementById(id).value.trim();
+  const season = pillSelections['season'] || 'Ej angiven';
   return `Du är en senior marknadsföringsstrateg. Analysera följande företag och ge ett konkret, handlingsorienterat marknadsföringsförslag på svenska. Svara ENBART med ett JSON-objekt i exakt det format som beskrivs nedan – inga extra kommentarer eller text utanför JSON.
 
 FÖRETAGSINFORMATION:
-Företag: ${company}
-Bransch: ${industry}
-Vad de gör: ${description}
-Målgrupp: ${audiences}${audienceExtra ? ` (${audienceExtra})` : ''}
-Geografi: ${geography}
-Utmaning: ${challenge}
-Mål: ${goal}
-Styrka/USP: ${usp}
-Konkurrens: ${competitors}
-Tidigare marknadsföring: ${history}
-Budget: ${budget}
+Företag: ${v('company')||'Okänt'}
+Bransch: ${v('industry')||'Ej angiven'}
+Vad de gör: ${v('description')}${v('website') ? `\nWebbplats: ${v('website')}` : ''}
+Storlek: ${document.getElementById('company-size').value||'Ej angiven'}
+Omsättning: ${document.getElementById('turnover').value||'Ej angiven'}
+Säsongsvariationer: ${season}
+Målgrupp: ${getChecked('audience-grid')}${v('audience-extra') ? ` (${v('audience-extra')})` : ''}
+Geografi: ${v('geography')||'Ej angiven'}
+Utmaning: ${v('challenge')||'Ej angiven'}
+Mål: ${v('goal')||'Ej angiven'}
+Styrka/USP: ${v('usp')||'Ej angiven'}
+Konkurrens: ${v('competitors')||'Ej angiven'}
+Tidigare marknadsföring: ${getChecked('history-grid')}
+Budget: ${pillSelections['budget']||'Ej angiven'}
 
 Svara med exakt detta JSON-format:
 {
   "summary": "2–3 meningar som sammanfattar situationen och den övergripande strategin",
   "prioritized_channels": [
-    {
-      "name": "Kanalnamn",
-      "priority": "Hög" | "Medium" | "Lägre",
-      "reason": "En mening varför"
-    }
+    { "name": "Kanalnamn", "priority": "Hög|Medium|Lägre", "reason": "En mening varför" }
   ],
   "recommendations": [
-    {
-      "title": "Kort rubrik",
-      "description": "Konkret, specifikt råd (2–4 meningar). Undvik vaga generella råd."
-    }
+    { "title": "Kort rubrik", "description": "Konkret, specifikt råd (2–4 meningar)." }
   ],
-  "quick_wins": ["Kort specifik åtgärd 1", "Kort specifik åtgärd 2", "Kort specifik åtgärd 3"],
+  "quick_wins": ["Åtgärd 1", "Åtgärd 2", "Åtgärd 3"],
   "budget_note": "Konkret råd om hur budgeten bör fördelas (1–2 meningar)",
   "next_step": "En konkret nästa åtgärd de kan ta denna vecka"
 }
 
-Ge max 4 kanaler och max 4 rekommendationer. Håll det konkret och anpassat till just detta företag.`;
+Ge max 4 kanaler och max 4 rekommendationer. Håll det konkret och anpassat till just detta företag.${season !== 'Ej angiven' && season !== 'Ingen tydlig säsong' ? ' Ta hänsyn till säsongsvariationerna i rekommendationerna.' : ''}`;
 }
 
-const PROXY_URL = 'https://timrobin-proxy-production.up.railway.app/api/analyze';
-
+// ANALYZE WITH STREAMING
 async function analyzeMarketing() {
   const btn = document.getElementById('analyze-btn');
   const errorEl = document.getElementById('error-msg');
   errorEl.style.display = 'none';
 
   if (!document.getElementById('description').value.trim()) {
-    errorEl.textContent = 'Fyll i åtminstone en beskrivning av vad ni gör, så kan vi ge bra råd.';
+    errorEl.textContent = 'Fyll i åtminstone en beskrivning av vad ni gör.';
     errorEl.style.display = 'block';
     return;
   }
@@ -621,146 +396,127 @@ async function analyzeMarketing() {
   try {
     const response = await fetch(PROXY_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: buildPrompt() }]
-      })
+      headers: { 'Content-Type': 'application/json', 'X-Access-Password': ACCESS_PASSWORD },
+      body: JSON.stringify({ messages: [{ role: 'user', content: buildPrompt() }] })
     });
 
-    const data = await response.json();
-    const raw = data.content.map(i => i.text || '').join('');
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
+    if (response.status === 401) throw new Error('auth');
+    if (!response.ok) throw new Error('server');
 
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('stream-preview').style.display = 'block';
+
+    const streamEl = document.getElementById('stream-text');
+    streamEl.innerHTML = '<span class="stream-cursor"></span>';
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = decoder.decode(value, { stream: true }).split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const delta = JSON.parse(data)?.delta?.text || '';
+          if (delta) {
+            fullText += delta;
+            streamEl.innerHTML = escHtml(fullText) + '<span class="stream-cursor"></span>';
+          }
+        } catch {}
+      }
+    }
+
+    document.getElementById('stream-preview').style.display = 'none';
+    const result = JSON.parse(fullText.replace(/```json|```/g, '').trim());
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
     renderResult(result);
+
   } catch (err) {
     document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('stream-preview').style.display = 'none';
     document.getElementById('form-section').style.display = 'block';
-    errorEl.textContent = 'Något gick fel vid analysen. Försök igen om en stund.';
+    errorEl.textContent = err.message === 'auth' ? 'Åtkomst nekad.' : 'Något gick fel vid analysen. Försök igen om en stund.';
     errorEl.style.display = 'block';
     btn.disabled = false;
   }
 }
 
-function prioClass(p) {
-  if (p === 'Hög') return 'prio-hog';
-  if (p === 'Medium') return 'prio-med';
-  return 'prio-lag';
-}
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// RENDER
+function prioClass(p) { return p==='Hög'?'prio-hog':p==='Medium'?'prio-med':'prio-lag'; }
 
 function renderResult(r) {
-  document.getElementById('loading-state').style.display = 'none';
-
-  const icons = ['📊', '🎯', '⚡', '💡'];
-  const recIcons = ['🎯', '📣', '✍️', '🔗', '📱', '📈'];
-
-  let channelsHTML = (r.prioritized_channels || []).map(c => `
+  const icons = ['🎯','📣','✍️','🔗','📱','📈'];
+  const channels = (r.prioritized_channels||[]).map(c=>`
     <div class="channel-card">
       <div class="channel-name">${c.name}</div>
       <div class="channel-prio ${prioClass(c.priority)}">${c.priority}</div>
       <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.5">${c.reason}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  let recsHTML = (r.recommendations || []).map((rec, i) => `
-    <div style="padding:1rem 0;border-bottom:0.5px solid var(--border);">
-      <div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-        <span style="font-size:16px">${recIcons[i % recIcons.length]}</span>
-        ${rec.title}
+  const recs = (r.recommendations||[]).map((rec,i)=>`
+    <div style="padding:1rem 0;border-bottom:0.5px solid var(--border)">
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">${icons[i%icons.length]}</span>${rec.title}
       </div>
       <div style="font-size:14px;line-height:1.7;color:var(--text-muted)">${rec.description}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  let quickHTML = (r.quick_wins || []).map(w => `
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);">
-      <div style="width:20px;height:20px;background:var(--teal-50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+  const wins = (r.quick_wins||[]).map(w=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)">
+      <div style="width:20px;height:20px;background:var(--teal-50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
         <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span style="font-size:14px;line-height:1.6">${w}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  const html = `
+  document.getElementById('result-content').innerHTML = `
     <div class="result-card">
-      <div class="result-header">
-        <div class="result-icon icon-purple">📋</div>
-        <div>
-          <h2>Er marknadsföringsstrategi</h2>
-          <p>Baserad på er information – anpassad och handlingsbar</p>
-        </div>
-      </div>
-      <div style="font-size:15px;line-height:1.75;color:var(--text);background:var(--purple-50);border-radius:var(--radius-sm);padding:1rem 1.25rem;border-left:3px solid var(--purple-600);">
-        ${r.summary}
-      </div>
+      <div class="result-header"><div class="result-icon icon-purple">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div>
+      <div style="font-size:15px;line-height:1.75;background:var(--purple-50);border-radius:var(--radius-sm);padding:1rem 1.25rem;border-left:3px solid var(--purple-600)">${r.summary}</div>
     </div>
-
     <div class="result-card">
-      <div class="result-header">
-        <div class="result-icon icon-teal">📡</div>
-        <div>
-          <h2>Prioriterade kanaler</h2>
-          <p>Var ska ni fokusera era resurser?</p>
-        </div>
-      </div>
-      <div class="channel-grid">${channelsHTML}</div>
+      <div class="result-header"><div class="result-icon icon-teal">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div>
+      <div class="channel-grid">${channels}</div>
     </div>
-
     <div class="result-card">
-      <div class="result-header">
-        <div class="result-icon icon-purple">🎯</div>
-        <div>
-          <h2>Konkreta rekommendationer</h2>
-          <p>Så här gör ni det i praktiken</p>
-        </div>
-      </div>
-      <div>${recsHTML}</div>
+      <div class="result-header"><div class="result-icon icon-purple">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div>
+      <div>${recs}</div>
     </div>
-
     <div class="result-card">
-      <div class="result-header">
-        <div class="result-icon icon-teal">⚡</div>
-        <div>
-          <h2>Quick wins – gör nu</h2>
-          <p>Tre saker ni kan agera på direkt</p>
-        </div>
-      </div>
-      <div>${quickHTML}</div>
+      <div class="result-header"><div class="result-icon icon-teal">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div>
+      <div>${wins}</div>
     </div>
-
-    ${r.budget_note ? `
-    <div class="result-card">
-      <div class="result-header">
-        <div class="result-icon icon-amber">💰</div>
-        <div>
-          <h2>Budgetfördelning</h2>
-          <p>Hur bör ni fördela er budget?</p>
-        </div>
-      </div>
-      <div style="font-size:14px;line-height:1.75">${r.budget_note}</div>
-    </div>` : ''}
-
-    ${r.next_step ? `
-    <div style="background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start;">
-      <div style="width:32px;height:32px;background:var(--teal-600);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal-600);margin-bottom:4px">Nästa steg denna vecka</div>
-        <div style="font-size:14px;line-height:1.6;color:var(--teal-800);font-weight:500">${r.next_step}</div>
-      </div>
-    </div>` : ''}
+    ${r.budget_note?`<div class="result-card"><div class="result-header"><div class="result-icon icon-amber">💰</div><div><h2>Budgetfördelning</h2><p>Hur bör ni fördela er budget?</p></div></div><div style="font-size:14px;line-height:1.75">${r.budget_note}</div></div>`:''}
+    ${r.next_step?`<div style="background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:var(--teal-600);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal-600);margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:var(--teal-800);font-weight:500">${r.next_step}</div></div></div>`:''}
   `;
 
-  document.getElementById('result-content').innerHTML = html;
   document.getElementById('result-section').style.display = 'block';
   document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// LOCALSTORAGE
+function loadSaved() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      document.getElementById('saved-banner').style.display = 'flex';
+      renderResult(JSON.parse(saved));
+    } catch {}
+  }
 }
 
 function resetForm() {
   document.getElementById('result-section').style.display = 'none';
   document.getElementById('form-section').style.display = 'block';
   document.getElementById('analyze-btn').disabled = false;
+  document.getElementById('saved-banner').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
