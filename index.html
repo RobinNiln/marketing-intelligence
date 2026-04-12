@@ -352,6 +352,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 .reset-btn{background:none;border:0.5px solid rgba(0,0,0,0.15);border-radius:var(--rs);padding:10px 20px;font-size:13px;cursor:pointer;color:#5F5E5A;font-family:inherit;margin-top:1rem;transition:all 0.15s}
 .reset-btn:hover{border-color:#0a0a0a;color:#0a0a0a}
 .saved-banner{background:var(--t50);border:0.5px solid var(--t100);border-radius:var(--rs);padding:10px 14px;font-size:13px;color:var(--t800);margin-bottom:1rem;display:none;align-items:center;gap:8px}
+
+.option-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:4px}
+.opt-btn{
+  background:#F7F6F2;border:0.5px solid rgba(0,0,0,0.12);border-radius:var(--rs);
+  padding:10px 14px;font-size:13px;cursor:pointer;color:#1a1a1a;font-family:inherit;
+  text-align:left;line-height:1.4;transition:all 0.15s;
+}
+.opt-btn:hover{border-color:var(--p600);background:#fff}
+.opt-btn.on{background:var(--p50);border-color:var(--p600);color:var(--p800);font-weight:500}
 </style>
 </head>
 <body>
@@ -373,7 +382,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 
     <div class="hero-content">
       <div class="hero-kicker">Kostnadsfritt analysverktyg</div>
-      <h1 class="hero-h1">Marknadsföring<br>som <em>faktiskt</em><br>når fram.</h1>
+      <h1 class="hero-h1">Marknadsföring<br>som når fram.</h1>
       <p class="hero-lead">Berätta om ditt företag och dina utmaningar. På tre minuter får du en konkret strategi – skräddarsydd för just er.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="goToLogin()">
@@ -555,10 +564,67 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
     <div class="form-card">
       <p class="sec-title">Utmaningar & mål</p>
       <div class="form-grid">
-        <div class="fg full"><label>Vad är er största marknadsföringsutmaning just nu?</label><textarea id="challenge" placeholder="t.ex. Vi är okända utanför vårt nätverk, svårt att nå nya kunder..."></textarea></div>
-        <div class="fg full"><label>Vad vill ni uppnå med marknadsföringen?</label><textarea id="goal" placeholder="t.ex. Fler leads, ökad varumärkeskännedom, fler bokningar online..."></textarea></div>
-        <div class="fg"><label>Er styrka / unikhet (USP)</label><input id="usp" type="text" placeholder="t.ex. Alltid fast pris, 25 års erfarenhet"/></div>
-        <div class="fg"><label>Hur ser konkurrensen ut?</label><input id="competitors" type="text" placeholder="t.ex. Många lokala aktörer, vi är lite dyrare"/></div>
+
+        <div class="fg full">
+          <label>Vad är er största marknadsföringsutmaning just nu?</label>
+          <div class="option-grid" id="challenge-opts">
+            <button class="opt-btn" data-g="challenge" data-v="Vi är okända utanför vårt eget nätverk">Okända utanför nätverket</button>
+            <button class="opt-btn" data-g="challenge" data-v="Svårt att nå nya kunder digitalt">Svårt nå nya kunder digitalt</button>
+            <button class="opt-btn" data-g="challenge" data-v="Hög konkurrens och prispress">Hög konkurrens / prispress</button>
+            <button class="opt-btn" data-g="challenge" data-v="Vi vet inte vilka kanaler som fungerar för oss">Vet inte vilka kanaler som fungerar</button>
+            <button class="opt-btn" data-g="challenge" data-v="Liten budget och begränsade resurser">Liten budget / få resurser</button>
+            <button class="opt-btn" data-g="challenge" data-v="Vi tappar kunder till konkurrenter">Tappar kunder till konkurrenter</button>
+            <button class="opt-btn" data-g="challenge" data-v="Svårt att kommunicera vad vi erbjuder">Svårt kommunicera erbjudandet</button>
+            <button class="opt-btn" data-g="challenge" data-v="Vi saknar tid för marknadsföring">Saknar tid för marknadsföring</button>
+          </div>
+          <input type="text" id="challenge" placeholder="Annat eller komplettera med egna ord (frivilligt)" style="margin-top:10px"/>
+        </div>
+
+        <div class="fg full">
+          <label>Vad vill ni uppnå med marknadsföringen?</label>
+          <div class="option-grid" id="goal-opts">
+            <button class="opt-btn" data-g="goal" data-v="Fler leads och förfrågningar">Fler leads / förfrågningar</button>
+            <button class="opt-btn" data-g="goal" data-v="Ökad varumärkeskännedom lokalt">Ökad lokal kännedom</button>
+            <button class="opt-btn" data-g="goal" data-v="Fler bokningar eller köp online">Fler bokningar / köp online</button>
+            <button class="opt-btn" data-g="goal" data-v="Nå en ny målgrupp vi inte når idag">Nå ny målgrupp</button>
+            <button class="opt-btn" data-g="goal" data-v="Behålla befintliga kunder och öka lojalitet">Behålla och lojalisera kunder</button>
+            <button class="opt-btn" data-g="goal" data-v="Lansera en ny produkt eller tjänst">Lansera ny produkt / tjänst</button>
+            <button class="opt-btn" data-g="goal" data-v="Synas mer än konkurrenterna">Synas mer än konkurrenterna</button>
+            <button class="opt-btn" data-g="goal" data-v="Bygga förtroende och trovärdighet">Bygga förtroende</button>
+          </div>
+          <input type="text" id="goal" placeholder="Annat eller komplettera med egna ord (frivilligt)" style="margin-top:10px"/>
+        </div>
+
+        <div class="fg full">
+          <label>Er styrka / unikhet (USP)</label>
+          <div class="option-grid" id="usp-opts">
+            <button class="opt-btn" data-g="usp" data-v="Lång erfarenhet och beprövad expertis">Lång erfarenhet / expertis</button>
+            <button class="opt-btn" data-g="usp" data-v="Personlig service och nära kundrelationer">Personlig service</button>
+            <button class="opt-btn" data-g="usp" data-v="Alltid fast och transparent pris">Fast / transparent pris</button>
+            <button class="opt-btn" data-g="usp" data-v="Snabb leverans och hög tillgänglighet">Snabb leverans / tillgänglighet</button>
+            <button class="opt-btn" data-g="usp" data-v="Hög kvalitet och premiumkänsla">Hög kvalitet / premium</button>
+            <button class="opt-btn" data-g="usp" data-v="Lägst pris på marknaden">Lägst pris</button>
+            <button class="opt-btn" data-g="usp" data-v="Unik produkt eller metod som ingen annan erbjuder">Unik produkt / metod</button>
+            <button class="opt-btn" data-g="usp" data-v="Stark lokal förankring och lokalkännedom">Stark lokal förankring</button>
+          </div>
+          <input type="text" id="usp" placeholder="Annat eller komplettera med egna ord (frivilligt)" style="margin-top:10px"/>
+        </div>
+
+        <div class="fg full">
+          <label>Hur ser konkurrensen ut?</label>
+          <div class="option-grid" id="competitors-opts">
+            <button class="opt-btn" data-g="competitors" data-v="Många lokala konkurrenter på ungefär samma prisnivå">Många lokala konkurrenter</button>
+            <button class="opt-btn" data-g="competitors" data-v="Få konkurrenter – relativt nischad marknad">Få konkurrenter / nischad marknad</button>
+            <button class="opt-btn" data-g="competitors" data-v="Stora nationella aktörer med större budgetar">Stora nationella aktörer</button>
+            <button class="opt-btn" data-g="competitors" data-v="Konkurrenter syns mer digitalt än vi">Konkurrenter syns mer digitalt</button>
+            <button class="opt-btn" data-g="competitors" data-v="Vi är dyrare men levererar högre värde">Vi är dyrare / högre värde</button>
+            <button class="opt-btn" data-g="competitors" data-v="Vi är billigare och konkurrerar på pris">Vi konkurrerar på pris</button>
+            <button class="opt-btn" data-g="competitors" data-v="Marknaden är mättad och tuff">Mättad / tuff marknad</button>
+            <button class="opt-btn" data-g="competitors" data-v="Vi har inget tydligt konkurrensläge ännu">Oklart konkurrensläge</button>
+          </div>
+          <input type="text" id="competitors" placeholder="Annat eller komplettera med egna ord (frivilligt)" style="margin-top:10px"/>
+        </div>
+
       </div>
     </div>
 
@@ -657,10 +723,21 @@ if(sessionStorage.getItem(SESSION_KEY)){
 }
 
 const ps={};
+const optSelections={};
+
 document.querySelectorAll('.pill').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll(`.pill[data-g="${b.dataset.g}"]`).forEach(x=>x.classList.remove('on'));
     b.classList.add('on');ps[b.dataset.g]=b.dataset.v;
+  });
+});
+
+document.querySelectorAll('.opt-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const g=b.dataset.g;
+    b.classList.toggle('on');
+    optSelections[g]=Array.from(document.querySelectorAll(`.opt-btn[data-g="${g}"].on`))
+      .map(x=>x.dataset.v);
   });
 });
 document.querySelectorAll('.cbi').forEach(item=>{
@@ -670,6 +747,14 @@ document.querySelectorAll('.cbi').forEach(item=>{
 });
 function getChecked(id){return Array.from(document.querySelectorAll(`#${id} input:checked`)).map(c=>c.value).join(', ')||'Ej specificerat';}
 function v(id){return document.getElementById(id).value.trim();}
+
+function getField(key){
+  const sel=optSelections[key];
+  const selStr=Array.isArray(sel)&&sel.length>0?sel.join(', '):'';
+  const free=v(key);
+  if(selStr&&free) return selStr+' – '+free;
+  return selStr||free||'Ej angiven';
+}
 
 function buildPrompt(){
   const season=ps['season']||'Ej angiven';
@@ -684,10 +769,10 @@ Omsättning: ${document.getElementById('turnover').value||'Ej angiven'}
 Säsongsvariationer: ${season}
 Målgrupp: ${getChecked('audience-grid')}${v('audience-extra')?' ('+v('audience-extra')+')':''}
 Geografi: ${v('geography')||'Ej angiven'}
-Utmaning: ${v('challenge')||'Ej angiven'}
-Mål: ${v('goal')||'Ej angiven'}
-Styrka/USP: ${v('usp')||'Ej angiven'}
-Konkurrens: ${v('competitors')||'Ej angiven'}
+Utmaning: ${getField('challenge')}
+Mål: ${getField('goal')}
+Styrka/USP: ${getField('usp')}
+Konkurrens: ${getField('competitors')}
 Tidigare marknadsföring: ${getChecked('history-grid')}
 Budget: ${ps['budget']||'Ej angiven'}
 
