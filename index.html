@@ -5,105 +5,346 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marknadsföringsrådgivaren – Tim&Robin</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --purple-50:#EEEDFE;--purple-100:#CECBF6;--purple-600:#534AB7;--purple-800:#3C3489;--purple-900:#26215C;
-  --teal-50:#E1F5EE;--teal-100:#9FE1CB;--teal-600:#0F6E56;--teal-800:#085041;
-  --gray-50:#F1EFE8;--gray-100:#D3D1C7;--gray-600:#5F5E5A;
-  --amber-50:#FAEEDA;--amber-100:#FAC775;--amber-600:#854F0B;
-  --bg:#ffffff;--bg-secondary:#F7F6F2;--text:#1a1a1a;--text-muted:#5F5E5A;
-  --border:rgba(0,0,0,0.12);--radius:12px;--radius-sm:8px;
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p50:#EEEDFE;--p100:#CECBF6;--p200:#AFA9EC;--p600:#534AB7;--p800:#3C3489;--p900:#26215C;
+  --t50:#E1F5EE;--t100:#9FE1CB;--t600:#0F6E56;--t800:#085041;
+  --a50:#FAEEDA;--a100:#FAC775;--a600:#854F0B;
+  --g50:#F1EFE8;--g100:#D3D1C7;--g600:#5F5E5A;
+  --bg:#fff;--bgs:#F7F6F2;--tx:#1a1a1a;--txm:#5F5E5A;
+  --bd:rgba(0,0,0,0.12);--r:12px;--rs:8px
 }
-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-secondary);color:var(--text);min-height:100vh; }
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bgs);color:var(--tx);min-height:100vh}
 
-/* LOGIN */
-#login-screen { min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem; }
-.login-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center; }
-.login-logo { width:56px;height:56px;background:var(--purple-900);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:white;letter-spacing:1px;margin:0 auto 1.25rem; }
-.login-card h1 { font-size:20px;font-weight:600;margin-bottom:0.4rem; }
-.login-card p { font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6; }
-.login-card input { width:100%;font-family:inherit;font-size:14px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);margin-bottom:0.75rem;text-align:center;letter-spacing:0.1em; }
-.login-card input:focus { outline:none;border-color:var(--purple-600); }
-.login-btn { width:100%;background:var(--purple-800);color:white;border:none;border-radius:var(--radius-sm);padding:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s; }
-.login-btn:hover { background:var(--purple-900); }
-.login-error { font-size:13px;color:#A32D2D;margin-top:0.75rem;display:none; }
+/* ── LANDING ── */
+#landing{display:block}
 
-/* HEADER */
-header { background:var(--purple-900);color:white;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem; }
-.header-brand { display:flex;align-items:center;gap:12px; }
-.header-logo { width:38px;height:38px;background:var(--purple-600);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:white;letter-spacing:1px; }
-.header-title { font-size:17px;font-weight:600; }
-.header-sub { font-size:12px;opacity:0.65;margin-top:2px; }
-.header-badge { background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;font-size:12px;padding:5px 13px;border-radius:20px; }
+.hero{
+  position:relative;min-height:92vh;display:flex;flex-direction:column;
+  background:#0d0b1e;overflow:hidden
+}
 
-.container { max-width:900px;margin:0 auto;padding:2rem 1.5rem; }
-.section-title { font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:1rem; }
-.form-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem; }
-.form-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+.hero-img{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80&auto=format&fit=crop');
+  background-size:cover;background-position:center 30%;
+  opacity:0.35
+}
+
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(13,11,30,0.2) 0%, rgba(13,11,30,0.7) 60%, rgba(13,11,30,0.97) 100%)
+}
+
+.hero-nav{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.5rem 2.5rem;flex-wrap:wrap;gap:1rem
+}
+
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-mark{
+  width:36px;height:36px;background:var(--p600);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;letter-spacing:1px
+}
+.nav-logo-name{font-size:15px;font-weight:600;color:#fff}
+.nav-logo-sub{font-size:12px;color:rgba(255,255,255,0.5);margin-top:1px}
+
+.hero-content{
+  position:relative;z-index:2;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:3rem 1.5rem 5rem
+}
+
+.hero-badge{
+  display:inline-block;background:rgba(83,74,183,0.3);border:1px solid rgba(206,203,246,0.3);
+  color:#CECBF6;font-size:12px;font-weight:500;letter-spacing:0.06em;
+  padding:6px 16px;border-radius:20px;margin-bottom:1.75rem;text-transform:uppercase
+}
+
+.hero-h1{
+  font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;color:#fff;
+  line-height:1.15;max-width:780px;margin-bottom:1.5rem;letter-spacing:-0.02em
+}
+.hero-h1 em{font-style:normal;color:#AFA9EC}
+
+.hero-lead{
+  font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,0.65);
+  max-width:540px;line-height:1.7;margin-bottom:2.5rem
+}
+
+.hero-cta{
+  background:var(--p600);color:#fff;border:none;border-radius:var(--rs);
+  padding:16px 36px;font-size:16px;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:background 0.15s,transform 0.1s;
+  display:inline-flex;align-items:center;gap:10px
+}
+.hero-cta:hover{background:var(--p800)}
+.hero-cta:active{transform:scale(0.98)}
+.hero-cta svg{width:16px;height:16px}
+
+.hero-scroll{
+  position:relative;z-index:2;
+  text-align:center;padding-bottom:2rem;color:rgba(255,255,255,0.3);font-size:12px
+}
+.scroll-arrow{
+  width:1px;height:40px;background:rgba(255,255,255,0.15);
+  margin:0.5rem auto 0;animation:scrollpulse 2s infinite
+}
+@keyframes scrollpulse{0%,100%{opacity:0.2}50%{opacity:0.6}}
+
+/* TRUST STRIP */
+.trust-strip{
+  background:var(--bg);border-top:0.5px solid var(--bd);border-bottom:0.5px solid var(--bd);
+  padding:1.5rem 2rem
+}
+.trust-inner{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem
+}
+@media(max-width:600px){.trust-inner{grid-template-columns:1fr}}
+.trust-item{display:flex;align-items:flex-start;gap:12px}
+.trust-icon{
+  width:36px;height:36px;border-radius:var(--rs);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center
+}
+.trust-icon.purple{background:var(--p50)}
+.trust-icon.teal{background:var(--t50)}
+.trust-icon.amber{background:var(--a50)}
+.trust-item-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.trust-item-desc{font-size:13px;color:var(--txm);line-height:1.5}
+
+/* HOW IT WORKS */
+.how-section{max-width:900px;margin:3rem auto;padding:0 1.5rem}
+.section-eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--txm);margin-bottom:0.75rem}
+.section-h2{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:0.75rem;line-height:1.3}
+.section-lead{font-size:15px;color:var(--txm);line-height:1.7;max-width:560px;margin-bottom:2rem}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+@media(max-width:600px){.steps{grid-template-columns:1fr}}
+.step-card{
+  background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);
+  padding:1.5rem;position:relative
+}
+.step-num{
+  width:32px;height:32px;border-radius:50%;background:var(--p50);
+  color:var(--p800);font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-bottom:1rem
+}
+.step-title{font-size:15px;font-weight:600;margin-bottom:0.5rem}
+.step-desc{font-size:13px;color:var(--txm);line-height:1.6}
+
+/* FINAL CTA BAND */
+.cta-band{
+  background:var(--p900);color:#fff;
+  padding:3.5rem 1.5rem;text-align:center;margin-top:1rem
+}
+.cta-band h2{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin-bottom:0.75rem}
+.cta-band p{font-size:15px;opacity:0.7;margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7}
+.cta-band-btn{
+  background:#fff;color:var(--p900);border:none;border-radius:var(--rs);
+  padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:opacity 0.15s;display:inline-flex;align-items:center;gap:8px
+}
+.cta-band-btn:hover{opacity:0.9}
+.cta-band-btn svg{width:14px;height:14px}
+
+/* ── LOGIN ── */
+#login-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:1.5rem}
+.login-card{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center}
+.login-logo{width:52px;height:52px;background:var(--p900);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;letter-spacing:1px;margin:0 auto 1.25rem}
+.login-card h1{font-size:20px;font-weight:600;margin-bottom:0.4rem}
+.login-card p{font-size:14px;color:var(--txm);margin-bottom:1.5rem;line-height:1.6}
+.login-card input{width:100%;font-family:inherit;font-size:14px;background:var(--bgs);border:0.5px solid var(--bd);border-radius:var(--rs);padding:11px 14px;color:var(--tx);margin-bottom:0.75rem;text-align:center;letter-spacing:0.1em}
+.login-card input:focus{outline:none;border-color:var(--p600)}
+.login-btn{width:100%;background:var(--p800);color:#fff;border:none;border-radius:var(--rs);padding:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.login-btn:hover{background:var(--p900)}
+.login-error{font-size:13px;color:#A32D2D;margin-top:0.75rem;display:none}
+
+/* ── APP ── */
+#app{display:none}
+header{background:var(--p900);color:#fff;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-brand{display:flex;align-items:center;gap:12px}
+.header-logo{width:36px;height:36px;background:var(--p600);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;letter-spacing:1px}
+.header-title{font-size:16px;font-weight:600}
+.header-sub{font-size:12px;opacity:0.6;margin-top:2px}
+.header-badge{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;padding:5px 13px;border-radius:20px}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+.sec-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--txm);margin-bottom:1rem}
+.form-card{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);padding:1.75rem;margin-bottom:1.25rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
-.form-group { display:flex;flex-direction:column;gap:6px; }
-.form-group.full { grid-column:1/-1; }
-label { font-size:13px;font-weight:500;color:var(--text-muted); }
-input,textarea,select { font-family:inherit;font-size:14px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);transition:border-color 0.15s;width:100%; }
-input:focus,textarea:focus,select:focus { outline:none;border-color:var(--purple-600);background:var(--bg); }
-textarea { resize:vertical;min-height:80px;line-height:1.6; }
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg.full{grid-column:1/-1}
+label{font-size:13px;font-weight:500;color:var(--txm)}
+input,textarea,select{font-family:inherit;font-size:14px;background:var(--bgs);border:0.5px solid var(--bd);border-radius:var(--rs);padding:10px 12px;color:var(--tx);transition:border-color 0.15s;width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--p600);background:var(--bg)}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
 
-.checkbox-grid { display:flex;flex-wrap:wrap;gap:8px;margin-top:4px; }
-.checkbox-item { display:flex;align-items:center;gap:6px;background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:20px;padding:6px 12px;cursor:pointer;transition:all 0.15s;font-size:13px;user-select:none; }
-.checkbox-item:hover { border-color:var(--purple-600); }
-.checkbox-item input { width:auto;margin:0; }
-.checkbox-item.checked { background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800); }
+.cbgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.cbi{display:flex;align-items:center;gap:6px;background:var(--bgs);border:0.5px solid var(--bd);border-radius:20px;padding:6px 12px;cursor:pointer;transition:all 0.15s;font-size:13px;user-select:none}
+.cbi:hover{border-color:var(--p600)}
+.cbi input{width:auto;margin:0}
+.cbi.on{background:var(--p50);border-color:var(--p600);color:var(--p800)}
 
-.pill-options { display:flex;flex-wrap:wrap;gap:8px; }
-.pill-btn { background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all 0.15s;color:var(--text);font-family:inherit; }
-.pill-btn:hover { border-color:var(--purple-600); }
-.pill-btn.active { background:var(--purple-50);border-color:var(--purple-600);color:var(--purple-800);font-weight:500; }
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--bgs);border:0.5px solid var(--bd);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all 0.15s;color:var(--tx);font-family:inherit}
+.pill:hover{border-color:var(--p600)}
+.pill.on{background:var(--p50);border-color:var(--p600);color:var(--p800);font-weight:500}
 
-.cta-btn { background:var(--purple-800);color:white;border:none;border-radius:var(--radius-sm);padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;width:100%;font-family:inherit; }
-.cta-btn:hover { background:var(--purple-900); }
-.cta-btn:active { transform:scale(0.99); }
-.cta-btn:disabled { opacity:0.5;cursor:not-allowed;transform:none; }
+.cta-btn{background:var(--p800);color:#fff;border:none;border-radius:var(--rs);padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;width:100%;font-family:inherit}
+.cta-btn:hover{background:var(--p900)}
+.cta-btn:active{transform:scale(0.99)}
+.cta-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 
-.loading-state { text-align:center;padding:3rem 2rem;display:none; }
-.spinner { width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--purple-600);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem; }
+.loading-state{text-align:center;padding:3rem 2rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--p600);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-state p { color:var(--text-muted);font-size:14px; }
+.loading-state p{color:var(--txm);font-size:14px}
 
-#stream-preview { display:none;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem; }
-#stream-preview h2 { font-size:15px;font-weight:600;margin-bottom:1rem;color:var(--purple-800); }
-#stream-text { font-size:14px;line-height:1.8;color:var(--text-muted);white-space:pre-wrap;font-family:inherit;min-height:80px; }
-.stream-cursor { display:inline-block;width:2px;height:1em;background:var(--purple-600);animation:blink 0.8s infinite;vertical-align:text-bottom;margin-left:2px; }
+#stream-preview{display:none;background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);padding:1.75rem;margin-bottom:1.25rem}
+#stream-preview h2{font-size:15px;font-weight:600;margin-bottom:1rem;color:var(--p800)}
+#stream-text{font-size:14px;line-height:1.8;color:var(--txm);white-space:pre-wrap;font-family:inherit;min-height:80px}
+.cur{display:inline-block;width:2px;height:1em;background:var(--p600);animation:blink 0.8s infinite;vertical-align:text-bottom;margin-left:2px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-#result-section { display:none; }
-.result-card { background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1rem; }
-.result-header { display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid var(--border); }
-.result-icon { width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
-.icon-purple { background:var(--purple-50); } .icon-teal { background:var(--teal-50); } .icon-amber { background:var(--amber-50); }
-.result-header h2 { font-size:16px;font-weight:600; }
-.result-header p { font-size:13px;color:var(--text-muted);margin-top:2px; }
-.channel-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-top:0.75rem; }
-.channel-card { background:var(--bg-secondary);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px; }
-.channel-card .channel-name { font-size:13px;font-weight:600; }
-.channel-prio { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;padding:2px 8px;border-radius:10px;display:inline-block; }
-.prio-hog { background:var(--teal-50);color:var(--teal-600); }
-.prio-med { background:var(--amber-50);color:var(--amber-600); }
-.prio-lag { background:var(--gray-50);color:var(--gray-600); }
-.cta-footer { background:var(--purple-900);border-radius:var(--radius);padding:1.75rem;color:white;text-align:center;margin-top:1.5rem; }
-.cta-footer h3 { font-size:18px;font-weight:600;margin-bottom:0.5rem; }
-.cta-footer p { font-size:14px;opacity:0.8;margin-bottom:1.25rem;line-height:1.6; }
-.cta-footer-btn { background:white;color:var(--purple-900);border:none;border-radius:var(--radius-sm);padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit; }
-.cta-footer-btn:hover { opacity:0.9; }
-.error-msg { background:#FFF0F0;border:0.5px solid #F09595;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#791F1F;margin-top:1rem;display:none; }
-.reset-btn { background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;cursor:pointer;color:var(--text-muted);font-family:inherit;margin-top:1rem;transition:all 0.15s; }
-.reset-btn:hover { border-color:var(--purple-600);color:var(--text); }
-.saved-banner { background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--teal-800);margin-bottom:1rem;display:none;align-items:center;gap:8px; }
+#result-section{display:none}
+.rc{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);padding:1.75rem;margin-bottom:1rem}
+.rh{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid var(--bd)}
+.ri{width:36px;height:36px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ri.pu{background:var(--p50)} .ri.te{background:var(--t50)} .ri.am{background:var(--a50)}
+.rh h2{font-size:16px;font-weight:600}
+.rh p{font-size:13px;color:var(--txm);margin-top:2px}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-top:0.75rem}
+.chcard{background:var(--bgs);border:0.5px solid var(--bd);border-radius:var(--rs);padding:12px}
+.chcard .chn{font-size:13px;font-weight:600}
+.prio{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;padding:2px 8px;border-radius:10px;display:inline-block}
+.ph{background:var(--t50);color:var(--t600)} .pm{background:var(--a50);color:var(--a600)} .pl{background:var(--g50);color:var(--g600)}
+.ctaf{background:var(--p900);border-radius:var(--r);padding:1.75rem;color:#fff;text-align:center;margin-top:1.5rem}
+.ctaf h3{font-size:18px;font-weight:600;margin-bottom:0.5rem}
+.ctaf p{font-size:14px;opacity:0.8;margin-bottom:1.25rem;line-height:1.6}
+.ctaf-btn{background:#fff;color:var(--p900);border:none;border-radius:var(--rs);padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.ctaf-btn:hover{opacity:0.9}
+.err{background:#FFF0F0;border:0.5px solid #F09595;border-radius:var(--rs);padding:12px 16px;font-size:13px;color:#791F1F;margin-top:1rem;display:none}
+.reset-btn{background:none;border:0.5px solid var(--bd);border-radius:var(--rs);padding:10px 20px;font-size:13px;cursor:pointer;color:var(--txm);font-family:inherit;margin-top:1rem;transition:all 0.15s}
+.reset-btn:hover{border-color:var(--p600);color:var(--tx)}
+.saved-banner{background:var(--t50);border:0.5px solid var(--t100);border-radius:var(--rs);padding:10px 14px;font-size:13px;color:var(--t800);margin-bottom:1rem;display:none;align-items:center;gap:8px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen">
+<!-- ═══ LANDING PAGE ═══ -->
+<div id="landing">
+
+  <div class="hero">
+    <div class="hero-img"></div>
+    <div class="hero-overlay"></div>
+
+    <nav class="hero-nav">
+      <div class="nav-logo">
+        <div class="nav-logo-mark">T&R</div>
+        <div>
+          <div class="nav-logo-name">Tim&Robin</div>
+          <div class="nav-logo-sub">Reklambyråen</div>
+        </div>
+      </div>
+      <button class="hero-cta" style="padding:10px 20px;font-size:14px" onclick="goToLogin()">
+        Logga in
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-badge">Kostnadsfritt analysverktyg</div>
+      <h1 class="hero-h1">Var ska ditt företag<br>marknadsföra sig – <em>egentligen?</em></h1>
+      <p class="hero-lead">Berätta om ditt företag, dina kunder och dina mål. På några minuter får du en konkret, AI-driven marknadsföringsplan helt anpassad för dig.</p>
+      <button class="hero-cta" onclick="goToLogin()">
+        Starta analysen – det tar 3 minuter
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </div>
+
+    <div class="hero-scroll">
+      Scrolla för att läsa mer
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip">
+    <div class="trust-inner">
+      <div class="trust-item">
+        <div class="trust-icon purple">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#534AB7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l3 2"/></svg>
+        </div>
+        <div>
+          <div class="trust-item-title">Svar på 3 minuter</div>
+          <div class="trust-item-desc">Fyll i ett kort formulär om ditt företag och dina utmaningar.</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon teal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4 4 8-8"/></svg>
+        </div>
+        <div>
+          <div class="trust-item-title">Konkreta råd</div>
+          <div class="trust-item-desc">Inte generella tips – utan kanaler och åtgärder anpassade till just ditt företag.</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon amber">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#854F0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l2.5 5 5.5.8-4 3.9.9 5.5L9 14.5l-4.9 2.7.9-5.5-4-3.9 5.5-.8z"/></svg>
+        </div>
+        <div>
+          <div class="trust-item-title">Professionell uppföljning</div>
+          <div class="trust-item-desc">Tim&Robin hjälper dig ta nästa steg med produktion och medieköp.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-section">
+    <div class="section-eyebrow">Så fungerar det</div>
+    <h2 class="section-h2">Från formulär till marknadsföringsplan</h2>
+    <p class="section-lead">Tre enkla steg – sedan har du ett konkret underlag att agera på, eller ta med dig till ett möte med oss på Tim&Robin.</p>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Berätta om ditt företag</div>
+        <div class="step-desc">Bransch, målgrupp, geografi, budget och vad ni har provat tidigare. Tar 2–3 minuter.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">AI analyserar din situation</div>
+        <div class="step-desc">Vår AI väger samman all information och identifierar de kanaler och budskap som passar just er.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Få din plan direkt</div>
+        <div class="step-desc">Prioriterade kanaler, konkreta rekommendationer och snabba quick wins du kan agera på nu.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="cta-band">
+    <h2>Redo att se var ditt företag bör synas?</h2>
+    <p>Analysen är helt kostnadsfri och tar bara några minuter. Ingen registrering krävs.</p>
+    <button class="cta-band-btn" onclick="goToLogin()">
+      Starta analysen nu
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 3l4 4-4 4"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login-screen" style="display:none">
   <div class="login-card">
     <div class="login-logo">T&R</div>
     <h1>Marknadsföringsrådgivaren</h1>
@@ -114,7 +355,7 @@ textarea { resize:vertical;min-height:80px;line-height:1.6; }
   </div>
 </div>
 
-<!-- APP -->
+<!-- ═══ APP ═══ -->
 <div id="app" style="display:none">
 <header>
   <div class="header-brand">
@@ -135,138 +376,102 @@ textarea { resize:vertical;min-height:80px;line-height:1.6; }
     </div>
 
     <div class="form-card">
-      <p class="section-title">Om företaget</p>
+      <p class="sec-title">Om företaget</p>
       <div class="form-grid">
-        <div class="form-group">
-          <label for="company">Företagsnamn</label>
-          <input id="company" type="text" placeholder="t.ex. Svenssons Bygg AB" />
-        </div>
-        <div class="form-group">
-          <label for="industry">Bransch</label>
-          <input id="industry" type="text" placeholder="t.ex. Bygg & renovering" />
-        </div>
-        <div class="form-group full">
-          <label for="description">Beskriv kort vad ni gör / säljer</label>
-          <textarea id="description" placeholder="t.ex. Vi erbjuder totalentreprenad för villor och BRF:er i Stockholmsregionen, med fokus på kök, bad och tillbyggnader..."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="website">Webbadress (frivilligt)</label>
-          <input id="website" type="url" placeholder="https://www.ertforetag.se" />
-        </div>
-        <div class="form-group">
-          <label for="company-size">Antal anställda</label>
+        <div class="fg"><label>Företagsnamn</label><input id="company" type="text" placeholder="t.ex. Svenssons Bygg AB"/></div>
+        <div class="fg"><label>Bransch</label><input id="industry" type="text" placeholder="t.ex. Bygg & renovering"/></div>
+        <div class="fg full"><label>Beskriv kort vad ni gör / säljer</label><textarea id="description" placeholder="t.ex. Vi erbjuder totalentreprenad för villor och BRF:er i Stockholmsregionen..."></textarea></div>
+        <div class="fg"><label>Webbadress (frivilligt)</label><input id="website" type="url" placeholder="https://www.ertforetag.se"/></div>
+        <div class="fg"><label>Antal anställda</label>
           <select id="company-size">
             <option value="">Välj storlek...</option>
-            <option value="Soloföretagare / enmansföretag">Soloföretagare</option>
-            <option value="2–10 anställda">2–10 anställda</option>
-            <option value="11–50 anställda">11–50 anställda</option>
-            <option value="51–200 anställda">51–200 anställda</option>
-            <option value="Över 200 anställda">Över 200 anställda</option>
+            <option>Soloföretagare / enmansföretag</option>
+            <option>2–10 anställda</option>
+            <option>11–50 anställda</option>
+            <option>51–200 anställda</option>
+            <option>Över 200 anställda</option>
           </select>
         </div>
-        <div class="form-group">
-          <label for="turnover">Ungefärlig årsomsättning</label>
+        <div class="fg"><label>Ungefärlig årsomsättning</label>
           <select id="turnover">
             <option value="">Välj omsättning...</option>
-            <option value="Under 1 mkr">Under 1 mkr</option>
-            <option value="1–5 mkr">1–5 mkr</option>
-            <option value="5–20 mkr">5–20 mkr</option>
-            <option value="20–100 mkr">20–100 mkr</option>
-            <option value="Över 100 mkr">Över 100 mkr</option>
+            <option>Under 1 mkr</option>
+            <option>1–5 mkr</option>
+            <option>5–20 mkr</option>
+            <option>20–100 mkr</option>
+            <option>Över 100 mkr</option>
           </select>
         </div>
-        <div class="form-group full">
-          <label>Säsongsvariationer</label>
-          <div class="pill-options">
-            <button class="pill-btn" data-group="season" data-val="Ingen tydlig säsong">Ingen tydlig säsong</button>
-            <button class="pill-btn" data-group="season" data-val="Vår/sommar är högsäsong">Vår/sommar är högsäsong</button>
-            <button class="pill-btn" data-group="season" data-val="Höst/vinter är högsäsong">Höst/vinter är högsäsong</button>
-            <button class="pill-btn" data-group="season" data-val="Julen är viktig period">Julen är viktig</button>
-            <button class="pill-btn" data-group="season" data-val="Stor variation beroende på väder eller event">Stor variation</button>
+        <div class="fg full"><label>Säsongsvariationer</label>
+          <div class="pills">
+            <button class="pill" data-g="season" data-v="Ingen tydlig säsong">Ingen tydlig säsong</button>
+            <button class="pill" data-g="season" data-v="Vår/sommar är högsäsong">Vår/sommar är högsäsong</button>
+            <button class="pill" data-g="season" data-v="Höst/vinter är högsäsong">Höst/vinter är högsäsong</button>
+            <button class="pill" data-g="season" data-v="Julen är viktig period">Julen är viktig</button>
+            <button class="pill" data-g="season" data-v="Stor variation beroende på väder eller event">Stor variation</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="form-card">
-      <p class="section-title">Målgrupp & geografi</p>
+      <p class="sec-title">Målgrupp & geografi</p>
       <div class="form-grid">
-        <div class="form-group full">
-          <label>Vem vill ni nå?</label>
-          <div class="checkbox-grid" id="audience-grid">
-            <label class="checkbox-item"><input type="checkbox" value="Privatpersoner (B2C)"> Privatpersoner (B2C)</label>
-            <label class="checkbox-item"><input type="checkbox" value="Företag (B2B)"> Företag (B2B)</label>
-            <label class="checkbox-item"><input type="checkbox" value="Offentlig sektor"> Offentlig sektor</label>
-            <label class="checkbox-item"><input type="checkbox" value="Unga vuxna 18–35"> Unga vuxna 18–35</label>
-            <label class="checkbox-item"><input type="checkbox" value="Familjer"> Familjer</label>
-            <label class="checkbox-item"><input type="checkbox" value="Seniorer 60+"> Seniorer 60+</label>
-            <label class="checkbox-item"><input type="checkbox" value="Beslutsfattare / chefer"> Beslutsfattare / chefer</label>
+        <div class="fg full"><label>Vem vill ni nå?</label>
+          <div class="cbgrid" id="audience-grid">
+            <label class="cbi"><input type="checkbox" value="Privatpersoner (B2C)"> Privatpersoner (B2C)</label>
+            <label class="cbi"><input type="checkbox" value="Företag (B2B)"> Företag (B2B)</label>
+            <label class="cbi"><input type="checkbox" value="Offentlig sektor"> Offentlig sektor</label>
+            <label class="cbi"><input type="checkbox" value="Unga vuxna 18–35"> Unga vuxna 18–35</label>
+            <label class="cbi"><input type="checkbox" value="Familjer"> Familjer</label>
+            <label class="cbi"><input type="checkbox" value="Seniorer 60+"> Seniorer 60+</label>
+            <label class="cbi"><input type="checkbox" value="Beslutsfattare / chefer"> Beslutsfattare / chefer</label>
           </div>
         </div>
-        <div class="form-group">
-          <label for="geography">Geografisk marknad</label>
-          <input id="geography" type="text" placeholder="t.ex. Göteborg + kranskommuner" />
-        </div>
-        <div class="form-group">
-          <label for="audience-extra">Beskriv er kund lite mer (frivilligt)</label>
-          <input id="audience-extra" type="text" placeholder="t.ex. Husägare med renoveringsbehov" />
-        </div>
+        <div class="fg"><label>Geografisk marknad</label><input id="geography" type="text" placeholder="t.ex. Göteborg + kranskommuner"/></div>
+        <div class="fg"><label>Beskriv er kund lite mer (frivilligt)</label><input id="audience-extra" type="text" placeholder="t.ex. Husägare med renoveringsbehov"/></div>
       </div>
     </div>
 
     <div class="form-card">
-      <p class="section-title">Utmaningar & mål</p>
+      <p class="sec-title">Utmaningar & mål</p>
       <div class="form-grid">
-        <div class="form-group full">
-          <label for="challenge">Vad är er största marknadsföringsutmaning just nu?</label>
-          <textarea id="challenge" placeholder="t.ex. Vi är okända utanför vårt nätverk, svårt att nå nya kunder, hög konkurrens på pris..."></textarea>
-        </div>
-        <div class="form-group full">
-          <label for="goal">Vad vill ni uppnå med marknadsföringen?</label>
-          <textarea id="goal" placeholder="t.ex. Fler leads, ökad varumärkeskännedom, fler bokningar online..."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="usp">Er styrka / unikhet (USP)</label>
-          <input id="usp" type="text" placeholder="t.ex. Alltid fast pris, 25 års erfarenhet" />
-        </div>
-        <div class="form-group">
-          <label for="competitors">Hur ser konkurrensen ut?</label>
-          <input id="competitors" type="text" placeholder="t.ex. Många lokala aktörer, vi är lite dyrare" />
-        </div>
+        <div class="fg full"><label>Vad är er största marknadsföringsutmaning just nu?</label><textarea id="challenge" placeholder="t.ex. Vi är okända utanför vårt nätverk, svårt att nå nya kunder..."></textarea></div>
+        <div class="fg full"><label>Vad vill ni uppnå med marknadsföringen?</label><textarea id="goal" placeholder="t.ex. Fler leads, ökad varumärkeskännedom, fler bokningar online..."></textarea></div>
+        <div class="fg"><label>Er styrka / unikhet (USP)</label><input id="usp" type="text" placeholder="t.ex. Alltid fast pris, 25 års erfarenhet"/></div>
+        <div class="fg"><label>Hur ser konkurrensen ut?</label><input id="competitors" type="text" placeholder="t.ex. Många lokala aktörer, vi är lite dyrare"/></div>
       </div>
     </div>
 
     <div class="form-card">
-      <p class="section-title">Budget & resurser</p>
+      <p class="sec-title">Budget & resurser</p>
       <div class="form-grid">
-        <div class="form-group full">
-          <label>Ungefärlig månadsbudget för marknadsföring</label>
-          <div class="pill-options">
-            <button class="pill-btn" data-group="budget" data-val="Under 5 000 kr/mån">Under 5 000 kr</button>
-            <button class="pill-btn" data-group="budget" data-val="5 000–15 000 kr/mån">5 000–15 000 kr</button>
-            <button class="pill-btn" data-group="budget" data-val="15 000–50 000 kr/mån">15 000–50 000 kr</button>
-            <button class="pill-btn" data-group="budget" data-val="50 000–150 000 kr/mån">50 000–150 000 kr</button>
-            <button class="pill-btn" data-group="budget" data-val="Över 150 000 kr/mån">Över 150 000 kr</button>
-            <button class="pill-btn" data-group="budget" data-val="Vet ej / vill diskutera">Vet ej</button>
+        <div class="fg full"><label>Ungefärlig månadsbudget för marknadsföring</label>
+          <div class="pills">
+            <button class="pill" data-g="budget" data-v="Under 5 000 kr/mån">Under 5 000 kr</button>
+            <button class="pill" data-g="budget" data-v="5 000–15 000 kr/mån">5 000–15 000 kr</button>
+            <button class="pill" data-g="budget" data-v="15 000–50 000 kr/mån">15 000–50 000 kr</button>
+            <button class="pill" data-g="budget" data-v="50 000–150 000 kr/mån">50 000–150 000 kr</button>
+            <button class="pill" data-g="budget" data-v="Över 150 000 kr/mån">Över 150 000 kr</button>
+            <button class="pill" data-g="budget" data-v="Vet ej / vill diskutera">Vet ej</button>
           </div>
         </div>
-        <div class="form-group full">
-          <label>Vad har ni gjort tidigare?</label>
-          <div class="checkbox-grid" id="history-grid">
-            <label class="checkbox-item"><input type="checkbox" value="Google Ads"> Google Ads</label>
-            <label class="checkbox-item"><input type="checkbox" value="Meta / Facebook-annonser"> Meta / Facebook</label>
-            <label class="checkbox-item"><input type="checkbox" value="SEO / organisk sökning"> SEO</label>
-            <label class="checkbox-item"><input type="checkbox" value="Sociala medier organiskt"> Sociala medier organiskt</label>
-            <label class="checkbox-item"><input type="checkbox" value="E-postmarknadsföring"> E-post</label>
-            <label class="checkbox-item"><input type="checkbox" value="Traditionell media (print, radio)"> Print / radio</label>
-            <label class="checkbox-item"><input type="checkbox" value="Mässor / event"> Mässor / event</label>
-            <label class="checkbox-item"><input type="checkbox" value="Inget strukturerat"> Inget strukturerat</label>
+        <div class="fg full"><label>Vad har ni gjort tidigare?</label>
+          <div class="cbgrid" id="history-grid">
+            <label class="cbi"><input type="checkbox" value="Google Ads"> Google Ads</label>
+            <label class="cbi"><input type="checkbox" value="Meta / Facebook-annonser"> Meta / Facebook</label>
+            <label class="cbi"><input type="checkbox" value="SEO / organisk sökning"> SEO</label>
+            <label class="cbi"><input type="checkbox" value="Sociala medier organiskt"> Sociala medier organiskt</label>
+            <label class="cbi"><input type="checkbox" value="E-postmarknadsföring"> E-post</label>
+            <label class="cbi"><input type="checkbox" value="Traditionell media (print, radio)"> Print / radio</label>
+            <label class="cbi"><input type="checkbox" value="Mässor / event"> Mässor / event</label>
+            <label class="cbi"><input type="checkbox" value="Inget strukturerat"> Inget strukturerat</label>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="error-msg" class="error-msg"></div>
+    <div id="error-msg" class="err"></div>
     <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">Analysera och ta fram marknadsföringsplan →</button>
   </div>
 
@@ -282,10 +487,10 @@ textarea { resize:vertical;min-height:80px;line-height:1.6; }
 
   <div id="result-section">
     <div id="result-content"></div>
-    <div class="cta-footer">
+    <div class="ctaf">
       <h3>Redo att sätta strategin i rörelse?</h3>
-      <p>Tim&Robin hjälper er med produktion, medieköp och löpande optimering. Boka ett kostnadsfritt strategisamtal så tar vi det därifrån.</p>
-      <button class="cta-footer-btn" onclick="openContact()">Boka samtal med Tim&Robin</button>
+      <p>Tim&Robin hjälper er med produktion, medieköp och löpande optimering. Boka ett kostnadsfritt strategisamtal.</p>
+      <button class="ctaf-btn" onclick="openContact()">Boka samtal med Tim&Robin</button>
     </div>
     <div style="text-align:center">
       <button class="reset-btn" onclick="resetForm()">← Gör en ny analys</button>
@@ -295,234 +500,156 @@ textarea { resize:vertical;min-height:80px;line-height:1.6; }
 </div>
 
 <script>
-const PROXY_URL = 'https://timrobin-proxy-production.up.railway.app/api/analyze';
-const STORAGE_KEY = 'tr_last_result';
-const SESSION_KEY = 'tr_authed';
-const ACCESS_PASSWORD = 'timrobin2024';
+const PROXY_URL='https://timrobin-proxy-production.up.railway.app/api/analyze';
+const STORAGE_KEY='tr_last_result';
+const SESSION_KEY='tr_authed';
+const ACCESS_PASSWORD='timrobin2024';
 
-// LOGIN
-function checkPassword() {
-  const val = document.getElementById('password-input').value;
-  if (val === ACCESS_PASSWORD) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    showApp();
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('password-input').value = '';
-  }
+function goToLogin(){
+  document.getElementById('landing').style.display='none';
+  if(sessionStorage.getItem(SESSION_KEY)){showApp();return;}
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-screen').style.alignItems='center';
+  document.getElementById('login-screen').style.justifyContent='center';
+  document.getElementById('login-screen').style.minHeight='100vh';
 }
-document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
-function showApp() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+
+function checkPassword(){
+  const val=document.getElementById('password-input').value;
+  if(val===ACCESS_PASSWORD){sessionStorage.setItem(SESSION_KEY,'1');showApp();}
+  else{document.getElementById('login-error').style.display='block';document.getElementById('password-input').value='';}
+}
+document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
+
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
   loadSaved();
 }
-if (sessionStorage.getItem(SESSION_KEY)) showApp();
 
-// PILLS & CHECKBOXES
-const pillSelections = {};
-document.querySelectorAll('.pill-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const g = btn.dataset.group;
-    document.querySelectorAll(`.pill-btn[data-group="${g}"]`).forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    pillSelections[g] = btn.dataset.val;
-  });
-});
-document.querySelectorAll('.checkbox-item').forEach(item => {
-  const cb = item.querySelector('input[type=checkbox]');
-  item.addEventListener('click', e => { if (e.target !== cb) cb.checked = !cb.checked; item.classList.toggle('checked', cb.checked); });
-  cb.addEventListener('change', () => item.classList.toggle('checked', cb.checked));
-});
-function getChecked(id) {
-  return Array.from(document.querySelectorAll(`#${id} input:checked`)).map(c => c.value).join(', ') || 'Ej specificerat';
+if(sessionStorage.getItem(SESSION_KEY)){
+  document.getElementById('landing').style.display='none';
+  showApp();
 }
 
-// PROMPT
-function buildPrompt() {
-  const v = id => document.getElementById(id).value.trim();
-  const season = pillSelections['season'] || 'Ej angiven';
+const ps={};
+document.querySelectorAll('.pill').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll(`.pill[data-g="${b.dataset.g}"]`).forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');ps[b.dataset.g]=b.dataset.v;
+  });
+});
+document.querySelectorAll('.cbi').forEach(item=>{
+  const cb=item.querySelector('input');
+  item.addEventListener('click',e=>{if(e.target!==cb)cb.checked=!cb.checked;item.classList.toggle('on',cb.checked);});
+  cb.addEventListener('change',()=>item.classList.toggle('on',cb.checked));
+});
+function getChecked(id){return Array.from(document.querySelectorAll(`#${id} input:checked`)).map(c=>c.value).join(', ')||'Ej specificerat';}
+function v(id){return document.getElementById(id).value.trim();}
+
+function buildPrompt(){
+  const season=ps['season']||'Ej angiven';
   return `Du är en senior marknadsföringsstrateg. Analysera följande företag och ge ett konkret, handlingsorienterat marknadsföringsförslag på svenska. Svara ENBART med ett JSON-objekt i exakt det format som beskrivs nedan – inga extra kommentarer eller text utanför JSON.
 
 FÖRETAGSINFORMATION:
 Företag: ${v('company')||'Okänt'}
 Bransch: ${v('industry')||'Ej angiven'}
-Vad de gör: ${v('description')}${v('website') ? `\nWebbplats: ${v('website')}` : ''}
+Vad de gör: ${v('description')}${v('website')?'\nWebbplats: '+v('website'):''}
 Storlek: ${document.getElementById('company-size').value||'Ej angiven'}
 Omsättning: ${document.getElementById('turnover').value||'Ej angiven'}
 Säsongsvariationer: ${season}
-Målgrupp: ${getChecked('audience-grid')}${v('audience-extra') ? ` (${v('audience-extra')})` : ''}
+Målgrupp: ${getChecked('audience-grid')}${v('audience-extra')?' ('+v('audience-extra')+')':''}
 Geografi: ${v('geography')||'Ej angiven'}
 Utmaning: ${v('challenge')||'Ej angiven'}
 Mål: ${v('goal')||'Ej angiven'}
 Styrka/USP: ${v('usp')||'Ej angiven'}
 Konkurrens: ${v('competitors')||'Ej angiven'}
 Tidigare marknadsföring: ${getChecked('history-grid')}
-Budget: ${pillSelections['budget']||'Ej angiven'}
+Budget: ${ps['budget']||'Ej angiven'}
 
 Svara med exakt detta JSON-format:
 {
   "summary": "2–3 meningar som sammanfattar situationen och den övergripande strategin",
-  "prioritized_channels": [
-    { "name": "Kanalnamn", "priority": "Hög|Medium|Lägre", "reason": "En mening varför" }
-  ],
-  "recommendations": [
-    { "title": "Kort rubrik", "description": "Konkret, specifikt råd (2–4 meningar)." }
-  ],
-  "quick_wins": ["Åtgärd 1", "Åtgärd 2", "Åtgärd 3"],
+  "prioritized_channels": [{"name":"Kanalnamn","priority":"Hög|Medium|Lägre","reason":"En mening varför"}],
+  "recommendations": [{"title":"Kort rubrik","description":"Konkret, specifikt råd (2–4 meningar)."}],
+  "quick_wins": ["Åtgärd 1","Åtgärd 2","Åtgärd 3"],
   "budget_note": "Konkret råd om hur budgeten bör fördelas (1–2 meningar)",
   "next_step": "En konkret nästa åtgärd de kan ta denna vecka"
 }
 
-Ge max 4 kanaler och max 4 rekommendationer. Håll det konkret och anpassat till just detta företag.${season !== 'Ej angiven' && season !== 'Ingen tydlig säsong' ? ' Ta hänsyn till säsongsvariationerna i rekommendationerna.' : ''}`;
+Ge max 4 kanaler och max 4 rekommendationer. Håll det konkret och anpassat till just detta företag.${season!=='Ej angiven'&&season!=='Ingen tydlig säsong'?' Ta hänsyn till säsongsvariationerna i rekommendationerna.':''}`;
 }
 
-// ANALYZE WITH STREAMING
-async function analyzeMarketing() {
-  const btn = document.getElementById('analyze-btn');
-  const errorEl = document.getElementById('error-msg');
-  errorEl.style.display = 'none';
-
-  if (!document.getElementById('description').value.trim()) {
-    errorEl.textContent = 'Fyll i åtminstone en beskrivning av vad ni gör.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  document.getElementById('form-section').style.display = 'none';
-  document.getElementById('loading-state').style.display = 'block';
-
-  try {
-    const response = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Access-Password': ACCESS_PASSWORD },
-      body: JSON.stringify({ messages: [{ role: 'user', content: buildPrompt() }] })
-    });
-
-    if (response.status === 401) throw new Error('auth');
-    if (!response.ok) throw new Error('server');
-
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('stream-preview').style.display = 'block';
-
-    const streamEl = document.getElementById('stream-text');
-    streamEl.innerHTML = '<span class="stream-cursor"></span>';
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const lines = decoder.decode(value, { stream: true }).split('\n');
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const delta = JSON.parse(data)?.delta?.text || '';
-          if (delta) {
-            fullText += delta;
-            streamEl.innerHTML = escHtml(fullText) + '<span class="stream-cursor"></span>';
-          }
-        } catch {}
+async function analyzeMarketing(){
+  const btn=document.getElementById('analyze-btn');
+  const errEl=document.getElementById('error-msg');
+  errEl.style.display='none';
+  if(!v('description')){errEl.textContent='Fyll i åtminstone en beskrivning av vad ni gör.';errEl.style.display='block';return;}
+  btn.disabled=true;
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('loading-state').style.display='block';
+  try{
+    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
+    if(resp.status===401)throw new Error('auth');
+    if(!resp.ok)throw new Error('server');
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('stream-preview').style.display='block';
+    const sEl=document.getElementById('stream-text');
+    sEl.innerHTML='<span class="cur"></span>';
+    const reader=resp.body.getReader();const dec=new TextDecoder();let full='';
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      const lines=dec.decode(value,{stream:true}).split('\n');
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue;
+        const d=line.slice(6).trim();if(d==='[DONE]')continue;
+        try{const delta=JSON.parse(d)?.delta?.text||'';if(delta){full+=delta;sEl.innerHTML=esc(full)+'<span class="cur"></span>';}}catch{}
       }
     }
-
-    document.getElementById('stream-preview').style.display = 'none';
-    const result = JSON.parse(fullText.replace(/```json|```/g, '').trim());
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+    document.getElementById('stream-preview').style.display='none';
+    const result=JSON.parse(full.replace(/```json|```/g,'').trim());
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(result));
     renderResult(result);
-
-  } catch (err) {
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('stream-preview').style.display = 'none';
-    document.getElementById('form-section').style.display = 'block';
-    errorEl.textContent = err.message === 'auth' ? 'Åtkomst nekad.' : 'Något gick fel vid analysen. Försök igen om en stund.';
-    errorEl.style.display = 'block';
-    btn.disabled = false;
+  }catch(err){
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('stream-preview').style.display='none';
+    document.getElementById('form-section').style.display='block';
+    errEl.textContent=err.message==='auth'?'Åtkomst nekad.':'Något gick fel vid analysen. Försök igen om en stund.';
+    errEl.style.display='block';btn.disabled=false;
   }
 }
 
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function pc(p){return p==='Hög'?'ph':p==='Medium'?'pm':'pl';}
 
-// RENDER
-function prioClass(p) { return p==='Hög'?'prio-hog':p==='Medium'?'prio-med':'prio-lag'; }
-
-function renderResult(r) {
-  const icons = ['🎯','📣','✍️','🔗','📱','📈'];
-  const channels = (r.prioritized_channels||[]).map(c=>`
-    <div class="channel-card">
-      <div class="channel-name">${c.name}</div>
-      <div class="channel-prio ${prioClass(c.priority)}">${c.priority}</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.5">${c.reason}</div>
-    </div>`).join('');
-
-  const recs = (r.recommendations||[]).map((rec,i)=>`
-    <div style="padding:1rem 0;border-bottom:0.5px solid var(--border)">
-      <div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">${icons[i%icons.length]}</span>${rec.title}
-      </div>
-      <div style="font-size:14px;line-height:1.7;color:var(--text-muted)">${rec.description}</div>
-    </div>`).join('');
-
-  const wins = (r.quick_wins||[]).map(w=>`
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)">
-      <div style="width:20px;height:20px;background:var(--teal-50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
-        <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <span style="font-size:14px;line-height:1.6">${w}</span>
-    </div>`).join('');
-
-  document.getElementById('result-content').innerHTML = `
-    <div class="result-card">
-      <div class="result-header"><div class="result-icon icon-purple">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div>
-      <div style="font-size:15px;line-height:1.75;background:var(--purple-50);border-radius:var(--radius-sm);padding:1rem 1.25rem;border-left:3px solid var(--purple-600)">${r.summary}</div>
-    </div>
-    <div class="result-card">
-      <div class="result-header"><div class="result-icon icon-teal">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div>
-      <div class="channel-grid">${channels}</div>
-    </div>
-    <div class="result-card">
-      <div class="result-header"><div class="result-icon icon-purple">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div>
-      <div>${recs}</div>
-    </div>
-    <div class="result-card">
-      <div class="result-header"><div class="result-icon icon-teal">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div>
-      <div>${wins}</div>
-    </div>
-    ${r.budget_note?`<div class="result-card"><div class="result-header"><div class="result-icon icon-amber">💰</div><div><h2>Budgetfördelning</h2><p>Hur bör ni fördela er budget?</p></div></div><div style="font-size:14px;line-height:1.75">${r.budget_note}</div></div>`:''}
-    ${r.next_step?`<div style="background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:var(--teal-600);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal-600);margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:var(--teal-800);font-weight:500">${r.next_step}</div></div></div>`:''}
-  `;
-
-  document.getElementById('result-section').style.display = 'block';
-  document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+function renderResult(r){
+  const ic=['🎯','📣','✍️','🔗','📱','📈'];
+  const ch=(r.prioritized_channels||[]).map(c=>`<div class="chcard"><div class="chn">${c.name}</div><div class="prio ${pc(c.priority)}">${c.priority}</div><div style="font-size:12px;color:var(--txm);margin-top:6px;line-height:1.5">${c.reason}</div></div>`).join('');
+  const re=(r.recommendations||[]).map((rec,i)=>`<div style="padding:1rem 0;border-bottom:0.5px solid var(--bd)"><div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ic[i%ic.length]}</span>${rec.title}</div><div style="font-size:14px;line-height:1.7;color:var(--txm)">${rec.description}</div></div>`).join('');
+  const qw=(r.quick_wins||[]).map(w=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--bd)"><div style="width:20px;height:20px;background:var(--t50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:14px;line-height:1.6">${w}</span></div>`).join('');
+  document.getElementById('result-content').innerHTML=`
+    <div class="rc"><div class="rh"><div class="ri pu">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div style="font-size:15px;line-height:1.75;background:var(--p50);border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid var(--p600)">${r.summary}</div></div>
+    <div class="rc"><div class="rh"><div class="ri te">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div><div class="chgrid">${ch}</div></div>
+    <div class="rc"><div class="rh"><div class="ri pu">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div><div>${re}</div></div>
+    <div class="rc"><div class="rh"><div class="ri te">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div><div>${qw}</div></div>
+    ${r.budget_note?`<div class="rc"><div class="rh"><div class="ri am">💰</div><div><h2>Budgetfördelning</h2><p>Hur bör ni fördela er budget?</p></div></div><div style="font-size:14px;line-height:1.75">${r.budget_note}</div></div>`:''}
+    ${r.next_step?`<div style="background:var(--t50);border:0.5px solid var(--t100);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:var(--t600);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t600);margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:var(--t800);font-weight:500">${r.next_step}</div></div></div>`:''}`;
+  document.getElementById('result-section').style.display='block';
+  document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// LOCALSTORAGE
-function loadSaved() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      document.getElementById('saved-banner').style.display = 'flex';
-      renderResult(JSON.parse(saved));
-    } catch {}
-  }
+function loadSaved(){
+  const s=localStorage.getItem(STORAGE_KEY);
+  if(s){try{document.getElementById('saved-banner').style.display='flex';renderResult(JSON.parse(s));}catch{}}
 }
-
-function resetForm() {
-  document.getElementById('result-section').style.display = 'none';
-  document.getElementById('form-section').style.display = 'block';
-  document.getElementById('analyze-btn').disabled = false;
-  document.getElementById('saved-banner').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function resetForm(){
+  document.getElementById('result-section').style.display='none';
+  document.getElementById('form-section').style.display='block';
+  document.getElementById('analyze-btn').disabled=false;
+  document.getElementById('saved-banner').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function openContact() {
-  window.open('mailto:hej@timrobin.se?subject=Marknadsföringssamtal&body=Hej! Jag har använt ert analysverktyg och vill boka ett strategisamtal.', '_blank');
-}
+function openContact(){window.open('mailto:hej@timrobin.se?subject=Marknadsföringssamtal&body=Hej! Jag har använt ert analysverktyg och vill boka ett strategisamtal.','_blank');}
 </script>
 </body>
 </html>
