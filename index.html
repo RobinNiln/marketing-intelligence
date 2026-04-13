@@ -287,7 +287,7 @@ header{
 }
 .header-brand{display:flex;align-items:center;gap:12px}
 .header-logo{
-  width:36px;height:36px;background:var(--gold);border-radius:4px;
+  width:36px;height:36px;background:#0a0a0a;border-radius:4px;
   display:flex;align-items:center;justify-content:center;
   font-weight:700;font-size:12px;color:#0a0a0a;letter-spacing:1px
 }
@@ -507,6 +507,27 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .email-modal-note{font-size:11px;color:#aaa;margin-top:8px;text-align:center}
 
 
+/* ─── ADDITIONAL MOBILE FIXES ─── */
+@media(max-width:640px){
+  .statement-lead{max-width:100%}
+  .hero-actions{gap:1rem}
+  .btn-primary,.btn-ghost{padding:13px 22px;font-size:13px}
+  .action-bar-inner{flex-direction:column;align-items:flex-start;gap:0.75rem}
+  .action-bar-btns{width:100%}
+  .action-bar-btn{flex:1;justify-content:center}
+  .chgrid{grid-template-columns:1fr 1fr}
+  .rh h2{font-size:15px}
+  .ctaf-new{padding:2rem 1.25rem}
+  .container{padding:1.5rem 1rem}
+  .form-block{padding:1.5rem}
+  header{padding:1rem 1.25rem}
+  .cta-h2{letter-spacing:-0.02em}
+}
+@media(max-width:400px){
+  .chgrid{grid-template-columns:1fr}
+  .action-bar-btn{font-size:12px;padding:8px 10px}
+}
+
 @media print {
   #landing, header, .saved-banner, .action-bar, .ctaf-new, .reset-btn, #email-modal { display:none !important; }
   #app { display:block !important; background:#fff; }
@@ -555,8 +576,8 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   <div class="section-dark">
     <div class="section-dark-inner">
       <div class="eyebrow">Om verktyget</div>
-      <h2 class="big-statement">De flesta företag marknadsför sig på<br><em>fel ställen – av fel anledningar.</em></h2>
-      <p class="statement-lead">Vår AI analyserar din bransch, dina kunder och din budget och pekar ut exakt var du bör synas – och hur. Inga generella råd. Ingen gissningslek.</p>
+      <h2 class="big-statement">De flesta företag marknadsför sig på<em> fel platser.</em></h2>
+      <p class="statement-lead">Vår AI analyserar din bransch, dina kunder och din budget och pekar ut exakt var du bör synas – och hur. Inga generella råd. Ingen gissningslek. Kunskapen bygger på R/T Norths mångåriga kunskap om marknadsföring och kommunikation.</p>
       <div class="rule"></div>
       <div class="steps-dark" id="how-section">
         <div class="step-d">
@@ -618,7 +639,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   </div>
 
   <footer class="site-footer">
-    <div class="footer-brand">R/T North · Reklambyråen</div>
+    <div class="footer-brand">R/T North</div>
     <div class="footer-copy">© 2025 R/T North</div>
   </footer>
 
