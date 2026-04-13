@@ -556,7 +556,6 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
     </nav>
 
     <div class="hero-content">
-      <div class="hero-kicker">Kostnadsfritt analysverktyg</div>
       <h1 class="hero-h1">Marknadsföring<br>som når fram.</h1>
       <p class="hero-lead">Berätta om ditt företag och dina utmaningar. På tre minuter får du en konkret strategi – skräddarsydd för just er.</p>
       <div class="hero-actions">
@@ -972,9 +971,11 @@ function checkPassword(){
 }
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
 
-function showApp(){
+function showApp(){window.scrollTo(0,0);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
+  document.getElementById('result-section').style.display='none';
+document.getElementById('stream-preview').style.display='none';                 
   loadSaved();
 }
 
