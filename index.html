@@ -877,6 +877,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
     <div id="error-msg" class="err"></div>
     <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">Analysera och ta fram marknadsföringsplan →</button>
+    <button class="reset-btn" id="clear-btn" onclick="clearAll()" style="display:none;width:100%;margin-top:0.75rem;">✕ Rensa och börja om</button>
   </div>
 
   <div class="loading-state" id="loading-state">
@@ -1110,6 +1111,7 @@ function renderResult(r){
     ${r.next_step?`<div style="background:var(--t50);border:0.5px solid var(--t100);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:var(--t600);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t600);margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:var(--t800);font-weight:500">${r.next_step}</div></div></div>`:''}`;
   document.getElementById('result-section').style.display='block';
   document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('clear-btn').style.display='block';
 }
 
 function loadSaved(){
@@ -1145,6 +1147,27 @@ function sendEmail(){
   box.textContent='✓ Mejlfunktionen kommer snart – tack för ditt intresse!';
   document.body.appendChild(box);
   setTimeout(()=>box.remove(),4000);
+}
+
+function clearAll(){
+  // Rensa alla textfält och textareas
+  document.querySelectorAll('input[type="text"],input[type="number"],textarea').forEach(function(el){el.value='';});
+  // Återställ dropdowns
+  document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+  // Avmarkera alla val-knappar
+  document.querySelectorAll('.opt-btn,.tag-btn').forEach(function(el){el.classList.remove('on');});
+  // Nollställ optSelections och ps
+  Object.keys(optSelections).forEach(function(k){optSelections[k]=[];});
+  Object.keys(ps).forEach(function(k){delete ps[k];});
+  // Dölj resultat och rensa-knappen
+  document.getElementById('result-section').style.display='none';
+  document.getElementById('clear-btn').style.display='none';
+  document.getElementById('error-msg').style.display='none';
+  // Visa formuläret och återställ analysknappen
+  document.getElementById('form-section').style.display='block';
+  document.getElementById('analyze-btn').disabled=false;
+  // Scrolla upp
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsföringssamtal&body=Hej! Jag har använt ert analysverktyg och vill boka ett strategisamtal.','_blank');}
