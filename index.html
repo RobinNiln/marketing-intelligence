@@ -665,7 +665,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
       <div class="header-sub">Powered by AI · R/T North</div>
     </div>
   </div>
-  <div class="header-badge">Kostnadsfritt analysverktyg</div>
+
 </header>
 
 <div class="container">
@@ -971,11 +971,12 @@ function checkPassword(){
 }
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
 
-function showApp(){window.scrollTo(0,0);
+function showApp(){
+  window.scrollTo(0,0);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('result-section').style.display='none';
-document.getElementById('stream-preview').style.display='none';                 
+  document.getElementById('stream-preview').style.display='none';
   loadSaved();
 }
 
