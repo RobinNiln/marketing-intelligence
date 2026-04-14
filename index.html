@@ -536,6 +536,51 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   .rc { break-inside:avoid; }
 }
 
+
+/* ─── MULTI-STEP FORM ─── */
+.form-progress{display:flex;align-items:center;margin-bottom:2rem}
+.fp-step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.fp-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:all 0.2s;z-index:1;position:relative}
+.fp-dot.done{background:#0a0a0a;color:#fff}
+.fp-dot.active{background:#C9A84C;color:#0a0a0a;box-shadow:0 0 0 4px rgba(201,168,76,0.2)}
+.fp-dot.pending{background:#F1EFE8;color:#888;border:1px solid rgba(0,0,0,0.08)}
+.fp-label{font-size:11px;color:#aaa;white-space:nowrap}
+.fp-label.active{color:#0a0a0a;font-weight:600}
+.fp-line{flex:1;height:1px;background:rgba(0,0,0,0.1);margin:0 4px;margin-bottom:18px;transition:background 0.2s}
+.fp-line.done{background:#0a0a0a}
+
+.fstep{display:none}
+.fstep.active{display:block}
+.fstep-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.fstep-title{font-size:22px;font-weight:700;color:#0a0a0a;letter-spacing:-0.01em}
+.fstep-counter{font-size:13px;color:#aaa}
+.fstep-sub{font-size:14px;color:#888;margin-bottom:1.75rem;line-height:1.5}
+
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;margin-bottom:4px}
+.chip{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,0.12);background:#F9F8F6;color:#333;transition:all 0.12s;user-select:none;font-family:inherit;line-height:1}
+.chip:hover{border-color:#0a0a0a;background:#fff;color:#0a0a0a}
+.chip.on{background:#0a0a0a;border-color:#0a0a0a;color:#fff;font-weight:600}
+
+.budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+@media(max-width:480px){.budget-grid{grid-template-columns:repeat(2,1fr)}}
+.budget-card{padding:14px 10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,0.12);background:#F9F8F6;color:#333;text-align:center;transition:all 0.12s;font-family:inherit;line-height:1.4}
+.budget-card:hover{border-color:#0a0a0a;background:#fff}
+.budget-card.on{background:#0a0a0a;border-color:#0a0a0a;color:#fff}
+
+.form-divider{height:1px;background:rgba(0,0,0,0.07);margin:1.5rem 0}
+
+.fnav{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;gap:1rem}
+.fnav-next{background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:13px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;letter-spacing:0.02em}
+.fnav-next:hover{background:#E8C97A}
+.fnav-back{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:12px 20px;font-size:14px;cursor:pointer;color:#888;font-family:inherit;transition:all 0.15s}
+.fnav-back:hover{border-color:#0a0a0a;color:#0a0a0a}
+
+.fstep-summary{background:#F9F8F6;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1rem 1.25rem;margin-top:1.25rem}
+.fstep-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;margin-bottom:10px}
+.fstep-summary-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#555;margin-bottom:6px;line-height:1.5}
+.fstep-summary-row:last-child{margin-bottom:0}
+.fstep-summary-dot{width:6px;height:6px;border-radius:50%;background:#C9A84C;flex-shrink:0;margin-top:5px}
+
 </style>
 </head>
 <body>
@@ -669,6 +714,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 </header>
 
 <div class="container">
+
   <div id="form-section">
     <div style="margin-bottom:1.25rem">
       <button onclick="goToLanding()" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;color:var(--txm);display:flex;align-items:center;gap:6px;padding:0;transition:color 0.15s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='var(--txm)'">
@@ -676,14 +722,42 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
         Till startsidan
       </button>
     </div>
+
     <div id="saved-banner" class="saved-banner">
       <svg width="14" height="14" viewBox="0 0 14 14"><polyline points="1.5,7 5,10.5 12.5,3" fill="none" stroke="#085041" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Din senaste analys visas nedan. Scrolla ner eller gör en ny analys.
     </div>
 
-    <div class="form-block">
-      <div class="form-block-title">Om företaget</div>
-      <div class="form-block-desc">Berätta lite om vad ni gör och vilka ni är.</div>
+    <!-- PROGRESS BAR -->
+    <div class="form-progress">
+      <div class="fp-step">
+        <div class="fp-dot active" id="dot1">1</div>
+        <div class="fp-label active" id="lbl1">Företaget</div>
+      </div>
+      <div class="fp-line" id="line1"></div>
+      <div class="fp-step">
+        <div class="fp-dot pending" id="dot2">2</div>
+        <div class="fp-label" id="lbl2">Målgrupp</div>
+      </div>
+      <div class="fp-line" id="line2"></div>
+      <div class="fp-step">
+        <div class="fp-dot pending" id="dot3">3</div>
+        <div class="fp-label" id="lbl3">Utmaningar</div>
+      </div>
+      <div class="fp-line" id="line3"></div>
+      <div class="fp-step">
+        <div class="fp-dot pending" id="dot4">4</div>
+        <div class="fp-label" id="lbl4">Budget</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: FÖRETAGET -->
+    <div class="fstep active" id="fstep1">
+      <div class="fstep-header">
+        <div class="fstep-title">Berätta om ert företag</div>
+        <span class="fstep-counter">1 av 4</span>
+      </div>
+      <div class="fstep-sub">Ju mer ni berättar, desto skarpare analys.</div>
 
       <div class="field-row">
         <div class="field">
@@ -692,7 +766,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
         </div>
         <div class="field">
           <div class="field-label">Bransch</div>
-          <input id="industry" type="text" placeholder="t.ex. Bygg & renovering"/>
+          <input id="industry" type="text" placeholder="t.ex. Bygg &amp; renovering"/>
         </div>
       </div>
 
@@ -733,30 +807,39 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
       <div class="field">
         <div class="field-label">Säsongsvariationer</div>
-        <div class="tag-grid">
-          <button class="tag-btn" data-g="season" data-v="Ingen tydlig säsong">Ingen tydlig säsong</button>
-          <button class="tag-btn" data-g="season" data-v="Vår/sommar är högsäsong">Vår/sommar</button>
-          <button class="tag-btn" data-g="season" data-v="Höst/vinter är högsäsong">Höst/vinter</button>
-          <button class="tag-btn" data-g="season" data-v="Julen är viktig period">Julen</button>
-          <button class="tag-btn" data-g="season" data-v="Stor variation beroende på väder eller event">Stor variation</button>
+        <div class="chip-group">
+          <button class="chip" data-g="season" data-v="Ingen tydlig säsong">Ingen tydlig säsong</button>
+          <button class="chip" data-g="season" data-v="Vår/sommar är högsäsong">Vår/sommar</button>
+          <button class="chip" data-g="season" data-v="Höst/vinter är högsäsong">Höst/vinter</button>
+          <button class="chip" data-g="season" data-v="Julen är viktig period">Julen</button>
+          <button class="chip" data-g="season" data-v="Stor variation beroende på väder eller event">Stor variation</button>
         </div>
+      </div>
+
+      <div class="fnav">
+        <div></div>
+        <button class="fnav-next" onclick="formGoTo(2)">Fortsätt →</button>
       </div>
     </div>
 
-    <div class="form-block">
-      <div class="form-block-title">Målgrupp & geografi</div>
-      <div class="form-block-desc">Vem vill ni nå och var?</div>
+    <!-- STEP 2: MÅLGRUPP -->
+    <div class="fstep" id="fstep2">
+      <div class="fstep-header">
+        <div class="fstep-title">Vem vill ni nå?</div>
+        <span class="fstep-counter">2 av 4</span>
+      </div>
+      <div class="fstep-sub">Välj ett eller flera alternativ – ni kan kombinera.</div>
 
       <div class="field">
-        <div class="field-label">Vem vill ni nå? <span style="font-weight:400;color:#aaa">(välj ett eller flera)</span></div>
-        <div class="tag-grid" id="audience-grid">
-          <button class="tag-btn" data-g="audience" data-v="Privatpersoner (B2C)">Privatpersoner (B2C)</button>
-          <button class="tag-btn" data-g="audience" data-v="Företag (B2B)">Företag (B2B)</button>
-          <button class="tag-btn" data-g="audience" data-v="Offentlig sektor">Offentlig sektor</button>
-          <button class="tag-btn" data-g="audience" data-v="Unga vuxna 18–35">Unga vuxna 18–35</button>
-          <button class="tag-btn" data-g="audience" data-v="Familjer">Familjer</button>
-          <button class="tag-btn" data-g="audience" data-v="Seniorer 60+">Seniorer 60+</button>
-          <button class="tag-btn" data-g="audience" data-v="Beslutsfattare / chefer">Beslutsfattare / chefer</button>
+        <div class="field-label">Målgrupp</div>
+        <div class="chip-group" id="audience-grid">
+          <button class="chip" data-g="audience" data-v="Privatpersoner (B2C)">Privatpersoner (B2C)</button>
+          <button class="chip" data-g="audience" data-v="Företag (B2B)">Företag (B2B)</button>
+          <button class="chip" data-g="audience" data-v="Offentlig sektor">Offentlig sektor</button>
+          <button class="chip" data-g="audience" data-v="Unga vuxna 18–35">Unga vuxna 18–35</button>
+          <button class="chip" data-g="audience" data-v="Familjer">Familjer</button>
+          <button class="chip" data-g="audience" data-v="Seniorer 60+">Seniorer 60+</button>
+          <button class="chip" data-g="audience" data-v="Beslutsfattare / chefer">Beslutsfattare / chefer</button>
         </div>
       </div>
 
@@ -770,115 +853,150 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
           <input id="audience-extra" type="text" placeholder="t.ex. Husägare med renoveringsbehov"/>
         </div>
       </div>
+
+      <div class="fnav">
+        <button class="fnav-back" onclick="formGoTo(1)">← Tillbaka</button>
+        <button class="fnav-next" onclick="formGoTo(3)">Fortsätt →</button>
+      </div>
     </div>
 
-    <div class="form-block">
-      <div class="form-block-title">Utmaningar & mål</div>
-      <div class="form-block-desc">Välj det som stämmer bäst – du kan välja flera alternativ per fråga.</div>
+    <!-- STEP 3: UTMANINGAR -->
+    <div class="fstep" id="fstep3">
+      <div class="fstep-header">
+        <div class="fstep-title">Utmaningar &amp; mål</div>
+        <span class="fstep-counter">3 av 4</span>
+      </div>
+      <div class="fstep-sub">Välj det som stämmer – fler val ger bättre analys.</div>
 
       <div class="field">
-        <div class="field-label">Vad är er största marknadsföringsutmaning just nu?</div>
-        <div class="opt-grid" id="challenge-opts">
-          <button class="opt-btn" data-g="challenge" data-v="Vi är okända utanför vårt eget nätverk">Okända utanför nätverket</button>
-          <button class="opt-btn" data-g="challenge" data-v="Svårt att nå nya kunder digitalt">Svårt nå nya kunder digitalt</button>
-          <button class="opt-btn" data-g="challenge" data-v="Hög konkurrens och prispress">Hög konkurrens / prispress</button>
-          <button class="opt-btn" data-g="challenge" data-v="Vi vet inte vilka kanaler som fungerar för oss">Vet inte vilka kanaler som fungerar</button>
-          <button class="opt-btn" data-g="challenge" data-v="Liten budget och begränsade resurser">Liten budget / få resurser</button>
-          <button class="opt-btn" data-g="challenge" data-v="Vi tappar kunder till konkurrenter">Tappar kunder till konkurrenter</button>
-          <button class="opt-btn" data-g="challenge" data-v="Svårt att kommunicera vad vi erbjuder">Svårt kommunicera erbjudandet</button>
-          <button class="opt-btn" data-g="challenge" data-v="Vi saknar tid för marknadsföring">Saknar tid för marknadsföring</button>
+        <div class="field-label">Största marknadsföringsutmaning</div>
+        <div class="chip-group" id="challenge-opts">
+          <button class="chip" data-g="challenge" data-v="Vi är okända utanför vårt eget nätverk">Okända utanför nätverket</button>
+          <button class="chip" data-g="challenge" data-v="Svårt att nå nya kunder digitalt">Svårt nå digitalt</button>
+          <button class="chip" data-g="challenge" data-v="Hög konkurrens och prispress">Hög konkurrens</button>
+          <button class="chip" data-g="challenge" data-v="Vi vet inte vilka kanaler som fungerar för oss">Vet inte vilka kanaler</button>
+          <button class="chip" data-g="challenge" data-v="Liten budget och begränsade resurser">Liten budget</button>
+          <button class="chip" data-g="challenge" data-v="Vi tappar kunder till konkurrenter">Tappar kunder</button>
+          <button class="chip" data-g="challenge" data-v="Svårt att kommunicera vad vi erbjuder">Svårt kommunicera</button>
+          <button class="chip" data-g="challenge" data-v="Vi saknar tid för marknadsföring">Saknar tid</button>
         </div>
         <div class="field-extra">eller skriv med egna ord</div>
         <input type="text" id="challenge" placeholder="Frivilligt tillägg..."/>
       </div>
 
+      <div class="form-divider"></div>
+
       <div class="field">
-        <div class="field-label">Vad vill ni uppnå med marknadsföringen?</div>
-        <div class="opt-grid" id="goal-opts">
-          <button class="opt-btn" data-g="goal" data-v="Fler leads och förfrågningar">Fler leads / förfrågningar</button>
-          <button class="opt-btn" data-g="goal" data-v="Ökad varumärkeskännedom lokalt">Ökad lokal kännedom</button>
-          <button class="opt-btn" data-g="goal" data-v="Fler bokningar eller köp online">Fler bokningar / köp online</button>
-          <button class="opt-btn" data-g="goal" data-v="Nå en ny målgrupp vi inte når idag">Nå ny målgrupp</button>
-          <button class="opt-btn" data-g="goal" data-v="Behålla befintliga kunder och öka lojalitet">Behålla och lojalisera kunder</button>
-          <button class="opt-btn" data-g="goal" data-v="Lansera en ny produkt eller tjänst">Lansera ny produkt / tjänst</button>
-          <button class="opt-btn" data-g="goal" data-v="Synas mer än konkurrenterna">Synas mer än konkurrenterna</button>
-          <button class="opt-btn" data-g="goal" data-v="Bygga förtroende och trovärdighet">Bygga förtroende</button>
+        <div class="field-label">Vad vill ni uppnå?</div>
+        <div class="chip-group" id="goal-opts">
+          <button class="chip" data-g="goal" data-v="Fler leads och förfrågningar">Fler leads</button>
+          <button class="chip" data-g="goal" data-v="Ökad varumärkeskännedom lokalt">Lokal kännedom</button>
+          <button class="chip" data-g="goal" data-v="Fler bokningar eller köp online">Fler bokningar</button>
+          <button class="chip" data-g="goal" data-v="Nå en ny målgrupp vi inte når idag">Nå ny målgrupp</button>
+          <button class="chip" data-g="goal" data-v="Behålla befintliga kunder och öka lojalitet">Behålla kunder</button>
+          <button class="chip" data-g="goal" data-v="Lansera en ny produkt eller tjänst">Lansera nytt</button>
+          <button class="chip" data-g="goal" data-v="Synas mer än konkurrenterna">Synas mer</button>
+          <button class="chip" data-g="goal" data-v="Bygga förtroende och trovärdighet">Bygga förtroende</button>
         </div>
         <div class="field-extra">eller skriv med egna ord</div>
         <input type="text" id="goal" placeholder="Frivilligt tillägg..."/>
       </div>
 
+      <div class="form-divider"></div>
+
       <div class="field">
         <div class="field-label">Er styrka / unikhet (USP)</div>
-        <div class="opt-grid" id="usp-opts">
-          <button class="opt-btn" data-g="usp" data-v="Lång erfarenhet och beprövad expertis">Lång erfarenhet / expertis</button>
-          <button class="opt-btn" data-g="usp" data-v="Personlig service och nära kundrelationer">Personlig service</button>
-          <button class="opt-btn" data-g="usp" data-v="Alltid fast och transparent pris">Fast / transparent pris</button>
-          <button class="opt-btn" data-g="usp" data-v="Snabb leverans och hög tillgänglighet">Snabb leverans / tillgänglighet</button>
-          <button class="opt-btn" data-g="usp" data-v="Hög kvalitet och premiumkänsla">Hög kvalitet / premium</button>
-          <button class="opt-btn" data-g="usp" data-v="Lägst pris på marknaden">Lägst pris</button>
-          <button class="opt-btn" data-g="usp" data-v="Unik produkt eller metod som ingen annan erbjuder">Unik produkt / metod</button>
-          <button class="opt-btn" data-g="usp" data-v="Stark lokal förankring och lokalkännedom">Stark lokal förankring</button>
+        <div class="chip-group" id="usp-opts">
+          <button class="chip" data-g="usp" data-v="Lång erfarenhet och beprövad expertis">Lång erfarenhet</button>
+          <button class="chip" data-g="usp" data-v="Personlig service och nära kundrelationer">Personlig service</button>
+          <button class="chip" data-g="usp" data-v="Alltid fast och transparent pris">Fast pris</button>
+          <button class="chip" data-g="usp" data-v="Snabb leverans och hög tillgänglighet">Snabb leverans</button>
+          <button class="chip" data-g="usp" data-v="Hög kvalitet och premiumkänsla">Hög kvalitet</button>
+          <button class="chip" data-g="usp" data-v="Lägst pris på marknaden">Lägst pris</button>
+          <button class="chip" data-g="usp" data-v="Unik produkt eller metod som ingen annan erbjuder">Unik produkt / metod</button>
+          <button class="chip" data-g="usp" data-v="Stark lokal förankring och lokalkännedom">Lokal förankring</button>
         </div>
         <div class="field-extra">eller skriv med egna ord</div>
         <input type="text" id="usp" placeholder="Frivilligt tillägg..."/>
       </div>
 
+      <div class="form-divider"></div>
+
       <div class="field">
         <div class="field-label">Hur ser konkurrensen ut?</div>
-        <div class="opt-grid" id="competitors-opts">
-          <button class="opt-btn" data-g="competitors" data-v="Många lokala konkurrenter på ungefär samma prisnivå">Många lokala konkurrenter</button>
-          <button class="opt-btn" data-g="competitors" data-v="Få konkurrenter – relativt nischad marknad">Få konkurrenter / nischad</button>
-          <button class="opt-btn" data-g="competitors" data-v="Stora nationella aktörer med större budgetar">Stora nationella aktörer</button>
-          <button class="opt-btn" data-g="competitors" data-v="Konkurrenter syns mer digitalt än vi">Konkurrenter syns mer digitalt</button>
-          <button class="opt-btn" data-g="competitors" data-v="Vi är dyrare men levererar högre värde">Vi är dyrare / högre värde</button>
-          <button class="opt-btn" data-g="competitors" data-v="Vi är billigare och konkurrerar på pris">Vi konkurrerar på pris</button>
-          <button class="opt-btn" data-g="competitors" data-v="Marknaden är mättad och tuff">Mättad / tuff marknad</button>
-          <button class="opt-btn" data-g="competitors" data-v="Vi har inget tydligt konkurrensläge ännu">Oklart konkurrensläge</button>
+        <div class="chip-group" id="competitors-opts">
+          <button class="chip" data-g="competitors" data-v="Många lokala konkurrenter på ungefär samma prisnivå">Många lokala konkurrenter</button>
+          <button class="chip" data-g="competitors" data-v="Få konkurrenter – relativt nischad marknad">Få konkurrenter / nischad</button>
+          <button class="chip" data-g="competitors" data-v="Stora nationella aktörer med större budgetar">Stora nationella aktörer</button>
+          <button class="chip" data-g="competitors" data-v="Konkurrenter syns mer digitalt än vi">Konkurrenter syns mer digitalt</button>
+          <button class="chip" data-g="competitors" data-v="Vi är dyrare men levererar högre värde">Vi är dyrare / högre värde</button>
+          <button class="chip" data-g="competitors" data-v="Vi är billigare och konkurrerar på pris">Vi konkurrerar på pris</button>
+          <button class="chip" data-g="competitors" data-v="Marknaden är mättad och tuff">Mättad / tuff marknad</button>
+          <button class="chip" data-g="competitors" data-v="Vi har inget tydligt konkurrensläge ännu">Oklart konkurrensläge</button>
         </div>
         <div class="field-extra">eller skriv med egna ord</div>
         <input type="text" id="competitors" placeholder="Frivilligt tillägg..."/>
       </div>
+
+      <div class="fnav">
+        <button class="fnav-back" onclick="formGoTo(2)">← Tillbaka</button>
+        <button class="fnav-next" onclick="formGoTo(4)">Fortsätt →</button>
+      </div>
     </div>
 
-    <div class="form-block">
-      <div class="form-block-title">Budget & resurser</div>
-      <div class="form-block-desc">Vad har ni att röra er med och vad har ni provat?</div>
+    <!-- STEP 4: BUDGET -->
+    <div class="fstep" id="fstep4">
+      <div class="fstep-header">
+        <div class="fstep-title">Budget &amp; historik</div>
+        <span class="fstep-counter">4 av 4</span>
+      </div>
+      <div class="fstep-sub">Sista steget – sedan genereras er plan direkt.</div>
 
       <div class="field">
-        <div class="field-label">Ungefärlig månadsbudget för marknadsföring</div>
-        <div class="tag-grid">
-          <button class="tag-btn" data-g="budget" data-v="Under 5 000 kr/mån">Under 5 000 kr</button>
-          <button class="tag-btn" data-g="budget" data-v="5 000–15 000 kr/mån">5 000–15 000 kr</button>
-          <button class="tag-btn" data-g="budget" data-v="15 000–50 000 kr/mån">15 000–50 000 kr</button>
-          <button class="tag-btn" data-g="budget" data-v="50 000–150 000 kr/mån">50 000–150 000 kr</button>
-          <button class="tag-btn" data-g="budget" data-v="Över 150 000 kr/mån">Över 150 000 kr</button>
-          <button class="tag-btn" data-g="budget" data-v="Vet ej / vill diskutera">Vet ej</button>
+        <div class="field-label">Månadsbudget för marknadsföring</div>
+        <div class="budget-grid">
+          <button class="budget-card" data-g="budget" data-v="Under 5 000 kr/mån">Under<br>5 000 kr</button>
+          <button class="budget-card" data-g="budget" data-v="5 000–15 000 kr/mån">5 000–<br>15 000 kr</button>
+          <button class="budget-card" data-g="budget" data-v="15 000–50 000 kr/mån">15 000–<br>50 000 kr</button>
+          <button class="budget-card" data-g="budget" data-v="50 000–150 000 kr/mån">50 000–<br>150 000 kr</button>
+          <button class="budget-card" data-g="budget" data-v="Över 150 000 kr/mån">Över<br>150 000 kr</button>
+          <button class="budget-card" data-g="budget" data-v="Vet ej / vill diskutera">Vet ej /<br>diskutera</button>
         </div>
       </div>
 
-      <div class="field">
+      <div class="field" style="margin-top:1.25rem">
         <div class="field-label">Vad har ni gjort tidigare? <span style="font-weight:400;color:#aaa">(välj ett eller flera)</span></div>
-        <div class="tag-grid" id="history-grid">
-          <button class="tag-btn" data-g="history" data-v="Google Ads">Google Ads</button>
-          <button class="tag-btn" data-g="history" data-v="Meta / Facebook-annonser">Meta / Facebook</button>
-          <button class="tag-btn" data-g="history" data-v="SEO / organisk sökning">SEO</button>
-          <button class="tag-btn" data-g="history" data-v="Sociala medier organiskt">Sociala medier organiskt</button>
-          <button class="tag-btn" data-g="history" data-v="E-postmarknadsföring">E-post</button>
-          <button class="tag-btn" data-g="history" data-v="Traditionell media (print, radio)">Print / radio</button>
-          <button class="tag-btn" data-g="history" data-v="Nyhetsmedia / PR / pressreleasar">Nyhetsmedia / PR</button>
-          <button class="tag-btn" data-g="history" data-v="Mässor / event">Mässor / event</button>
-          <button class="tag-btn" data-g="history" data-v="Inget strukturerat">Inget strukturerat</button>
+        <div class="chip-group" id="history-grid">
+          <button class="chip" data-g="history" data-v="Google Ads">Google Ads</button>
+          <button class="chip" data-g="history" data-v="Meta / Facebook-annonser">Meta / Facebook</button>
+          <button class="chip" data-g="history" data-v="SEO / organisk sökning">SEO</button>
+          <button class="chip" data-g="history" data-v="Sociala medier organiskt">Sociala medier organiskt</button>
+          <button class="chip" data-g="history" data-v="E-postmarknadsföring">E-post</button>
+          <button class="chip" data-g="history" data-v="Traditionell media (print, radio)">Print / radio</button>
+          <button class="chip" data-g="history" data-v="Nyhetsmedia / PR / pressreleasar">Nyhetsmedia / PR</button>
+          <button class="chip" data-g="history" data-v="Mässor / event">Mässor / event</button>
+          <button class="chip" data-g="history" data-v="Inget strukturerat">Inget strukturerat</button>
         </div>
       </div>
+
+      <div class="fstep-summary" id="fstep-summary" style="display:none">
+        <div class="fstep-summary-title">Redo att analysera</div>
+        <div id="fstep-summary-rows"></div>
+      </div>
+
+      <div id="error-msg" class="err"></div>
+
+      <div class="fnav" style="flex-direction:column;gap:0.75rem;margin-top:1.5rem">
+        <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">Analysera och ta fram marknadsföringsplan →</button>
+        <button class="fnav-back" style="width:100%;text-align:center" onclick="formGoTo(3)">← Tillbaka</button>
+      </div>
+      <button class="reset-btn" id="clear-btn" onclick="clearAll()" style="display:none;width:100%;margin-top:0.75rem;">✕ Rensa och börja om</button>
     </div>
 
-    <div id="error-msg" class="err"></div>
-    <button class="cta-btn" id="analyze-btn" onclick="analyzeMarketing()">Analysera och ta fram marknadsföringsplan →</button>
-    <button class="reset-btn" id="clear-btn" onclick="clearAll()" style="display:none;width:100%;margin-top:0.75rem;">✕ Rensa och börja om</button>
   </div>
 
   <div class="loading-state" id="loading-state">
+
     <div class="spinner"></div>
     <p>Analyserar ert företag...</p>
   </div>
@@ -1148,6 +1266,65 @@ function sendEmail(){
   box.textContent='✓ Mejlfunktionen kommer snart – tack för ditt intresse!';
   document.body.appendChild(box);
   setTimeout(()=>box.remove(),4000);
+}
+
+
+/* ─── MULTI-STEP FORM LOGIC ─── */
+var formCur = 1;
+function formGoTo(n){
+  document.getElementById('fstep'+formCur).classList.remove('active');
+  document.getElementById('fstep'+n).classList.add('active');
+  for(var i=1;i<=4;i++){
+    var d=document.getElementById('dot'+i);
+    var l=document.getElementById('lbl'+i);
+    d.className='fp-dot';
+    if(l) l.className='fp-label';
+    if(i<n){d.classList.add('done');d.textContent='✓';}
+    else if(i===n){d.classList.add('active');d.textContent=i;if(l)l.classList.add('active');}
+    else{d.classList.add('pending');d.textContent=i;}
+    if(i<4){
+      var ln=document.getElementById('line'+i);
+      if(ln) ln.classList.toggle('done', i<n);
+    }
+  }
+  formCur=n;
+  if(n===4) updateFSummary();
+  window.scrollTo(0,0);
+}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('.chip,.budget-card');
+  if(!b) return;
+  var g=b.dataset.g;
+  var single=['season','budget'];
+  if(single.indexOf(g)>-1){
+    document.querySelectorAll('[data-g="'+g+'"]').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+  } else {
+    b.classList.toggle('on');
+  }
+  if(formCur===4) updateFSummary();
+});
+
+function getChipVals(g){
+  return Array.from(document.querySelectorAll('[data-g="'+g+'"].on')).map(function(x){return x.dataset.v;}).join(', ');
+}
+
+function updateFSummary(){
+  var rows=[
+    {l:'Utmaningar', v:getChipVals('challenge')},
+    {l:'Mål', v:getChipVals('goal')},
+    {l:'Styrkor', v:getChipVals('usp')},
+    {l:'Budget', v:getChipVals('budget')}
+  ].filter(function(r){return r.v;});
+  var box=document.getElementById('fstep-summary');
+  var cont=document.getElementById('fstep-summary-rows');
+  if(!box||!cont) return;
+  if(rows.length===0){box.style.display='none';return;}
+  box.style.display='block';
+  cont.innerHTML=rows.map(function(r){
+    return '<div class="fstep-summary-row"><span class="fstep-summary-dot"></span><span><strong style="font-weight:600">'+r.l+':</strong> '+r.v+'</span></div>';
+  }).join('');
 }
 
 function clearAll(){
