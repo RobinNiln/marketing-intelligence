@@ -586,7 +586,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 </style>
 </head>
-<body>
+<body><script>if(sessionStorage.getItem('tr_authed')){document.body.classList.add('app-mode');}</script>
 
 <!-- ═══ LANDING ═══ -->
 <div id="landing">
@@ -1097,18 +1097,18 @@ function checkPassword(){
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
 
 function showApp(){
-  window.scrollTo(0,0);
+  document.body.classList.add('app-mode');
   document.getElementById('landing').style.display='none';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
-  document.body.classList.add('app-mode');
+  window.scrollTo(0,0);
   loadSaved();
 }
 
 if(sessionStorage.getItem(SESSION_KEY)){
-  document.getElementById('landing').style.display='none';
+  document.body.classList.add('app-mode');
   showApp();
 }
 
