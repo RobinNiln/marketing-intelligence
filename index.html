@@ -585,6 +585,32 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 /* Force hide app on load */
 #app{display:none}
+
+/* ── Typewriter cursor ── */
+.tw-cursor{
+  display:inline-block;
+  color:#C9A84C;
+  font-weight:300;
+  animation:tw-blink 0.9s step-end infinite;
+  margin-left:2px;
+}
+@keyframes tw-blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── Scroll reveal ── */
+.reveal{
+  opacity:0;
+  transform:translateY(32px);
+  transition:opacity 0.75s ease, transform 0.75s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ── Parallax hero bg ── */
+.hero-bg{
+  will-change:transform;
+}
 </style>
 </head>
 <body>
@@ -605,7 +631,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
     </nav>
 
     <div class="hero-content">
-      <h1 class="hero-h1">Vet du var ditt företag<br>egentligen bör synas?</h1>
+      <h1 class="hero-h1"><span id="typewriter-text"></span><span class="tw-cursor">|</span></h1>
       <p class="hero-lead">Testa vår gratis AI-analys – byggd på R/T Norths mångåriga erfarenhet av marknadsföring. Du får en konkret plan på tre minuter, och vi hjälper dig genomföra den.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="goToLogin()">
@@ -622,7 +648,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   </div>
 
   <!-- DARK INTRO -->
-  <div class="section-dark">
+  <div class="section-dark reveal">
     <div class="section-dark-inner">
       <div class="eyebrow">Om verktyget</div>
       <h2 class="big-statement">De flesta företag marknadsför sig på<em> fel platser.</em></h2>
@@ -649,7 +675,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   </div>
 
   <!-- LIGHT SECTION -->
-  <div class="section-light">
+  <div class="section-light reveal">
     <div class="section-light-inner">
       <div class="eyebrow-dark">Varför R/T North</div>
       <h2 class="big-statement-dark">Vi gör jobbet –<br>ni gör affärer.</h2>
@@ -674,7 +700,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   </div>
 
   <!-- FINAL CTA -->
-  <div class="section-cta">
+  <div class="section-cta reveal">
     <div class="section-cta-inner">
       <div class="eyebrow">Kom igång nu</div>
       <h2 class="cta-h2">Redo att växa?</h2>
@@ -1357,20 +1383,56 @@ function clearAll(){
 }
 
 function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsföringssamtal&body=Hej! Jag har använt ert analysverktyg och vill boka ett strategisamtal.','_blank');}
+
+/* ── Typewriter ── */
+(function(){
+  var el = document.getElementById('typewriter-text');
+  if(!el) return;
+  var lines = ['Vet du var ditt företag', 'egentligen bör synas?'];
+  var full = lines[0] + '\n' + lines[1];
+  var i = 0;
+  function tick(){
+    if(i <= full.length){
+      var part = full.slice(0, i);
+      el.innerHTML = part.replace('\n', '<br>');
+      i++;
+      setTimeout(tick, i === 1 ? 600 : 45);
+    } else {
+      // hide cursor after done, keep blinking a moment then stop
+      setTimeout(function(){
+        var cur = document.querySelector('.tw-cursor');
+        if(cur) cur.style.display = 'none';
+      }, 2000);
+    }
+  }
+  // start after hero image loads
+  window.addEventListener('load', function(){ setTimeout(tick, 400); });
+})();
+
+/* ── Parallax ── */
+(function(){
+  var bg = document.getElementById('hero-bg');
+  if(!bg) return;
+  function onScroll(){
+    var y = window.scrollY;
+    bg.style.transform = 'translateY(' + (y * 0.35) + 'px)';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+
+/* ── Scroll reveal ── */
+(function(){
+  var items = document.querySelectorAll('.reveal');
+  if(!items.length) return;
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, {threshold: 0.12});
+  items.forEach(function(el){ obs.observe(el); });
+})();
+
 </script>
-
-<div id="email-modal">
-  <div class="email-modal-box">
-    <h3>Mejla din plan</h3>
-    <p>Ange din e-postadress så skickar vi din marknadsföringsplan direkt till din inkorg.</p>
-    <input type="email" id="email-input" placeholder="din@email.se">
-    <div class="email-modal-row">
-      <button class="email-modal-send" onclick="sendEmail()">Skicka plan</button>
-      <button class="email-modal-cancel" onclick="closeEmailModal()">Avbryt</button>
-    </div>
-    <div class="email-modal-note">Mejlfunktionen aktiveras inom kort</div>
-  </div>
-</div>
-
-</body>
-</html>
