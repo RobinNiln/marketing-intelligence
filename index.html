@@ -280,7 +280,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-error{font-size:13px;color:#F09595;margin-top:0.75rem;display:none}
 
 /* ─── APP ─── */
-#app{display:none;background:#F5F3EE;min-height:100vh;color:#2C2520}
+#app{display:none;background:#F5F3EE;color:#2C2520}
 header{
   background:#fff;color:#2C2520;
   padding:1rem 2rem;
@@ -298,7 +298,7 @@ header{
   color:#9A8570;font-size:12px;padding:5px 13px;border-radius:20px
 }
 
-.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+.container{max-width:720px;margin:0 auto;padding:1.5rem 1.5rem 3rem}
 
 .form-section-label{
   font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;
@@ -537,7 +537,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 
 /* ─── MULTI-STEP FORM ─── */
-.form-progress{display:flex;align-items:center;margin-bottom:2rem}
+.form-progress{display:flex;align-items:center;margin-bottom:1.5rem}
 .fp-step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
 .fp-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:all 0.2s;z-index:1;position:relative}
 .fp-dot.done{background:#2C2520;color:#fff}
@@ -545,7 +545,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .fp-dot.pending{background:#F1EFE8;color:#888;border:1px solid rgba(0,0,0,0.08)}
 .fp-label{font-size:11px;color:#9A8570;white-space:nowrap}
 .fp-label.active{color:#2C2520;font-weight:600}
-.fp-line{flex:1;height:1px;background:rgba(0,0,0,0.1);margin:0 4px;margin-bottom:18px;transition:background 0.2s}
+.fp-line{flex:1;height:1px;background:rgba(0,0,0,0.1);margin:0 4px;margin-bottom:14px;transition:background 0.2s}
 .fp-line.done{background:#C9A84C}
 
 .fstep{display:none}
@@ -718,7 +718,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 <div class="container">
 
   <div id="form-section">
-    <div style="margin-bottom:1.25rem">
+    <div style="margin-bottom:0.75rem">
       <button onclick="goToLanding()" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;color:#9A8570;display:flex;align-items:center;gap:6px;padding:0;transition:color 0.15s" onmouseover="this.style.color='#2C2520'" onmouseout="this.style.color='#9A8570'">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
         Till startsidan
@@ -1069,6 +1069,7 @@ const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='timrobin2024';
 
 function goToLanding(){
+  document.body.style.background='#0a0a0a';
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
@@ -1097,6 +1098,7 @@ function showApp(){
   document.getElementById('app').style.display='block';
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
+  document.body.style.background='#F5F3EE';
   loadSaved();
 }
 
