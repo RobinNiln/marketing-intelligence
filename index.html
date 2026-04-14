@@ -18,8 +18,6 @@
 html{scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh}
 body.app-mode{background:#F5F3EE}
-body.app-mode #landing{display:none!important}
-body:not(.app-mode) #app{display:none!important}
 
 /* ─── LANDING ─── */
 #landing{display:block}
@@ -284,7 +282,6 @@ body:not(.app-mode) #app{display:none!important}
 
 /* ─── APP ─── */
 #app{display:none;background:#F5F3EE;color:#2C2520;margin:0}
-#app:not(.app-visible){display:none!important}
 header{
   background:#fff;color:#2C2520;
   padding:1rem 2rem;
@@ -585,9 +582,12 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .fstep-summary-row:last-child{margin-bottom:0}
 .fstep-summary-dot{width:6px;height:6px;border-radius:50%;background:#C9A84C;flex-shrink:0;margin-top:5px}
 
+
+/* Force hide app on load */
+#app{display:none}
 </style>
 </head>
-<body><script>if(sessionStorage.getItem('tr_authed')){document.body.classList.add('app-mode');}</script>
+<body>
 
 <!-- ═══ LANDING ═══ -->
 <div id="landing">
@@ -707,7 +707,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 </div>
 
 <!-- ═══ APP ═══ -->
-<div id="app">
+<div id="app" style="display:none">
 <header>
   <div class="header-brand">
 <div class="header-logo" onclick="goToLanding()" style="cursor:pointer" title="Till startsidan"><img src="images/RT_North.png" alt="R/T North" style="height:44px;width:auto"></div>
@@ -1074,10 +1074,8 @@ const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='timrobin2024';
 
 function goToLanding(){
+  document.getElementById('app').style.display='none';
   document.body.classList.remove('app-mode');
-  var app=document.getElementById('app');
-  app.classList.remove('app-visible');
-  app.style.display='none';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1100,14 +1098,12 @@ function checkPassword(){
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
 
 function showApp(){
-  document.body.classList.add('app-mode');
   document.getElementById('landing').style.display='none';
   document.getElementById('login-screen').style.display='none';
-  var app=document.getElementById('app');
-  app.classList.add('app-visible');
-  app.style.display='block';
+  document.getElementById('app').style.display='block';
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
+  document.body.classList.add('app-mode');
   window.scrollTo(0,0);
   loadSaved();
 }
