@@ -284,6 +284,7 @@ body:not(.app-mode) #app{display:none!important}
 
 /* ─── APP ─── */
 #app{display:none;background:#F5F3EE;color:#2C2520;margin:0}
+#app:not(.app-visible){display:none!important}
 header{
   background:#fff;color:#2C2520;
   padding:1rem 2rem;
@@ -706,7 +707,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 </div>
 
 <!-- ═══ APP ═══ -->
-<div id="app" style="display:none">
+<div id="app">
 <header>
   <div class="header-brand">
 <div class="header-logo" onclick="goToLanding()" style="cursor:pointer" title="Till startsidan"><img src="images/RT_North.png" alt="R/T North" style="height:44px;width:auto"></div>
@@ -1074,7 +1075,9 @@ const ACCESS_PASSWORD='timrobin2024';
 
 function goToLanding(){
   document.body.classList.remove('app-mode');
-  document.getElementById('app').style.display='none';
+  var app=document.getElementById('app');
+  app.classList.remove('app-visible');
+  app.style.display='none';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1100,7 +1103,9 @@ function showApp(){
   document.body.classList.add('app-mode');
   document.getElementById('landing').style.display='none';
   document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
+  var app=document.getElementById('app');
+  app.classList.add('app-visible');
+  app.style.display='block';
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
   window.scrollTo(0,0);
