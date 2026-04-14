@@ -82,13 +82,13 @@ body.app-mode{background:#F5F3EE}
 .hero-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
 
 .hero-h1{
-  font-size:clamp(2.8rem,6vw,5.5rem);
+  font-size:clamp(2.4rem,5vw,4.8rem);
   font-weight:700;
-  line-height:1.05;
+  line-height:1.08;
   letter-spacing:-0.03em;
   color:#fff;
   margin-bottom:1.75rem;
-  max-width:780px
+  max-width:820px
 }
 .hero-h1 em{
   font-style:normal;
@@ -1388,8 +1388,10 @@ function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsförin
 (function(){
   var el = document.getElementById('typewriter-text');
   if(!el) return;
-  var lines = ['Vet du var ditt företag', 'egentligen bör synas?'];
-  var full = lines[0] + '\n' + lines[1];
+  var isMobile = window.innerWidth < 640;
+  var full = isMobile
+    ? 'Vet du var ditt\nföretag bör synas?'
+    : 'Vet du var ditt företag\negentligen bör synas?';
   var i = 0;
   function tick(){
     if(i <= full.length){
@@ -1398,14 +1400,12 @@ function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsförin
       i++;
       setTimeout(tick, i === 1 ? 600 : 45);
     } else {
-      // hide cursor after done, keep blinking a moment then stop
       setTimeout(function(){
         var cur = document.querySelector('.tw-cursor');
         if(cur) cur.style.display = 'none';
       }, 2000);
     }
   }
-  // start after hero image loads
   window.addEventListener('load', function(){ setTimeout(tick, 400); });
 })();
 
