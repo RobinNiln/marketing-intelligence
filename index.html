@@ -17,6 +17,7 @@
 }
 html{scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh}
+body.app-mode{background:#F5F3EE}
 
 /* ─── LANDING ─── */
 #landing{display:block}
@@ -280,10 +281,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-error{font-size:13px;color:#F09595;margin-top:0.75rem;display:none}
 
 /* ─── APP ─── */
-#app{display:none;background:#F5F3EE;color:#2C2520}
+#app{display:none;background:#F5F3EE;color:#2C2520;margin:0}
 header{
   background:#fff;color:#2C2520;
   padding:1rem 2rem;
+  margin:0;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
   border-bottom:1px solid rgba(180,155,110,0.2)
 }
@@ -1069,7 +1071,7 @@ const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='timrobin2024';
 
 function goToLanding(){
-  document.body.style.background='#0a0a0a';
+  document.body.classList.remove('app-mode');
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
@@ -1098,7 +1100,7 @@ function showApp(){
   document.getElementById('app').style.display='block';
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
-  document.body.style.background='#F5F3EE';
+  document.body.classList.add('app-mode');
   loadSaved();
 }
 
