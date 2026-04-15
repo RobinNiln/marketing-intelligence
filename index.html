@@ -611,6 +611,43 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .hero-bg{
   will-change:transform;
 }
+
+/* ─── ABOUT PAGE ─── */
+#about-page{display:none;background:#0a0a0a;color:#fff;min-height:100vh}
+.about-nav{display:flex;align-items:center;justify-content:space-between;padding:2rem 3rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+@media(max-width:640px){.about-nav{padding:1.5rem}}
+.about-hero{padding:6rem 3rem 4rem;max-width:900px;margin:0 auto}
+@media(max-width:640px){.about-hero{padding:4rem 1.5rem 3rem}}
+.about-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:0}
+.about-people{padding:5rem 3rem;max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+@media(max-width:640px){.about-people{grid-template-columns:1fr;padding:3rem 1.5rem}}
+.about-person{display:flex;flex-direction:column;gap:1.25rem}
+.about-avatar-wrap{display:flex;align-items:center;gap:1rem}
+.about-avatar{width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#C9A84C;flex-shrink:0}
+.about-person-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.01em}
+.about-person-title{font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px}
+.about-person-bio{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.75}
+.about-person-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:0.5rem}
+.about-ptag{font-size:11px;font-weight:600;letter-spacing:0.06em;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08)}
+.about-what{padding:5rem 3rem;max-width:900px;margin:0 auto}
+@media(max-width:640px){.about-what{padding:3rem 1.5rem}}
+.about-two-col{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:3rem;margin-bottom:3rem}
+@media(max-width:640px){.about-two-col{grid-template-columns:1fr;gap:2rem}}
+.about-quote-block{font-size:clamp(1.2rem,2vw,1.5rem);font-weight:700;color:#fff;line-height:1.45;letter-spacing:-0.02em;border-left:3px solid #C9A84C;padding-left:1.5rem;border-radius:0}
+.about-quote-block em{color:#C9A84C;font-style:normal}
+.about-logo-box{display:flex;align-items:center;justify-content:center;padding:2.5rem;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:rgba(255,255,255,0.02)}
+.about-logo-box img{height:52px;width:auto;filter:brightness(0) invert(1)}
+.about-body-text{display:flex;flex-direction:column;gap:1.25rem}
+.about-body-text p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.8}
+.about-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:0.75rem}
+.about-pill{font-size:12px;font-weight:600;letter-spacing:0.05em;padding:5px 12px;border-radius:100px;border:1px solid rgba(201,168,76,0.3);color:rgba(201,168,76,0.8)}
+.about-cta{padding:5rem 3rem;max-width:900px;margin:0 auto;text-align:center}
+@media(max-width:640px){.about-cta{padding:3rem 1.5rem}}
+.about-cta-h{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:1rem}
+.about-cta-sub{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.about-cta-btn{display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;letter-spacing:0.02em;font-family:inherit;transition:background 0.15s}
+.about-cta-btn:hover{background:#E8C97A}
+.about-cta-note{font-size:12px;color:rgba(255,255,255,0.25);margin-top:1rem}
 </style>
 </head>
 <body>
@@ -624,10 +661,13 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo">
-      <button class="nav-login" onclick="goToLogin()">
-        Logga in
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
-      </button>
+      <div style="display:flex;align-items:center;gap:1.5rem">
+        <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
+        <button class="nav-login" onclick="goToLogin()">
+          Logga in
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+        </button>
+      </div>
     </nav>
 
     <div class="hero-content">
@@ -718,6 +758,97 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
     <div class="footer-copy">© 2025 R/T North</div>
   </footer>
 
+</div>
+
+
+<!-- ═══ ABOUT ═══ -->
+<div id="about-page">
+  <nav class="about-nav">
+    <img src="images/RT_North.png" alt="R/T North" style="height:44px;width:auto">
+    <button onclick="goToLanding()" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Tillbaka
+    </button>
+  </nav>
+
+  <section class="about-hero">
+    <div class="eyebrow">Om R/T North</div>
+    <h1 style="font-size:clamp(2.2rem,4.5vw,3.8rem);font-weight:700;line-height:1.08;letter-spacing:-0.03em;color:#fff;margin-bottom:1.5rem;max-width:700px">En byrå byggd för att koppla ihop strategi, kreativitet och distribution.</h1>
+    <p style="font-size:clamp(1rem,1.4vw,1.1rem);color:rgba(255,255,255,0.6);line-height:1.75;max-width:580px">Vi är Robin och Tim – två kollegor som träffades på Svenska Dagbladet en gång i tiden och insåg att vi delade en frustration. De flesta byråer är antingen strateger, producenter eller medieköpare. Vi vill vara alla tre på en gång.</p>
+  </section>
+
+  <hr class="about-divider">
+
+  <section class="about-people">
+    <div class="about-person">
+      <div class="about-avatar-wrap">
+        <div class="about-avatar">RN</div>
+        <div>
+          <div class="about-person-name">Robin Nilsson</div>
+          <div class="about-person-title">Medgrundare · R/T North</div>
+        </div>
+      </div>
+      <p class="about-person-bio">Robin har tillbringat 15 år i korsningen mellan redaktion och kommersiell kommunikation. Han har arbetat som reporter på Göteborgs-Posten och Aftonbladet, byggt native-affärer på SvD och Schibsted, lett innehållsstrategi på Hemnet och drivit produktutveckling på NTM Media. Han förstår hur berättelser byggs och hur de distribueras – och ser dem som delar av samma system.</p>
+      <div class="about-person-tags">
+        <span class="about-ptag">Innehållsstrategi</span>
+        <span class="about-ptag">Native & branded content</span>
+        <span class="about-ptag">Produktledning</span>
+        <span class="about-ptag">Nyhetsmedia</span>
+      </div>
+    </div>
+    <div class="about-person">
+      <div class="about-avatar-wrap">
+        <div class="about-avatar">TN</div>
+        <div>
+          <div class="about-person-name">Tim Nilsson</div>
+          <div class="about-person-title">Medgrundare · R/T North</div>
+        </div>
+      </div>
+      <p class="about-person-bio">Tim kom från mediaplaneringens värld – PHD, Schibsted, Microsoft – och tillbringade sedan sex år på Hemnet där han byggde upp och ledde hela annonsaffären, inklusive programmatisk handel och yield-management. Han har sett marknadsföring från köpsidan, säljsidan och operationssidan, och vet precis var pengarna faktiskt gör skillnad.</p>
+      <div class="about-person-tags">
+        <span class="about-ptag">Performance marketing</span>
+        <span class="about-ptag">Programmatisk handel</span>
+        <span class="about-ptag">Medieköp</span>
+        <span class="about-ptag">Affärsutveckling</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="about-divider">
+
+  <section class="about-what">
+    <div class="eyebrow">Vad vi är</div>
+    <div class="about-two-col">
+      <div class="about-quote-block">
+        Vi är ingen renodlad reklambyrå, mediebyrå eller produktionsbyrå.<br><br>Vi är en <em>kombination av alla tre</em> – och det är poängen.
+      </div>
+      <div class="about-logo-box">
+        <img src="images/RT_North.png" alt="R/T North">
+      </div>
+    </div>
+    <div class="about-body-text">
+      <p>R/T North arbetar med bolag som vill ha en partner som förstår hela kedjan – från affärsmål och målgrupp till annonsköp och optimering. Inte en leverantör som tar emot en brief, utan en som hjälper er formulera den.</p>
+      <p>Vi tror att de bästa marknadsföringsinsatserna uppstår när rätt budskap, rätt kanal och rätt timing hänger ihop från början. Strategi, produktion och distribution är inte tre separata uppdrag – de är ett.</p>
+      <p>Vår bakgrund spänner över nyhetsmedia, digitala plattformar, e-handel och tech. Det ger oss ett brett perspektiv och en praktisk förståelse för hur marknadsföring faktiskt fungerar i olika typer av organisationer – med olika budgetar, olika mognadsgrader och olika krav på resultat.</p>
+      <div class="about-pills">
+        <span class="about-pill">Strategi</span>
+        <span class="about-pill">Kreativ produktion</span>
+        <span class="about-pill">Medieköp</span>
+        <span class="about-pill">Performance</span>
+        <span class="about-pill">Innehåll</span>
+        <span class="about-pill">Analys</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="about-divider">
+
+  <section class="about-cta">
+    <h2 class="about-cta-h">Analysen är bara början.</h2>
+    <p class="about-cta-sub">Det verkliga jobbet händer när strategin möter genomförandet. Det är där vi kommer in – och det är där vi trivs bäst.</p>
+    <button class="about-cta-btn" onclick="goToLogin()">Starta din analys →</button>
+    <div class="about-cta-note">Kostnadsfritt · 30 minuter · Inga förpliktelser</div>
+  </section>
 </div>
 
 <!-- ═══ LOGIN ═══ -->
@@ -1098,10 +1229,26 @@ const ACCESS_PASSWORD='timrobin2024';
 
 function goToLanding(){
   document.getElementById('app').style.display='none';
+  document.getElementById('about-page').style.display='none';
   document.body.classList.remove('app-mode');
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goToAbout(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('about-page').style.display='block';
+  document.body.classList.remove('app-mode');
+  window.scrollTo(0,0);
+}
+
+function goToLandingFromAbout(){
+  document.getElementById('about-page').style.display='none';
+  document.getElementById('landing').style.display='block';
+  window.scrollTo(0,0);
 }
 
 function goToLogin(){
