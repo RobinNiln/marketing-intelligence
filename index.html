@@ -8,7 +8,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --gold:#C9A84C;--gold-light:#E8C97A;--gold-dim:rgba(201,168,76,0.15);
-  --p50:#EEEDFE;--p100:#CECBF6;--p600:#534AB7;--p800:#3C3489;--p900:#26215C;
   --t50:#E1F5EE;--t100:#9FE1CB;--t600:#0F6E56;--t800:#085041;
   --a50:#FAEEDA;--a100:#FAC775;--a600:#854F0B;
   --g50:#F1EFE8;--g100:#D3D1C7;--g600:#5F5E5A;
@@ -732,7 +731,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
         </div>
         <div class="pillar">
           <div class="pillar-rule"></div>
-          <div class="pillar-title">Steg 2: Vi tar över</div>
+          <div class="pillar-title">Vi tar över</div>
           <div class="pillar-desc">När du sett var du bör synas hjälper R/T North med allt – annonsering, innehåll, medieköp och löpande optimering. Du behöver inte göra det själv.</div>
         </div>
       </div>
@@ -754,8 +753,8 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
   </div>
 
   <footer class="site-footer">
-    <div class="footer-brand">R/T North</div>
-    <div class="footer-copy">© 2025 R/T North</div>
+    <div class="footer-brand"><img src="images/RT_North.png" alt="R/T North" style="height:28px;width:auto;opacity:0.4"></div>
+    <div class="footer-copy">© 2026 R/T North</div>
   </footer>
 
 </div>
@@ -765,10 +764,13 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 <div id="about-page">
   <nav class="about-nav">
     <img src="images/RT_North.png" alt="R/T North" style="height:44px;width:auto;cursor:pointer" onclick="goToLanding()">
-    <button onclick="goToLanding()" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
-      Tillbaka
-    </button>
+    <div style="display:flex;align-items:center;gap:1.5rem">
+      <button onclick="goToLogin()" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;background:none;border:none;font-family:inherit">Starta analys</button>
+      <button onclick="goToLanding()" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+        Tillbaka
+      </button>
+    </div>
   </nav>
 
   <section class="about-hero">
@@ -1242,12 +1244,6 @@ function goToAbout(){
   document.getElementById('app').style.display='none';
   document.getElementById('about-page').style.display='block';
   document.body.classList.remove('app-mode');
-  window.scrollTo(0,0);
-}
-
-function goToLandingFromAbout(){
-  document.getElementById('about-page').style.display='none';
-  document.getElementById('landing').style.display='block';
   window.scrollTo(0,0);
 }
 
