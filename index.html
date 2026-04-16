@@ -635,7 +635,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 @media(max-width:640px){.about-two-col{grid-template-columns:1fr;gap:2rem}}
 .about-quote-block{font-size:clamp(1.2rem,2vw,1.5rem);font-weight:700;color:#fff;line-height:1.45;letter-spacing:-0.02em;border-left:3px solid #C9A84C;padding-left:1.5rem;border-radius:0}
 .about-quote-block em{color:#C9A84C;font-style:normal}
-.about-logo-box{display:flex;align-items:center;justify-content:center;padding:2.5rem;border:1px solid rgba(255,255,255,0.08);border-radius:12px;background:#1a1a1a}
+.about-logo-box{display:flex;align-items:center;justify-content:center;}
 .about-logo-box img{height:52px;width:auto}
 .about-body-text{display:flex;flex-direction:column;gap:1.25rem}
 .about-body-text p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.8}
@@ -822,8 +822,8 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
       <div class="about-quote-block">
         Vi är ingen renodlad reklambyrå, mediebyrå eller produktionsbyrå.<br><br>Vi är en <em>kombination av alla tre</em> – och det är poängen.
       </div>
-      <div class="about-logo-box">
-        <img src="images/RT_North.png" alt="R/T North" style="height:80px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div class="about-logo-box" onclick="goToLanding()" style="cursor:pointer">
+        <img src="images/rtnorth-transparant.png" alt="R/T North" style="height:100px;width:auto">
       </div>
     </div>
     <div class="about-body-text">
