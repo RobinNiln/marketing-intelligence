@@ -1923,8 +1923,9 @@ Valda mediekanaler: ${mediaList}`;
       method:'POST',
       headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
       body:JSON.stringify({
-        system: systemPrompt,
-        messages:[{role:'user',content:userPrompt}]
+        messages:[
+          {role:'user',content:systemPrompt+'\n\n'+userPrompt}
+        ]
       })
     });
     const data = await res.json();
