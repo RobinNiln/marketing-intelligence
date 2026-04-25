@@ -647,6 +647,57 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .about-cta-btn{display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;letter-spacing:0.02em;font-family:inherit;transition:background 0.15s}
 .about-cta-btn:hover{background:#E8C97A}
 .about-cta-note{font-size:12px;color:rgba(255,255,255,0.25);margin-top:1rem}
+
+/* ─── NATIVE AUTO REACH ─── */
+#native-page{display:none}
+body.native-mode{background:#F5F3EE}
+.native-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.native-header-brand{display:flex;align-items:center;gap:12px}
+.native-header-title{font-size:15px;font-weight:600;color:#2C2520}
+.native-header-sub{font-size:12px;color:#9A8570}
+.native-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.native-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem}
+.native-field{margin-bottom:1.25rem}
+.native-field label{display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px}
+.native-field label span{font-weight:400;color:#9A8570;font-size:12px;margin-left:4px}
+.native-input,.native-textarea,.native-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
+.native-input:focus,.native-textarea:focus,.native-select:focus{border-color:#C9A84C}
+.native-textarea{min-height:100px;resize:vertical;line-height:1.6}
+.native-media-grid{margin-bottom:0.5rem}
+.native-media-card{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;background:#fff;user-select:none}
+.native-media-card:hover{border-color:#C9A84C}
+.native-media-card.selected{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.native-media-card input[type=checkbox]{display:none}
+.native-media-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.native-media-group{font-size:11px;color:#9A8570;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
+.native-media-reach{font-size:11px;color:#5F5E5A}
+.native-media-check{width:16px;height:16px;border-radius:4px;border:1.5px solid rgba(0,0,0,0.2);margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+.native-media-card.selected .native-media-check{background:#C9A84C;border-color:#C9A84C}
+.native-budget-wrap{display:flex;align-items:center;gap:12px}
+.native-budget-wrap .native-input{max-width:200px}
+.native-budget-note{font-size:12px;color:#9A8570;margin-top:6px}
+.native-analyze-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
+.native-analyze-btn:hover{background:#4A3F35}
+.native-analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
+.native-loading{text-align:center;padding:3rem 1rem;display:none}
+.native-loading-text{font-size:15px;color:#5F5E5A;margin-top:1rem}
+.native-result{display:none;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:2rem;margin-top:1.5rem}
+.native-result-headline{font-size:22px;font-weight:700;color:#2C2520;line-height:1.3;margin-bottom:1rem}
+.native-result-ingress{font-size:16px;color:#4A3F35;line-height:1.7;font-style:italic;border-left:3px solid #C9A84C;padding-left:1rem;margin-bottom:1.5rem}
+.native-result-body{font-size:15px;color:#2C2520;line-height:1.85;white-space:pre-line}
+.native-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(0,0,0,0.07)}
+.native-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
+.native-action-btn:hover{border-color:#C9A84C}
+.native-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
+.native-action-btn.primary:hover{background:#4A3F35}
+.native-budget-dist{background:#F9F8F6;border:1px solid rgba(0,0,0,0.07);border-radius:8px;padding:1.25rem;margin-top:1.5rem}
+.native-budget-dist-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:1rem}
+.native-budget-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px;color:#2C2520}
+.native-budget-row:last-child{border-bottom:none}
+.native-budget-bar-wrap{width:100px;height:6px;background:rgba(0,0,0,0.07);border-radius:3px;margin:0 12px}
+.native-budget-bar{height:100%;background:#C9A84C;border-radius:3px}
+.native-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
+.native-new-btn:hover{border-color:#C9A84C;color:#2C2520}
 </style>
 </head>
 <body>
@@ -661,6 +712,7 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo" onclick="goToLanding()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:1.5rem">
+        <button class="nav-login" onclick="goToNative()" style="opacity:0.55">Native Auto Reach</button>
         <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
         <button class="nav-login" onclick="goToLogin()">
           Logga in
@@ -814,6 +866,133 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
     <button class="about-cta-btn" onclick="goToLogin()">Starta din analys →</button>
     <div class="about-cta-note">Kostnadsfritt · 30 minuter · Inga förpliktelser</div>
   </section>
+</div>
+
+<!-- ═══ NATIVE AUTO REACH ═══ -->
+<div id="native-page">
+
+  <header class="native-header">
+    <div class="native-header-brand">
+      <img src="images/RT_North.png" alt="R/T North" style="height:36px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div>
+        <div class="native-header-title">Native Auto Reach</div>
+        <div class="native-header-sub">Powered by AI · R/T North</div>
+      </div>
+    </div>
+    <button onclick="goToLanding()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Till startsidan
+    </button>
+  </header>
+
+  <div class="native-container">
+
+    <div id="native-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa din nativeartikel</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så skapar AI:n en redaktionellt skriven nativeartikel redo för publicering i svenska medier.</p>
+      </div>
+
+      <div class="native-section-title">Om företaget</div>
+
+      <div class="native-field">
+        <label>Företagsnamn <span>*</span></label>
+        <input class="native-input" id="n-company" type="text" placeholder="Ex. Björk & Partners AB">
+      </div>
+      <div class="native-field">
+        <label>Bransch <span>*</span></label>
+        <input class="native-input" id="n-industry" type="text" placeholder="Ex. Fastighet, Tech, Hälsa">
+      </div>
+      <div class="native-field">
+        <label>Webbplats <span>valfritt</span></label>
+        <input class="native-input" id="n-website" type="text" placeholder="https://www.exempel.se">
+      </div>
+
+      <div class="native-section-title">Om kampanjen</div>
+
+      <div class="native-field">
+        <label>Beskriv kampanjen <span>*</span></label>
+        <textarea class="native-textarea" id="n-campaign" placeholder="Vad handlar kampanjen om? Vad vill ni berätta? Lyft gärna era viktigaste budskap och vad som gör er unika."></textarea>
+      </div>
+      <div class="native-field">
+        <label>Syfte med kampanjen <span>*</span></label>
+        <textarea class="native-textarea" id="n-purpose" style="min-height:72px" placeholder="Ex. Öka kännedom om ny tjänst, driva trafik till hemsidan, stärka varumärket som arbetsgivare..."></textarea>
+      </div>
+      <div class="native-field">
+        <label>Målgrupp <span>*</span></label>
+        <input class="native-input" id="n-audience" type="text" placeholder="Ex. Villaägare 40–65 år i Mälardalen, småföretagare i Sverige">
+      </div>
+      <div class="native-field">
+        <label>Citat från företaget <span>valfritt – rekommenderas</span></label>
+        <textarea class="native-textarea" id="n-quote" style="min-height:72px" placeholder="Lägg gärna in ett eller två citat från en person på företaget. Namn och titel hjälper: 'Vi ser en tydlig efterfrågan... – Anna Svensson, VD'"></textarea>
+      </div>
+      <div class="native-field">
+        <label>Call to action <span>*</span></label>
+        <input class="native-input" id="n-cta" type="text" placeholder="Ex. Besök vår hemsida, Boka ett möte, Läs mer på...">
+      </div>
+
+      <div class="native-section-title">Välj mediekanaler</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Välj de titlar du vill nå. Budgeten fördelas baserat på titlarnas räckvidd. R/T North hanterar bokning och publicering.</p>
+
+      <div class="native-media-grid" id="native-media-grid"></div>
+
+      <div class="native-section-title">Budget</div>
+      <div class="native-field">
+        <label>Total kampanjbudget (SEK) <span>*</span></label>
+        <div class="native-budget-wrap">
+          <input class="native-input" id="n-budget" type="number" placeholder="Ex. 50000" min="0" step="1000">
+          <span style="font-size:13px;color:#9A8570">kr exkl. moms</span>
+        </div>
+        <div class="native-budget-note">Budgeten fördelas baserat på valda kanalers räckvidd. Förslaget visas i resultatet.</div>
+      </div>
+
+      <div id="native-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem"></div>
+
+      <button class="native-analyze-btn" id="native-btn" onclick="generateNative()">
+        Skapa nativeartikel →
+      </button>
+    </div>
+
+    <div class="native-loading" id="native-loading">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C9A84C" stroke-width="3" stroke-linecap="round">
+        <circle cx="18" cy="18" r="14" stroke="rgba(0,0,0,0.08)"/>
+        <path d="M18 4a14 14 0 0 1 14 14">
+          <animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+      <div class="native-loading-text">Skriver din nativeartikel...</div>
+    </div>
+
+    <div class="native-result" id="native-result">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:1rem">Nativeartikel – klar för publicering</div>
+      <div class="native-result-headline" id="native-result-headline"></div>
+      <div class="native-result-ingress" id="native-result-ingress"></div>
+      <div class="native-result-body" id="native-result-body"></div>
+
+      <div class="native-budget-dist" id="native-budget-dist" style="display:none">
+        <div class="native-budget-dist-title">Föreslagen budgetfördelning</div>
+        <div id="native-budget-rows"></div>
+      </div>
+
+      <div class="native-result-actions">
+        <button class="native-action-btn primary" onclick="nativeCopy()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
+          Kopiera artikel
+        </button>
+        <button class="native-action-btn" onclick="nativeDownload()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg>
+          Ladda ner
+        </button>
+        <button class="native-action-btn" onclick="nativeSendToRTNorth()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
+          Skicka till R/T North
+        </button>
+      </div>
+
+      <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
+    </div>
+
+  </div>
 </div>
 
 <!-- ═══ LOGIN ═══ -->
@@ -1195,7 +1374,9 @@ const ACCESS_PASSWORD='stockholm';
 function goToLanding(){
   document.getElementById('app').style.display='none';
   document.getElementById('about-page').style.display='none';
+  document.getElementById('native-page').style.display='none';
   document.body.classList.remove('app-mode');
+  document.body.classList.remove('native-mode');
   document.getElementById('login-screen').style.display='none';
   document.getElementById('landing').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1221,7 +1402,7 @@ function goToLogin(){
 
 function checkPassword(){
   const val=document.getElementById('password-input').value;
-  if(val===ACCESS_PASSWORD){sessionStorage.setItem(SESSION_KEY,'1');showApp();}
+  if(val===ACCESS_PASSWORD){sessionStorage.setItem(SESSION_KEY,'1');if(window._loginDest==='native')goToNative();else showApp();}
   else{document.getElementById('login-error').style.display='block';document.getElementById('password-input').value='';}
 }
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
@@ -1549,5 +1730,272 @@ function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsförin
   }, {threshold: 0.12});
   items.forEach(function(el){ obs.observe(el); });
 })();
+
+
+
+/* ══════════════════════════════════════════
+   NATIVE AUTO REACH
+══════════════════════════════════════════ */
+
+const NATIVE_MEDIA = [
+  // Schibsted
+  {id:'sch-ab',   name:'Aftonbladet',             group:'Schibsted', reach:22000000, weight:220},
+  {id:'sch-svd',  name:'Svenska Dagbladet',        group:'Schibsted', reach:4500000,  weight:45},
+  {id:'sch-omni', name:'Omni',                     group:'Schibsted', reach:3000000,  weight:30},
+  // Bonnier
+  {id:'bon-dn',   name:'Dagens Nyheter',           group:'Bonnier',   reach:12000000, weight:120},
+  {id:'bon-exp',  name:'Expressen',                group:'Bonnier',   reach:14000000, weight:140},
+  {id:'bon-di',   name:'Dagens industri',          group:'Bonnier',   reach:4000000,  weight:40},
+  {id:'bon-hd',   name:'Helsingborgs Dagblad',     group:'Bonnier',   reach:900000,   weight:9},
+  {id:'bon-skt',  name:'Skånska Dagbladet',        group:'Bonnier',   reach:700000,   weight:7},
+  // Stampen
+  {id:'sta-gp',   name:'Göteborgs-Posten',         group:'Stampen',   reach:6000000,  weight:60},
+  {id:'sta-bl',   name:'Bohusläningen',            group:'Stampen',   reach:700000,   weight:7},
+  {id:'sta-ttela',name:'TTELA',                    group:'Stampen',   reach:500000,   weight:5},
+  {id:'sta-hn',   name:'Hallands Nyheter',         group:'Stampen',   reach:600000,   weight:6},
+  {id:'sta-hp',   name:'Hallandsposten',           group:'Stampen',   reach:500000,   weight:5},
+  {id:'sta-at',   name:'Alingsås Tidning',         group:'Stampen',   reach:300000,   weight:3},
+  {id:'sta-st',   name:'Strömstads Tidning',       group:'Stampen',   reach:200000,   weight:2},
+  // NTM
+  {id:'ntm-op',   name:'Östgöta Correspondenten',  group:'NTM',       reach:1200000,  weight:12},
+  {id:'ntm-nt',   name:'Norrköpings Tidningar',    group:'NTM',       reach:900000,   weight:9},
+  {id:'ntm-gd',   name:'Gefle Dagblad',            group:'NTM',       reach:800000,   weight:8},
+  {id:'ntm-dt',   name:'Dalarnas Tidningar',       group:'NTM',       reach:700000,   weight:7},
+  {id:'ntm-lt',   name:'Länstidningen Östersund',  group:'NTM',       reach:600000,   weight:6},
+  {id:'ntm-fb',   name:'Folkbladet',               group:'NTM',       reach:500000,   weight:5},
+];
+
+function goToNative(){
+  if(!sessionStorage.getItem(SESSION_KEY)){goToLogin('native');return;}
+  document.getElementById('landing').style.display='none';
+  document.getElementById('about-page').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('native-page').style.display='block';
+  document.body.classList.add('native-mode');
+  window.scrollTo(0,0);
+  renderNativeMediaGrid();
+}
+
+function renderNativeMediaGrid(){
+  const wrap = document.getElementById('native-media-grid');
+  if(wrap.children.length) return;
+  const groups = [...new Set(NATIVE_MEDIA.map(m=>m.group))];
+  groups.forEach(g=>{
+    const items = NATIVE_MEDIA.filter(m=>m.group===g);
+    const block = document.createElement('div');
+    block.style.cssText='border:1px solid rgba(0,0,0,0.1);border-radius:8px;overflow:hidden;margin-bottom:8px;background:#fff';
+    const hdr = document.createElement('div');
+    hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;';
+    hdr.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;font-weight:600;color:#2C2520">${g}</span><span style="font-size:11px;color:#9A8570">${items.length} titlar</span></div><svg class="acc-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#9A8570" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s"><path d="M3 5l4 4 4-4"/></svg>`;
+    const body = document.createElement('div');
+    body.style.cssText='border-top:1px solid rgba(0,0,0,0.07);display:none';
+    items.forEach((m,i)=>{
+      const row = document.createElement('div');
+      row.id='card-'+m.id;
+      row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;border-bottom:'+(i<items.length-1?'1px solid rgba(0,0,0,0.06)':'none')+';transition:background 0.1s';
+      row.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><div id="check-${m.id}" style="width:16px;height:16px;border-radius:4px;border:1.5px solid rgba(0,0,0,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center"></div><span style="font-size:13px;font-weight:500;color:#2C2520">${m.name}</span></div><span style="font-size:12px;color:#9A8570">${(m.reach/1000000).toFixed(1)}M sv/mån</span>`;
+      row.onmouseenter=()=>{if(!row.classList.contains('sel'))row.style.background='rgba(0,0,0,0.02)'};
+      row.onmouseleave=()=>{row.style.background=row.classList.contains('sel')?'rgba(201,168,76,0.05)':''};
+      row.onclick=()=>toggleNativeMedia(m.id);
+      body.appendChild(row);
+    });
+    hdr.onclick=()=>{
+      const open=body.style.display==='block';
+      body.style.display=open?'none':'block';
+      hdr.querySelector('.acc-arrow').style.transform=open?'':'rotate(180deg)';
+    };
+    block.appendChild(hdr);
+    block.appendChild(body);
+    wrap.appendChild(block);
+  });
+}
+
+
+function toggleNativeMedia(id){
+  const row = document.getElementById('card-'+id);
+  const chk = document.getElementById('check-'+id);
+  const active = row.classList.toggle('sel');
+  row.style.background = active?'rgba(201,168,76,0.05)':'';
+  chk.style.background = active?'#C9A84C':'';
+  chk.style.borderColor = active?'#C9A84C':'rgba(0,0,0,0.2)';
+  chk.innerHTML = active?'<svg width="9" height="9" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+}
+
+function getSelectedMedia(){
+  return NATIVE_MEDIA.filter(m=>document.getElementById('card-'+m.id)?.classList.contains('sel'));
+}
+
+function calcBudgetDist(selected, totalBudget){
+  const totalWeight = selected.reduce((s,m)=>s+m.weight,0);
+  return selected.map(m=>({
+    name: m.name,
+    group: m.group,
+    amount: Math.round((m.weight/totalWeight)*totalBudget/100)*100,
+    pct: Math.round((m.weight/totalWeight)*100)
+  }));
+}
+
+function renderBudgetDist(dist, totalBudget){
+  const wrap = document.getElementById('native-budget-dist');
+  const rows = document.getElementById('native-budget-rows');
+  if(!dist.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  rows.innerHTML = dist.map(d=>\`
+    <div class="native-budget-row">
+      <span>\${d.name}</span>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
+        <div class="native-budget-bar-wrap"><div class="native-budget-bar" style="width:\${d.pct}%"></div></div>
+        <span style="font-size:12px;color:#9A8570;white-space:nowrap">\${d.pct}%</span>
+      </div>
+      <span style="font-weight:600;white-space:nowrap">\${d.amount.toLocaleString('sv-SE')} kr</span>
+    </div>
+  \`).join('');
+}
+
+async function generateNative(){
+  const company   = document.getElementById('n-company').value.trim();
+  const industry  = document.getElementById('n-industry').value.trim();
+  const website   = document.getElementById('n-website').value.trim();
+  const campaign  = document.getElementById('n-campaign').value.trim();
+  const purpose   = document.getElementById('n-purpose').value.trim();
+  const audience  = document.getElementById('n-audience').value.trim();
+  const quote     = document.getElementById('n-quote').value.trim();
+  const cta       = document.getElementById('n-cta').value.trim();
+  const budgetRaw = document.getElementById('n-budget').value.trim();
+  const errEl     = document.getElementById('native-error');
+  errEl.style.display='none';
+
+  if(!company||!industry||!campaign||!purpose||!audience||!cta){
+    errEl.textContent='Fyll i alla obligatoriska fält (markerade med *).';
+    errEl.style.display='block';
+    return;
+  }
+  const selected = getSelectedMedia();
+  if(!selected.length){
+    errEl.textContent='Välj minst en mediekanal.';
+    errEl.style.display='block';
+    return;
+  }
+  if(!budgetRaw||isNaN(Number(budgetRaw))||Number(budgetRaw)<=0){
+    errEl.textContent='Ange en giltig budget.';
+    errEl.style.display='block';
+    return;
+  }
+  const budget = Number(budgetRaw);
+  const mediaList = selected.map(m=>m.name+' ('+m.group+')').join(', ');
+
+  document.getElementById('native-btn').disabled=true;
+  document.getElementById('native-form-section').style.display='none';
+  document.getElementById('native-loading').style.display='block';
+
+  const systemPrompt = \`Du är en erfaren och skicklig copywriter specialiserad på att skriva engagerande och professionella nativeartiklar för svenska mediehus. Du har djup förståelse för hur redaktionellt innehåll fungerar och kan hitta den rätta balansen: artiklarna ska andas redaktionell kvalitet och journalistisk stil, men samtidigt vara effektiva nativeartiklar som lyfter fram kundens budskap på ett naturligt och trovärdiget sätt.
+
+Dina artiklar ska:
+- Skrivas på svenska i en varm, levande och läsarvänlig ton – som en välskriven redaktionell text
+- Ha en rubrik som väcker nyfikenhet och känns trovärdig, inte som en reklamannons
+- Ha en ingress på max 190 tecken (exkl. mellanslag) som snabbt fångar läsaren
+- Ha en brödtext på ca 2000 tecken (exkl. mellanslag) med naturligt flöde
+- Integrera eventuella kundcitat organiskt i texten – inte som ett separat block
+- Avslutas med en tydlig men naturlig call to action
+- Aldrig innehålla rubriker som "Ingress:", "Brödtext:" eller liknande strukturetiketter – texten ska flöda som en artikel
+
+Principen är: läsaren ska känna att de läser en intressant artikel, och i slutet inse att de också fått reda på något viktigt om ett företag. Sälj utan att sälja.
+
+Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JSON:
+{
+  "headline": "Artikelns rubrik",
+  "ingress": "Ingressen, max 190 tecken exkl mellanslag",
+  "body": "Brödtexten, ca 2000 tecken exkl mellanslag. Använd \\n\\n för styckeindelning."
+}\`;
+
+  const userPrompt = \`Skriv en nativeartikel baserad på följande information:
+
+Företag: \${company}
+Bransch: \${industry}\${website ? '\nWebbplats: '+website : ''}
+Kampanjbeskrivning: \${campaign}
+Syfte: \${purpose}
+Målgrupp: \${audience}\${quote ? '\nCitat från företaget: '+quote : ''}
+Call to action: \${cta}
+Valda mediekanaler: \${mediaList}\`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: systemPrompt,
+        messages:[{role:'user',content:userPrompt}]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const article = JSON.parse(clean);
+
+    document.getElementById('native-result-headline').textContent = article.headline||'';
+    document.getElementById('native-result-ingress').textContent  = article.ingress||'';
+    document.getElementById('native-result-body').textContent     = article.body||'';
+
+    const dist = calcBudgetDist(selected, budget);
+    renderBudgetDist(dist, budget);
+
+    document.getElementById('native-loading').style.display='none';
+    document.getElementById('native-result').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    window._nativeArticle = article;
+    window._nativeBudgetDist = dist;
+    window._nativeCompany = company;
+
+  } catch(e){
+    document.getElementById('native-loading').style.display='none';
+    document.getElementById('native-form-section').style.display='block';
+    document.getElementById('native-btn').disabled=false;
+    errEl.textContent='Något gick fel. Kontrollera din anslutning och försök igen.';
+    errEl.style.display='block';
+  }
+}
+
+function nativeCopy(){
+  const a = window._nativeArticle;
+  if(!a) return;
+  const text = a.headline+'\n\n'+a.ingress+'\n\n'+a.body;
+  navigator.clipboard.writeText(text).then(()=>alert('Artikeln kopierad!'));
+}
+
+function nativeDownload(){
+  const a = window._nativeArticle;
+  if(!a) return;
+  const text = a.headline+'\n\n'+a.ingress+'\n\n'+a.body;
+  const blob = new Blob([text],{type:'text/plain;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href=url; link.download='nativeartikel.txt'; link.click();
+  URL.revokeObjectURL(url);
+}
+
+function nativeSendToRTNorth(){
+  const a = window._nativeArticle;
+  const c = window._nativeCompany||'';
+  if(!a) return;
+  const subject = encodeURIComponent('Nativeartikel – '+c+' (Native Auto Reach)');
+  const body = encodeURIComponent(
+    'Rubrik:\n'+a.headline+'\n\nIngress:\n'+a.ingress+'\n\nBrödtext:\n'+a.body+
+    (window._nativeBudgetDist&&window._nativeBudgetDist.length
+      ? '\n\nBudgetfördelning:\n'+window._nativeBudgetDist.map(d=>d.name+': '+d.amount.toLocaleString('sv-SE')+' kr').join('\n')
+      : '')
+  );
+  window.location.href='mailto:hello@rtnorth.se?subject='+subject+'&body='+body;
+}
+
+function nativeReset(){
+  document.getElementById('native-result').style.display='none';
+  document.getElementById('native-form-section').style.display='block';
+  document.getElementById('native-btn').disabled=false;
+  window.scrollTo(0,0);
+}
+
 
 </script>
