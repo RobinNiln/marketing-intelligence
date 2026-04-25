@@ -808,7 +808,7 @@ body.adcopy-mode{background:#F5F3EE}
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo" onclick="goToLanding()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:1.5rem">
-        <button class="nav-login" onclick="goToToolLogin('tools')" style="opacity:0.55">Verktyg</button>
+        <button class="nav-login" onclick="goToTools()" style="opacity:0.55">Verktyg</button>
         <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
         <button class="nav-login" onclick="goToLogin()">
           Logga in
@@ -1783,7 +1783,6 @@ function checkPassword(){
     if(dest==='native') goToNative();
     else if(dest==='dist') goToDist();
     else if(dest==='adcopy') goToAdCopy();
-    else if(dest==='tools') goToTools();
     else showApp();
   }
   else{document.getElementById('login-error').style.display='block';document.getElementById('password-input').value='';}
