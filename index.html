@@ -712,7 +712,7 @@ body.native-mode{background:#F5F3EE}
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo" onclick="goToLanding()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:1.5rem">
-        <button class="nav-login" onclick="goToNative()" style="opacity:0.55">Native Auto Reach</button>
+        <button class="nav-login" onclick="goToLogin('native')" style="opacity:0.55">Native Auto Reach</button>
         <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
         <button class="nav-login" onclick="goToLogin()">
           Logga in
@@ -1391,9 +1391,9 @@ function goToAbout(){
   window.scrollTo(0,0);
 }
 
-function goToLogin(){
+function goToLogin(dest){
+  window._loginDest = dest||'app';
   document.getElementById('landing').style.display='none';
-  if(sessionStorage.getItem(SESSION_KEY)){showApp();return;}
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('login-screen').style.alignItems='center';
   document.getElementById('login-screen').style.justifyContent='center';
@@ -1766,9 +1766,9 @@ const NATIVE_MEDIA = [
 ];
 
 function goToNative(){
-  if(!sessionStorage.getItem(SESSION_KEY)){goToLogin('native');return;}
   document.getElementById('landing').style.display='none';
   document.getElementById('about-page').style.display='none';
+  document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='none';
   document.getElementById('native-page').style.display='block';
   document.body.classList.add('native-mode');
@@ -1840,16 +1840,16 @@ function renderBudgetDist(dist, totalBudget){
   const rows = document.getElementById('native-budget-rows');
   if(!dist.length){wrap.style.display='none';return;}
   wrap.style.display='block';
-  rows.innerHTML = dist.map(d=>\`
+  rows.innerHTML = dist.map(d=>`
     <div class="native-budget-row">
-      <span>\${d.name}</span>
+      <span>${d.name}</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
-        <div class="native-budget-bar-wrap"><div class="native-budget-bar" style="width:\${d.pct}%"></div></div>
-        <span style="font-size:12px;color:#9A8570;white-space:nowrap">\${d.pct}%</span>
+        <div class="native-budget-bar-wrap"><div class="native-budget-bar" style="width:${d.pct}%"></div></div>
+        <span style="font-size:12px;color:#9A8570;white-space:nowrap">${d.pct}%</span>
       </div>
-      <span style="font-weight:600;white-space:nowrap">\${d.amount.toLocaleString('sv-SE')} kr</span>
+      <span style="font-weight:600;white-space:nowrap">${d.amount.toLocaleString('sv-SE')} kr</span>
     </div>
-  \`).join('');
+  `).join('');
 }
 
 async function generateNative(){
@@ -1888,7 +1888,7 @@ async function generateNative(){
   document.getElementById('native-form-section').style.display='none';
   document.getElementById('native-loading').style.display='block';
 
-  const systemPrompt = \`Du är en erfaren och skicklig copywriter specialiserad på att skriva engagerande och professionella nativeartiklar för svenska mediehus. Du har djup förståelse för hur redaktionellt innehåll fungerar och kan hitta den rätta balansen: artiklarna ska andas redaktionell kvalitet och journalistisk stil, men samtidigt vara effektiva nativeartiklar som lyfter fram kundens budskap på ett naturligt och trovärdiget sätt.
+  const systemPrompt = `Du är en erfaren och skicklig copywriter specialiserad på att skriva engagerande och professionella nativeartiklar för svenska mediehus. Du har djup förståelse för hur redaktionellt innehåll fungerar och kan hitta den rätta balansen: artiklarna ska andas redaktionell kvalitet och journalistisk stil, men samtidigt vara effektiva nativeartiklar som lyfter fram kundens budskap på ett naturligt och trovärdiget sätt.
 
 Dina artiklar ska:
 - Skrivas på svenska i en varm, levande och läsarvänlig ton – som en välskriven redaktionell text
@@ -1906,17 +1906,17 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
   "headline": "Artikelns rubrik",
   "ingress": "Ingressen, max 190 tecken exkl mellanslag",
   "body": "Brödtexten, ca 2000 tecken exkl mellanslag. Använd \\n\\n för styckeindelning."
-}\`;
+}`;
 
-  const userPrompt = \`Skriv en nativeartikel baserad på följande information:
+  const userPrompt = `Skriv en nativeartikel baserad på följande information:
 
-Företag: \${company}
-Bransch: \${industry}\${website ? '\nWebbplats: '+website : ''}
-Kampanjbeskrivning: \${campaign}
-Syfte: \${purpose}
-Målgrupp: \${audience}\${quote ? '\nCitat från företaget: '+quote : ''}
-Call to action: \${cta}
-Valda mediekanaler: \${mediaList}\`;
+Företag: ${company}
+Bransch: ${industry}${website ? '\nWebbplats: '+website : ''}
+Kampanjbeskrivning: ${campaign}
+Syfte: ${purpose}
+Målgrupp: ${audience}${quote ? '\nCitat från företaget: '+quote : ''}
+Call to action: ${cta}
+Valda mediekanaler: ${mediaList}`;
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages',{
