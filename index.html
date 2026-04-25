@@ -1919,18 +1919,16 @@ Call to action: ${cta}
 Valda mediekanaler: ${mediaList}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
+    const res = await fetch(PROXY_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
         system: systemPrompt,
         messages:[{role:'user',content:userPrompt}]
       })
     });
     const data = await res.json();
-    const raw = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const article = JSON.parse(clean);
 
