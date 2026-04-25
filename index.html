@@ -1165,7 +1165,7 @@ body.adcopy-mode{background:#F5F3EE}
       </div>
       <div class="tool-card-label">Steg 3 · Produktion</div>
       <div class="tool-card-title">Native Auto Reach</div>
-      <div class="tool-card-desc">Skapa en redaktionellt skriven nativeartikel redo för publicering hos de största mediehusen i Sverige.</div>
+      <div class="tool-card-desc">Skapa en redaktionellt skriven nativeartikel redo för publicering hos Schibsted, Bonnier, Stampen och NTM.</div>
       <div class="tool-card-tags">
         <span class="tool-card-tag">Nativeartiklar</span>
         <span class="tool-card-tag">AI-produktion</span>
@@ -1180,7 +1180,7 @@ body.adcopy-mode{background:#F5F3EE}
       </div>
       <div class="tool-card-label">Steg 4 · Annonsering</div>
       <div class="tool-card-title">Ad Copy Generator</div>
-      <div class="tool-card-desc">Generera färdig annonscopy och HTML-banners för bland annat Meta, LinkedIn, Google Ads och display.</div>
+      <div class="tool-card-desc">Generera färdig annonscopy och HTML-banners för Meta, LinkedIn, Google Ads och display.</div>
       <div class="tool-card-tags">
         <span class="tool-card-tag">Meta</span>
         <span class="tool-card-tag">LinkedIn</span>
@@ -2576,7 +2576,7 @@ Fördela budgeten optimalt mellan valda kanaler baserat på mål och målgrupp. 
     document.getElementById('dist-loading').style.display='none';
     document.getElementById('dist-form-section').style.display='block';
     document.getElementById('dist-btn').disabled=false;
-    document.getElementById('dist-error').textContent='Något gick fel. Försök igen.';
+    document.getElementById('dist-error').textContent='Något gick fel: '+(e&&e.message?e.message:'kontrollera anslutningen och försök igen.');
     document.getElementById('dist-error').style.display='block';
   }
 }
@@ -2617,7 +2617,7 @@ const ADCOPY_FORMATS = [
   {id:'fmt-linkedin-msg', icon:'✉️', name:'LinkedIn – Sponsored InMail', desc:'Direkt meddelande'},
   {id:'fmt-google-search',icon:'🔍', name:'Google Ads – Sök',       desc:'Headlines + descriptions'},
   {id:'fmt-display',      icon:'🖼️', name:'Display-banners',        desc:'Headline + korttext'},
-  {id:'fmt-html-banner',  icon:'🎨', name:'HTML-banner',            desc:'Färdig banner att ladda ner'},
+  {id:'fmt-html-banner',  icon:'🎨', name:'HTML-banner (300×250)',  desc:'Färdig banner – separat generering'},
 ];
 
 function renderAdCopyFormats(){
@@ -2673,7 +2673,14 @@ async function generateAdCopy(){
     'HTML-banner':              'VIKTIG INSTRUKTION: För detta format ska du ENBART returnera ren HTML-kod för en 300x250px display-banner. Ingen JSON. Bare HTML. Bannern ska ha ett modernt, professionellt utseende med varumärkets budskap, headline, korttext och CTA-knapp. Använd inline CSS. Bakgrundsfärg mörk eller vit beroende på ton.',
   };
 
-  const formatsStr = selected.map(f=>`${f.name}: ${formatDesc[f.name]||''}`).join('\n');
+  const jsonFormats = selected.filter(f=>f.id!=='fmt-html-banner');
+  const htmlBannerSelected = selected.some(f=>f.id==='fmt-html-banner');
+  const formatsStr = jsonFormats.map(f=>`${f.name}: ${formatDesc[f.name]||''}`).join('\n');
+  if(!jsonFormats.length && htmlBannerSelected){
+    // Only HTML banner selected – handle separately
+    await generateHtmlBannerOnly({company,product,message,audience,cta,tone});
+    return;
+  }
 
   const prompt = `Du är en erfaren copywriter specialiserad på betald annonsering i svenska och nordiska marknader. Du skriver annonscopy som konverterar – med tydliga budskap, rätt ton per kanal och starka call-to-actions.
 
@@ -2738,29 +2745,20 @@ Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska 
     window._adcopyResult = result;
     window._adcopyCompany = company;
 
-    // Check if HTML banner was generated and add download button
-    const bannerFormat = result.formats && result.formats.find(f => f.format && f.format.toLowerCase().includes('html'));
-    if(bannerFormat && bannerFormat.variants && bannerFormat.variants[0]) {
-      const bannerHTML = bannerFormat.variants[0].body || bannerFormat.variants[0].headline || '';
-      if(bannerHTML.includes('<') && bannerHTML.includes('>')) {
-        window._adcopyBannerHTML = bannerHTML;
-        const bannerBtn = document.createElement('button');
-        bannerBtn.className = 'adcopy-action-btn';
-        bannerBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg> Ladda ner HTML-banner';
-        bannerBtn.onclick = adcopyDownloadBanner;
-        document.querySelector('.adcopy-result-actions').appendChild(bannerBtn);
-      }
-    }
-
     document.getElementById('adcopy-loading').style.display='none';
     document.getElementById('adcopy-result').style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
+
+    // If HTML banner was also selected, generate it separately
+    if(htmlBannerSelected){
+      generateHtmlBanner({company,product,message,audience,cta,tone});
+    }
 
   } catch(e){
     document.getElementById('adcopy-loading').style.display='none';
     document.getElementById('adcopy-form-section').style.display='block';
     document.getElementById('adcopy-btn').disabled=false;
-    document.getElementById('adcopy-error').textContent='Något gick fel. Försök igen.';
+    document.getElementById('adcopy-error').textContent='Något gick fel: '+(e&&e.message?e.message:'kontrollera anslutningen och försök igen.');
     document.getElementById('adcopy-error').style.display='block';
   }
 }
@@ -2793,6 +2791,60 @@ function adcopySend(){
     body += '\n';
   });
   window.location.href='mailto:hello@rtnorth.se?subject='+encodeURIComponent('Ad Copy – '+c)+'&body='+encodeURIComponent(body);
+}
+
+async function generateHtmlBanner({company,product,message,audience,cta,tone}){
+  const bannerPrompt = `Du är en erfaren webbutvecklare och designer. Skapa en professionell HTML display-banner (300x250px) för följande kampanj. Returnera ENBART ren HTML-kod, inget annat.
+
+Företag: ${company}
+Produkt: ${product}
+Budskap: ${message}
+CTA: ${cta}
+${tone?'Ton: '+tone:''}
+
+Krav: Exakt 300x250px, inline CSS, mörk eller ljus bakgrund, tydlig rubrik, korttext och en CTA-knapp. Professionellt utseende. Ingen extern CSS eller JS.`;
+
+  try {
+    const res = await fetch(PROXY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
+      body:JSON.stringify({messages:[{role:'user',content:bannerPrompt}]})
+    });
+    const data = await res.json();
+    const html = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```html|```/g,'').trim();
+    window._adcopyBannerHTML = html;
+
+    // Add banner preview and download button to result
+    const wrap = document.getElementById('adcopy-result-blocks');
+    const bannerBlock = document.createElement('div');
+    bannerBlock.className = 'adcopy-format-block';
+    bannerBlock.innerHTML = `
+      <div class="adcopy-format-label">HTML-banner</div>
+      <div style="font-size:13px;color:#9A8570;margin-bottom:1rem">300×250px – redo att ladda ner</div>
+      <div style="width:300px;height:250px;border:1px solid rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;background:#fff">
+        <iframe srcdoc="${html.replace(/"/g,'&quot;')}" style="width:300px;height:250px;border:none;pointer-events:none" scrolling="no"></iframe>
+      </div>
+      <button class="adcopy-action-btn" style="margin-top:1rem" onclick="adcopyDownloadBanner()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg>
+        Ladda ner HTML-banner
+      </button>
+    `;
+    wrap.appendChild(bannerBlock);
+  } catch(e){
+    console.error('Banner generation failed:', e);
+  }
+}
+
+async function generateHtmlBannerOnly({company,product,message,audience,cta,tone}){
+  document.getElementById('adcopy-btn').disabled=true;
+  document.getElementById('adcopy-form-section').style.display='none';
+  document.getElementById('adcopy-loading').style.display='block';
+  document.getElementById('adcopy-result-blocks').innerHTML='';
+  document.getElementById('adcopy-result').style.display='none';
+  await generateHtmlBanner({company,product,message,audience,cta,tone});
+  document.getElementById('adcopy-loading').style.display='none';
+  document.getElementById('adcopy-result').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function adcopyDownloadBanner(){
