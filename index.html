@@ -808,7 +808,7 @@ body.adcopy-mode{background:#F5F3EE}
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo" onclick="goToLanding()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:1.5rem">
-        <button class="nav-login" onclick="goToTools()" style="opacity:0.55">Verktyg</button>
+        <button class="nav-login" onclick="goToTools()" style="opacity:0.55">The Toolbox</button>
         <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
         <button class="nav-login" onclick="goToLogin()">
           Logga in
@@ -836,27 +836,40 @@ body.adcopy-mode{background:#F5F3EE}
 
   <!-- DARK INTRO -->
   <div class="section-dark reveal">
+  <!-- THE TOOLBOX SECTION -->
+  <div class="section-dark reveal" id="toolbox-section">
     <div class="section-dark-inner">
-      <div class="eyebrow">Om verktyget</div>
-      <h2 class="big-statement">De flesta företag marknadsför sig på<em> fel platser.</em></h2>
-      <p class="statement-lead">Vår AI analyserar din bransch, dina kunder och din budget och pekar ut exakt var du bör synas – och hur. Inga generella råd. Ingen gissningslek. Kunskapen bygger på R/T Norths mångåriga kunskap om marknadsföring och kommunikation.</p>
+      <div class="eyebrow">The Toolbox</div>
+      <h2 class="big-statement">Fyra AI-verktyg byggda för att <em>göra jobbet åt dig.</em></h2>
+      <p class="statement-lead">Från strategi och distribution till nativeproduktion och annonscopy – varje verktyg i The Toolbox ger dig konkreta, handlingsbara resultat på minuter. Inte teorier. Inte mallar. Verkliga råd baserade på R/T Norths erfarenhet.</p>
       <div class="rule"></div>
-      <div class="steps-dark" id="how-section">
-        <div class="step-d">
-          <div class="step-d-num">01 &nbsp;·&nbsp; Berätta</div>
-          <div class="step-d-title">Fyll i ett kort formulär</div>
-          <div class="step-d-desc">Bransch, målgrupp, geografi, budget och vad ni provat tidigare. Tar 2–3 minuter.</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:0.5rem">
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.5rem">Marknadsanalys</div>
+          <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:0.5rem">Var ska du synas?</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65">AI analyserar ditt bolag och returnerar en prioriterad kanalstrategi med konkreta rekommendationer.</div>
         </div>
-        <div class="step-d">
-          <div class="step-d-num">02 &nbsp;·&nbsp; Analysera</div>
-          <div class="step-d-title">AI väger samman allt</div>
-          <div class="step-d-desc">Modellen identifierar de kanaler och budskap som passar just er situation och era resurser.</div>
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.5rem">Distribution Planner</div>
+          <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:0.5rem">Hur ska budgeten fördelas?</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65">Välj kanaler och budget – få en viktat mediemix med motivering och taktiska råd per kanal.</div>
         </div>
-        <div class="step-d">
-          <div class="step-d-num">03 &nbsp;·&nbsp; Möt oss</div>
-          <div class="step-d-title">Din plan – direkt</div>
-          <div class="step-d-desc">Prioriterade kanaler och konkreta rekommendationer. Ta med planen till ett möte med R/T North – vi sätter igång direkt.</div>
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.5rem">Native Auto Reach</div>
+          <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:0.5rem">Publicera i landets största tidningar.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65">Skapa en redaktionellt skriven nativeartikel och välj bland titlar hos Schibsted, Bonnier, Stampen och NTM.</div>
         </div>
+        <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.5rem">Ad Copy Generator</div>
+          <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:0.5rem">Färdig annonscopy på sekunder.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65">Generera copy för Meta, LinkedIn, Google Ads och display – flera varianter per format, redo att aktivera.</div>
+        </div>
+      </div>
+      <div style="margin-top:2.5rem">
+        <button onclick="goToTools()" style="display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s" onmouseover="this.style.background='#E8C97A'" onmouseout="this.style.background='#C9A84C'">
+          Utforska The Toolbox
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 3l4 4-4 4"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -885,6 +898,7 @@ body.adcopy-mode{background:#F5F3EE}
       </div>
     </div>
   </div>
+
 
   <!-- FINAL CTA -->
   <div class="section-cta reveal">
@@ -1103,7 +1117,7 @@ body.adcopy-mode{background:#F5F3EE}
   <div class="tools-hero">
     <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:1.5rem">
       <span style="display:block;width:24px;height:1px;background:#C9A84C"></span>
-      R/T North Verktygssvit
+      The Toolbox
     </div>
     <h1 style="font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#fff;margin-bottom:1rem;max-width:600px">Fyra verktyg. Ett integrerat flöde.</h1>
     <p style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;max-width:520px">Från strategi och distribution till produktion och annonsering – varje verktyg är byggt för att ge dig konkreta, handlingsbara resultat direkt.</p>
@@ -1189,7 +1203,7 @@ body.adcopy-mode{background:#F5F3EE}
     </div>
     <button onclick="goToTools()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
-      Alla verktyg
+      The Toolbox
     </button>
   </header>
   <div class="dist-container">
@@ -1298,7 +1312,7 @@ body.adcopy-mode{background:#F5F3EE}
     </div>
     <button onclick="goToTools()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
-      Alla verktyg
+      The Toolbox
     </button>
   </header>
   <div class="adcopy-container">
