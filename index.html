@@ -698,6 +698,102 @@ body.native-mode{background:#F5F3EE}
 .native-budget-bar{height:100%;background:#C9A84C;border-radius:3px}
 .native-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
 .native-new-btn:hover{border-color:#C9A84C;color:#2C2520}
+
+/* ─── TOOLS HUB PAGE ─── */
+#tools-page{display:none;background:#0a0a0a;color:#fff;min-height:100vh}
+.tools-nav{display:flex;align-items:center;justify-content:space-between;padding:2rem 3rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+@media(max-width:640px){.tools-nav{padding:1.5rem}}
+.tools-hero{padding:5rem 3rem 3rem;max-width:960px;margin:0 auto}
+@media(max-width:640px){.tools-hero{padding:3rem 1.5rem 2rem}}
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:960px;margin:0 auto;padding:0 3rem 5rem}
+@media(max-width:700px){.tools-grid{grid-template-columns:1fr;padding:0 1.5rem 3rem}}
+.tool-card{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:2rem;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:1rem}
+.tool-card:hover{border-color:rgba(201,168,76,0.4);background:#161616;transform:translateY(-2px)}
+.tool-card-icon{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tool-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:4px}
+.tool-card-title{font-size:19px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:6px}
+.tool-card-desc{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7}
+.tool-card-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#C9A84C;margin-top:auto;padding-top:0.5rem}
+.tool-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:0.25rem}
+.tool-card-tag{font-size:11px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08)}
+
+/* ─── DISTRIBUTION PLANNER ─── */
+#dist-page{display:none}
+body.dist-mode{background:#F5F3EE}
+.dist-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.dist-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.dist-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.07)}
+.dist-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.dist-field{margin-bottom:1.25rem}
+.dist-field label{display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px}
+.dist-field label span{font-weight:400;color:#9A8570;font-size:12px;margin-left:4px}
+.dist-input,.dist-textarea,.dist-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
+.dist-input:focus,.dist-textarea:focus,.dist-select:focus{border-color:#C9A84C}
+.dist-textarea{min-height:90px;resize:vertical;line-height:1.6}
+.dist-channel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:0.5rem}
+.dist-ch{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.dist-ch.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.dist-ch-icon{font-size:18px;margin-bottom:6px}
+.dist-ch-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px}
+.dist-ch-desc{font-size:11px;color:#9A8570;line-height:1.4}
+.dist-analyze-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
+.dist-analyze-btn:hover{background:#4A3F35}
+.dist-analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
+.dist-loading{text-align:center;padding:3rem 1rem;display:none}
+.dist-result{display:none;margin-top:1.5rem}
+.dist-result-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1.75rem;margin-bottom:1rem}
+.dist-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.75rem}
+.dist-result-title{font-size:17px;font-weight:700;color:#2C2520;margin-bottom:0.75rem}
+.dist-result-text{font-size:14px;color:#4A3F35;line-height:1.8}
+.dist-channel-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:14px;color:#2C2520}
+.dist-channel-row:last-child{border-bottom:none}
+.dist-bar-wrap{flex:1;margin:0 12px;height:6px;background:rgba(0,0,0,0.07);border-radius:3px}
+.dist-bar{height:100%;background:#C9A84C;border-radius:3px}
+.dist-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem}
+.dist-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
+.dist-action-btn:hover{border-color:#C9A84C}
+.dist-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
+.dist-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
+.dist-new-btn:hover{border-color:#C9A84C;color:#2C2520}
+
+/* ─── AD COPY GENERATOR ─── */
+#adcopy-page{display:none}
+body.adcopy-mode{background:#F5F3EE}
+.adcopy-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.adcopy-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.adcopy-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.07)}
+.adcopy-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.adcopy-field{margin-bottom:1.25rem}
+.adcopy-field label{display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px}
+.adcopy-field label span{font-weight:400;color:#9A8570;font-size:12px;margin-left:4px}
+.adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
+.adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#C9A84C}
+.adcopy-textarea{min-height:90px;resize:vertical;line-height:1.6}
+.adcopy-format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:0.5rem}
+.adcopy-fmt{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.adcopy-fmt.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.adcopy-fmt-icon{font-size:18px;margin-bottom:6px}
+.adcopy-fmt-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.adcopy-fmt-desc{font-size:11px;color:#9A8570}
+.adcopy-analyze-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
+.adcopy-analyze-btn:hover{background:#4A3F35}
+.adcopy-analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
+.adcopy-loading{text-align:center;padding:3rem 1rem;display:none}
+.adcopy-result{display:none;margin-top:1.5rem}
+.adcopy-format-block{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1.75rem;margin-bottom:1rem}
+.adcopy-format-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem}
+.adcopy-format-name{font-size:17px;font-weight:700;color:#2C2520;margin-bottom:1.25rem}
+.adcopy-variant{background:#F9F8F6;border-radius:8px;padding:1rem 1.25rem;margin-bottom:0.75rem}
+.adcopy-variant-num{font-size:11px;font-weight:700;color:#9A8570;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+.adcopy-variant-headline{font-size:15px;font-weight:700;color:#2C2520;margin-bottom:4px}
+.adcopy-variant-body{font-size:13px;color:#4A3F35;line-height:1.6}
+.adcopy-variant-cta{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#C9A84C}
+.adcopy-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem}
+.adcopy-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
+.adcopy-action-btn:hover{border-color:#C9A84C}
+.adcopy-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
+.adcopy-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
+.adcopy-new-btn:hover{border-color:#C9A84C;color:#2C2520}
 </style>
 </head>
 <body>
@@ -712,7 +808,7 @@ body.native-mode{background:#F5F3EE}
     <nav class="site-nav">
       <img src="images/RT_North.png" alt="R/T North" class="nav-logo" onclick="goToLanding()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:1.5rem">
-        <button class="nav-login" onclick="goToLogin('native')" style="opacity:0.55">Native Auto Reach</button>
+        <button class="nav-login" onclick="goToToolLogin('tools')" style="opacity:0.55">Verktyg</button>
         <button class="nav-login" onclick="goToAbout()" style="opacity:0.55">Om oss</button>
         <button class="nav-login" onclick="goToLogin()">
           Logga in
@@ -992,6 +1088,290 @@ body.native-mode{background:#F5F3EE}
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══ TOOLS HUB ═══ -->
+<div id="tools-page">
+  <nav class="tools-nav">
+    <img src="images/RT_North.png" alt="R/T North" style="height:44px;width:auto;cursor:pointer" onclick="goToLanding()">
+    <button onclick="goToLanding()" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Till startsidan
+    </button>
+  </nav>
+  <div class="tools-hero">
+    <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:1.5rem">
+      <span style="display:block;width:24px;height:1px;background:#C9A84C"></span>
+      R/T North Verktygssvit
+    </div>
+    <h1 style="font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#fff;margin-bottom:1rem;max-width:600px">Fyra verktyg. Ett integrerat flöde.</h1>
+    <p style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;max-width:520px">Från strategi och distribution till produktion och annonsering – varje verktyg är byggt för att ge dig konkreta, handlingsbara resultat direkt.</p>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card" onclick="goToToolLogin('app')">
+      <div>
+        <div class="tool-card-icon" style="background:rgba(15,110,86,0.15)">📊</div>
+      </div>
+      <div>
+        <div class="tool-card-label">Steg 1 · Strategi</div>
+        <div class="tool-card-title">Marknadsanalys</div>
+        <div class="tool-card-desc">Fyll i information om ditt bolag och få en skräddarsydd marknadsföringsstrategi med prioriterade kanaler, konkreta rekommendationer och quick wins.</div>
+      </div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Kanalstrategi</span>
+        <span class="tool-card-tag">Prioritering</span>
+        <span class="tool-card-tag">Quick wins</span>
+      </div>
+      <div class="tool-card-cta">Starta analys <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+    </div>
+    <div class="tool-card" onclick="goToToolLogin('dist')">
+      <div>
+        <div class="tool-card-icon" style="background:rgba(201,168,76,0.15)">📡</div>
+      </div>
+      <div>
+        <div class="tool-card-label">Steg 2 · Distribution</div>
+        <div class="tool-card-title">Distribution Planner</div>
+        <div class="tool-card-desc">Beskriv din kampanj, välj kanaler och budget. Verktyget föreslår en optimal kanalmix med viktad budgetfördelning baserad på dina mål och målgrupp.</div>
+      </div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Kanalmix</span>
+        <span class="tool-card-tag">Budgetfördelning</span>
+        <span class="tool-card-tag">Medieplan</span>
+      </div>
+      <div class="tool-card-cta">Planera distribution <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+    </div>
+    <div class="tool-card" onclick="goToToolLogin('native')">
+      <div>
+        <div class="tool-card-icon" style="background:rgba(133,79,11,0.15)">✍️</div>
+      </div>
+      <div>
+        <div class="tool-card-label">Steg 3 · Produktion</div>
+        <div class="tool-card-title">Native Auto Reach</div>
+        <div class="tool-card-desc">Skapa en redaktionellt skriven nativeartikel redo för publicering i Sveriges största medier. Välj tidningar och få ett förslag på budgetfördelning per titel.</div>
+      </div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Nativeartiklar</span>
+        <span class="tool-card-tag">Schibsted · Bonnier · NTM</span>
+        <span class="tool-card-tag">AI-produktion</span>
+      </div>
+      <div class="tool-card-cta">Skapa artikel <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+    </div>
+    <div class="tool-card" onclick="goToToolLogin('adcopy')">
+      <div>
+        <div class="tool-card-icon" style="background:rgba(201,168,76,0.1)">🎯</div>
+      </div>
+      <div>
+        <div class="tool-card-label">Steg 4 · Annonsering</div>
+        <div class="tool-card-title">Ad Copy Generator</div>
+        <div class="tool-card-desc">Generera färdig annonscopy för Meta, LinkedIn, Google Ads och display. Flera varianter per format, redo att aktivera direkt i dina kampanjer.</div>
+      </div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Meta</span>
+        <span class="tool-card-tag">LinkedIn</span>
+        <span class="tool-card-tag">Google Ads</span>
+        <span class="tool-card-tag">Display</span>
+      </div>
+      <div class="tool-card-cta">Skapa annonscopy <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DISTRIBUTION PLANNER ═══ -->
+<div id="dist-page">
+  <header class="dist-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img src="images/RT_North.png" alt="R/T North" style="height:36px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div>
+        <div style="font-size:15px;font-weight:600;color:#2C2520">Distribution Planner</div>
+        <div style="font-size:12px;color:#9A8570">Powered by AI · R/T North</div>
+      </div>
+    </div>
+    <button onclick="goToTools()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Alla verktyg
+    </button>
+  </header>
+  <div class="dist-container">
+    <div id="dist-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Planera din distribution</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Beskriv din kampanj och mål – verktyget föreslår en optimal kanalmix med viktad budgetfördelning.</p>
+      </div>
+
+      <div class="dist-section-title">Om kampanjen</div>
+      <div class="dist-field">
+        <label>Företag / Varumärke <span>*</span></label>
+        <input class="dist-input" id="d-company" type="text" placeholder="Ex. Björk & Partners AB">
+      </div>
+      <div class="dist-field">
+        <label>Beskriv kampanjen <span>*</span></label>
+        <textarea class="dist-textarea" id="d-campaign" placeholder="Vad är kampanjen? Vad vill ni uppnå? Vad erbjuder ni?"></textarea>
+      </div>
+      <div class="dist-field">
+        <label>Kampanjmål <span>*</span></label>
+        <select class="dist-select" id="d-goal">
+          <option value="">Välj mål...</option>
+          <option>Varumärkeskännedom</option>
+          <option>Leadsgenerering</option>
+          <option>Konvertering / försäljning</option>
+          <option>Trafik till hemsida</option>
+          <option>Arbetsgivarvarumärke</option>
+          <option>Produktlansering</option>
+        </select>
+      </div>
+      <div class="dist-field">
+        <label>Målgrupp <span>*</span></label>
+        <input class="dist-input" id="d-audience" type="text" placeholder="Ex. Beslutsfattare inom tech, 35–55 år, Stockholm">
+      </div>
+      <div class="dist-field">
+        <label>Geografi <span>*</span></label>
+        <input class="dist-input" id="d-geo" type="text" placeholder="Ex. Sverige nationellt, Storstockholm, Göteborg">
+      </div>
+      <div class="dist-field">
+        <label>Kampanjperiod <span>valfritt</span></label>
+        <input class="dist-input" id="d-period" type="text" placeholder="Ex. 4 veckor, mars–april">
+      </div>
+
+      <div class="dist-section-title">Kanaler att välja bland</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Välj de kanaler som är aktuella för er kampanj. AI:n viktar budgeten baserat på era mål.</p>
+      <div class="dist-channel-grid" id="dist-channel-grid"></div>
+
+      <div class="dist-section-title">Budget</div>
+      <div class="dist-field">
+        <label>Total kampanjbudget (SEK) <span>*</span></label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input class="dist-input" id="d-budget" type="number" placeholder="Ex. 100 000" style="max-width:200px">
+          <span style="font-size:13px;color:#9A8570">kr exkl. moms</span>
+        </div>
+      </div>
+
+      <div id="dist-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem"></div>
+      <button class="dist-analyze-btn" id="dist-btn" onclick="generateDist()">Generera distributionsplan →</button>
+    </div>
+
+    <div class="dist-loading" id="dist-loading">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C9A84C" stroke-width="3" stroke-linecap="round">
+        <circle cx="18" cy="18" r="14" stroke="rgba(0,0,0,0.08)"/>
+        <path d="M18 4a14 14 0 0 1 14 14"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"/></path>
+      </svg>
+      <div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Skapar din distributionsplan...</div>
+    </div>
+
+    <div class="dist-result" id="dist-result">
+      <div class="dist-result-card">
+        <div class="dist-result-label">Strategisk sammanfattning</div>
+        <div class="dist-result-text" id="dist-result-summary"></div>
+      </div>
+      <div class="dist-result-card">
+        <div class="dist-result-label">Rekommenderad kanalmix & budgetfördelning</div>
+        <div id="dist-result-channels"></div>
+      </div>
+      <div class="dist-result-card" id="dist-result-recs-card">
+        <div class="dist-result-label">Rekommendationer per kanal</div>
+        <div id="dist-result-recs"></div>
+      </div>
+      <div class="dist-result-actions">
+        <button class="dist-action-btn primary" onclick="distCopy()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
+          Kopiera plan
+        </button>
+        <button class="dist-action-btn" onclick="distSend()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
+          Skicka till R/T North
+        </button>
+      </div>
+      <button class="dist-new-btn" onclick="distReset()">Skapa en ny plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AD COPY GENERATOR ═══ -->
+<div id="adcopy-page">
+  <header class="adcopy-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img src="images/RT_North.png" alt="R/T North" style="height:36px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div>
+        <div style="font-size:15px;font-weight:600;color:#2C2520">Ad Copy Generator</div>
+        <div style="font-size:12px;color:#9A8570">Powered by AI · R/T North</div>
+      </div>
+    </div>
+    <button onclick="goToTools()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Alla verktyg
+    </button>
+  </header>
+  <div class="adcopy-container">
+    <div id="adcopy-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa annonscopy</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i kampanjinfo och välj format – verktyget genererar färdig copy med flera varianter per kanal, redo att aktivera direkt.</p>
+      </div>
+
+      <div class="adcopy-section-title">Om kampanjen</div>
+      <div class="adcopy-field">
+        <label>Företag / Varumärke <span>*</span></label>
+        <input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Björk & Partners AB">
+      </div>
+      <div class="adcopy-field">
+        <label>Produkt eller tjänst som annonseras <span>*</span></label>
+        <input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Ny app för projekthantering, Sommarkampanj, Rekrytering">
+      </div>
+      <div class="adcopy-field">
+        <label>Kampanjbudskap och USP <span>*</span></label>
+        <textarea class="adcopy-textarea" id="ac-message" placeholder="Vad är det viktigaste budskapet? Vad gör er unika? Vad ska annonsen få folk att tänka eller göra?"></textarea>
+      </div>
+      <div class="adcopy-field">
+        <label>Målgrupp <span>*</span></label>
+        <input class="adcopy-input" id="ac-audience" type="text" placeholder="Ex. Småföretagare 30–50 år, HR-chefer i Sverige">
+      </div>
+      <div class="adcopy-field">
+        <label>Call to action <span>*</span></label>
+        <input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka demo, Läs mer, Ansök nu, Shoppa här">
+      </div>
+      <div class="adcopy-field">
+        <label>Ton <span>valfritt</span></label>
+        <select class="adcopy-select" id="ac-tone">
+          <option value="">Välj ton...</option>
+          <option>Professionell och förtroendegivande</option>
+          <option>Varm och personlig</option>
+          <option>Energisk och drivande</option>
+          <option>Mjuk och informativ</option>
+          <option>Humoristisk</option>
+        </select>
+      </div>
+
+      <div class="adcopy-section-title">Välj annonsformat</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem">Välj ett eller flera format. Du får 2–3 varianter per format.</p>
+      <div class="adcopy-format-grid" id="adcopy-format-grid"></div>
+
+      <div id="adcopy-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem;margin-top:1rem"></div>
+      <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdCopy()">Generera annonscopy →</button>
+    </div>
+
+    <div class="adcopy-loading" id="adcopy-loading">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C9A84C" stroke-width="3" stroke-linecap="round">
+        <circle cx="18" cy="18" r="14" stroke="rgba(0,0,0,0.08)"/>
+        <path d="M18 4a14 14 0 0 1 14 14"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"/></path>
+      </svg>
+      <div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Skriver din annonscopy...</div>
+    </div>
+
+    <div class="adcopy-result" id="adcopy-result">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:1.25rem">Annonscopy – redo att aktivera</div>
+      <div id="adcopy-result-blocks"></div>
+      <div class="adcopy-result-actions">
+        <button class="adcopy-action-btn primary" onclick="adcopyCopy()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
+          Kopiera all copy
+        </button>
+        <button class="adcopy-action-btn" onclick="adcopySend()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
+          Skicka till R/T North
+        </button>
+      </div>
+      <button class="adcopy-new-btn" onclick="adcopyReset()">Skapa ny copy</button>
+    </div>
   </div>
 </div>
 
@@ -1372,12 +1752,7 @@ const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='stockholm';
 
 function goToLanding(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('about-page').style.display='none';
-  document.getElementById('native-page').style.display='none';
-  document.body.classList.remove('app-mode');
-  document.body.classList.remove('native-mode');
-  document.getElementById('login-screen').style.display='none';
+  hideAll();
   document.getElementById('landing').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1402,7 +1777,15 @@ function goToLogin(dest){
 
 function checkPassword(){
   const val=document.getElementById('password-input').value;
-  if(val===ACCESS_PASSWORD){sessionStorage.setItem(SESSION_KEY,'1');if(window._loginDest==='native')goToNative();else showApp();}
+  if(val===ACCESS_PASSWORD){
+    sessionStorage.setItem(SESSION_KEY,'1');
+    const dest = window._loginDest||'app';
+    if(dest==='native') goToNative();
+    else if(dest==='dist') goToDist();
+    else if(dest==='adcopy') goToAdCopy();
+    else if(dest==='tools') goToTools();
+    else showApp();
+  }
   else{document.getElementById('login-error').style.display='block';document.getElementById('password-input').value='';}
 }
 document.getElementById('password-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
@@ -1996,5 +2379,397 @@ function nativeReset(){
   window.scrollTo(0,0);
 }
 
+
+
+/* ══════════════════════════════════════════
+   TOOLS HUB + NAVIGATION
+══════════════════════════════════════════ */
+
+const ALL_PAGES = ['landing','about-page','native-page','app','dist-page','adcopy-page','tools-page','login-screen'];
+
+function hideAll(){
+  ALL_PAGES.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display='none';
+  });
+  document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode');
+}
+
+function goToTools(){
+  hideAll();
+  document.getElementById('tools-page').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function goToToolLogin(dest){
+  window._loginDest = dest;
+  hideAll();
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-screen').style.alignItems='center';
+  document.getElementById('login-screen').style.justifyContent='center';
+  document.getElementById('login-screen').style.minHeight='100vh';
+}
+
+function goToDist(){
+  hideAll();
+  document.getElementById('dist-page').style.display='block';
+  document.body.classList.add('dist-mode');
+  window.scrollTo(0,0);
+  renderDistChannels();
+}
+
+function goToAdCopy(){
+  hideAll();
+  document.getElementById('adcopy-page').style.display='block';
+  document.body.classList.add('adcopy-mode');
+  window.scrollTo(0,0);
+  renderAdCopyFormats();
+}
+
+/* ══════════════════════════════════════════
+   DISTRIBUTION PLANNER
+══════════════════════════════════════════ */
+
+const DIST_CHANNELS = [
+  {id:'dc-meta',    icon:'📘', name:'Meta (Facebook & Instagram)', desc:'Bred räckvidd, stark targeting'},
+  {id:'dc-linkedin',icon:'💼', name:'LinkedIn',                   desc:'B2B och professionell målgrupp'},
+  {id:'dc-google',  icon:'🔍', name:'Google Ads / SEM',           desc:'Sökintention och köpbenägna'},
+  {id:'dc-display', icon:'🖼️', name:'Programmatisk display',      desc:'Bred synlighet och retargeting'},
+  {id:'dc-native',  icon:'📰', name:'Native / Nyhetsmedia',       desc:'Trovärdighet och redaktionell kontext'},
+  {id:'dc-youtube', icon:'▶️', name:'YouTube / Video',            desc:'Berättande och varumärkesbyggande'},
+  {id:'dc-email',   icon:'📧', name:'E-post / CRM',               desc:'Befintlig databas och lojalitet'},
+  {id:'dc-outdoor', icon:'🏙️', name:'Utomhus / DOOH',            desc:'Geografisk närvaro och volym'},
+];
+
+function renderDistChannels(){
+  const grid = document.getElementById('dist-channel-grid');
+  if(grid.children.length) return;
+  DIST_CHANNELS.forEach(ch=>{
+    const card = document.createElement('div');
+    card.className='dist-ch';
+    card.id=ch.id;
+    card.innerHTML=`<div class="dist-ch-icon">${ch.icon}</div><div class="dist-ch-name">${ch.name}</div><div class="dist-ch-desc">${ch.desc}</div>`;
+    card.onclick=()=>{card.classList.toggle('sel');};
+    grid.appendChild(card);
+  });
+}
+
+function getSelectedDistChannels(){
+  return DIST_CHANNELS.filter(ch=>document.getElementById(ch.id)?.classList.contains('sel'));
+}
+
+async function generateDist(){
+  const company  = document.getElementById('d-company').value.trim();
+  const campaign = document.getElementById('d-campaign').value.trim();
+  const goal     = document.getElementById('d-goal').value;
+  const audience = document.getElementById('d-audience').value.trim();
+  const geo      = document.getElementById('d-geo').value.trim();
+  const period   = document.getElementById('d-period').value.trim();
+  const budget   = document.getElementById('d-budget').value.trim();
+  const errEl    = document.getElementById('dist-error');
+  errEl.style.display='none';
+
+  if(!company||!campaign||!goal||!audience||!geo||!budget){
+    errEl.textContent='Fyll i alla obligatoriska fält.';
+    errEl.style.display='block';
+    return;
+  }
+  const selected = getSelectedDistChannels();
+  if(!selected.length){
+    errEl.textContent='Välj minst en kanal.';
+    errEl.style.display='block';
+    return;
+  }
+
+  document.getElementById('dist-btn').disabled=true;
+  document.getElementById('dist-form-section').style.display='none';
+  document.getElementById('dist-loading').style.display='block';
+
+  const prompt = `Du är en senior mediastrateg med djup erfarenhet av betald distribution, medieköp och kanalstrategi på den svenska marknaden. Analysera kampanjen nedan och ge ett konkret förslag på distributionsplan med optimal kanalmix och budgetfördelning. Svara på svenska.
+
+Svara ENBART med ett JSON-objekt i detta format – ingen text utanför JSON:
+{
+  "summary": "2–3 meningar om kampanjens förutsättningar och den övergripande distributionsstrategin",
+  "channels": [
+    {
+      "name": "Kanalnamn",
+      "budget_pct": 30,
+      "rationale": "Kort motivering varför denna kanal och hur stor andel",
+      "tactics": "Konkreta taktiska råd för denna kanal (1–2 meningar)"
+    }
+  ],
+  "overall_recommendations": "2–3 konkreta råd om timing, testning och optimering för hela kampanjen"
+}
+
+Kampanjinfo:
+Företag: ${company}
+Kampanj: ${campaign}
+Mål: ${goal}
+Målgrupp: ${audience}
+Geografi: ${geo}
+${period ? 'Period: '+period : ''}
+Budget: ${budget} kr
+Valda kanaler att fördela på: ${selected.map(c=>c.name).join(', ')}
+
+Fördela budgeten optimalt mellan valda kanaler baserat på mål och målgrupp. Alla procentsatser ska summera till 100.`;
+
+  try {
+    const res = await fetch(PROXY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const plan = JSON.parse(clean);
+
+    document.getElementById('dist-result-summary').textContent = plan.summary||'';
+
+    const chHTML = (plan.channels||[]).map(ch=>`
+      <div class="dist-channel-row">
+        <span style="font-weight:600;min-width:160px">${ch.name}</span>
+        <div class="dist-bar-wrap"><div class="dist-bar" style="width:${ch.budget_pct}%"></div></div>
+        <span style="font-size:12px;color:#9A8570;min-width:36px;text-align:right">${ch.budget_pct}%</span>
+        <span style="font-weight:600;min-width:100px;text-align:right">${Math.round(Number(budget)*ch.budget_pct/100).toLocaleString('sv-SE')} kr</span>
+      </div>
+      <div style="font-size:13px;color:#5F5E5A;padding:4px 0 10px 0;line-height:1.6">${ch.rationale}</div>
+    `).join('');
+    document.getElementById('dist-result-channels').innerHTML = chHTML;
+
+    const recHTML = (plan.channels||[]).map(ch=>`
+      <div style="padding:0.85rem 0;border-bottom:1px solid rgba(0,0,0,0.07)">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#C9A84C;margin-bottom:4px">${ch.name}</div>
+        <div style="font-size:14px;color:#2C2520;line-height:1.7">${ch.tactics}</div>
+      </div>
+    `).join('') + (plan.overall_recommendations ? `
+      <div style="padding:0.85rem 0">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#C9A84C;margin-bottom:4px">Övergripande råd</div>
+        <div style="font-size:14px;color:#2C2520;line-height:1.7">${plan.overall_recommendations}</div>
+      </div>
+    ` : '');
+    document.getElementById('dist-result-recs').innerHTML = recHTML;
+
+    window._distPlan = plan;
+    window._distCompany = company;
+    window._distBudget = budget;
+
+    document.getElementById('dist-loading').style.display='none';
+    document.getElementById('dist-result').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } catch(e){
+    document.getElementById('dist-loading').style.display='none';
+    document.getElementById('dist-form-section').style.display='block';
+    document.getElementById('dist-btn').disabled=false;
+    document.getElementById('dist-error').textContent='Något gick fel. Försök igen.';
+    document.getElementById('dist-error').style.display='block';
+  }
+}
+
+function distCopy(){
+  const p = window._distPlan;
+  if(!p) return;
+  let text = 'DISTRIBUTIONSPLAN\n\n'+p.summary+'\n\nKANALMIX:\n';
+  (p.channels||[]).forEach(ch=>{ text += ch.name+': '+ch.budget_pct+'% – '+ch.rationale+'\n\nTaktik: '+ch.tactics+'\n\n'; });
+  if(p.overall_recommendations) text += 'ÖVERGRIPANDE RÅD:\n'+p.overall_recommendations;
+  navigator.clipboard.writeText(text).then(()=>alert('Planen kopierad!'));
+}
+
+function distSend(){
+  const p = window._distPlan;
+  const c = window._distCompany||'';
+  if(!p) return;
+  let body = 'Distributionsplan för '+c+'\n\n'+p.summary+'\n\nKanalmix:\n';
+  (p.channels||[]).forEach(ch=>{ body += ch.name+': '+ch.budget_pct+'%\n'; });
+  window.location.href='mailto:hello@rtnorth.se?subject='+encodeURIComponent('Distributionsplan – '+c)+'&body='+encodeURIComponent(body);
+}
+
+function distReset(){
+  document.getElementById('dist-result').style.display='none';
+  document.getElementById('dist-form-section').style.display='block';
+  document.getElementById('dist-btn').disabled=false;
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════
+   AD COPY GENERATOR
+══════════════════════════════════════════ */
+
+const ADCOPY_FORMATS = [
+  {id:'fmt-meta-feed',    icon:'📘', name:'Meta – Flöde',          desc:'Facebook & Instagram feed'},
+  {id:'fmt-meta-story',   icon:'📱', name:'Meta – Stories & Reels', desc:'Vertikalt format, snappy copy'},
+  {id:'fmt-linkedin-feed',icon:'💼', name:'LinkedIn – Flöde',       desc:'Professionell ton, längre text'},
+  {id:'fmt-linkedin-msg', icon:'✉️', name:'LinkedIn – Sponsored InMail', desc:'Direkt meddelande'},
+  {id:'fmt-google-search',icon:'🔍', name:'Google Ads – Sök',       desc:'Headlines + descriptions'},
+  {id:'fmt-display',      icon:'🖼️', name:'Display-banners',        desc:'Headline + korttext'},
+];
+
+function renderAdCopyFormats(){
+  const grid = document.getElementById('adcopy-format-grid');
+  if(grid.children.length) return;
+  ADCOPY_FORMATS.forEach(f=>{
+    const card = document.createElement('div');
+    card.className='adcopy-fmt';
+    card.id=f.id;
+    card.innerHTML=`<div class="adcopy-fmt-icon">${f.icon}</div><div class="adcopy-fmt-name">${f.name}</div><div class="adcopy-fmt-desc">${f.desc}</div>`;
+    card.onclick=()=>card.classList.toggle('sel');
+    grid.appendChild(card);
+  });
+}
+
+function getSelectedFormats(){
+  return ADCOPY_FORMATS.filter(f=>document.getElementById(f.id)?.classList.contains('sel'));
+}
+
+async function generateAdCopy(){
+  const company  = document.getElementById('ac-company').value.trim();
+  const product  = document.getElementById('ac-product').value.trim();
+  const message  = document.getElementById('ac-message').value.trim();
+  const audience = document.getElementById('ac-audience').value.trim();
+  const cta      = document.getElementById('ac-cta').value.trim();
+  const tone     = document.getElementById('ac-tone').value;
+  const errEl    = document.getElementById('adcopy-error');
+  errEl.style.display='none';
+
+  if(!company||!product||!message||!audience||!cta){
+    errEl.textContent='Fyll i alla obligatoriska fält.';
+    errEl.style.display='block';
+    return;
+  }
+  const selected = getSelectedFormats();
+  if(!selected.length){
+    errEl.textContent='Välj minst ett annonsformat.';
+    errEl.style.display='block';
+    return;
+  }
+
+  document.getElementById('adcopy-btn').disabled=true;
+  document.getElementById('adcopy-form-section').style.display='none';
+  document.getElementById('adcopy-loading').style.display='block';
+
+  const formatDesc = {
+    'Meta – Flöde':             'Primary text (max 125 tecken), Headline (max 40 tecken), Description (max 30 tecken)',
+    'Meta – Stories & Reels':   'Kort hooktext (max 30 tecken), Body (max 90 tecken) – snappy och direkt',
+    'LinkedIn – Flöde':         'Introductory text (max 150 tecken), Headline (max 70 tecken) – professionell ton',
+    'LinkedIn – Sponsored InMail': 'Subject (max 60 tecken), Message body (max 300 tecken) – personlig och direkt',
+    'Google Ads – Sök':         '3 Headlines (max 30 tecken vardera), 2 Descriptions (max 90 tecken vardera)',
+    'Display-banners':          'Headline (max 25 tecken), Subtext (max 45 tecken)',
+  };
+
+  const formatsStr = selected.map(f=>`${f.name}: ${formatDesc[f.name]||''}`).join('\n');
+
+  const prompt = `Du är en erfaren copywriter specialiserad på betald annonsering i svenska och nordiska marknader. Du skriver annonscopy som konverterar – med tydliga budskap, rätt ton per kanal och starka call-to-actions.
+
+Skriv annonscopy för följande kampanj. Ge 2–3 varianter per format. Håll dig till de teckenangivna begränsningarna. Svara på svenska.
+
+Svara ENBART med JSON i detta format – ingen text utanför JSON:
+{
+  "formats": [
+    {
+      "format": "Formatnamn",
+      "variants": [
+        {
+          "variant": "Variant 1",
+          "headline": "...",
+          "body": "...",
+          "cta": "..."
+        }
+      ]
+    }
+  ]
+}
+
+Kampanjinfo:
+Företag: ${company}
+Produkt/tjänst: ${product}
+Budskap och USP: ${message}
+Målgrupp: ${audience}
+Call to action: ${cta}
+${tone ? 'Ton: '+tone : ''}
+
+Format att skriva copy för:
+${formatsStr}
+
+Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska vara engagerande och scrollstoppande. LinkedIn ska vara professionell. Google Ads-headlines ska vara exakt max 30 tecken. Display-text ska vara extrem kort och tydlig.`;
+
+  try {
+    const res = await fetch(PROXY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(clean);
+
+    const blocks = (result.formats||[]).map(f=>`
+      <div class="adcopy-format-block">
+        <div class="adcopy-format-label">${f.format}</div>
+        ${(f.variants||[]).map((v,i)=>`
+          <div class="adcopy-variant">
+            <div class="adcopy-variant-num">Variant ${i+1}</div>
+            ${v.headline ? `<div class="adcopy-variant-headline">${v.headline}</div>` : ''}
+            ${v.body ? `<div class="adcopy-variant-body">${v.body}</div>` : ''}
+            ${v.cta ? `<div class="adcopy-variant-cta">→ ${v.cta}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    document.getElementById('adcopy-result-blocks').innerHTML = blocks;
+    window._adcopyResult = result;
+    window._adcopyCompany = company;
+
+    document.getElementById('adcopy-loading').style.display='none';
+    document.getElementById('adcopy-result').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } catch(e){
+    document.getElementById('adcopy-loading').style.display='none';
+    document.getElementById('adcopy-form-section').style.display='block';
+    document.getElementById('adcopy-btn').disabled=false;
+    document.getElementById('adcopy-error').textContent='Något gick fel. Försök igen.';
+    document.getElementById('adcopy-error').style.display='block';
+  }
+}
+
+function adcopyCopy(){
+  const r = window._adcopyResult;
+  if(!r) return;
+  let text = '';
+  (r.formats||[]).forEach(f=>{
+    text += f.format.toUpperCase()+'\n';
+    (f.variants||[]).forEach((v,i)=>{
+      text += `\nVariant ${i+1}:\n`;
+      if(v.headline) text += 'Headline: '+v.headline+'\n';
+      if(v.body) text += 'Text: '+v.body+'\n';
+      if(v.cta) text += 'CTA: '+v.cta+'\n';
+    });
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text).then(()=>alert('Copy kopierad!'));
+}
+
+function adcopySend(){
+  const r = window._adcopyResult;
+  const c = window._adcopyCompany||'';
+  if(!r) return;
+  let body = 'Ad Copy – '+c+'\n\n';
+  (r.formats||[]).forEach(f=>{
+    body += f.format+'\n';
+    (f.variants||[]).forEach((v,i)=>{ body += `Variant ${i+1}: ${v.headline||''} / ${v.body||''}\n`; });
+    body += '\n';
+  });
+  window.location.href='mailto:hello@rtnorth.se?subject='+encodeURIComponent('Ad Copy – '+c)+'&body='+encodeURIComponent(body);
+}
+
+function adcopyReset(){
+  document.getElementById('adcopy-result').style.display='none';
+  document.getElementById('adcopy-form-section').style.display='block';
+  document.getElementById('adcopy-btn').disabled=false;
+  window.scrollTo(0,0);
+}
 
 </script>
