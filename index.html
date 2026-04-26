@@ -838,6 +838,8 @@ body.adcopy-mode{background:#F5F3EE}
 
   /* Pillars */
   .pillars{grid-template-columns:1fr;gap:2rem}
+  /* Varfor 3-col */
+  #varfor-grid{grid-template-columns:1fr !important}
 
   /* Steps */
   .steps-dark{grid-template-columns:1fr;gap:2rem}
@@ -885,7 +887,7 @@ body.adcopy-mode{background:#F5F3EE}
 
     <div class="hero-content">
       <h1 class="hero-h1"><span id="typewriter-text"></span><span class="tw-cursor">|</span></h1>
-      <p class="hero-lead">Testa vår gratis AI-analys – byggd på R/T Norths mångåriga erfarenhet av marknadsföring. Du får en konkret plan på tre minuter, och vi hjälper dig genomföra den.</p>
+      <p class="hero-lead">R/T North kombinerar strategi, produktion och distribution i ett erbjudande. Starta din AI-analys och få en konkret marknadsplan på tre minuter.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="goToLogin()">
           Starta din analys
@@ -900,42 +902,60 @@ body.adcopy-mode{background:#F5F3EE}
     </div>
   </div>
 
-  <!-- DARK INTRO -->
-  <div class="section-dark reveal">
+  <!-- VARFÖR R/T NORTH -->
+  <div class="reveal" style="position:relative;overflow:hidden;background:#0a0a0a;padding:7rem 3rem">
+    <div style="position:absolute;inset:0;background-image:url('images/AdobeStock_130672564.jpeg');background-size:cover;background-position:center 60%;opacity:0.06"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,#0a0a0a 0%,transparent 30%,transparent 70%,#0a0a0a 100%)"></div>
+    <div style="max-width:960px;margin:0 auto;position:relative;z-index:1">
+      <div class="eyebrow">Varför R/T North</div>
+      <h2 class="big-statement" style="max-width:680px;margin-bottom:1.5rem">En byrå som ser strategi, produktion och distribution som <em>ett och samma system.</em></h2>
+      <p class="statement-lead" style="max-width:580px;margin-bottom:4rem">De flesta byråer är antingen strateger, producenter eller medieköpare. Vi är alla tre – och vi jobbar integrerat från dag ett.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem">
+        <div style="border-top:1px solid rgba(201,168,76,0.3);padding-top:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.75rem">Strategi först</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:0.5rem">Vi förstår hela kedjan</div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.45);line-height:1.7">Från affärsmål och målgrupp till annonsköp och optimering. Inte en leverantör som tar emot en brief – en partner som hjälper er formulera den.</div>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,0.3);padding-top:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.75rem">Integrerat arbetssätt</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:0.5rem">Budskap, kanal och timing</div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.45);line-height:1.7">Effekt skapas i samspelet mellan rätt budskap, rätt kanal och rätt timing. Vi designar aldrig kampanjer i silos – allt hänger ihop från start.</div>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,0.3);padding-top:1.5rem">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#C9A84C;margin-bottom:0.75rem">Ni gör affärer</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:0.5rem">Vi tar över genomförandet</div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.45);line-height:1.7">När planen är satt hjälper R/T North med allt – annonsering, innehåll, medieköp och löpande optimering. Du behöver inte göra det själv.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- THE TOOLBOX SECTION -->
   <div class="reveal tb-split" id="toolbox-section">
     <div class="tb-left">
       <div class="eyebrow">The Toolbox</div>
-      <h2 class="big-statement">Fyra AI-verktyg byggda för att <em>göra jobbet åt dig.</em></h2>
-      <p class="statement-lead" style="margin-bottom:2.5rem">Från strategi och distribution till nativeproduktion och annonscopy – konkreta, handlingsbara resultat på minuter.</p>
-      <div class="tb-grid">
-        <div class="tb-card">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(255,255,255,0.2);margin-bottom:0.6rem">01</div>
-          <div style="width:32px;height:32px;border-radius:6px;background:rgba(15,110,86,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:0.6rem"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round"><path d="M2 14L6 8l3 4 3-5 4 3"/></svg></div>
-          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Marknadsanalys</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:1rem;flex:1">Prioriterad kanalstrategi med konkreta rekommendationer – anpassad till ditt bolag.</div>
-          <button onclick="goToToolLogin('app')" class="tb-card-btn">Testa nu →</button>
+      <h2 class="big-statement">Fyra AI-verktyg. <em>Ett integrerat flöde.</em></h2>
+      <p class="statement-lead" style="margin-bottom:2.5rem">Från marknadsanalys och distributionsplanering till nativeartikelproduktion och annonscopy – The Toolbox ger dig konkreta, handlingsbara resultat på minuter.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:2.5rem">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(15,110,86,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#0F6E56" stroke-width="2" stroke-linecap="round"><path d="M2 14L6 8l3 4 3-5 4 3"/></svg></div>
+          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:#fff">Marknadsanalys</span><span style="font-size:12px;color:rgba(255,255,255,0.35);margin-left:8px">Var ska du synas?</span></div>
+          <button onclick="goToToolLogin('app')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
-        <div class="tb-card">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(255,255,255,0.2);margin-bottom:0.6rem">02</div>
-          <div style="width:32px;height:32px;border-radius:6px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:0.6rem"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l3 2"/></svg></div>
-          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Distribution Planner</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:1rem;flex:1">Viktad mediemix och budgetfördelning med taktiska råd per kanal.</div>
-          <button onclick="goToToolLogin('dist')" class="tb-card-btn">Testa nu →</button>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l3 2"/></svg></div>
+          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:#fff">Distribution Planner</span><span style="font-size:12px;color:rgba(255,255,255,0.35);margin-left:8px">Hur fördelas budgeten?</span></div>
+          <button onclick="goToToolLogin('dist')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
-        <div class="tb-card tb-card-border">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(255,255,255,0.2);margin-bottom:0.6rem">03</div>
-          <div style="width:32px;height:32px;border-radius:6px;background:rgba(133,79,11,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:0.6rem"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><path d="M3 14l2-2 8-8-2-2-8 8-2 2 2 2z"/><path d="M5 10l2 2"/></svg></div>
-          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Native Auto Reach</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:1rem;flex:1">Redaktionell nativeartikel redo för Schibsted, Bonnier, Stampen och NTM.</div>
-          <button onclick="goToToolLogin('native')" class="tb-card-btn">Testa nu →</button>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(133,79,11,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"><path d="M3 14l2-2 8-8-2-2-8 8-2 2 2 2z"/><path d="M5 10l2 2"/></svg></div>
+          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:#fff">Native Auto Reach</span><span style="font-size:12px;color:rgba(255,255,255,0.35);margin-left:8px">Publicera i stora medier</span></div>
+          <button onclick="goToToolLogin('native')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
-        <div class="tb-card tb-card-border">
-          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(255,255,255,0.2);margin-bottom:0.6rem">04</div>
-          <div style="width:32px;height:32px;border-radius:6px;background:rgba(83,74,183,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:0.6rem"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="#8B85D4" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M6 8h6M6 11h4"/></svg></div>
-          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Ad Copy Generator</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:1rem;flex:1">Annonscopy för Meta, LinkedIn, Google Ads och display – flera varianter direkt.</div>
-          <button onclick="goToToolLogin('adcopy')" class="tb-card-btn">Testa nu →</button>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(83,74,183,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#8B85D4" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M6 8h6M6 11h4"/></svg></div>
+          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:#fff">Ad Copy Generator</span><span style="font-size:12px;color:rgba(255,255,255,0.35);margin-left:8px">Annonscopy direkt</span></div>
+          <button onclick="goToToolLogin('adcopy')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
       </div>
       <button onclick="goToTools()" style="display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em" onmouseover="this.style.background='#E8C97A'" onmouseout="this.style.background='#C9A84C'">
@@ -950,32 +970,6 @@ body.adcopy-mode{background:#F5F3EE}
       <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,#0a0a0a,transparent)"></div>
     </div>
   </div>
-
-  <!-- LIGHT SECTION -->
-  <div class="section-light reveal">
-    <div class="section-light-inner">
-      <div class="eyebrow-dark">Varför R/T North</div>
-      <h2 class="big-statement-dark">Vi gör jobbet – ni gör affärer.</h2>
-      <div class="pillars">
-        <div class="pillar">
-          <div class="pillar-rule"></div>
-          <div class="pillar-title">Konkreta råd</div>
-          <div class="pillar-desc">Inte generella listor utan ett faktiskt förslag – anpassat till ditt företags storlek, bransch och budget.</div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-rule"></div>
-          <div class="pillar-title">Snabbt och enkelt</div>
-          <div class="pillar-desc">Inget konto. Inga långa möten. Fyll i formuläret och få din plan inom sekunder.</div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-rule"></div>
-          <div class="pillar-title">Vi tar över</div>
-          <div class="pillar-desc">När du sett var du bör synas hjälper R/T North med allt – annonsering, innehåll, medieköp och löpande optimering. Du behöver inte göra det själv.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
   <!-- FINAL CTA -->
   <div class="section-cta reveal">
