@@ -1886,6 +1886,70 @@ const STORAGE_KEY='tr_last_result';
 const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='stockholm';
 
+/* ── safeFetch ─────────────────────────────────────────────────────────────
+   Gemensam hämtfunktion för alla AI-anrop. Hanterar:
+   - Timeout (45 s)
+   - HTTP-felkoder med tydliga svenska meddelanden
+   - Nätverksfel / proxy nere
+   Kastar alltid ett Error med ett användarvänligt .message.
+──────────────────────────────────────────────────────────────────────────── */
+async function safeFetch(messages, timeoutMs = 45000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  let res;
+  try {
+    res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Password': ACCESS_PASSWORD
+      },
+      body: JSON.stringify({ messages }),
+      signal: controller.signal
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      throw new Error('Förfrågan tog för lång tid (>45 s). Kontrollera din uppkoppling och försök igen.');
+    }
+    throw new Error('Kunde inte nå servern. Kontrollera din uppkoppling och försök igen.');
+  }
+  clearTimeout(timer);
+
+  if (res.status === 401) throw new Error('Åtkomst nekad. Ladda om sidan och logga in igen.');
+  if (res.status === 429) throw new Error('För många förfrågningar just nu. Vänta en stund och försök igen.');
+  if (res.status >= 500) throw new Error('Servern svarade med ett fel (' + res.status + '). Försök igen om en liten stund.');
+  if (!res.ok)           throw new Error('Oväntat svar från servern (' + res.status + '). Försök igen.');
+
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('Kunde inte tolka svaret från servern. Försök igen.');
+  }
+
+  return data;
+}
+
+/* ── showToolError ─────────────────────────────────────────────────────────
+   Visar ett felmeddelande med retry-knapp i ett valfritt fel-element.
+   retryFn = den funktion som ska köras om användaren klickar "Försök igen".
+──────────────────────────────────────────────────────────────────────────── */
+function showToolError(errElId, message, retryFn) {
+  const el = document.getElementById(errElId);
+  if (!el) return;
+  el.innerHTML =
+    '<span>' + message + '</span>' +
+    (retryFn
+      ? '<button onclick="(' + retryFn.toString() + ')()" ' +
+        'style="margin-left:12px;padding:4px 12px;border-radius:6px;border:1px solid #FCA5A5;' +
+        'background:#fff;color:#991B1B;font-size:12px;cursor:pointer;font-weight:600">' +
+        'Försök igen</button>'
+      : '');
+  el.style.display = 'block';
+}
+
 function goToLanding(){
   hideAll();
   document.getElementById('landing').style.display='block';
@@ -2039,13 +2103,8 @@ async function analyzeMarketing(){
   document.getElementById('form-section').style.display='none';
   document.getElementById('loading-state').style.display='block';
   try{
-    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},body:JSON.stringify({messages:[{role:'user',content:buildPrompt()}]})});
-    if(resp.status===401)throw new Error('auth');
-    if(!resp.ok)throw new Error('server '+resp.status);
-    const data=await resp.json();
-    console.log('Railway response:', JSON.stringify(data).slice(0,500));
+    const data = await safeFetch([{role:'user',content:buildPrompt()}]);
     const raw=data.content.map(i=>i.text||'').join('');
-    console.log('Raw text:', raw.slice(0,500));
     const cleaned=raw.replace(/```json|```/g,'').trim();
     const result=JSON.parse(cleaned);
     localStorage.setItem(STORAGE_KEY,JSON.stringify(result));
@@ -2055,8 +2114,8 @@ async function analyzeMarketing(){
     console.error('Analysis error:', err);
     document.getElementById('loading-state').style.display='none';
     document.getElementById('form-section').style.display='block';
-    errEl.textContent=err.message==='auth'?'Åtkomst nekad.':'Något gick fel: '+err.message;
-    errEl.style.display='block';btn.disabled=false;
+    showToolError('error-msg', err.message, analyzeMarketing);
+    btn.disabled=false;
   }
 }
 
@@ -2436,16 +2495,7 @@ Call to action: ${cta}
 Valda mediekanaler: ${mediaList}`;
 
   try {
-    const res = await fetch(PROXY_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
-      body:JSON.stringify({
-        messages:[
-          {role:'user',content:systemPrompt+'\n\n'+userPrompt}
-        ]
-      })
-    });
-    const data = await res.json();
+    const data = await safeFetch([{role:'user',content:systemPrompt+'\n\n'+userPrompt}]);
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const article = JSON.parse(clean);
@@ -2469,8 +2519,7 @@ Valda mediekanaler: ${mediaList}`;
     document.getElementById('native-loading').style.display='none';
     document.getElementById('native-form-section').style.display='block';
     document.getElementById('native-btn').disabled=false;
-    errEl.textContent='Något gick fel. Kontrollera din anslutning och försök igen.';
-    errEl.style.display='block';
+    showToolError('native-error', e.message, generateNative);
   }
 }
 
@@ -2648,12 +2697,7 @@ Valda kanaler att fördela på: ${selected.map(c=>c.name).join(', ')}
 Fördela budgeten optimalt mellan valda kanaler baserat på mål och målgrupp. Alla procentsatser ska summera till 100.`;
 
   try {
-    const res = await fetch(PROXY_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
-      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
+    const data = await safeFetch([{role:'user',content:prompt}]);
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const plan = JSON.parse(clean);
@@ -2696,8 +2740,7 @@ Fördela budgeten optimalt mellan valda kanaler baserat på mål och målgrupp. 
     document.getElementById('dist-loading').style.display='none';
     document.getElementById('dist-form-section').style.display='block';
     document.getElementById('dist-btn').disabled=false;
-    document.getElementById('dist-error').textContent='Något gick fel: '+(e&&e.message?e.message:'kontrollera anslutningen och försök igen.');
-    document.getElementById('dist-error').style.display='block';
+    showToolError('dist-error', e.message, generateDist);
   }
 }
 
@@ -2837,12 +2880,7 @@ ${formatsStr}
 Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska vara engagerande och scrollstoppande. LinkedIn ska vara professionell. Google Ads-headlines ska vara exakt max 30 tecken. Display-text ska vara extrem kort och tydlig.`;
 
   try {
-    const res = await fetch(PROXY_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
-      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
+    const data = await safeFetch([{role:'user',content:prompt}]);
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const result = JSON.parse(clean);
@@ -2878,8 +2916,7 @@ Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska 
     document.getElementById('adcopy-loading').style.display='none';
     document.getElementById('adcopy-form-section').style.display='block';
     document.getElementById('adcopy-btn').disabled=false;
-    document.getElementById('adcopy-error').textContent='Något gick fel: '+(e&&e.message?e.message:'kontrollera anslutningen och försök igen.');
-    document.getElementById('adcopy-error').style.display='block';
+    showToolError('adcopy-error', e.message, generateAdCopy);
   }
 }
 
@@ -2925,12 +2962,7 @@ ${tone?'Ton: '+tone:''}
 Krav: Exakt 300x250px, inline CSS, mörk eller ljus bakgrund, tydlig rubrik, korttext och en CTA-knapp. Professionellt utseende. Ingen extern CSS eller JS.`;
 
   try {
-    const res = await fetch(PROXY_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Access-Password':ACCESS_PASSWORD},
-      body:JSON.stringify({messages:[{role:'user',content:bannerPrompt}]})
-    });
-    const data = await res.json();
+    const data = await safeFetch([{role:'user',content:bannerPrompt}]);
     const html = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```html|```/g,'').trim();
     window._adcopyBannerHTML = html;
 
