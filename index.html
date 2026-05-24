@@ -2420,17 +2420,17 @@ async function safeFetch(messages, timeoutMs = 45000) {
    Visar ett felmeddelande med retry-knapp i ett valfritt fel-element.
    retryFn = den funktion som ska köras om användaren klickar "Försök igen".
 ──────────────────────────────────────────────────────────────────────────── */
+const _retryRegistry = {};
 function showToolError(errElId, message, retryFn) {
   const el = document.getElementById(errElId);
   if (!el) return;
-  el.innerHTML =
-    '<span>' + message + '</span>' +
-    (retryFn
-      ? '<button onclick="(' + retryFn.toString() + ')()" ' +
-        'style="margin-left:12px;padding:4px 12px;border-radius:6px;border:1px solid #FCA5A5;' +
-        'background:#fff;color:#991B1B;font-size:12px;cursor:pointer;font-weight:600">' +
-        'Försök igen</button>'
-      : '');
+  let btnHTML = '';
+  if (retryFn) {
+    const key = errElId + '_retry';
+    _retryRegistry[key] = retryFn;
+    btnHTML = `<button onclick="_retryRegistry['${key}']()" style="margin-left:12px;padding:4px 12px;border-radius:6px;border:1px solid #FCA5A5;background:#fff;color:#991B1B;font-size:12px;cursor:pointer;font-weight:600">Försök igen</button>`;
+  }
+  el.innerHTML = '<span>' + message + '</span>' + btnHTML;
   el.style.display = 'block';
 }
 
