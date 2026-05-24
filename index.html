@@ -899,6 +899,63 @@ body.adcopy-mode{background:#F5F3EE}
   .adcopy-format-grid{grid-template-columns:1fr 1fr}
   .dist-channel-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ─── NEWSROOM ─── */
+#newsroom-page{display:none}
+body.newsroom-mode{background:#F5F3EE}
+.newsroom-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.newsroom-header-brand{display:flex;align-items:center;gap:12px}
+.newsroom-header-title{font-size:15px;font-weight:600;color:#2C2520}
+.newsroom-header-sub{font-size:12px;color:#9A8570}
+.newsroom-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.newsroom-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.07)}
+.newsroom-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.newsroom-field{margin-bottom:1.25rem}
+.newsroom-field label{display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px}
+.newsroom-field label span{font-weight:400;color:#9A8570;font-size:12px;margin-left:4px}
+.newsroom-input,.newsroom-textarea,.newsroom-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
+.newsroom-input:focus,.newsroom-textarea:focus,.newsroom-select:focus{border-color:#C9A84C}
+.newsroom-textarea{min-height:100px;resize:vertical;line-height:1.6}
+.newsroom-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:0.5rem}
+.newsroom-type{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px 14px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.newsroom-type:hover{border-color:#C9A84C}
+.newsroom-type.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.newsroom-type-icon{font-size:20px;margin-bottom:6px}
+.newsroom-type-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.newsroom-type-desc{font-size:11px;color:#9A8570;line-height:1.4}
+.newsroom-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:0.5rem}
+.newsroom-media{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px 14px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.newsroom-media:hover{border-color:#C9A84C}
+.newsroom-media.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.newsroom-media-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.newsroom-media-desc{font-size:11px;color:#9A8570;line-height:1.4}
+.newsroom-generate-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
+.newsroom-generate-btn:hover{background:#4A3F35}
+.newsroom-generate-btn:disabled{opacity:0.4;cursor:not-allowed}
+.newsroom-loading{text-align:center;padding:3rem 1rem;display:none}
+.newsroom-loading-text{font-size:15px;color:#5F5E5A;margin-top:1rem}
+.newsroom-result{display:none;margin-top:1.5rem}
+.newsroom-result-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:2rem;margin-bottom:1rem}
+.newsroom-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem}
+.newsroom-result-headline{font-size:22px;font-weight:700;color:#2C2520;line-height:1.3;margin-bottom:1rem;letter-spacing:-0.01em}
+.newsroom-result-ingress{font-size:15px;color:#4A3F35;line-height:1.75;font-style:italic;border-left:3px solid #C9A84C;padding-left:1rem;margin-bottom:1.5rem}
+.newsroom-result-body{font-size:14px;color:#2C2520;line-height:1.9;white-space:pre-line}
+.newsroom-result-boilerplate{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(0,0,0,0.07);font-size:13px;color:#9A8570;line-height:1.7;font-style:italic}
+.newsroom-result-quote{background:#F9F8F6;border-left:3px solid #C9A84C;padding:1rem 1.25rem;border-radius:0 8px 8px 0;margin:1.25rem 0;font-size:14px;color:#2C2520;line-height:1.7;font-style:italic}
+.newsroom-contact-block{background:#F9F8F6;border:1px solid rgba(0,0,0,0.07);border-radius:8px;padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#5F5E5A;line-height:1.8}
+.newsroom-contact-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:6px}
+.newsroom-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(0,0,0,0.07)}
+.newsroom-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
+.newsroom-action-btn:hover{border-color:#C9A84C}
+.newsroom-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
+.newsroom-action-btn.primary:hover{background:#4A3F35}
+.newsroom-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
+.newsroom-new-btn:hover{border-color:#C9A84C;color:#2C2520}
+.newsroom-error{display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:12px 16px;font-size:13px;color:#991B1B;margin-top:1rem}
+@media(max-width:640px){
+  .newsroom-type-grid{grid-template-columns:1fr 1fr}
+  .newsroom-media-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
@@ -994,6 +1051,11 @@ body.adcopy-mode{background:#F5F3EE}
           <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px">Ad Copy Generator</div><div style="font-size:12px;color:rgba(255,255,255,0.35)">Annonscopy direkt</div></div>
           <button onclick="goToToolLogin('adcopy')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
+        <div class="tb-list-row" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"><path d="M3 4h12M3 8h8M3 12h10M3 16h6"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px">Newsroom</div><div style="font-size:12px;color:rgba(255,255,255,0.35)">Pressreleases på minuter</div></div>
+          <button onclick="goToToolLogin('newsroom')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
+        </div>
       </div>
       <button onclick="goToTools()" style="display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em" onmouseover="this.style.background='#E8C97A'" onmouseout="this.style.background='#C9A84C'">
         Utforska The Toolbox
@@ -1022,6 +1084,7 @@ body.adcopy-mode{background:#F5F3EE}
             <button onclick="goToToolLogin('dist')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Distribution Planner</button>
             <button onclick="goToToolLogin('native')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Native Auto Reach</button>
             <button onclick="goToToolLogin('adcopy')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Ad Copy Generator</button>
+            <button onclick="goToToolLogin('newsroom')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Newsroom</button>
           </div>
         </div>
         <div>
@@ -1230,6 +1293,161 @@ body.adcopy-mode{background:#F5F3EE}
   </div>
 </div>
 
+<!-- ═══ NEWSROOM ═══ -->
+<div id="newsroom-page">
+
+  <header class="newsroom-header">
+    <div class="newsroom-header-brand">
+      <img src="images/RT_North.png" alt="R/T North" style="height:36px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div>
+        <div class="newsroom-header-title">Newsroom</div>
+        <div class="newsroom-header-sub">Powered by AI · R/T North</div>
+      </div>
+    </div>
+    <button onclick="goToLanding()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Till startsidan
+    </button>
+  </header>
+
+  <div class="newsroom-container">
+
+    <div id="newsroom-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa din pressrelease</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så genererar AI:n en professionell pressrelease redo att skicka till redaktioner.</p>
+      </div>
+
+      <div class="newsroom-section-title">Typ av nyhet</div>
+      <div class="newsroom-type-grid">
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Produktlansering')">
+          <div class="newsroom-type-icon">🚀</div>
+          <div class="newsroom-type-name">Produktlansering</div>
+          <div class="newsroom-type-desc">Ny produkt eller tjänst</div>
+        </div>
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Partnerskap eller avtal')">
+          <div class="newsroom-type-icon">🤝</div>
+          <div class="newsroom-type-name">Partnerskap</div>
+          <div class="newsroom-type-desc">Avtal eller samarbete</div>
+        </div>
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Ny medarbetare eller rekrytering')">
+          <div class="newsroom-type-icon">👤</div>
+          <div class="newsroom-type-name">Rekrytering</div>
+          <div class="newsroom-type-desc">Ny person eller roll</div>
+        </div>
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Resultat eller milstolpe')">
+          <div class="newsroom-type-icon">📈</div>
+          <div class="newsroom-type-name">Resultat</div>
+          <div class="newsroom-type-desc">Siffror eller milstolpe</div>
+        </div>
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Event eller konferens')">
+          <div class="newsroom-type-icon">📅</div>
+          <div class="newsroom-type-name">Event</div>
+          <div class="newsroom-type-desc">Konferens eller aktivitet</div>
+        </div>
+        <div class="newsroom-type" onclick="newsroomSelectType(this,'Annan nyhet')">
+          <div class="newsroom-type-icon">📰</div>
+          <div class="newsroom-type-name">Övrigt</div>
+          <div class="newsroom-type-desc">Annan typ av nyhet</div>
+        </div>
+      </div>
+
+      <div class="newsroom-section-title">Om företaget</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="newsroom-field">
+          <label>Företagsnamn <span>*</span></label>
+          <input class="newsroom-input" id="nr-company" type="text" placeholder="Ex. Björk & Partners AB">
+        </div>
+        <div class="newsroom-field">
+          <label>Bransch <span>*</span></label>
+          <input class="newsroom-input" id="nr-industry" type="text" placeholder="Ex. Tech, Fastighet, Hälsa">
+        </div>
+      </div>
+      <div class="newsroom-field">
+        <label>Kort om företaget <span>*</span></label>
+        <textarea class="newsroom-textarea" id="nr-company-desc" style="min-height:72px" placeholder="Ex. Björk & Partners är ett ledande konsultbolag inom hållbar stadsplanering med 120 anställda i Sverige och Norge."></textarea>
+      </div>
+
+      <div class="newsroom-section-title">Om nyheten</div>
+
+      <div class="newsroom-field">
+        <label>Beskriv nyheten <span>*</span></label>
+        <textarea class="newsroom-textarea" id="nr-news" placeholder="Vad har hänt? Beskriv nyheten så detaljerat som möjligt – datum, siffror, bakgrund och varför det är viktigt."></textarea>
+      </div>
+      <div class="newsroom-field">
+        <label>Citat från nyckelperson <span>rekommenderas starkt</span></label>
+        <textarea class="newsroom-textarea" id="nr-quote" style="min-height:80px" placeholder="Ex: 'Det här är ett viktigt steg för oss och våra kunder.' – Anna Svensson, VD Björk & Partners&#10;&#10;Namn och titel gör pressreleasen mer trovärdig."></textarea>
+      </div>
+      <div class="newsroom-field">
+        <label>Kontaktperson för media <span>valfritt</span></label>
+        <input class="newsroom-input" id="nr-contact" type="text" placeholder="Ex. Johan Berg, PR-ansvarig, 070-123 45 67, johan@foretaget.se">
+      </div>
+
+      <div class="newsroom-section-title">Målmedia</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Välj vilken typ av media du riktar dig mot – det påverkar ton och vinkel.</p>
+      <div class="newsroom-media-grid">
+        <div class="newsroom-media sel" onclick="newsroomToggleMedia(this,'Dagstidningar och nyhetsmedier')">
+          <div class="newsroom-media-name">Dagstidningar</div>
+          <div class="newsroom-media-desc">SVD, DN, Aftonbladet</div>
+        </div>
+        <div class="newsroom-media" onclick="newsroomToggleMedia(this,'Branschpress och facktidningar')">
+          <div class="newsroom-media-name">Branschpress</div>
+          <div class="newsroom-media-desc">Fackmedier och branschtidningar</div>
+        </div>
+        <div class="newsroom-media" onclick="newsroomToggleMedia(this,'Lokala medier')">
+          <div class="newsroom-media-name">Lokalmedier</div>
+          <div class="newsroom-media-desc">Regionala tidningar</div>
+        </div>
+        <div class="newsroom-media" onclick="newsroomToggleMedia(this,'Affärsmedia och investerarpress')">
+          <div class="newsroom-media-name">Affärsmedia</div>
+          <div class="newsroom-media-desc">Breakit, DI, Affärsvärlden</div>
+        </div>
+      </div>
+
+      <div id="newsroom-error" class="newsroom-error"></div>
+
+      <button class="newsroom-generate-btn" id="newsroom-btn" onclick="generateNewsroom()">
+        Generera pressrelease →
+      </button>
+    </div>
+
+    <div class="newsroom-loading" id="newsroom-loading">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"><path d="M16 4v4M16 24v4M4 16H8M24 16h4M7.05 7.05l2.83 2.83M22.12 22.12l2.83 2.83M7.05 24.95l2.83-2.83M22.12 9.88l2.83-2.83"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="1s" repeatCount="indefinite"/></path></svg>
+      <div class="newsroom-loading-text">Skriver pressrelease...</div>
+    </div>
+
+    <div class="newsroom-result" id="newsroom-result">
+      <div class="newsroom-result-card">
+        <div class="newsroom-result-label" id="nr-result-type"></div>
+        <div class="newsroom-result-headline" id="nr-result-headline"></div>
+        <div class="newsroom-result-ingress" id="nr-result-ingress"></div>
+        <div class="newsroom-result-body" id="nr-result-body"></div>
+        <div class="newsroom-result-quote" id="nr-result-quote" style="display:none"></div>
+        <div class="newsroom-contact-block" id="nr-result-contact" style="display:none">
+          <div class="newsroom-contact-label">Kontakt för media</div>
+          <div id="nr-result-contact-text"></div>
+        </div>
+        <div class="newsroom-result-boilerplate" id="nr-result-boilerplate"></div>
+      </div>
+
+      <div class="newsroom-result-actions">
+        <button class="newsroom-action-btn primary" onclick="newsroomCopy()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>
+          Kopiera text
+        </button>
+        <button class="newsroom-action-btn" onclick="newsroomEmail()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 3l6 5 6-5"/></svg>
+          Skicka via e-post
+        </button>
+      </div>
+
+      <button class="newsroom-new-btn" onclick="newsroomReset()">← Skapa ny pressrelease</button>
+    </div>
+
+  </div>
+</div>
+
 <!-- ═══ TOOLS HUB ═══ -->
 <div id="tools-page">
   <nav class="tools-nav">
@@ -1308,6 +1526,21 @@ body.adcopy-mode{background:#F5F3EE}
         <span class="tool-card-tag">Display</span>
       </div>
       <button class="tool-card-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-num">05</div>
+      <div class="tool-card-icon" style="background:rgba(201,168,76,0.1)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><path d="M3 4h12M3 8h8M3 12h10M3 16h6"/></svg>
+      </div>
+      <div class="tool-card-label">Pressrelease</div>
+      <div class="tool-card-title">Newsroom</div>
+      <div class="tool-card-desc">Generera en professionell pressrelease på minuter – redo att skicka till svenska redaktioner.</div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Pressrelease</span>
+        <span class="tool-card-tag">PR</span>
+        <span class="tool-card-tag">Media</span>
+      </div>
+      <button class="tool-card-btn" onclick="goToToolLogin('newsroom')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
   </div>
 </div>
@@ -1958,6 +2191,7 @@ function goToLogin(dest){
   if(d==='native') goToNative();
   else if(d==='dist') goToDist();
   else if(d==='adcopy') goToAdCopy();
+  else if(d==='newsroom') goToNewsroom();
   else showApp();
 }
 
@@ -2539,14 +2773,14 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','about-page','native-page','app','dist-page','adcopy-page','tools-page'];
+const ALL_PAGES = ['landing','about-page','native-page','app','dist-page','adcopy-page','newsroom-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display='none';
   });
-  document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode');
+  document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode','newsroom-mode');
 }
 
 function goToTools(){
@@ -2559,6 +2793,7 @@ function goToToolLogin(dest){
   if(dest==='native') goToNative();
   else if(dest==='dist') goToDist();
   else if(dest==='adcopy') goToAdCopy();
+  else if(dest==='newsroom') goToNewsroom();
   else showApp();
 }
 
@@ -2576,6 +2811,13 @@ function goToAdCopy(){
   document.body.classList.add('adcopy-mode');
   window.scrollTo(0,0);
   renderAdCopyFormats();
+}
+
+function goToNewsroom(){
+  hideAll();
+  document.getElementById('newsroom-page').style.display='block';
+  document.body.classList.add('newsroom-mode');
+  window.scrollTo(0,0);
 }
 
 /* ══════════════════════════════════════════
@@ -2984,6 +3226,167 @@ function adcopyReset(){
   document.getElementById('adcopy-form-section').style.display='block';
   document.getElementById('adcopy-btn').disabled=false;
   window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════
+   NEWSROOM
+══════════════════════════════════════════ */
+
+let _newsroomType = '';
+let _newsroomMedia = ['Dagstidningar och nyhetsmedier'];
+
+function newsroomSelectType(el, type) {
+  document.querySelectorAll('.newsroom-type').forEach(t => t.classList.remove('sel'));
+  el.classList.add('sel');
+  _newsroomType = type;
+}
+
+function newsroomToggleMedia(el, media) {
+  el.classList.toggle('sel');
+  if (el.classList.contains('sel')) {
+    if (!_newsroomMedia.includes(media)) _newsroomMedia.push(media);
+  } else {
+    _newsroomMedia = _newsroomMedia.filter(m => m !== media);
+  }
+}
+
+function nrv(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+async function generateNewsroom() {
+  const company = nrv('nr-company');
+  const industry = nrv('nr-industry');
+  const companyDesc = nrv('nr-company-desc');
+  const news = nrv('nr-news');
+  const quote = nrv('nr-quote');
+  const contact = nrv('nr-contact');
+
+  const errEl = document.getElementById('newsroom-error');
+  errEl.style.display = 'none';
+
+  if (!company) { showToolError('newsroom-error', 'Fyll i företagsnamn.'); return; }
+  if (!industry) { showToolError('newsroom-error', 'Fyll i bransch.'); return; }
+  if (!companyDesc) { showToolError('newsroom-error', 'Beskriv företaget kort.'); return; }
+  if (!news) { showToolError('newsroom-error', 'Beskriv nyheten.'); return; }
+  if (!_newsroomType) { showToolError('newsroom-error', 'Välj typ av nyhet.'); return; }
+  if (_newsroomMedia.length === 0) { showToolError('newsroom-error', 'Välj minst ett målmedia.'); return; }
+
+  document.getElementById('newsroom-btn').disabled = true;
+  document.getElementById('newsroom-form-section').style.display = 'none';
+  document.getElementById('newsroom-loading').style.display = 'block';
+
+  const mediaStr = _newsroomMedia.join(', ');
+
+  const prompt = `Du är en erfaren PR-konsult och kommunikationsexpert med gedigen erfarenhet av svenska medier. Din uppgift är att skriva en professionell pressrelease på svenska.
+
+INSTRUKTIONER:
+- Följ klassisk pressrelease-struktur: stark nyhetsvärdig rubrik, informativ ingress (5 W:n), brödtext med fakta och kontext, citat, boilerplate
+- Anpassa ton och vinkel för: ${mediaStr}
+- Nyhetstyp: ${_newsroomType}
+- Skriv på svenska, professionellt och journalistiskt
+- Rubriken ska vara nyhetsvärdig och locka till läsning
+- Ingressen ska sammanfatta hela nyheten på 2-3 meningar
+- Returnera ENBART ett JSON-objekt, inget annat
+
+FÖRETAGSINFORMATION:
+Företag: ${company}
+Bransch: ${industry}
+Om företaget: ${companyDesc}
+
+NYHETEN:
+${news}
+
+${quote ? `CITAT:\n${quote}` : ''}
+${contact ? `KONTAKTPERSON:\n${contact}` : ''}
+
+Returnera ett JSON-objekt med exakt dessa fält:
+{
+  "headline": "Pressreleasens rubrik",
+  "ingress": "Ingress på 2-3 meningar som sammanfattar hela nyheten",
+  "body": "Brödtext i 3-4 stycken med fakta, kontext och detaljer. Använd \\n\\n mellan styckena.",
+  "quote": "Citatet formaterat som: 'Citattexten' – Namn, Titel, Företag (lämna tom sträng om inget citat finns)",
+  "boilerplate": "Om ${company}: ${companyDesc} (detta är standardtexten som avslutar pressreleasen)",
+  "contact": "${contact || ''}"
+}`;
+
+  try {
+    const data = await safeFetch([{ role: 'user', content: prompt }]);
+    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    document.getElementById('nr-result-type').textContent = _newsroomType + ' · ' + company;
+    document.getElementById('nr-result-headline').textContent = result.headline || '';
+    document.getElementById('nr-result-ingress').textContent = result.ingress || '';
+    document.getElementById('nr-result-body').textContent = result.body || '';
+
+    const quoteEl = document.getElementById('nr-result-quote');
+    if (result.quote && result.quote.trim()) {
+      quoteEl.textContent = result.quote;
+      quoteEl.style.display = 'block';
+    } else {
+      quoteEl.style.display = 'none';
+    }
+
+    const contactEl = document.getElementById('nr-result-contact');
+    const contactTextEl = document.getElementById('nr-result-contact-text');
+    if (result.contact && result.contact.trim()) {
+      contactTextEl.textContent = result.contact;
+      contactEl.style.display = 'block';
+    } else {
+      contactEl.style.display = 'none';
+    }
+
+    document.getElementById('nr-result-boilerplate').textContent = result.boilerplate || '';
+
+    window._newsroomResult = result;
+    window._newsroomCompany = company;
+
+    document.getElementById('newsroom-loading').style.display = 'none';
+    document.getElementById('newsroom-result').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (e) {
+    document.getElementById('newsroom-loading').style.display = 'none';
+    document.getElementById('newsroom-form-section').style.display = 'block';
+    document.getElementById('newsroom-btn').disabled = false;
+    showToolError('newsroom-error', e.message, generateNewsroom);
+  }
+}
+
+function newsroomCopy() {
+  const r = window._newsroomResult;
+  if (!r) return;
+  let text = '';
+  text += 'PRESSRELEASE\n\n';
+  text += (r.headline || '') + '\n\n';
+  text += (r.ingress || '') + '\n\n';
+  text += (r.body || '') + '\n\n';
+  if (r.quote && r.quote.trim()) text += r.quote + '\n\n';
+  text += (r.boilerplate || '') + '\n\n';
+  if (r.contact && r.contact.trim()) text += 'Kontakt för media:\n' + r.contact + '\n';
+  navigator.clipboard.writeText(text).then(() => alert('Pressreleasen kopierad!'));
+}
+
+function newsroomEmail() {
+  const r = window._newsroomResult;
+  const c = window._newsroomCompany || '';
+  if (!r) return;
+  let body = 'PRESSRELEASE\n\n' + (r.headline || '') + '\n\n' + (r.ingress || '') + '\n\n' + (r.body || '');
+  if (r.quote && r.quote.trim()) body += '\n\n' + r.quote;
+  body += '\n\n' + (r.boilerplate || '');
+  if (r.contact && r.contact.trim()) body += '\n\nKontakt:\n' + r.contact;
+  window.location.href = 'mailto:hello@rtnorth.se?subject=' + encodeURIComponent('Pressrelease – ' + c) + '&body=' + encodeURIComponent(body);
+}
+
+function newsroomReset() {
+  window._newsroomResult = null;
+  document.getElementById('newsroom-result').style.display = 'none';
+  document.getElementById('newsroom-form-section').style.display = 'block';
+  document.getElementById('newsroom-btn').disabled = false;
+  window.scrollTo(0, 0);
 }
 
 </script>
