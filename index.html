@@ -956,6 +956,61 @@ body.newsroom-mode{background:#F5F3EE}
   .newsroom-type-grid{grid-template-columns:1fr 1fr}
   .newsroom-media-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ─── THE BRIEF ─── */
+#brief-page{display:none}
+body.brief-mode{background:#F5F3EE}
+.brief-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.brief-header-brand{display:flex;align-items:center;gap:12px}
+.brief-header-title{font-size:15px;font-weight:600;color:#2C2520}
+.brief-header-sub{font-size:12px;color:#9A8570}
+.brief-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.brief-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.07)}
+.brief-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.brief-field{margin-bottom:1.25rem}
+.brief-field label{display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px}
+.brief-field label span{font-weight:400;color:#9A8570;font-size:12px;margin-left:4px}
+.brief-input,.brief-textarea,.brief-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
+.brief-input:focus,.brief-textarea:focus,.brief-select:focus{border-color:#C9A84C}
+.brief-textarea{min-height:90px;resize:vertical;line-height:1.6}
+.brief-goal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:0.5rem}
+.brief-goal{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px 14px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.brief-goal:hover{border-color:#C9A84C}
+.brief-goal.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.brief-goal-icon{font-size:20px;margin-bottom:6px}
+.brief-goal-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.brief-goal-desc{font-size:11px;color:#9A8570;line-height:1.4}
+.brief-generate-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
+.brief-generate-btn:hover{background:#4A3F35}
+.brief-generate-btn:disabled{opacity:0.4;cursor:not-allowed}
+.brief-loading{text-align:center;padding:3rem 1rem;display:none}
+.brief-loading-text{font-size:15px;color:#5F5E5A;margin-top:1rem}
+.brief-result{display:none;margin-top:1.5rem}
+.brief-result-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:2rem;margin-bottom:1rem}
+.brief-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem}
+.brief-result-title{font-size:22px;font-weight:700;color:#2C2520;line-height:1.3;margin-bottom:1.5rem;letter-spacing:-0.01em}
+.brief-section{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(0,0,0,0.07)}
+.brief-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9A8570;margin-bottom:8px}
+.brief-section-content{font-size:14px;color:#2C2520;line-height:1.8}
+.brief-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:4px}
+.brief-kpi{background:#F9F8F6;border:1px solid rgba(0,0,0,0.07);border-radius:8px;padding:10px 14px}
+.brief-kpi-name{font-size:12px;font-weight:700;color:#2C2520;margin-bottom:2px}
+.brief-kpi-value{font-size:12px;color:#9A8570;line-height:1.5}
+.brief-timeline{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.brief-timeline-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#2C2520}
+.brief-timeline-dot{width:8px;height:8px;border-radius:50%;background:#C9A84C;flex-shrink:0}
+.brief-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(0,0,0,0.07)}
+.brief-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
+.brief-action-btn:hover{border-color:#C9A84C}
+.brief-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
+.brief-action-btn.primary:hover{background:#4A3F35}
+.brief-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
+.brief-new-btn:hover{border-color:#C9A84C;color:#2C2520}
+.brief-error{display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:12px 16px;font-size:13px;color:#991B1B;margin-top:1rem}
+@media(max-width:640px){
+  .brief-goal-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
@@ -1056,6 +1111,11 @@ body.newsroom-mode{background:#F5F3EE}
           <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px">Newsroom</div><div style="font-size:12px;color:rgba(255,255,255,0.35)">Pressreleases på minuter</div></div>
           <button onclick="goToToolLogin('newsroom')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
         </div>
+        <div class="tb-list-row" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"><path d="M9 2v14M2 9h14"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px">The Brief</div><div style="font-size:12px;color:rgba(255,255,255,0.35)">Kampanjbrief på minuter</div></div>
+          <button onclick="goToToolLogin('brief')" class="tb-card-btn" style="flex-shrink:0">Testa →</button>
+        </div>
       </div>
       <button onclick="goToTools()" style="display:inline-flex;align-items:center;gap:8px;background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em" onmouseover="this.style.background='#E8C97A'" onmouseout="this.style.background='#C9A84C'">
         Utforska The Toolbox
@@ -1085,6 +1145,7 @@ body.newsroom-mode{background:#F5F3EE}
             <button onclick="goToToolLogin('native')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Native Auto Reach</button>
             <button onclick="goToToolLogin('adcopy')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Ad Copy Generator</button>
             <button onclick="goToToolLogin('newsroom')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Newsroom</button>
+            <button onclick="goToToolLogin('brief')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">The Brief</button>
           </div>
         </div>
         <div>
@@ -1288,6 +1349,192 @@ body.newsroom-mode{background:#F5F3EE}
       </div>
 
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ THE BRIEF ═══ -->
+<div id="brief-page">
+
+  <header class="brief-header">
+    <div class="brief-header-brand">
+      <img src="images/RT_North.png" alt="R/T North" style="height:36px;width:auto;cursor:pointer" onclick="goToLanding()">
+      <div>
+        <div class="brief-header-title">The Brief</div>
+        <div class="brief-header-sub">Powered by AI · R/T North</div>
+      </div>
+    </div>
+    <button onclick="goToLanding()" style="font-size:13px;color:#9A8570;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+      Till startsidan
+    </button>
+  </header>
+
+  <div class="brief-container">
+
+    <div id="brief-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa din kampanjbrief</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så genererar AI:n en komplett brief redo att skicka till byrå, frilansare eller internt team.</p>
+      </div>
+
+      <div class="brief-section-title">Kampanjmål</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Välj ett eller flera mål – de styr vad brifen prioriterar.</p>
+      <div class="brief-goal-grid">
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Ökad varumärkeskännedom')">
+          <div class="brief-goal-icon">📣</div>
+          <div class="brief-goal-name">Kännedom</div>
+          <div class="brief-goal-desc">Fler ska veta vem ni är</div>
+        </div>
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Leadsgenerering')">
+          <div class="brief-goal-icon">🎯</div>
+          <div class="brief-goal-name">Leads</div>
+          <div class="brief-goal-desc">Fånga nya potentiella kunder</div>
+        </div>
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Direktförsäljning och konvertering')">
+          <div class="brief-goal-icon">💰</div>
+          <div class="brief-goal-name">Försäljning</div>
+          <div class="brief-goal-desc">Driva köp och konvertering</div>
+        </div>
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Produktlansering')">
+          <div class="brief-goal-icon">🚀</div>
+          <div class="brief-goal-name">Lansering</div>
+          <div class="brief-goal-desc">Introducera något nytt</div>
+        </div>
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Kundlojalitet och retention')">
+          <div class="brief-goal-icon">🔄</div>
+          <div class="brief-goal-name">Lojalitet</div>
+          <div class="brief-goal-desc">Behåll och fördjupa relationer</div>
+        </div>
+        <div class="brief-goal" onclick="briefToggleGoal(this,'Arbetsgivarvarumärke och rekrytering')">
+          <div class="brief-goal-icon">👥</div>
+          <div class="brief-goal-name">Employer brand</div>
+          <div class="brief-goal-desc">Attrahera rätt talang</div>
+        </div>
+      </div>
+
+      <div class="brief-section-title">Om företaget och kampanjen</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="brief-field">
+          <label>Företagsnamn <span>*</span></label>
+          <input class="brief-input" id="br-company" type="text" placeholder="Ex. Björk & Partners AB">
+        </div>
+        <div class="brief-field">
+          <label>Bransch <span>*</span></label>
+          <input class="brief-input" id="br-industry" type="text" placeholder="Ex. Tech, Fastighet, Retail">
+        </div>
+      </div>
+
+      <div class="brief-field">
+        <label>Vad ska kampanjen kommunicera? <span>*</span></label>
+        <textarea class="brief-textarea" id="br-message" placeholder="Beskriv produkten, tjänsten eller budskapet som ska ut. Vad är det unika? Vad skiljer er från konkurrenterna?"></textarea>
+      </div>
+
+      <div class="brief-field">
+        <label>Målgrupp <span>*</span></label>
+        <textarea class="brief-textarea" id="br-audience" style="min-height:72px" placeholder="Ex. Beslutsfattare på medelstora B2B-företag i Sverige, 35–55 år, inom IT och finans."></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="brief-field">
+          <label>Total budget <span>*</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input class="brief-input" id="br-budget" type="number" placeholder="Ex. 150000" min="0" step="5000" style="max-width:180px">
+            <span style="font-size:13px;color:#9A8570;white-space:nowrap">kr exkl. moms</span>
+          </div>
+        </div>
+        <div class="brief-field">
+          <label>Kampanjperiod <span>*</span></label>
+          <input class="brief-input" id="br-period" type="text" placeholder="Ex. 1 mars – 30 april 2025">
+        </div>
+      </div>
+
+      <div class="brief-section-title">Ton och begränsningar</div>
+
+      <div class="brief-field">
+        <label>Önskad ton och känsla</label>
+        <input class="brief-input" id="br-tone" type="text" placeholder="Ex. Professionell men varm, inspirerande, rakt på sak, lekfull">
+      </div>
+
+      <div class="brief-field">
+        <label>Krav eller begränsningar <span>valfritt</span></label>
+        <textarea class="brief-textarea" id="br-constraints" style="min-height:72px" placeholder="Ex. Måste följa grafisk profil, inga konkurrentnamn, GDPR-krav, specifika kanaler som ska inkluderas eller undvikas..."></textarea>
+      </div>
+
+      <div class="brief-field">
+        <label>Övrigt att känna till <span>valfritt</span></label>
+        <textarea class="brief-textarea" id="br-extra" style="min-height:72px" placeholder="Ex. Tidigare kampanjer, lärdomar, specifika KPI:er ni redan har bestämt, vem brifen ska skickas till..."></textarea>
+      </div>
+
+      <div id="brief-error" class="brief-error"></div>
+
+      <button class="brief-generate-btn" id="brief-btn" onclick="generateBrief()">
+        Generera kampanjbrief →
+      </button>
+    </div>
+
+    <div class="brief-loading" id="brief-loading">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"><path d="M16 4v4M16 24v4M4 16H8M24 16h4M7.05 7.05l2.83 2.83M22.12 22.12l2.83 2.83M7.05 24.95l2.83-2.83M22.12 9.88l2.83-2.83"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="1s" repeatCount="indefinite"/></path></svg>
+      <div class="brief-loading-text">Skriver kampanjbrief...</div>
+    </div>
+
+    <div class="brief-result" id="brief-result">
+      <div class="brief-result-card">
+        <div class="brief-result-label" id="br-result-label"></div>
+        <div class="brief-result-title" id="br-result-title"></div>
+
+        <div class="brief-section">
+          <div class="brief-section-label">Bakgrund</div>
+          <div class="brief-section-content" id="br-result-background"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Mål</div>
+          <div class="brief-section-content" id="br-result-goals"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Målgrupp</div>
+          <div class="brief-section-content" id="br-result-audience"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Budskap och tonalitet</div>
+          <div class="brief-section-content" id="br-result-message"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Kanalrekommendationer</div>
+          <div class="brief-section-content" id="br-result-channels"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Budget</div>
+          <div class="brief-section-content" id="br-result-budget"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">Tidslinje</div>
+          <div id="br-result-timeline"></div>
+        </div>
+        <div class="brief-section">
+          <div class="brief-section-label">KPI:er och framgångsmått</div>
+          <div id="br-result-kpis"></div>
+        </div>
+        <div class="brief-section" id="br-result-constraints-section" style="display:none">
+          <div class="brief-section-label">Krav och begränsningar</div>
+          <div class="brief-section-content" id="br-result-constraints"></div>
+        </div>
+      </div>
+
+      <div class="brief-result-actions">
+        <button class="brief-action-btn primary" onclick="briefCopy()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>
+          Kopiera brief
+        </button>
+        <button class="brief-action-btn" onclick="briefEmail()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 3l6 5 6-5"/></svg>
+          Skicka via e-post
+        </button>
+      </div>
+
+      <button class="brief-new-btn" onclick="briefReset()">← Skapa ny brief</button>
     </div>
 
   </div>
@@ -1541,6 +1788,21 @@ body.newsroom-mode{background:#F5F3EE}
         <span class="tool-card-tag">Media</span>
       </div>
       <button class="tool-card-btn" onclick="goToToolLogin('newsroom')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-num">06</div>
+      <div class="tool-card-icon" style="background:rgba(201,168,76,0.1)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="2" width="14" height="14" rx="2"/><path d="M5 7h8M5 10h5"/></svg>
+      </div>
+      <div class="tool-card-label">Kampanjbrief</div>
+      <div class="tool-card-title">The Brief</div>
+      <div class="tool-card-desc">Generera en komplett kampanjbrief med mål, målgrupp, kanaler, budget och tidslinje – redo att skicka.</div>
+      <div class="tool-card-tags">
+        <span class="tool-card-tag">Kampanj</span>
+        <span class="tool-card-tag">Strategi</span>
+        <span class="tool-card-tag">Byrå</span>
+      </div>
+      <button class="tool-card-btn" onclick="goToToolLogin('brief')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
   </div>
 </div>
@@ -2192,6 +2454,7 @@ function goToLogin(dest){
   else if(d==='dist') goToDist();
   else if(d==='adcopy') goToAdCopy();
   else if(d==='newsroom') goToNewsroom();
+  else if(d==='brief') goToBrief();
   else showApp();
 }
 
@@ -2773,14 +3036,14 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','about-page','native-page','app','dist-page','adcopy-page','newsroom-page','tools-page'];
+const ALL_PAGES = ['landing','about-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display='none';
   });
-  document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode','newsroom-mode');
+  document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode','newsroom-mode','brief-mode');
 }
 
 function goToTools(){
@@ -2794,6 +3057,7 @@ function goToToolLogin(dest){
   else if(dest==='dist') goToDist();
   else if(dest==='adcopy') goToAdCopy();
   else if(dest==='newsroom') goToNewsroom();
+  else if(dest==='brief') goToBrief();
   else showApp();
 }
 
@@ -2817,6 +3081,13 @@ function goToNewsroom(){
   hideAll();
   document.getElementById('newsroom-page').style.display='block';
   document.body.classList.add('newsroom-mode');
+  window.scrollTo(0,0);
+}
+
+function goToBrief(){
+  hideAll();
+  document.getElementById('brief-page').style.display='block';
+  document.body.classList.add('brief-mode');
   window.scrollTo(0,0);
 }
 
@@ -3386,6 +3657,189 @@ function newsroomReset() {
   document.getElementById('newsroom-result').style.display = 'none';
   document.getElementById('newsroom-form-section').style.display = 'block';
   document.getElementById('newsroom-btn').disabled = false;
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════════
+   THE BRIEF
+══════════════════════════════════════════ */
+
+let _briefGoals = [];
+
+function briefToggleGoal(el, goal) {
+  el.classList.toggle('sel');
+  if (el.classList.contains('sel')) {
+    if (!_briefGoals.includes(goal)) _briefGoals.push(goal);
+  } else {
+    _briefGoals = _briefGoals.filter(g => g !== goal);
+  }
+}
+
+function brv(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+async function generateBrief() {
+  const company   = brv('br-company');
+  const industry  = brv('br-industry');
+  const message   = brv('br-message');
+  const audience  = brv('br-audience');
+  const budget    = brv('br-budget');
+  const period    = brv('br-period');
+  const tone      = brv('br-tone');
+  const constraints = brv('br-constraints');
+  const extra     = brv('br-extra');
+
+  const errEl = document.getElementById('brief-error');
+  errEl.style.display = 'none';
+
+  if (!company)  { showToolError('brief-error', 'Fyll i företagsnamn.'); return; }
+  if (!industry) { showToolError('brief-error', 'Fyll i bransch.'); return; }
+  if (!message)  { showToolError('brief-error', 'Beskriv vad kampanjen ska kommunicera.'); return; }
+  if (!audience) { showToolError('brief-error', 'Beskriv målgruppen.'); return; }
+  if (!budget)   { showToolError('brief-error', 'Ange total budget.'); return; }
+  if (!period)   { showToolError('brief-error', 'Ange kampanjperiod.'); return; }
+  if (_briefGoals.length === 0) { showToolError('brief-error', 'Välj minst ett kampanjmål.'); return; }
+
+  document.getElementById('brief-btn').disabled = true;
+  document.getElementById('brief-form-section').style.display = 'none';
+  document.getElementById('brief-loading').style.display = 'block';
+
+  const goalsStr = _briefGoals.join(', ');
+
+  const prompt = `Du är en erfaren strategisk marknadsföringskonsult. Din uppgift är att skriva en komplett och professionell kampanjbrief på svenska.
+
+Brifen ska vara konkret, handlingsorienterad och direkt användbar att skicka till en byrå, frilansare eller internt team. Undvik fluff – varje sektion ska ge faktisk vägledning.
+
+KAMPANJINFO:
+Företag: ${company}
+Bransch: ${industry}
+Kampanjmål: ${goalsStr}
+Kommunikation: ${message}
+Målgrupp: ${audience}
+Total budget: ${budget} kr exkl. moms
+Kampanjperiod: ${period}
+${tone ? `Önskad ton: ${tone}` : ''}
+${constraints ? `Krav/begränsningar: ${constraints}` : ''}
+${extra ? `Övrigt: ${extra}` : ''}
+
+Returnera ENBART ett JSON-objekt med dessa fält:
+{
+  "campaign_name": "Ett kort, slagkraftigt namn på kampanjen",
+  "background": "2-3 meningar om företaget, marknadsläget och varför den här kampanjen görs nu",
+  "goals": "Konkreta, mätbara mål kopplade till de valda kampanjmålen. Lista med \\n mellan varje mål.",
+  "audience": "Detaljerad målgruppsbeskrivning – demografi, psykografi, beteenden, var de finns",
+  "message": "Kärnbudskap och tonalitet. Vad ska kampanjen säga? Hur ska den låta och kännas?",
+  "channels": "Rekommenderade kanaler med kort motivering per kanal. Anpassat till budget och målgrupp.",
+  "budget": "Föreslagen budgetfördelning per kanal i procent och kronor. Inkludera produktion och mediaköp.",
+  "timeline": [
+    {"phase": "Fas 1 – namn", "period": "datumintervall", "activities": "vad som görs"},
+    {"phase": "Fas 2 – namn", "period": "datumintervall", "activities": "vad som görs"},
+    {"phase": "Fas 3 – namn", "period": "datumintervall", "activities": "vad som görs"}
+  ],
+  "kpis": [
+    {"name": "KPI-namn", "target": "mål och mätvärde"},
+    {"name": "KPI-namn", "target": "mål och mätvärde"},
+    {"name": "KPI-namn", "target": "mål och mätvärde"}
+  ],
+  "constraints": "${constraints || ''}"
+}`;
+
+  try {
+    const data = await safeFetch([{ role: 'user', content: prompt }]);
+    const raw  = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const r = JSON.parse(clean);
+
+    document.getElementById('br-result-label').textContent   = goalsStr + ' · ' + period;
+    document.getElementById('br-result-title').textContent   = r.campaign_name || company + ' – Kampanjbrief';
+    document.getElementById('br-result-background').textContent = r.background || '';
+    document.getElementById('br-result-goals').textContent   = r.goals || '';
+    document.getElementById('br-result-audience').textContent = r.audience || '';
+    document.getElementById('br-result-message').textContent  = r.message || '';
+    document.getElementById('br-result-channels').textContent = r.channels || '';
+    document.getElementById('br-result-budget').textContent   = r.budget || '';
+
+    // Timeline
+    const tlEl = document.getElementById('br-result-timeline');
+    tlEl.innerHTML = (r.timeline || []).map(t => `
+      <div class="brief-timeline-row">
+        <div class="brief-timeline-dot"></div>
+        <div><strong>${t.phase}</strong> <span style="color:#9A8570">${t.period}</span><br>
+        <span style="font-size:13px;color:#5F5E5A">${t.activities}</span></div>
+      </div>
+    `).join('');
+
+    // KPIs
+    const kpiEl = document.getElementById('br-result-kpis');
+    kpiEl.innerHTML = `<div class="brief-kpi-grid">${(r.kpis || []).map(k => `
+      <div class="brief-kpi">
+        <div class="brief-kpi-name">${k.name}</div>
+        <div class="brief-kpi-value">${k.target}</div>
+      </div>
+    `).join('')}</div>`;
+
+    // Constraints
+    if (r.constraints && r.constraints.trim()) {
+      document.getElementById('br-result-constraints').textContent = r.constraints;
+      document.getElementById('br-result-constraints-section').style.display = 'block';
+    }
+
+    window._briefResult  = r;
+    window._briefCompany = company;
+
+    document.getElementById('brief-loading').style.display = 'none';
+    document.getElementById('brief-result').style.display  = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch(e) {
+    document.getElementById('brief-loading').style.display  = 'none';
+    document.getElementById('brief-form-section').style.display = 'block';
+    document.getElementById('brief-btn').disabled = false;
+    showToolError('brief-error', e.message, generateBrief);
+  }
+}
+
+function briefCopy() {
+  const r = window._briefResult;
+  if (!r) return;
+  let t = `KAMPANJBRIEF – ${r.campaign_name || ''}\n\n`;
+  t += `BAKGRUND\n${r.background || ''}\n\n`;
+  t += `MÅL\n${r.goals || ''}\n\n`;
+  t += `MÅLGRUPP\n${r.audience || ''}\n\n`;
+  t += `BUDSKAP OCH TONALITET\n${r.message || ''}\n\n`;
+  t += `KANALREKOMMENDATIONER\n${r.channels || ''}\n\n`;
+  t += `BUDGET\n${r.budget || ''}\n\n`;
+  t += `TIDSLINJE\n${(r.timeline||[]).map(p=>`${p.phase} (${p.period}): ${p.activities}`).join('\n')}\n\n`;
+  t += `KPI:ER\n${(r.kpis||[]).map(k=>`${k.name}: ${k.target}`).join('\n')}\n`;
+  if (r.constraints && r.constraints.trim()) t += `\nKRAV OCH BEGRÄNSNINGAR\n${r.constraints}\n`;
+  navigator.clipboard.writeText(t).then(() => alert('Brief kopierad!'));
+}
+
+function briefEmail() {
+  const r = window._briefResult;
+  const c = window._briefCompany || '';
+  if (!r) return;
+  let body = `KAMPANJBRIEF – ${r.campaign_name || c}\n\n`;
+  body += `BAKGRUND\n${r.background || ''}\n\n`;
+  body += `MÅL\n${r.goals || ''}\n\n`;
+  body += `MÅLGRUPP\n${r.audience || ''}\n\n`;
+  body += `BUDSKAP\n${r.message || ''}\n\n`;
+  body += `KANALER\n${r.channels || ''}\n\n`;
+  body += `BUDGET\n${r.budget || ''}\n\n`;
+  body += `TIDSLINJE\n${(r.timeline||[]).map(p=>`${p.phase} (${p.period}): ${p.activities}`).join('\n')}`;
+  window.location.href = 'mailto:hello@rtnorth.se?subject=' + encodeURIComponent('Kampanjbrief – ' + c) + '&body=' + encodeURIComponent(body);
+}
+
+function briefReset() {
+  window._briefResult = null;
+  _briefGoals = [];
+  document.querySelectorAll('.brief-goal').forEach(g => g.classList.remove('sel'));
+  document.getElementById('brief-result').style.display = 'none';
+  document.getElementById('brief-result-constraints-section') && (document.getElementById('br-result-constraints-section').style.display = 'none');
+  document.getElementById('brief-form-section').style.display = 'block';
+  document.getElementById('brief-btn').disabled = false;
   window.scrollTo(0, 0);
 }
 
