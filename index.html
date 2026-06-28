@@ -1852,7 +1852,7 @@ const ACCESS_PASSWORD='timrobin2024';
    - Nätverksfel / proxy nere
    Kastar alltid ett Error med ett användarvänligt .message.
 ──────────────────────────────────────────────────────────────────────────── */
-async function safeFetch(messages, timeoutMs = 45000) {
+async function safeFetch(messages, timeoutMs = 45000, toolId = '') {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -1862,7 +1862,8 @@ async function safeFetch(messages, timeoutMs = 45000) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Password': ACCESS_PASSWORD
+        'X-Access-Password': ACCESS_PASSWORD,
+        'X-Tool-Id': toolId
       },
       body: JSON.stringify({ messages }),
       signal: controller.signal
@@ -2041,7 +2042,7 @@ async function analyzeMarketing(){
   document.getElementById('form-section').style.display='none';
   document.getElementById('loading-state').style.display='block';
   try{
-    const data = await safeFetch([{role:'user',content:buildPrompt()}]);
+    const data = await safeFetch([{role:'user',content:buildPrompt()}], 45000, 'market-pulse');
     const raw=data.content.map(i=>i.text||'').join('');
     const cleaned=raw.replace(/```json|```/g,'').trim();
     const result=JSON.parse(cleaned);
@@ -2432,7 +2433,7 @@ Call to action: ${cta}
 Valda mediekanaler: ${mediaList}`;
 
   try {
-    const data = await safeFetch([{role:'user',content:systemPrompt+'\n\n'+userPrompt}]);
+    const data = await safeFetch([{role:'user',content:systemPrompt+'\n\n'+userPrompt}], 45000, 'native');
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const article = JSON.parse(clean);
@@ -2648,7 +2649,7 @@ Valda kanaler att fördela på: ${selected.map(c=>c.name).join(', ')}
 Fördela budgeten optimalt mellan valda kanaler baserat på mål och målgrupp. Alla procentsatser ska summera till 100.`;
 
   try {
-    const data = await safeFetch([{role:'user',content:prompt}]);
+    const data = await safeFetch([{role:'user',content:prompt}], 45000, 'distribution');
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const plan = JSON.parse(clean);
@@ -2831,7 +2832,7 @@ ${formatsStr}
 Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska vara engagerande och scrollstoppande. LinkedIn ska vara professionell. Google Ads-headlines ska vara exakt max 30 tecken. Display-text ska vara extrem kort och tydlig.`;
 
   try {
-    const data = await safeFetch([{role:'user',content:prompt}]);
+    const data = await safeFetch([{role:'user',content:prompt}], 45000, 'ad-copy');
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean = raw.replace(/```json|```/g,'').trim();
     const result = JSON.parse(clean);
@@ -2913,7 +2914,7 @@ ${tone?'Ton: '+tone:''}
 Krav: Exakt 300x250px, inline CSS, mörk eller ljus bakgrund, tydlig rubrik, korttext och en CTA-knapp. Professionellt utseende. Ingen extern CSS eller JS.`;
 
   try {
-    const data = await safeFetch([{role:'user',content:bannerPrompt}]);
+    const data = await safeFetch([{role:'user',content:bannerPrompt}], 45000, 'ad-copy');
     const html = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```html|```/g,'').trim();
     window._adcopyBannerHTML = html;
 
@@ -3052,7 +3053,7 @@ Returnera ett JSON-objekt med exakt dessa fält:
 }`;
 
   try {
-    const data = await safeFetch([{ role: 'user', content: prompt }]);
+    const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'newsroom');
     const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = raw.replace(/```json|```/g, '').trim();
     const result = JSON.parse(clean);
@@ -3216,7 +3217,7 @@ Returnera ENBART ett JSON-objekt med dessa fält:
 }`;
 
   try {
-    const data = await safeFetch([{ role: 'user', content: prompt }]);
+    const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'the-brief');
     const raw  = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = raw.replace(/```json|```/g, '').trim();
     const r = JSON.parse(clean);
