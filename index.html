@@ -764,7 +764,7 @@ body.dist-mode{background:#F5F3EE}
 #adcopy-page{display:none}
 body.adcopy-mode{background:#F5F3EE}
 .adcopy-header{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.adcopy-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.adcopy-container{max-width:820px;margin:0 auto;padding:2rem 1.5rem 4rem}
 .adcopy-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:1rem;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.07)}
 .adcopy-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
 .adcopy-field{margin-bottom:1.25rem}
@@ -773,31 +773,36 @@ body.adcopy-mode{background:#F5F3EE}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:10px 14px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;outline:none;transition:border-color 0.15s}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#C9A84C}
 .adcopy-textarea{min-height:90px;resize:vertical;line-height:1.6}
-.adcopy-format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:0.5rem}
-.adcopy-fmt{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
-.adcopy-fmt.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
-.adcopy-fmt-icon{font-size:18px;margin-bottom:6px}
-.adcopy-fmt-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
-.adcopy-fmt-desc{font-size:11px;color:#9A8570}
 .adcopy-analyze-btn{width:100%;padding:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:background 0.15s;margin-top:1.5rem}
 .adcopy-analyze-btn:hover{background:#4A3F35}
 .adcopy-analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
 .adcopy-loading{text-align:center;padding:3rem 1rem;display:none}
 .adcopy-result{display:none;margin-top:1.5rem}
-.adcopy-format-block{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1.75rem;margin-bottom:1rem}
-.adcopy-format-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem}
-.adcopy-format-name{font-size:17px;font-weight:700;color:#2C2520;margin-bottom:1.25rem}
-.adcopy-variant{background:#F9F8F6;border-radius:8px;padding:1rem 1.25rem;margin-bottom:0.75rem}
-.adcopy-variant-num{font-size:11px;font-weight:700;color:#9A8570;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
-.adcopy-variant-headline{font-size:15px;font-weight:700;color:#2C2520;margin-bottom:4px}
-.adcopy-variant-body{font-size:13px;color:#4A3F35;line-height:1.6}
-.adcopy-variant-cta{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#C9A84C}
-.adcopy-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem}
 .adcopy-action-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#2C2520;transition:all 0.15s}
 .adcopy-action-btn:hover{border-color:#C9A84C}
 .adcopy-action-btn.primary{background:#2C2520;color:#fff;border-color:#2C2520}
 .adcopy-new-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#5F5E5A;cursor:pointer;font-family:inherit;margin-top:1rem;display:block;width:100%;text-align:center;transition:all 0.15s}
 .adcopy-new-btn:hover{border-color:#C9A84C;color:#2C2520}
+/* Image upload */
+.adgen-upload-zone{border:2px dashed rgba(0,0,0,0.15);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.15s;background:#fff;position:relative}
+.adgen-upload-zone:hover,.adgen-upload-zone.drag{border-color:#C9A84C;background:rgba(201,168,76,0.04)}
+.adgen-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.adgen-preview-img{width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin-top:0.75rem;display:none}
+/* Format selector */
+.adgen-format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:0.5rem}
+.adgen-fmt{border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:all 0.15s;user-select:none}
+.adgen-fmt:hover{border-color:#C9A84C}
+.adgen-fmt.sel{border-color:#C9A84C;background:rgba(201,168,76,0.06)}
+.adgen-fmt-name{font-size:13px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.adgen-fmt-size{font-size:11px;color:#9A8570}
+/* Canvas result */
+.adgen-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;margin-top:1.5rem}
+.adgen-result-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1.25rem}
+.adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.75rem}
+.adgen-canvas-wrap{width:100%;overflow:hidden;border-radius:6px;background:#111;display:flex;align-items:center;justify-content:center}
+.adgen-canvas-wrap canvas{max-width:100%;height:auto;display:block}
+.adgen-dl-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:0.75rem;padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.12);background:#fff;font-size:12px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.adgen-dl-btn:hover{border-color:#C9A84C;color:#C9A84C}
 
 /* ─── TOOLBOX SPLIT SECTION ─── */
 .tb-split{position:relative;overflow:hidden;background:#0a0a0a;min-height:1000px}
@@ -1109,7 +1114,7 @@ body.brief-mode{background:#F5F3EE}
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8B85D4" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M6 8h6M6 11h4"/></svg>
           </div>
           <div style="flex:1">
-            <div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-0.01em">Ad Copy Generator</div>
+            <div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-0.01em">Ad Generator</div>
             <div style="font-size:13px;color:rgba(255,255,255,0.5)">Färdig annonscopy och HTML-banners för Meta, LinkedIn, Google Ads och display</div>
           </div>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(201,168,76,0.7)" stroke-width="1.8" stroke-linecap="round"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
@@ -1163,7 +1168,7 @@ body.brief-mode{background:#F5F3EE}
             <button onclick="goToToolLogin('brief')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">The Brief</button>
             <button onclick="goToToolLogin('newsroom')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Newsroom</button>
             <button onclick="goToToolLogin('native')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Native Auto Reach</button>
-            <button onclick="goToToolLogin('adcopy')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Ad Copy Generator</button>
+            <button onclick="goToToolLogin('adcopy')" style="background:none;border:none;text-align:left;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:inherit;padding:0;transition:color 0.15s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Ad Generator</button>
           </div>
         </div>
         <div>
@@ -1269,7 +1274,7 @@ body.brief-mode{background:#F5F3EE}
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8B85D4" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M6 8h6M6 11h4"/></svg>
       </div>
       <div class="tool-card-label">Steg 5 · Annonsering</div>
-      <div class="tool-card-title">Ad Copy Generator</div>
+      <div class="tool-card-title">Ad Generator</div>
       <div class="tool-card-desc">Generera färdig annonscopy och HTML-banners för Meta, LinkedIn, Google Ads och display.</div>
       <div class="tool-card-tags">
         <span class="tool-card-tag">Meta</span>
@@ -1397,7 +1402,7 @@ body.brief-mode{background:#F5F3EE}
     <div style="display:flex;align-items:center;gap:12px">
       <img src="images/the-toolbox-logo-dark.png" alt="The Toolbox" style="height:26px;width:auto">
       <div>
-        <div style="font-size:15px;font-weight:600;color:#2C2520">Ad Copy Generator</div>
+        <div style="font-size:15px;font-weight:600;color:#2C2520">Ad Generator</div>
         <div style="font-size:12px;color:#9A8570">Powered by AI</div>
       </div>
     </div>
@@ -1406,52 +1411,86 @@ body.brief-mode{background:#F5F3EE}
       The Toolbox
     </button>
   </header>
+
   <div class="adcopy-container">
     <div id="adcopy-form-section">
       <div style="margin-bottom:2rem">
-        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa annonscopy</h1>
-        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i kampanjinfo och välj format – verktyget genererar färdig copy med flera varianter per kanal, redo att aktivera direkt.</p>
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Ad Generator</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Ladda upp en bild, fyll i kampanjinfo och välj format. AI genererar copy och sätter ihop färdiga annonser redo att ladda ner.</p>
+      </div>
+
+      <div class="adcopy-section-title">Annonsens bild</div>
+      <div class="adgen-upload-zone" id="adgen-upload-zone">
+        <input type="file" id="adgen-file-input" accept="image/*" onchange="adgenHandleFile(this.files[0])">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:8px"><rect x="2" y="6" width="28" height="20" rx="3"/><circle cx="11" cy="14" r="3"/><path d="M2 24l7-6 5 5 4-4 7 7"/></svg>
+        <div style="font-size:14px;font-weight:600;color:#2C2520;margin-bottom:4px">Klicka eller dra hit en bild</div>
+        <div style="font-size:12px;color:#9A8570">JPG, PNG eller WebP – max 10 MB</div>
+        <img id="adgen-preview" class="adgen-preview-img">
       </div>
 
       <div class="adcopy-section-title">Om kampanjen</div>
-      <div class="adcopy-field">
-        <label>Företag / Varumärke <span>*</span></label>
-        <input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Björk & Partners AB">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="adcopy-field">
+          <label>Företag / Varumärke <span>*</span></label>
+          <input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping">
+        </div>
+        <div class="adcopy-field">
+          <label>Produkt / Kampanj <span>*</span></label>
+          <input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj">
+        </div>
       </div>
       <div class="adcopy-field">
-        <label>Produkt eller tjänst som annonseras <span>*</span></label>
-        <input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Ny app för projekthantering, Sommarkampanj, Rekrytering">
+        <label>Huvudbudskap <span>*</span></label>
+        <textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera? Ex. Upplev nya Kia PV5 hos oss – boka provkörning idag."></textarea>
       </div>
-      <div class="adcopy-field">
-        <label>Kampanjbudskap och USP <span>*</span></label>
-        <textarea class="adcopy-textarea" id="ac-message" placeholder="Vad är det viktigaste budskapet? Vad gör er unika? Vad ska annonsen få folk att tänka eller göra?"></textarea>
-      </div>
-      <div class="adcopy-field">
-        <label>Målgrupp <span>*</span></label>
-        <input class="adcopy-input" id="ac-audience" type="text" placeholder="Ex. Småföretagare 30–50 år, HR-chefer i Sverige">
-      </div>
-      <div class="adcopy-field">
-        <label>Call to action <span>*</span></label>
-        <input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka demo, Läs mer, Ansök nu, Shoppa här">
-      </div>
-      <div class="adcopy-field">
-        <label>Ton <span>valfritt</span></label>
-        <select class="adcopy-select" id="ac-tone">
-          <option value="">Välj ton...</option>
-          <option>Professionell och förtroendegivande</option>
-          <option>Varm och personlig</option>
-          <option>Energisk och drivande</option>
-          <option>Mjuk och informativ</option>
-          <option>Humoristisk</option>
-        </select>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="adcopy-field">
+          <label>Call to action <span>*</span></label>
+          <input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka provkörning, Läs mer">
+        </div>
+        <div class="adcopy-field">
+          <label>Ton</label>
+          <select class="adcopy-select" id="ac-tone">
+            <option value="">Välj ton...</option>
+            <option>Professionell och förtroendegivande</option>
+            <option>Varm och personlig</option>
+            <option>Energisk och drivande</option>
+            <option>Mjuk och informativ</option>
+          </select>
+        </div>
       </div>
 
       <div class="adcopy-section-title">Välj annonsformat</div>
-      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem">Välj ett eller flera format. Du får 2–3 varianter per format.</p>
-      <div class="adcopy-format-grid" id="adcopy-format-grid"></div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem">Välj ett eller flera format att generera.</p>
+      <div class="adgen-format-grid">
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed','Meta Feed','1080×1080')">
+          <div class="adgen-fmt-name">Meta Feed</div>
+          <div class="adgen-fmt-size">1080 × 1080 px</div>
+        </div>
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-stories','Meta Stories','1080×1920')">
+          <div class="adgen-fmt-name">Meta Stories</div>
+          <div class="adgen-fmt-size">1080 × 1920 px</div>
+        </div>
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'linkedin','LinkedIn','1200×628')">
+          <div class="adgen-fmt-name">LinkedIn</div>
+          <div class="adgen-fmt-size">1200 × 628 px</div>
+        </div>
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-medium','Display Medium','300×250')">
+          <div class="adgen-fmt-name">Display Medium</div>
+          <div class="adgen-fmt-size">300 × 250 px</div>
+        </div>
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-panorama','Display Panorama','980×240')">
+          <div class="adgen-fmt-name">Display Panorama</div>
+          <div class="adgen-fmt-size">980 × 240 px</div>
+        </div>
+        <div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-skyscraper','Display Skyscraper','160×600')">
+          <div class="adgen-fmt-name">Display Skyscraper</div>
+          <div class="adgen-fmt-size">160 × 600 px</div>
+        </div>
+      </div>
 
       <div id="adcopy-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem;margin-top:1rem"></div>
-      <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdCopy()">Generera annonscopy →</button>
+      <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
 
     <div class="adcopy-loading" id="adcopy-loading">
@@ -1459,23 +1498,14 @@ body.brief-mode{background:#F5F3EE}
         <circle cx="18" cy="18" r="14" stroke="rgba(0,0,0,0.08)"/>
         <path d="M18 4a14 14 0 0 1 14 14"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.9s" repeatCount="indefinite"/></path>
       </svg>
-      <div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Skriver din annonscopy...</div>
+      <div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Genererar annonser...</div>
     </div>
 
     <div class="adcopy-result" id="adcopy-result">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:1.25rem">Annonscopy – redo att aktivera</div>
-      <div id="adcopy-result-blocks"></div>
-      <div class="adcopy-result-actions">
-        <button class="adcopy-action-btn primary" onclick="adcopyCopy()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
-          Kopiera all copy
-        </button>
-        <button class="adcopy-action-btn" onclick="adcopySend()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
-          Skicka via e-post
-        </button>
-      </div>
-      <button class="adcopy-new-btn" onclick="adcopyReset()">Skapa ny copy</button>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1.5rem">Klicka på "Ladda ner" under varje annons för att spara som PNG.</p>
+      <div id="adgen-result-grid" class="adgen-result-grid"></div>
+      <button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button>
     </div>
   </div>
 </div>
@@ -2722,252 +2752,293 @@ function distReset(){
 }
 
 /* ══════════════════════════════════════════
-   AD COPY GENERATOR
+   AD GENERATOR
 ══════════════════════════════════════════ */
 
-const ADCOPY_FORMATS = [
-  {id:'fmt-meta-feed',    icon:'📘', name:'Meta – Flöde',          desc:'Facebook & Instagram feed'},
-  {id:'fmt-meta-story',   icon:'📱', name:'Meta – Stories & Reels', desc:'Vertikalt format, snappy copy'},
-  {id:'fmt-linkedin-feed',icon:'💼', name:'LinkedIn – Flöde',       desc:'Professionell ton, längre text'},
-  {id:'fmt-linkedin-msg', icon:'✉️', name:'LinkedIn – Sponsored InMail', desc:'Direkt meddelande'},
-  {id:'fmt-google-search',icon:'🔍', name:'Google Ads – Sök',       desc:'Headlines + descriptions'},
-  {id:'fmt-display',      icon:'🖼️', name:'Display-banners',        desc:'Headline + korttext'},
-  {id:'fmt-html-banner',  icon:'🎨', name:'HTML-banner (300×250)',  desc:'Färdig banner – separat generering'},
-];
+/* ── FORMAT DEFINITIONS ── */
+const ADGEN_FORMATS = {
+  'meta-feed':          { label:'Meta Feed',          w:1080, h:1080 },
+  'meta-stories':       { label:'Meta Stories',       w:1080, h:1920 },
+  'linkedin':           { label:'LinkedIn',           w:1200, h:628  },
+  'display-medium':     { label:'Display Medium',     w:300,  h:250  },
+  'display-panorama':   { label:'Display Panorama',   w:980,  h:240  },
+  'display-skyscraper': { label:'Display Skyscraper', w:160,  h:600  },
+};
 
-function renderAdCopyFormats(){
-  const grid = document.getElementById('adcopy-format-grid');
-  if(grid.children.length) return;
-  ADCOPY_FORMATS.forEach(f=>{
-    const card = document.createElement('div');
-    card.className='adcopy-fmt';
-    card.id=f.id;
-    card.innerHTML=`<div class="adcopy-fmt-icon">${f.icon}</div><div class="adcopy-fmt-name">${f.name}</div><div class="adcopy-fmt-desc">${f.desc}</div>`;
-    card.onclick=()=>card.classList.toggle('sel');
-    grid.appendChild(card);
-  });
-}
+let _adgenImage = null;
+let _adgenFormats = [];
+let _adgenCopyData = null;
 
-function getSelectedFormats(){
-  return ADCOPY_FORMATS.filter(f=>document.getElementById(f.id)?.classList.contains('sel'));
-}
-
-async function generateAdCopy(){
-  const company  = document.getElementById('ac-company').value.trim();
-  const product  = document.getElementById('ac-product').value.trim();
-  const message  = document.getElementById('ac-message').value.trim();
-  const audience = document.getElementById('ac-audience').value.trim();
-  const cta      = document.getElementById('ac-cta').value.trim();
-  const tone     = document.getElementById('ac-tone').value;
-  const errEl    = document.getElementById('adcopy-error');
-  errEl.style.display='none';
-
-  if(!company||!product||!message||!audience||!cta){
-    errEl.textContent='Fyll i alla obligatoriska fält.';
-    errEl.style.display='block';
-    return;
-  }
-  const selected = getSelectedFormats();
-  if(!selected.length){
-    errEl.textContent='Välj minst ett annonsformat.';
-    errEl.style.display='block';
-    return;
-  }
-
-  document.getElementById('adcopy-btn').disabled=true;
-  document.getElementById('adcopy-form-section').style.display='none';
-  document.getElementById('adcopy-loading').style.display='block';
-
-  const formatDesc = {
-    'Meta – Flöde':             'Primary text (max 125 tecken), Headline (max 40 tecken), Description (max 30 tecken)',
-    'Meta – Stories & Reels':   'Kort hooktext (max 30 tecken), Body (max 90 tecken) – snappy och direkt',
-    'LinkedIn – Flöde':         'Introductory text (max 150 tecken), Headline (max 70 tecken) – professionell ton',
-    'LinkedIn – Sponsored InMail': 'Subject (max 60 tecken), Message body (max 300 tecken) – personlig och direkt',
-    'Google Ads – Sök':         '3 Headlines (max 30 tecken vardera), 2 Descriptions (max 90 tecken vardera)',
-    'Display-banners':          'Headline (max 25 tecken), Subtext (max 45 tecken)',
-    'HTML-banner':              'VIKTIG INSTRUKTION: För detta format ska du ENBART returnera ren HTML-kod för en 300x250px display-banner. Ingen JSON. Bare HTML. Bannern ska ha ett modernt, professionellt utseende med varumärkets budskap, headline, korttext och CTA-knapp. Använd inline CSS. Bakgrundsfärg mörk eller vit beroende på ton.',
+/* ── IMAGE UPLOAD ── */
+function adgenHandleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      _adgenImage = img;
+      const preview = document.getElementById('adgen-preview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      document.getElementById('adgen-upload-zone').style.borderColor = '#C9A84C';
+    };
+    img.src = e.target.result;
   };
-
-  const jsonFormats = selected.filter(f=>f.id!=='fmt-html-banner');
-  const htmlBannerSelected = selected.some(f=>f.id==='fmt-html-banner');
-  const formatsStr = jsonFormats.map(f=>`${f.name}: ${formatDesc[f.name]||''}`).join('\n');
-  if(!jsonFormats.length && htmlBannerSelected){
-    // Only HTML banner selected – handle separately
-    await generateHtmlBannerOnly({company,product,message,audience,cta,tone});
-    return;
-  }
-
-  const prompt = `Du är en erfaren copywriter specialiserad på betald annonsering i svenska och nordiska marknader. Du skriver annonscopy som konverterar – med tydliga budskap, rätt ton per kanal och starka call-to-actions.
-
-Skriv annonscopy för följande kampanj. Ge 2–3 varianter per format. Håll dig till de teckenangivna begränsningarna. Svara på svenska.
-
-Svara ENBART med JSON i detta format – ingen text utanför JSON:
-{
-  "formats": [
-    {
-      "format": "Formatnamn",
-      "variants": [
-        {
-          "variant": "Variant 1",
-          "headline": "...",
-          "body": "...",
-          "cta": "..."
-        }
-      ]
-    }
-  ]
+  reader.readAsDataURL(file);
 }
 
-Kampanjinfo:
+document.addEventListener('DOMContentLoaded', () => {
+  const zone = document.getElementById('adgen-upload-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag');
+    adgenHandleFile(e.dataTransfer.files[0]);
+  });
+});
+
+/* ── FORMAT TOGGLE ── */
+function adgenToggleFmt(el, id) {
+  el.classList.toggle('sel');
+  if (el.classList.contains('sel')) {
+    if (!_adgenFormats.includes(id)) _adgenFormats.push(id);
+  } else {
+    _adgenFormats = _adgenFormats.filter(f => f !== id);
+  }
+}
+
+/* ── GENERATE ── */
+async function generateAdGen() {
+  const company = document.getElementById('ac-company').value.trim();
+  const product = document.getElementById('ac-product').value.trim();
+  const message = document.getElementById('ac-message').value.trim();
+  const cta     = document.getElementById('ac-cta').value.trim();
+  const tone    = document.getElementById('ac-tone').value;
+  const errEl   = document.getElementById('adcopy-error');
+  errEl.style.display = 'none';
+
+  if (!company) { showToolError('adcopy-error', 'Fyll i företagsnamn.'); return; }
+  if (!product) { showToolError('adcopy-error', 'Fyll i produkt eller kampanj.'); return; }
+  if (!message) { showToolError('adcopy-error', 'Fyll i huvudbudskap.'); return; }
+  if (!cta)     { showToolError('adcopy-error', 'Fyll i call to action.'); return; }
+  if (_adgenFormats.length === 0) { showToolError('adcopy-error', 'Välj minst ett annonsformat.'); return; }
+  if (!_adgenImage) { showToolError('adcopy-error', 'Ladda upp en bild först.'); return; }
+
+  document.getElementById('adcopy-btn').disabled = true;
+  document.getElementById('adcopy-form-section').style.display = 'none';
+  document.getElementById('adcopy-loading').style.display = 'block';
+
+  const formatList = _adgenFormats.map(id => ADGEN_FORMATS[id].label).join(', ');
+
+  const prompt = `Du är en expert på digital annonsering. Generera annonstext för följande kampanj.
+
 Företag: ${company}
-Produkt/tjänst: ${product}
-Budskap och USP: ${message}
-Målgrupp: ${audience}
+Produkt/Kampanj: ${product}
+Budskap: ${message}
 Call to action: ${cta}
 ${tone ? 'Ton: '+tone : ''}
+Format: ${formatList}
 
-Format att skriva copy för:
-${formatsStr}
-
-Viktig anvisning: Anpassa tonen och längden noggrant per format. Meta-copy ska vara engagerande och scrollstoppande. LinkedIn ska vara professionell. Google Ads-headlines ska vara exakt max 30 tecken. Display-text ska vara extrem kort och tydlig.`;
+Returnera ENBART ett JSON-objekt med ett fält per format-id:
+{
+  ${_adgenFormats.map(id => `"${id}": {
+    "headline": "Kort slagkraftig rubrik (max 6 ord)",
+    "subline": "Kompletterande mening (max 12 ord)",
+    "cta": "${cta}"
+  }`).join(',
+  ')}
+}`;
 
   try {
-    const data = await safeFetch([{role:'user',content:prompt}], 45000, 'ad-copy');
-    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const result = JSON.parse(clean);
+    const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'ad-copy');
+    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    _adgenCopyData = JSON.parse(clean);
 
-    const blocks = (result.formats||[]).map(f=>`
-      <div class="adcopy-format-block">
-        <div class="adcopy-format-label">${f.format}</div>
-        ${(f.variants||[]).map((v,i)=>`
-          <div class="adcopy-variant">
-            <div class="adcopy-variant-num">Variant ${i+1}</div>
-            ${v.headline ? `<div class="adcopy-variant-headline">${v.headline}</div>` : ''}
-            ${v.body ? `<div class="adcopy-variant-body">${v.body}</div>` : ''}
-            ${v.cta ? `<div class="adcopy-variant-cta">→ ${v.cta}</div>` : ''}
-          </div>
-        `).join('')}
-      </div>
-    `).join('');
+    document.getElementById('adcopy-loading').style.display = 'none';
+    document.getElementById('adcopy-result').style.display = 'block';
+    renderAdGenResult();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    document.getElementById('adcopy-result-blocks').innerHTML = blocks;
-    window._adcopyResult = result;
-    window._adcopyCompany = company;
-
-    document.getElementById('adcopy-loading').style.display='none';
-    document.getElementById('adcopy-result').style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
-
-    // If HTML banner was also selected, generate it separately
-    if(htmlBannerSelected){
-      generateHtmlBanner({company,product,message,audience,cta,tone});
-    }
-
-  } catch(e){
-    document.getElementById('adcopy-loading').style.display='none';
-    document.getElementById('adcopy-form-section').style.display='block';
-    document.getElementById('adcopy-btn').disabled=false;
-    showToolError('adcopy-error', e.message, generateAdCopy);
+  } catch(e) {
+    document.getElementById('adcopy-loading').style.display = 'none';
+    document.getElementById('adcopy-form-section').style.display = 'block';
+    document.getElementById('adcopy-btn').disabled = false;
+    showToolError('adcopy-error', e.message, generateAdGen);
   }
 }
 
-function adcopyCopy(){
-  const r = window._adcopyResult;
-  if(!r) return;
-  let text = '';
-  (r.formats||[]).forEach(f=>{
-    text += f.format.toUpperCase()+'\n';
-    (f.variants||[]).forEach((v,i)=>{
-      text += `\nVariant ${i+1}:\n`;
-      if(v.headline) text += 'Headline: '+v.headline+'\n';
-      if(v.body) text += 'Text: '+v.body+'\n';
-      if(v.cta) text += 'CTA: '+v.cta+'\n';
-    });
-    text += '\n';
-  });
-  navigator.clipboard.writeText(text).then(()=>alert('Copy kopierad!'));
-}
+/* ── CANVAS RENDERING ── */
+function renderAdGenResult() {
+  const grid = document.getElementById('adgen-result-grid');
+  grid.innerHTML = '';
 
-function adcopySend(){
-  const r = window._adcopyResult;
-  const c = window._adcopyCompany||'';
-  if(!r) return;
-  let body = 'Ad Copy – '+c+'\n\n';
-  (r.formats||[]).forEach(f=>{
-    body += f.format+'\n';
-    (f.variants||[]).forEach((v,i)=>{ body += `Variant ${i+1}: ${v.headline||''} / ${v.body||''}\n`; });
-    body += '\n';
-  });
-  window.location.href='mailto:hello@rtnorth.se?subject='+encodeURIComponent('Ad Copy – '+c)+'&body='+encodeURIComponent(body);
-}
+  _adgenFormats.forEach(formatId => {
+    const fmt  = ADGEN_FORMATS[formatId];
+    const copy = _adgenCopyData[formatId] || {};
+    const scale = Math.min(1, 480 / fmt.w);
+    const dispW = Math.round(fmt.w * scale);
+    const dispH = Math.round(fmt.h * scale);
 
-async function generateHtmlBanner({company,product,message,audience,cta,tone}){
-  const bannerPrompt = `Du är en erfaren webbutvecklare och designer. Skapa en professionell HTML display-banner (300x250px) för följande kampanj. Returnera ENBART ren HTML-kod, inget annat.
-
-Företag: ${company}
-Produkt: ${product}
-Budskap: ${message}
-CTA: ${cta}
-${tone?'Ton: '+tone:''}
-
-Krav: Exakt 300x250px, inline CSS, mörk eller ljus bakgrund, tydlig rubrik, korttext och en CTA-knapp. Professionellt utseende. Ingen extern CSS eller JS.`;
-
-  try {
-    const data = await safeFetch([{role:'user',content:bannerPrompt}], 45000, 'ad-copy');
-    const html = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```html|```/g,'').trim();
-    window._adcopyBannerHTML = html;
-
-    // Add banner preview and download button to result
-    const wrap = document.getElementById('adcopy-result-blocks');
-    const bannerBlock = document.createElement('div');
-    bannerBlock.className = 'adcopy-format-block';
-    bannerBlock.innerHTML = `
-      <div class="adcopy-format-label">HTML-banner</div>
-      <div style="font-size:13px;color:#9A8570;margin-bottom:1rem">300×250px – redo att ladda ner</div>
-      <div style="width:300px;height:250px;border:1px solid rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;background:#fff">
-        <iframe srcdoc="${html.replace(/"/g,'&quot;')}" style="width:300px;height:250px;border:none;pointer-events:none" scrolling="no"></iframe>
+    const card = document.createElement('div');
+    card.className = 'adgen-result-card';
+    card.innerHTML = `
+      <div class="adgen-result-label">${fmt.label}</div>
+      <div class="adgen-canvas-wrap" style="height:${dispH}px">
+        <canvas id="canvas-${formatId}" width="${fmt.w}" height="${fmt.h}"
+          style="width:${dispW}px;height:${dispH}px"></canvas>
       </div>
-      <button class="adcopy-action-btn" style="margin-top:1rem" onclick="adcopyDownloadBanner()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg>
-        Ladda ner HTML-banner
-      </button>
-    `;
-    wrap.appendChild(bannerBlock);
-  } catch(e){
-    console.error('Banner generation failed:', e);
+      <button class="adgen-dl-btn" onclick="adgenDownload('${formatId}')">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/>
+        </svg>
+        Ladda ner PNG (${fmt.w}×${fmt.h})
+      </button>`;
+    grid.appendChild(card);
+    drawAd(formatId, fmt, copy);
+  });
+}
+
+function drawAd(formatId, fmt, copy) {
+  const canvas = document.getElementById('canvas-' + formatId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = fmt.w, H = fmt.h;
+
+  // 1. Background image – cover fill
+  if (_adgenImage) {
+    const ia = _adgenImage.width / _adgenImage.height;
+    const ca = W / H;
+    let sx = 0, sy = 0, sw = _adgenImage.width, sh = _adgenImage.height;
+    if (ia > ca) { sw = _adgenImage.height * ca; sx = (_adgenImage.width - sw) / 2; }
+    else         { sh = _adgenImage.width / ca;  sy = (_adgenImage.height - sh) / 2; }
+    ctx.drawImage(_adgenImage, sx, sy, sw, sh, 0, 0, W, H);
+  } else {
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, W, H);
   }
+
+  // 2. Gradient overlay
+  const isWide = W / H > 3;
+  const grad = ctx.createLinearGradient(0, isWide ? 0 : H * 0.3, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.85)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  const padding = Math.round(W * 0.055);
+  const isPortrait = H > W;
+  const headlineSz = isWide ? Math.round(H * 0.28) : Math.round(W * 0.072);
+  const sublineSz  = isWide ? Math.round(H * 0.16) : Math.round(W * 0.04);
+  const ctaSz      = isWide ? Math.round(H * 0.14) : Math.round(W * 0.034);
+  let baseY = isPortrait ? H * 0.72 : (isWide ? H * 0.28 : H * 0.56);
+
+  ctx.textBaseline = 'top';
+
+  // 3. Red accent line
+  ctx.fillStyle = '#E8341A';
+  ctx.fillRect(padding, baseY - Math.round(W * 0.022), Math.round(W * 0.08), Math.round(Math.max(3, H * 0.008)));
+
+  // 4. Headline
+  ctx.font = `700 ${headlineSz}px -apple-system, Arial, sans-serif`;
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8;
+  wrapText(ctx, copy.headline || '', padding, baseY, W - padding * 2, headlineSz * 1.2);
+  const hlLines = estimateLines(ctx, copy.headline || '', W - padding * 2);
+  const afterHL = baseY + hlLines * headlineSz * 1.2 + Math.round(W * 0.018);
+
+  // 5. Subline
+  ctx.font = `400 ${sublineSz}px -apple-system, Arial, sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.shadowBlur = 4;
+  wrapText(ctx, copy.subline || '', padding, afterHL, W - padding * 2, sublineSz * 1.5);
+  const slLines = estimateLines(ctx, copy.subline || '', W - padding * 2);
+  const afterSL = afterHL + slLines * sublineSz * 1.5 + Math.round(W * 0.025);
+
+  // 6. CTA button
+  ctx.font = `600 ${ctaSz}px -apple-system, Arial, sans-serif`;
+  ctx.shadowBlur = 0;
+  const ctaText = copy.cta || '';
+  const ctaW = ctx.measureText(ctaText).width + ctaSz * 1.6;
+  const ctaH = ctaSz * 1.8;
+  const ctaY = Math.min(afterSL, H - ctaH - padding);
+  ctx.fillStyle = '#C9A84C';
+  roundRect(ctx, padding, ctaY, ctaW, ctaH, ctaH * 0.2);
+  ctx.fillStyle = '#0a0a0a';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(ctaText, padding + ctaSz * 0.8, ctaY + ctaH / 2);
 }
 
-async function generateHtmlBannerOnly({company,product,message,audience,cta,tone}){
-  document.getElementById('adcopy-btn').disabled=true;
-  document.getElementById('adcopy-form-section').style.display='none';
-  document.getElementById('adcopy-loading').style.display='block';
-  document.getElementById('adcopy-result-blocks').innerHTML='';
-  document.getElementById('adcopy-result').style.display='none';
-  await generateHtmlBanner({company,product,message,audience,cta,tone});
-  document.getElementById('adcopy-loading').style.display='none';
-  document.getElementById('adcopy-result').style.display='block';
-  window.scrollTo({top:0,behavior:'smooth'});
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  if (!text) return;
+  const words = text.split(' ');
+  let line = '', curY = y;
+  words.forEach((word, i) => {
+    const test = line + (line ? ' ' : '') + word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, curY); line = word; curY += lineHeight;
+    } else { line = test; }
+    if (i === words.length - 1) ctx.fillText(line, x, curY);
+  });
 }
 
-function adcopyDownloadBanner(){
-  const html = window._adcopyBannerHTML;
-  if(!html) return;
-  const full = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Banner</title></head><body style="margin:0;padding:0">'+html+'</body></html>';
-  const blob = new Blob([full],{type:'text/html;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
+function estimateLines(ctx, text, maxWidth) {
+  if (!text) return 0;
+  const words = text.split(' ');
+  let line = '', lines = 1;
+  words.forEach(word => {
+    const test = line + (line ? ' ' : '') + word;
+    if (ctx.measureText(test).width > maxWidth && line) { lines++; line = word; }
+    else line = test;
+  });
+  return lines;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath(); ctx.fill();
+}
+
+/* ── DOWNLOAD ── */
+function adgenDownload(formatId) {
+  const canvas = document.getElementById('canvas-' + formatId);
+  if (!canvas) return;
+  const fmt = ADGEN_FORMATS[formatId];
   const link = document.createElement('a');
-  link.href=url; link.download='banner_300x250.html'; link.click();
-  URL.revokeObjectURL(url);
+  link.download = `annons-${fmt.label.toLowerCase().replace(/\s/g,'-')}-${fmt.w}x${fmt.h}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
-function adcopyReset(){
+/* ── RESET ── */
+function adgenReset() {
+  _adgenImage = null; _adgenFormats = []; _adgenCopyData = null;
+  const prev = document.getElementById('adgen-preview');
+  if (prev) { prev.style.display='none'; prev.src=''; }
+  const zone = document.getElementById('adgen-upload-zone');
+  if (zone) zone.style.borderColor = '';
+  document.querySelectorAll('.adgen-fmt').forEach(el => el.classList.remove('sel'));
+  ['ac-company','ac-product','ac-message','ac-cta'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value='';
+  });
+  const tone = document.getElementById('ac-tone'); if (tone) tone.value='';
+  const grid = document.getElementById('adgen-result-grid'); if (grid) grid.innerHTML='';
   document.getElementById('adcopy-result').style.display='none';
   document.getElementById('adcopy-form-section').style.display='block';
   document.getElementById('adcopy-btn').disabled=false;
   window.scrollTo(0,0);
 }
+
+/* ── STUBS for backwards compatibility ── */
+function generateAdCopy(){ generateAdGen(); }
+function adcopyReset(){ adgenReset(); }
+function renderAdCopyFormats(){}
 
 /* ══════════════════════════════════════════
    NEWSROOM
