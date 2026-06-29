@@ -1025,7 +1025,7 @@ body.brief-mode{background:#F5F3EE}
   <nav class="site-nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:0.5px solid rgba(0,0,0,0);padding:0 3rem;height:52px;display:flex;align-items:center;justify-content:space-between;transition:background 0.3s,border-color 0.3s">
     <img src="images/the-toolbox-logo.png" alt="The Toolbox" onclick="goToLanding()" id="nav-logo" style="height:24px;width:auto;cursor:pointer">
     <div style="display:flex;align-items:center;gap:2rem">
-      <button onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})" style="background:none;border:none;font-size:14px;color:#fff;cursor:pointer;font-family:inherit;opacity:0.8;transition:color 0.3s" id="nav-link-how">Hur fungerar det?</button>
+      <button onclick="document.getElementById('balk-market-pulse').scrollIntoView({behavior:'smooth'})" style="background:none;border:none;font-size:14px;color:#fff;cursor:pointer;font-family:inherit;opacity:0.8;transition:color 0.3s" id="nav-link-how">Hur fungerar det?</button>
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
     </div>
   </nav>
@@ -1040,7 +1040,7 @@ body.brief-mode{background:#F5F3EE}
       <p style="font-size:clamp(16px,2vw,20px);color:rgba(255,255,255,0.65);line-height:1.7;max-width:520px;margin:0 auto 2.5rem">Fem verktyg som täcker hela flödet – från analys och brief till nativeartikel, annonser och pressrelease.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button onclick="document.getElementById('balk-market-pulse').scrollIntoView({behavior:'smooth'})" style="background:#fff;color:#1d1d1f;border:none;border-radius:24px;padding:13px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Utforska verktygen</button>
-        <button onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:24px;padding:13px 28px;font-size:15px;cursor:pointer;font-family:inherit">Hur fungerar det?</button>
+        <button onclick="document.getElementById('balk-market-pulse').scrollIntoView({behavior:'smooth'})" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:24px;padding:13px 28px;font-size:15px;cursor:pointer;font-family:inherit">Hur fungerar det?</button>
       </div>
     </div>
     <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0.4">
@@ -2228,12 +2228,14 @@ function openContact(){window.open('mailto:hej@rtnorth.se?subject=Marknadsförin
     b.style.opacity = '0';
     b.style.transform = 'translateY(32px)';
     b.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    b.style.pointerEvents = 'none';
   });
   var obs = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting){
         e.target.style.opacity = '1';
         e.target.style.transform = 'translateY(0)';
+        e.target.style.pointerEvents = 'auto';
         obs.unobserve(e.target);
       }
     });
