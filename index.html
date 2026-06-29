@@ -2832,24 +2832,18 @@ async function generateAdGen() {
 
   const formatList = _adgenFormats.map(id => ADGEN_FORMATS[id].label).join(', ');
 
-  const prompt = `Du är en expert på digital annonsering. Generera annonstext för följande kampanj.
+  const formatEntries = _adgenFormats.map(function(id){
+    return '"' + id + '": { "headline": "Kort slagkraftig rubrik (max 6 ord)", "subline": "Kompletterande mening (max 12 ord)", "cta": "' + cta + '" }';
+  }).join(',\n  ');
 
-Företag: ${company}
-Produkt/Kampanj: ${product}
-Budskap: ${message}
-Call to action: ${cta}
-${tone ? 'Ton: '+tone : ''}
-Format: ${formatList}
-
-Returnera ENBART ett JSON-objekt med ett fält per format-id:
-{
-  ${_adgenFormats.map(id => `"${id}": {
-    "headline": "Kort slagkraftig rubrik (max 6 ord)",
-    "subline": "Kompletterande mening (max 12 ord)",
-    "cta": "${cta}"
-  }`).join(',
-  ')}
-}`;
+  const prompt = 'Du är en expert på digital annonsering. Generera annonstext för följande kampanj.\n\n' +
+    'Företag: ' + company + '\n' +
+    'Produkt/Kampanj: ' + product + '\n' +
+    'Budskap: ' + message + '\n' +
+    'Call to action: ' + cta + '\n' +
+    (tone ? 'Ton: ' + tone + '\n' : '') +
+    'Format: ' + formatList + '\n\n' +
+    'Returnera ENBART ett JSON-objekt med ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
 
   try {
     const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'ad-copy');
