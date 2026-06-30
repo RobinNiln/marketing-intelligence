@@ -3374,16 +3374,32 @@ async function generateNewsroom() {
 
   const mediaStr = _newsroomMedia.join(', ');
 
-  const prompt = `Du är en erfaren PR-konsult och kommunikationsexpert med gedigen erfarenhet av svenska medier. Din uppgift är att skriva en professionell pressrelease på svenska.
+  const prompt = `Du är en erfaren PR-konsult och kommunikationsexpert med gedigen erfarenhet av svenska medier och redaktionellt arbete. Du vet vad som får en journalist att faktiskt läsa vidare – och vad som får en pressrelease att hamna i papperskorgen. Din uppgift är att skriva en professionell pressrelease på svenska som håller redaktionell kvalitet.
 
-INSTRUKTIONER:
-- Följ klassisk pressrelease-struktur: stark nyhetsvärdig rubrik, informativ ingress (5 W:n), brödtext med fakta och kontext, citat, boilerplate
-- Anpassa ton och vinkel för: ${mediaStr}
-- Nyhetstyp: ${_newsroomType}
-- Skriv på svenska, professionellt och journalistiskt
-- Rubriken ska vara nyhetsvärdig och locka till läsning
-- Ingressen ska sammanfatta hela nyheten på 2-3 meningar
-- Returnera ENBART ett JSON-objekt, inget annat
+GRUNDPRINCIPER:
+- Skriv som en nyhet, inte som en annons. Hitta den faktiska nyhetskroken: varför ska en journalist och en läsare bry sig om det här just nu?
+- Undvik säljspråk och tomma superlativ ("marknadsledande", "revolutionerande", "i världsklass", "unik"). Låt fakta och konkreta detaljer bära nyheten i stället.
+- Skriv professionellt och journalistiskt, i tredje person.
+
+VIKTIG FAKTAREGEL:
+- Använd ENBART fakta som framgår av underlaget nedan. Hitta aldrig på datum, siffror, namn, citat eller andra detaljer som användaren inte angett.
+- Om en uppgift saknas, skriv runt den i stället för att gissa. Det är bättre att utelämna en detalj än att uppfinna den.
+
+ANPASSA EFTER MÅLMEDIER (${mediaStr}):
+- Affärs- och investerarmedier: vinkla på siffror, tillväxt, marknad och affärsmässig betydelse.
+- Branschpress: vinkla på fackmässig relevans och vad nyheten betyder för branschen.
+- Lokalmedier: vinkla på lokal förankring, sysselsättning och regional betydelse.
+- Dagstidningar och nyhetsmedier: bredare allmänintresse och tydlig samhällsrelevans.
+- Väg in samtliga valda medier i ton och vinkel.
+
+STRUKTUR:
+- Rubrik: nyhetsvärdig och konkret, lockar till läsning utan att vara en reklamrubrik.
+- Ingress: 2-3 meningar som besvarar de relevanta av vem, vad, när, var och varför – baserat på underlaget.
+- Brödtext: 3-4 stycken med fakta, kontext och betydelse. Bygg ut nyheten logiskt.
+- Citat: ${quote ? 'Använd det angivna citatet ordagrant – skriv inte om det.' : 'Skapa ett trovärdigt citat från en talesperson som säger något substantiellt om nyhetens betydelse. Undvik klyschor som "Vi är glada att...". Om ingen talesperson finns angiven, attribuera neutralt (t.ex. till företagets VD).'}
+- Boilerplate: kort standardpresentation av företaget som avslutar releasen.
+
+Nyhetstyp: ${_newsroomType}
 
 FÖRETAGSINFORMATION:
 Företag: ${company}
@@ -3393,10 +3409,10 @@ Om företaget: ${companyDesc}
 NYHETEN:
 ${news}
 
-${quote ? `CITAT:\n${quote}` : ''}
+${quote ? `ANGIVET CITAT (använd ordagrant):\n${quote}` : ''}
 ${contact ? `KONTAKTPERSON:\n${contact}` : ''}
 
-Returnera ett JSON-objekt med exakt dessa fält:
+Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. Använd \\n\\n mellan styckena i brödtexten och se till att all text är korrekt escapead så att JSON går att parsa:
 {
   "headline": "Pressreleasens rubrik",
   "ingress": "Ingress på 2-3 meningar som sammanfattar hela nyheten",
