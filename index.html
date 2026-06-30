@@ -299,7 +299,7 @@ header{
   color:#9A8570;font-size:12px;padding:5px 13px;border-radius:20px
 }
 
-.container{max-width:720px;margin:0 auto;padding:1.5rem 1.5rem 3rem}
+.container{max-width:680px;margin:0 auto;padding:2rem 1.5rem 3rem}
 
 .form-section-label{
   font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;
@@ -307,8 +307,8 @@ header{
 }
 
 .form-block{
-  background:#fff;border:1px solid rgba(180,160,130,0.18);border-radius:14px;
-  padding:2rem;margin-bottom:1rem
+  background:#fff;border:none;border-radius:0;
+  padding:0;margin-bottom:1rem
 }
 
 .form-block-title{
@@ -319,44 +319,44 @@ header{
   font-size:13px;color:#888;margin-bottom:1.75rem;line-height:1.5
 }
 
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:1.4rem}
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:1.6rem}
 .field:last-child{margin-bottom:0}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.4rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.6rem}
 .field-row:last-child{margin-bottom:0}
 @media(max-width:560px){.field-row{grid-template-columns:1fr}}
 
 .field-label{
-  font-size:13px;font-weight:600;color:#2C2520;margin-bottom:4px
+  font-size:15px;font-weight:500;color:#2a2520;margin-bottom:2px;line-height:1.4
 }
-.field-hint{font-size:12px;color:#aaa;margin-bottom:6px}
+.field-hint{font-size:12px;color:#b5b0a8;margin-bottom:6px}
 
 input,textarea,select{
-  font-family:inherit;font-size:14px;
-  background:#F9F8F6;border:1px solid rgba(0,0,0,0.1);
-  border-radius:10px;padding:12px 15px;color:#1a1a1a;
-  transition:border-color 0.15s,background 0.15s,box-shadow 0.15s;width:100%
+  font-family:inherit;font-size:14.5px;
+  background:#FDFCFA;border:1.5px solid #F0EEE8;
+  border-radius:14px;padding:14px 16px;color:#1a1a1a;
+  transition:border-color 0.15s,background 0.15s;width:100%
 }
+input::placeholder,textarea::placeholder{color:#b5b0a8}
 input:focus,textarea:focus,select:focus{
-  outline:none;border-color:#C9A84C;background:#fff;
-  box-shadow:0 0 0 3px rgba(201,168,76,0.14)
+  outline:none;border-color:#D4A857;background:#fff
 }
 textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 .opt-grid{
   display:flex;flex-wrap:wrap;
-  gap:7px;margin-bottom:10px
+  gap:8px;margin-bottom:10px
 }
 .opt-btn{
-  background:#F9F8F6;border:1px solid rgba(0,0,0,0.08);
-  border-radius:20px;padding:8px 15px;
-  font-size:13px;font-weight:500;color:#333;
+  background:#FDFCFA;border:1.5px solid #F0EEE8;
+  border-radius:100px;padding:10px 17px;
+  font-size:13.5px;font-weight:500;color:#5a5650;
   font-family:inherit;text-align:left;line-height:1.3;
-  cursor:pointer;transition:all 0.12s;user-select:none;
+  cursor:pointer;transition:all 0.15s;user-select:none;
   white-space:nowrap
 }
-.opt-btn:hover{border-color:#C9A84C;background:#fff;color:#2C2520}
+.opt-btn:hover{border-color:#E8C878}
 .opt-btn.on{
-  background:#2C2520;border-color:#2C2520;
+  background:#2a2520;border-color:#2a2520;
   color:#fff;font-weight:600
 }
 
@@ -378,12 +378,12 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .field-extra::after{content:'';display:block;flex:1;height:1px;background:rgba(0,0,0,0.08)}
 
 .cta-btn{
-  background:#2C2520;color:#fff;border:none;border-radius:8px;
-  padding:16px 28px;font-size:15px;font-weight:700;
+  background:#2a2520;color:#fff;border:none;border-radius:100px;
+  padding:16px 28px;font-size:15px;font-weight:600;
   cursor:pointer;transition:background 0.15s,transform 0.1s;
-  width:100%;font-family:inherit;letter-spacing:0.02em
+  width:100%;font-family:inherit;letter-spacing:0.01em
 }
-.cta-btn:hover{background:#3D332C}
+.cta-btn:hover{background:#433a30}
 .cta-btn:active{transform:scale(0.99)}
 .cta-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
 
@@ -414,8 +414,8 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .ctaf-btn{background:var(--gold);color:#0a0a0a;border:none;border-radius:6px;padding:12px 28px;font-size:14px;font-weight:700;letter-spacing:0.04em;cursor:pointer;font-family:inherit}
 .ctaf-btn:hover{background:var(--gold-light)}
 .err{background:#FFF0F0;border:1px solid #F09595;border-radius:6px;padding:12px 16px;font-size:13px;color:#791F1F;margin-top:1rem;display:none}
-.reset-btn{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:6px;padding:10px 20px;font-size:13px;cursor:pointer;color:#888;font-family:inherit;margin-top:1rem;transition:all 0.15s}
-.reset-btn:hover{border-color:#2C2520;color:#2C2520}
+.reset-btn{background:none;border:1.5px solid #F0EEE8;border-radius:100px;padding:10px 20px;font-size:13px;cursor:pointer;color:#a8a39a;font-family:inherit;margin-top:1rem;transition:all 0.15s}
+.reset-btn:hover{border-color:#2a2520;color:#2a2520}
 .saved-banner{background:var(--t50);border:1px solid var(--t100);border-radius:6px;padding:10px 14px;font-size:13px;color:var(--t800);margin-bottom:1rem;display:none;align-items:center;gap:8px}
 
 /* ─── ACTION BAR ─── */
@@ -539,48 +539,45 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 
 /* ─── MULTI-STEP FORM ─── */
-.form-progress{display:flex;align-items:center;margin-bottom:1.5rem}
-.fp-step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
-.fp-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:all 0.2s;z-index:1;position:relative}
-.fp-dot.done{background:#2C2520;color:#fff}
-.fp-dot.active{background:#C9A84C;color:#0a0a0a;box-shadow:0 0 0 4px rgba(201,168,76,0.2)}
-.fp-dot.pending{background:#F1EFE8;color:#888;border:1px solid rgba(0,0,0,0.08)}
-.fp-label{font-size:11px;color:#9A8570;white-space:nowrap}
-.fp-label.active{color:#2C2520;font-weight:600}
-.fp-line{flex:1;height:1px;background:rgba(0,0,0,0.1);margin:0 4px;margin-bottom:14px;transition:background 0.2s}
-.fp-line.done{background:#C9A84C}
+.form-progress{display:flex;gap:5px;margin-bottom:2.25rem}
+.fp-step{display:none}
+.fp-dot{height:4px;flex:1;border-radius:4px;background:#F0EEE8;transition:background 0.3s}
+.fp-dot.done,.fp-dot.active{background:linear-gradient(90deg,#D4A857,#E8C878)}
+.fp-dot.pending{background:#F0EEE8}
+.fp-label{display:none}
+.fp-line{display:none}
 
 .fstep{display:none}
 .fstep.active{display:block}
-.fstep-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.fstep-title{font-size:22px;font-weight:700;color:#2C2520;letter-spacing:-0.01em}
-.fstep-counter{font-size:13px;color:#9A8570}
-.fstep-sub{font-size:14px;color:#6B5C4E;margin-bottom:1.75rem;line-height:1.5}
+.fstep-header{display:flex;flex-direction:column;margin-bottom:6px}
+.fstep-counter{font-size:12px;color:#C4A576;font-weight:700;letter-spacing:0.04em;margin-bottom:10px;order:-1}
+.fstep-title{font-size:27px;font-weight:600;color:#1a1a1a;letter-spacing:-0.02em;line-height:1.25}
+.fstep-sub{font-size:14px;color:#8A8680;margin-bottom:2.25rem;line-height:1.55;margin-top:6px}
 
-.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;margin-bottom:4px}
-.chip{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,0.12);background:#F9F8F6;color:#333;transition:all 0.12s;user-select:none;font-family:inherit;line-height:1}
-.chip:hover{border-color:#C9A84C;background:#fff;color:#2C2520}
-.chip.on{background:#2C2520;border-color:#2C2520;color:#fff;font-weight:600}
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;margin-bottom:4px}
+.chip{padding:10px 18px;border-radius:100px;font-size:13.5px;font-weight:500;cursor:pointer;border:1.5px solid #F0EEE8;background:#FDFCFA;color:#5a5650;transition:all 0.15s;user-select:none;font-family:inherit;line-height:1}
+.chip:hover{border-color:#E8C878}
+.chip.on{background:#2a2520;border-color:#2a2520;color:#fff;font-weight:600}
 
-.budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:6px}
+.budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
 @media(max-width:480px){.budget-grid{grid-template-columns:repeat(2,1fr)}}
-.budget-card{padding:15px 10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,0.08);background:#F9F8F6;color:#333;text-align:center;transition:all 0.12s;font-family:inherit;line-height:1.4}
-.budget-card:hover{border-color:#C9A84C;background:#fff}
-.budget-card.on{background:#2C2520;border-color:#2C2520;color:#fff}
+.budget-card{padding:18px 12px;border-radius:18px;font-size:13.5px;font-weight:500;cursor:pointer;border:1.5px solid #F0EEE8;background:#FDFCFA;color:#5a5650;text-align:center;transition:all 0.15s;font-family:inherit;line-height:1.4}
+.budget-card:hover{border-color:#E8C878}
+.budget-card.on{background:#2a2520;border-color:#2a2520;color:#fff}
 
-.form-divider{height:1px;background:rgba(0,0,0,0.07);margin:1.5rem 0}
+.form-divider{height:1px;background:#F0EEE8;margin:2rem 0}
 
-.fnav{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;gap:1rem}
-.fnav-next{background:#C9A84C;color:#0a0a0a;border:none;border-radius:8px;padding:13px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;letter-spacing:0.02em}
-.fnav-next:hover{background:#E8C97A}
-.fnav-back{background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:12px 20px;font-size:14px;cursor:pointer;color:#888;font-family:inherit;transition:all 0.15s}
-.fnav-back:hover{border-color:#C9A84C;color:#2C2520}
+.fnav{display:flex;align-items:center;justify-content:flex-end;margin-top:2.5rem;gap:0.75rem}
+.fnav-next{background:#2a2520;color:#fff;border:none;border-radius:100px;padding:14px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.01em}
+.fnav-next:hover{background:#433a30}
+.fnav-back{background:none;border:none;padding:12px 4px;font-size:13px;cursor:pointer;color:#b5b0a8;font-family:inherit;transition:color 0.15s;margin-right:auto}
+.fnav-back:hover{color:#2a2520}
 
-.fstep-summary{background:#F9F8F6;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1rem 1.25rem;margin-top:1.25rem}
-.fstep-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;margin-bottom:10px}
-.fstep-summary-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#555;margin-bottom:6px;line-height:1.5}
+.fstep-summary{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.4rem 1.6rem;margin-top:1.5rem}
+.fstep-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:12px}
+.fstep-summary-row{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:#5a5650;margin-bottom:8px;line-height:1.55}
 .fstep-summary-row:last-child{margin-bottom:0}
-.fstep-summary-dot{width:6px;height:6px;border-radius:50%;background:#C9A84C;flex-shrink:0;margin-top:5px}
+.fstep-summary-dot{width:6px;height:6px;border-radius:50%;background:#D4A857;flex-shrink:0;margin-top:6px}
 
 
 /* Force hide app on load */
@@ -1862,32 +1859,17 @@ body.brief-mode{background:#F5F3EE}
 
     <!-- PROGRESS BAR -->
     <div class="form-progress">
-      <div class="fp-step">
-        <div class="fp-dot active" id="dot1">1</div>
-        <div class="fp-label active" id="lbl1">Företaget</div>
-      </div>
-      <div class="fp-line" id="line1"></div>
-      <div class="fp-step">
-        <div class="fp-dot pending" id="dot2">2</div>
-        <div class="fp-label" id="lbl2">Målgrupp</div>
-      </div>
-      <div class="fp-line" id="line2"></div>
-      <div class="fp-step">
-        <div class="fp-dot pending" id="dot3">3</div>
-        <div class="fp-label" id="lbl3">Utmaningar</div>
-      </div>
-      <div class="fp-line" id="line3"></div>
-      <div class="fp-step">
-        <div class="fp-dot pending" id="dot4">4</div>
-        <div class="fp-label" id="lbl4">Budget</div>
-      </div>
+      <div class="fp-dot active" id="dot1"></div>
+      <div class="fp-dot pending" id="dot2"></div>
+      <div class="fp-dot pending" id="dot3"></div>
+      <div class="fp-dot pending" id="dot4"></div>
     </div>
 
     <!-- STEP 1: FÖRETAGET -->
     <div class="fstep active" id="fstep1">
       <div class="fstep-header">
-        <div class="fstep-title">Berätta om ert företag</div>
-        <span class="fstep-counter">1 av 4</span>
+        <div class="fstep-title">Vad gör ert företag?</div>
+        <span class="fstep-counter">Fråga 1 av 4</span>
       </div>
       <div class="fstep-sub">Ju mer ni berättar, desto skarpare analys.</div>
 
@@ -1958,7 +1940,7 @@ body.brief-mode{background:#F5F3EE}
     <div class="fstep" id="fstep2">
       <div class="fstep-header">
         <div class="fstep-title">Vem vill ni nå?</div>
-        <span class="fstep-counter">2 av 4</span>
+        <span class="fstep-counter">Fråga 2 av 4</span>
       </div>
       <div class="fstep-sub">Välj ett eller flera alternativ – ni kan kombinera.</div>
 
@@ -1995,8 +1977,8 @@ body.brief-mode{background:#F5F3EE}
     <!-- STEP 3: UTMANINGAR -->
     <div class="fstep" id="fstep3">
       <div class="fstep-header">
-        <div class="fstep-title">Utmaningar &amp; mål</div>
-        <span class="fstep-counter">3 av 4</span>
+        <div class="fstep-title">Vad är er största utmaning?</div>
+        <span class="fstep-counter">Fråga 3 av 4</span>
       </div>
       <div class="fstep-sub">Välj det som stämmer – fler val ger bättre analys.</div>
 
@@ -2079,8 +2061,8 @@ body.brief-mode{background:#F5F3EE}
     <!-- STEP 4: BUDGET -->
     <div class="fstep" id="fstep4">
       <div class="fstep-header">
-        <div class="fstep-title">Budget &amp; historik</div>
-        <span class="fstep-counter">4 av 4</span>
+        <div class="fstep-title">Vad har ni för budget?</div>
+        <span class="fstep-counter">Fråga 4 av 4</span>
       </div>
       <div class="fstep-sub">Sista steget – sedan genereras er plan direkt.</div>
 
@@ -2484,16 +2466,10 @@ function formGoTo(n){
   document.getElementById('fstep'+n).classList.add('active');
   for(var i=1;i<=4;i++){
     var d=document.getElementById('dot'+i);
-    var l=document.getElementById('lbl'+i);
     d.className='fp-dot';
-    if(l) l.className='fp-label';
-    if(i<n){d.classList.add('done');d.textContent='✓';}
-    else if(i===n){d.classList.add('active');d.textContent=i;if(l)l.classList.add('active');}
-    else{d.classList.add('pending');d.textContent=i;}
-    if(i<4){
-      var ln=document.getElementById('line'+i);
-      if(ln) ln.classList.toggle('done', i<n);
-    }
+    if(i<n){d.classList.add('done');}
+    else if(i===n){d.classList.add('active');}
+    else{d.classList.add('pending');}
   }
   formCur=n;
   if(n===4) updateFSummary();
