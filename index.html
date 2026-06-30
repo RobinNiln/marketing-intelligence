@@ -3532,9 +3532,17 @@ async function generateBrief() {
 
   const goalsStr = _briefGoals.join(', ');
 
-  const prompt = `Du är en erfaren strategisk marknadsföringskonsult. Din uppgift är att skriva en komplett och professionell kampanjbrief på svenska.
+  const prompt = `Du är en erfaren strategisk marknadsföringskonsult som specialiserat dig på att hjälpa små och medelstora svenska bolag få ut maximal effekt av begränsade marknadsbudgetar. Du skriver kampanjbriefer som är konkreta, realistiska och direkt användbara att skicka till en byrå, frilansare eller internt team. Du vet att mottagaren har begränsade resurser och förväntar dig att varje rekommendation ska gå att genomföra på riktigt.
 
-Brifen ska vara konkret, handlingsorienterad och direkt användbar att skicka till en byrå, frilansare eller internt team. Undvik fluff – varje sektion ska ge faktisk vägledning.
+Skriv en komplett och professionell kampanjbrief på svenska baserad på informationen nedan.
+
+ÖVERGRIPANDE KRAV:
+- Varje sektion ska ge faktisk vägledning, inte allmänna floskler. Var specifik och handlingsorienterad.
+- Anpassa alla råd till den angivna budgeten. Föreslå aldrig kanaler eller insatser som är orealistiska för budgetens storlek (t.ex. ingen TV- eller storskalig utomhusreklam för en liten budget). Prioritera kanaler med låg tröskel, god mätbarhet och hög kostnadseffektivitet för mindre bolag.
+- Motivera varje kanal med var målgruppen faktiskt befinner sig och varför kanalen passar målet.
+- All budgetfördelning ska anges i BÅDE procent OCH kronor, och kronbeloppen ska summera till den totala budgeten.
+- KPI:er ska vara konkreta och mätbara med faktiska måltal (t.ex. "minst 150 leads till en kostnad under 80 kr/lead"), inte vaga ("öka antalet leads").
+- Tidslinjens faser ska ligga inom den angivna kampanjperioden.
 
 KAMPANJINFO:
 Företag: ${company}
@@ -3548,24 +3556,24 @@ ${tone ? `Önskad ton: ${tone}` : ''}
 ${constraints ? `Krav/begränsningar: ${constraints}` : ''}
 ${extra ? `Övrigt: ${extra}` : ''}
 
-Returnera ENBART ett JSON-objekt med dessa fält:
+Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. Använd \\n för radbrytningar inuti strängar och se till att all text är korrekt escapead så att JSON går att parsa:
 {
   "campaign_name": "Ett kort, slagkraftigt namn på kampanjen",
   "background": "2-3 meningar om företaget, marknadsläget och varför den här kampanjen görs nu",
   "goals": "Konkreta, mätbara mål kopplade till de valda kampanjmålen. Lista med \\n mellan varje mål.",
   "audience": "Detaljerad målgruppsbeskrivning – demografi, psykografi, beteenden, var de finns",
   "message": "Kärnbudskap och tonalitet. Vad ska kampanjen säga? Hur ska den låta och kännas?",
-  "channels": "Rekommenderade kanaler med kort motivering per kanal. Anpassat till budget och målgrupp.",
-  "budget": "Föreslagen budgetfördelning per kanal i procent och kronor. Inkludera produktion och mediaköp.",
+  "channels": "Rekommenderade kanaler med kort motivering per kanal kopplad till mål och målgrupp. Anpassat till budgetens storlek.",
+  "budget": "Budgetfördelning per kanal i både procent och kronor. Kronbeloppen ska summera till ${budget} kr. Inkludera både produktion och mediaköp.",
   "timeline": [
-    {"phase": "Fas 1 – namn", "period": "datumintervall", "activities": "vad som görs"},
-    {"phase": "Fas 2 – namn", "period": "datumintervall", "activities": "vad som görs"},
-    {"phase": "Fas 3 – namn", "period": "datumintervall", "activities": "vad som görs"}
+    {"phase": "Fas 1 – namn", "period": "datumintervall inom kampanjperioden", "activities": "vad som görs"},
+    {"phase": "Fas 2 – namn", "period": "datumintervall inom kampanjperioden", "activities": "vad som görs"},
+    {"phase": "Fas 3 – namn", "period": "datumintervall inom kampanjperioden", "activities": "vad som görs"}
   ],
   "kpis": [
-    {"name": "KPI-namn", "target": "mål och mätvärde"},
-    {"name": "KPI-namn", "target": "mål och mätvärde"},
-    {"name": "KPI-namn", "target": "mål och mätvärde"}
+    {"name": "KPI-namn", "target": "konkret måltal och mätvärde"},
+    {"name": "KPI-namn", "target": "konkret måltal och mätvärde"},
+    {"name": "KPI-namn", "target": "konkret måltal och mätvärde"}
   ],
   "constraints": "${constraints || ''}"
 }`;
