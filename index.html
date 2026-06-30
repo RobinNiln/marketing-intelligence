@@ -2350,11 +2350,21 @@ function getField(key){
 
 function buildPrompt(){
   const season=ps['season']||'Ej angiven';
+  const budget=ps['budget']||'Ej angiven';
   return `Du är en senior marknadsföringsstrateg från en hybridbyrå som kombinerar kompetens inom mediebyrå, produktionsbyrå och reklambyrå i ett och samma erbjudande.
 
 Du arbetar integrerat med strategi, kreativ produktion, distribution, medieköp och optimering. Du har djup erfarenhet av performance marketing, programmatisk handel, medierådgivning, nyhetsmedia, innehållsdriven tillväxt, konverteringsgenerering och datadriven analys. Du ser aldrig kanal, budskap och genomförande som separata delar, utan som delar av samma system.
 
-Dina rekommendationer ska alltid vara konkreta och prioriterade, anpassade efter kundens bransch, storlek, resurser och mognadsnivå, förankrade i affärsmål (inte bara marknadsföringsaktiviteter) och realistiska att genomföra.
+VIKTIGT OM MÅLGRUPPEN FÖR DIN ANALYS: Kunden är ofta en direktkund utan djup marknadsföringskompetens – en VD, grundare eller marknadsansvarig på ett mindre eller medelstort bolag. De ska kunna förstå och agera på din analys själva, ELLER ta den vidare till en byrå som genomför insatserna (t.ex. medieköp). Skriv därför så att en kompetent person UTAN marknadsföringsbakgrund förstår exakt vad och varför – utan jargong, utan att vara barnslig. Förklara resonemanget bakom varje råd, inte bara vad de ska göra.
+
+VIKTIGT OM BUDGET: Var ärlig om vad budgeten faktiskt räcker till. Kalibrera dina rekommendationer realistiskt:
+- Under 20 000 kr/mån: Fokusera på 1–2 kanaler max, organiskt och låginvesterande arbete, var tydlig att betald räckvidd är begränsad.
+- 20 000–75 000 kr/mån: 2–3 kanaler, måttlig betald närvaro möjlig, prioritera hårt.
+- 75 000–250 000 kr/mån: Flera kanaler parallellt, meningsfull betald volym, utrymme för test och optimering.
+- Över 250 000 kr/mån: Full kanalmix möjlig, men ändå prioritera – mer pengar betyder inte att allt ska göras samtidigt.
+Om budget är "Ej angiven", anta att kunden har en begränsad budget och var konservativ i dina rekommendationer.
+
+Dina rekommendationer ska alltid vara konkreta och prioriterade, anpassade efter kundens bransch, storlek, resurser och mognadsnivå, förankrade i affärsmål (inte bara marknadsföringsaktiviteter) och realistiska att genomföra givet budgeten ovan.
 
 Utgå från följande principer: alla kanaler passar inte alla verksamheter. Effekt skapas i samspelet mellan budskap, kanal, timing och uppföljning. Distribution är lika viktig som innehåll. Rätt positionering och tydligt erbjudande slår ofta högre budget. Mätbarhet, testning och iteration är avgörande.
 
@@ -2362,7 +2372,9 @@ När du analyserar kundens situation ska du: identifiera de 2–3 viktigaste pro
 
 Anpassa alltid analysen efter den specifika kunden. Låt inte tidigare erfarenheter från vissa branscher styra rekommendationerna om kundens situation kräver något annat.
 
-Undvik fluff, buzzwords och generiska råd. Var tydlig, skarp och lösningsorienterad. Svara på svenska.
+Undvik fluff, buzzwords och generiska råd som "starta ett nyhetsbrev" eller "optimera er Google-profil" om de inte är specifikt motiverade av just det här caset. Varje rekommendation och quick win ska vara så konkret att den känns skriven för just detta företag – inte något du skulle ge alla.
+
+Var tydlig, skarp och lösningsorienterad. Svara på svenska.
 
 Svara ENBART med ett JSON-objekt i exakt det format som beskrivs nedan – inga extra kommentarer eller text utanför JSON.
 
@@ -2380,15 +2392,16 @@ Mål: ${getField('goal')}
 Styrka/USP: ${getField('usp')}
 Konkurrens: ${getField('competitors')}
 Tidigare marknadsföring: ${getTagGroup('history')}
-Budget: ${ps['budget']||'Ej angiven'}
+Budget: ${budget}
 
 Svara med exakt detta JSON-format:
 {
-  "summary": "2–3 meningar som sammanfattar de viktigaste affärs- och marknadsproblemen samt den övergripande strategin",
-  "prioritized_channels": [{"name":"Kanalnamn","priority":"Hög|Medium|Lägre","reason":"En mening om varför just denna kanal och hur den hänger ihop med övriga insatser"}],
-  "recommendations": [{"title":"Kort rubrik","description":"Konkret, specifikt råd kopplat till budskap, kanal och exekvering (2–4 meningar)."}],
-  "quick_wins": ["Åtgärd 1","Åtgärd 2","Åtgärd 3"],
-  "next_step": "En konkret nästa åtgärd de kan ta denna vecka"
+  "summary": "2–3 meningar som sammanfattar de viktigaste affärs- och marknadsproblemen samt den övergripande strategin. Skriv begripligt för en person utan marknadsföringsbakgrund.",
+  "prioritized_channels": [{"name":"Kanalnamn","priority":"Hög|Medium|Lägre","reason":"En mening om varför just denna kanal och hur den hänger ihop med övriga insatser, kalibrerad mot angiven budget"}],
+  "recommendations": [{"title":"Kort rubrik","description":"Konkret, specifikt råd kopplat till budskap, kanal och exekvering (2–4 meningar). Förklara VARFÖR, inte bara VAD."}],
+  "quick_wins": ["Åtgärd 1 – specifik för detta företag","Åtgärd 2 – specifik för detta företag","Åtgärd 3 – specifik för detta företag"],
+  "next_step": "En konkret nästa åtgärd de kan ta denna vecka",
+  "agency_brief": "Ett kort stycke (3–5 meningar) skrivet som om det skickas direkt till en byrå som ska utföra arbetet – sammanfatta vad som ska göras, för vem, med vilken budget och vilket mål. Skriv professionellt och redo att klistras in i ett mejl."
 }
 
 Anpassa antalet kanaler och rekommendationer efter företagets situation, komplexitet och budget – minimum 2, maximum 6 av vardera. Ge inte fler än vad som är motiverat av caset. Håll varje råd konkret, integrerat och anpassat till just detta företag.${season!=='Ej angiven'&&season!=='Ingen tydlig säsong'?' Ta hänsyn till säsongsvariationerna i rekommendationerna.':''}`;
@@ -2433,7 +2446,8 @@ function renderResult(r){
     <div class="rc"><div class="rh"><div class="ri am">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div><div>${re}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div><div>${qw}</div></div>
 
-    ${r.next_step?`<div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:#2C2520;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:#2C2520;font-weight:500">${r.next_step}</div></div></div>`:''}`;
+    ${r.next_step?`<div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:#2C2520;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:#2C2520;font-weight:500">${r.next_step}</div></div></div>`:''}
+    ${r.agency_brief?`<div class="rc"><div class="rh"><div class="ri am">📨</div><div><h2>Redo att skicka till en byrå</h2><p>Kopiera och klistra in i ett mejl</p></div></div><div style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #2C2520;color:#2C2520;margin-bottom:0.75rem">${r.agency_brief}</div><button onclick="navigator.clipboard.writeText(${JSON.stringify(r.agency_brief)}).then(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;bottom:24px;right:24px;background:#0a0a0a;color:#fff;padding:14px 20px;border-radius:8px;font-size:13px;z-index:9999';b.textContent='✓ Kopierat!';document.body.appendChild(b);setTimeout(()=>b.remove(),3000);})" style="background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>Kopiera till byrå</button></div>`:''}`;
   document.getElementById('result-section').style.display='block';
   document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('clear-btn').style.display='block';
