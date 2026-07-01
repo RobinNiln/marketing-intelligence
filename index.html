@@ -2298,7 +2298,13 @@ const SUPABASE_KEY = 'sb_publishable_StWrPh-MqD99VzG08d0IYg_7zVznUk1';
 let _sb = null;
 function sb() {
   if (!_sb && window.supabase) {
-    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        storageKey: 'mava-auth'
+      }
+    });
   }
   return _sb;
 }
@@ -3086,7 +3092,10 @@ function onAuthChanged(){
   }
 }
 
+let _authInited = false;
 async function authInit(){
+  if (_authInited) return;
+  _authInited = true;
   if (!sb()) return;
   const { data } = await sb().auth.getSession();
   _currentUser = (data && data.session) ? data.session.user : null;
