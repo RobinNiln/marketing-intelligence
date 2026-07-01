@@ -1083,6 +1083,7 @@ body.brief-mode{background:#FBFAF7}
   .brief-goal-grid{grid-template-columns:1fr 1fr}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div id="landing">
@@ -1090,7 +1091,10 @@ body.brief-mode{background:#FBFAF7}
   <!-- NAV -->
   <nav class="site-nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:0.5px solid rgba(0,0,0,0);padding:0 3rem;height:64px;display:flex;align-items:center;justify-content:space-between;transition:background 0.3s,border-color 0.3s">
     <button class="mava-logo on-dark" id="nav-logo" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:40px;width:40px"><span class="mava-word" style="font-size:24px">Mava</span></button>
-    <div style="display:flex;align-items:center;gap:2rem">
+    <div style="display:flex;align-items:center;gap:1.25rem">
+      <button class="auth-when-out" onclick="goToAuth()" style="background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Logga in</button>
+      <button class="auth-when-in" onclick="goToTools()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mina verktyg</button>
+      <button class="auth-when-in" onclick="authLogout()" style="display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
     </div>
   </nav>
@@ -1286,6 +1290,33 @@ body.brief-mode{background:#FBFAF7}
         <div class="tsell-gets-label">Du får:</div>
         <div class="tsell-tags"><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">14 format</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">HTML5-banners</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">Sociala format</span></div>
         <button class="tsell-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="auth-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+  </nav>
+  <div style="max-width:420px;margin:0 auto;padding:3rem 1.5rem">
+    <div style="background:#fff;border:1px solid #e8e4db;border-radius:18px;padding:2.5rem 2rem">
+      <h1 id="auth-title" style="font-size:24px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem;text-align:center">Logga in</h1>
+      <p id="auth-sub" style="font-size:14px;color:#8a7d6d;text-align:center;margin:0 0 2rem">Välkommen tillbaka till Mava</p>
+      <div id="auth-error" style="display:none;background:#FCEBEB;color:#A32D2D;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:1rem"></div>
+      <div id="auth-success" style="display:none;background:#E1F5EE;color:#0F6E56;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:1rem"></div>
+      <div style="margin-bottom:1rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">E-post</label>
+        <input id="auth-email" type="email" autocomplete="email" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="namn@foretag.se">
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Lösenord</label>
+        <input id="auth-password" type="password" autocomplete="current-password" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Minst 6 tecken">
+      </div>
+      <button id="auth-submit" onclick="authSubmit()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:1rem">Logga in</button>
+      <div style="text-align:center;font-size:13px;color:#8a7d6d">
+        <span id="auth-toggle-text">Har du inget konto?</span>
+        <button onclick="authToggleMode()" style="background:none;border:none;color:#C9A84C;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px;padding:0" id="auth-toggle-btn">Skapa konto</button>
       </div>
     </div>
   </div>
@@ -2261,6 +2292,18 @@ const STORAGE_KEY='tr_last_result';
 const SESSION_KEY='tr_authed';
 const ACCESS_PASSWORD='timrobin2024';
 
+/* ── Supabase ──────────────────────────────────────────────────────────── */
+const SUPABASE_URL = 'https://hwiwuraghyseqfybtsww.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_StWrPh-MqD99VzG08d0IYg_7zVznUk1';
+let _sb = null;
+function sb() {
+  if (!_sb && window.supabase) {
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+  return _sb;
+}
+let _currentUser = null;
+
 /* ── safeFetch ─────────────────────────────────────────────────────────────
    Gemensam hämtfunktion för alla AI-anrop. Hanterar:
    - Timeout (45 s)
@@ -2919,7 +2962,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -2934,6 +2977,127 @@ function goToTools(){
   document.getElementById('tools-page').style.display='block';
   window.scrollTo(0,0);
 }
+
+/* ── Auth ──────────────────────────────────────────────────────────────── */
+let _authMode = 'login';
+
+function goToAuth(){
+  hideAll();
+  document.getElementById('auth-page').style.display='block';
+  _authMode = 'login';
+  authRenderMode();
+  window.scrollTo(0,0);
+}
+
+function authRenderMode(){
+  const login = _authMode === 'login';
+  document.getElementById('auth-title').textContent = login ? 'Logga in' : 'Skapa konto';
+  document.getElementById('auth-sub').textContent = login ? 'Välkommen tillbaka till Mava' : 'Kom igång med Mava';
+  document.getElementById('auth-submit').textContent = login ? 'Logga in' : 'Skapa konto';
+  document.getElementById('auth-toggle-text').textContent = login ? 'Har du inget konto?' : 'Har du redan ett konto?';
+  document.getElementById('auth-toggle-btn').textContent = login ? 'Skapa konto' : 'Logga in';
+  document.getElementById('auth-password').setAttribute('autocomplete', login ? 'current-password' : 'new-password');
+  authClearMsg();
+}
+
+function authToggleMode(){
+  _authMode = _authMode === 'login' ? 'signup' : 'login';
+  authRenderMode();
+}
+
+function authClearMsg(){
+  document.getElementById('auth-error').style.display='none';
+  document.getElementById('auth-success').style.display='none';
+}
+
+function authShowError(msg){
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display='block';
+  document.getElementById('auth-success').style.display='none';
+}
+
+function authShowSuccess(msg){
+  const el = document.getElementById('auth-success');
+  el.textContent = msg;
+  el.style.display='block';
+  document.getElementById('auth-error').style.display='none';
+}
+
+async function authSubmit(){
+  authClearMsg();
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn = document.getElementById('auth-submit');
+
+  if (!email) { authShowError('Fyll i din e-postadress.'); return; }
+  if (!password || password.length < 6) { authShowError('Lösenordet måste vara minst 6 tecken.'); return; }
+  if (!sb()) { authShowError('Kunde inte ansluta till servern. Ladda om sidan och försök igen.'); return; }
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = _authMode === 'login' ? 'Loggar in...' : 'Skapar konto...';
+
+  try {
+    if (_authMode === 'signup') {
+      const { data, error } = await sb().auth.signUp({ email, password });
+      if (error) throw error;
+      if (data.user && !data.session) {
+        authShowSuccess('Konto skapat. Kolla din e-post för att bekräfta adressen, logga sedan in.');
+        _authMode = 'login';
+        authRenderMode();
+      } else {
+        _currentUser = data.user;
+        onAuthChanged();
+      }
+    } else {
+      const { data, error } = await sb().auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      _currentUser = data.user;
+      onAuthChanged();
+    }
+  } catch (e) {
+    let msg = e.message || 'Något gick fel. Försök igen.';
+    if (/invalid login credentials/i.test(msg)) msg = 'Fel e-post eller lösenord.';
+    else if (/already registered|already been registered/i.test(msg)) msg = 'Det finns redan ett konto med den e-posten. Logga in i stället.';
+    else if (/email not confirmed/i.test(msg)) msg = 'Bekräfta din e-postadress först – kolla din inkorg.';
+    authShowError(msg);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+async function authLogout(){
+  if (sb()) await sb().auth.signOut();
+  _currentUser = null;
+  onAuthChanged();
+  goToLanding();
+}
+
+function onAuthChanged(){
+  const authed = !!_currentUser;
+  document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = authed ? '' : 'none'; });
+  document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = authed ? 'none' : ''; });
+  if (authed) {
+    document.getElementById('auth-email').value = '';
+    document.getElementById('auth-password').value = '';
+    goToTools();
+  }
+}
+
+async function authInit(){
+  if (!sb()) return;
+  const { data } = await sb().auth.getSession();
+  _currentUser = (data && data.session) ? data.session.user : null;
+  onAuthChanged();
+  sb().auth.onAuthStateChange(function(_event, session){
+    _currentUser = session ? session.user : null;
+    document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = _currentUser ? '' : 'none'; });
+    document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = _currentUser ? 'none' : ''; });
+  });
+}
+window.addEventListener('load', function(){ setTimeout(authInit, 300); });
 
 function goToToolLogin(dest){
   if(dest==='native') goToNative();
