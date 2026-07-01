@@ -752,6 +752,22 @@ body.native-mode{background:#FBFAF7}
 .tool-card-btn{display:inline-flex;align-items:center;gap:6px;margin-top:1.25rem;padding:9px 16px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;font-size:12px;font-weight:600;color:#9c7d2e;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.04em;width:auto;align-self:flex-start}
 .tool-card-btn:hover{background:rgba(201,168,76,0.2);border-color:rgba(201,168,76,0.5)}
 
+/* Wide selling cards for tools page */
+.tools-sell{max-width:900px;margin:0 auto 4rem;display:flex;flex-direction:column;gap:16px;padding:0 1.5rem}
+.tsell-card{background:#fff;border:1px solid #e8e4db;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:220px 1fr;transition:box-shadow 0.2s,transform 0.2s}
+.tsell-card:hover{box-shadow:0 8px 30px rgba(44,37,32,0.08);transform:translateY(-2px)}
+.tsell-img{position:relative;min-height:180px;background-size:cover;background-position:center}
+.tsell-img-badge{position:absolute;top:14px;left:14px;background:rgba(255,255,255,0.92);font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 11px;border-radius:20px}
+.tsell-body{padding:1.5rem 1.75rem;display:flex;flex-direction:column}
+.tsell-title{font-size:20px;font-weight:700;color:#2C2520;letter-spacing:-0.01em;margin-bottom:7px}
+.tsell-desc{font-size:14px;color:#8a7d6d;line-height:1.6;margin-bottom:16px}
+.tsell-gets-label{font-size:12px;font-weight:700;color:#2C2520;margin-bottom:8px}
+.tsell-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.tsell-tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:14px}
+.tsell-btn{align-self:flex-start;margin-top:auto;display:inline-flex;align-items:center;gap:7px;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s}
+.tsell-btn:hover{background:#453a30}
+@media(max-width:640px){.tsell-card{grid-template-columns:1fr}.tsell-img{min-height:140px}}
+
 /* ─── DISTRIBUTION PLANNER ─── */
 #dist-page{display:none}
 body.dist-mode{background:#F5F3EE}
@@ -1221,82 +1237,56 @@ body.brief-mode{background:#FBFAF7}
     <h1 style="font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#2C2520;margin-bottom:1rem;max-width:600px">Fem AI-verktyg. Ett integrerat flöde.</h1>
     <p style="font-size:15px;color:#8a7d6d;line-height:1.75;max-width:520px">Från kampanjbrief och distributionsplan till nativeartikel, annonscopy, pressrelease och kampanjanalys – konkreta resultat på minuter.</p>
   </div>
-  <div class="tools-grid" style="max-width:960px;margin:0 auto 4rem">
-    <div class="tool-card">
-      <div class="tool-card-num">01</div>
-      <div class="tool-card-icon" style="background:rgba(15,110,86,0.12)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round"><path d="M2 14L6 8l3 4 3-5 4 3"/></svg>
+  <div class="tools-sell">
+    <div class="tsell-card">
+      <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(15,110,86,0.85),rgba(29,158,117,0.5)),url('images/stock.jpg')"><span class="tsell-img-badge" style="color:#0F6E56">STEG 1 · ANALYS</span></div>
+      <div class="tsell-body">
+        <div class="tsell-title">Market Pulse</div>
+        <div class="tsell-desc">En färdig marknadsanalys av ditt bolag och din bransch, med prioriterad kanalstrategi och konkreta quick wins du kan agera på direkt.</div>
+        <div class="tsell-gets-label">Du får:</div>
+        <div class="tsell-tags"><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Kanalstrategi</span><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Budgetförslag</span><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Quick wins</span></div>
+        <button class="tsell-btn" onclick="goToToolLogin('app')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
-      <div class="tool-card-label">Steg 1 · Analys</div>
-      <div class="tool-card-title">Market Pulse</div>
-      <div class="tool-card-desc">AI analyserar ditt bolag och ger en prioriterad kanalstrategi med konkreta rekommendationer och quick wins.</div>
-      <div class="tool-card-tags">
-        <span class="tool-card-tag">Kanalstrategi</span>
-        <span class="tool-card-tag">Prioritering</span>
-        <span class="tool-card-tag">Quick wins</span>
-      </div>
-      <button class="tool-card-btn" onclick="goToToolLogin('app')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
-    <div class="tool-card" style="border-top:1px solid #e8e4db">
-      <div class="tool-card-num">02</div>
-      <div class="tool-card-icon" style="background:rgba(201,168,76,0.1)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="2" width="14" height="14" rx="2"/><path d="M5 7h8M5 10h5"/></svg>
+    <div class="tsell-card">
+      <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(156,125,46,0.85),rgba(201,168,76,0.5)),url('images/kontor.png')"><span class="tsell-img-badge" style="color:#9c7d2e">STEG 2 · BRIEF</span></div>
+      <div class="tsell-body">
+        <div class="tsell-title">The Brief</div>
+        <div class="tsell-desc">En komplett kampanjbrief redo att skicka till byrå eller team – med mål, målgrupp, budget i kronor, tidslinje och mätbara KPI:er.</div>
+        <div class="tsell-gets-label">Du får:</div>
+        <div class="tsell-tags"><span class="tsell-tag" style="color:#9c7d2e;background:rgba(201,168,76,0.12)">Budgetfördelning</span><span class="tsell-tag" style="color:#9c7d2e;background:rgba(201,168,76,0.12)">Tidslinje</span><span class="tsell-tag" style="color:#9c7d2e;background:rgba(201,168,76,0.12)">KPI:er</span></div>
+        <button class="tsell-btn" onclick="goToToolLogin('brief')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
-      <div class="tool-card-label">Steg 2 · Brief</div>
-      <div class="tool-card-title">The Brief</div>
-      <div class="tool-card-desc">Generera en komplett kampanjbrief med mål, målgrupp, kanaler, budget och tidslinje – redo att skicka.</div>
-      <div class="tool-card-tags">
-        <span class="tool-card-tag">Kampanj</span>
-        <span class="tool-card-tag">Strategi</span>
-        <span class="tool-card-tag">Byrå</span>
-      </div>
-      <button class="tool-card-btn" onclick="goToToolLogin('brief')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
-    <div class="tool-card" style="border-top:1px solid #e8e4db">
-      <div class="tool-card-num">03</div>
-      <div class="tool-card-icon" style="background:rgba(201,168,76,0.1)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><path d="M3 4h12M3 8h8M3 12h10M3 16h6"/></svg>
+    <div class="tsell-card">
+      <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(24,95,165,0.85),rgba(55,138,221,0.5)),url('images/newsroom.jpeg')"><span class="tsell-img-badge" style="color:#185FA5">STEG 3 · PR</span></div>
+      <div class="tsell-body">
+        <div class="tsell-title">Newsroom</div>
+        <div class="tsell-desc">En redaktionellt gångbar pressrelease – plus fem rubrikvinklar, en journalistpitch, förslag på ämnesrader och en ärlig PR-bedömning.</div>
+        <div class="tsell-gets-label">Du får:</div>
+        <div class="tsell-tags"><span class="tsell-tag" style="color:#185FA5;background:rgba(55,138,221,0.1)">Pressrelease</span><span class="tsell-tag" style="color:#185FA5;background:rgba(55,138,221,0.1)">5 rubrikvinklar</span><span class="tsell-tag" style="color:#185FA5;background:rgba(55,138,221,0.1)">Journalistpitch</span></div>
+        <button class="tsell-btn" onclick="goToToolLogin('newsroom')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
-      <div class="tool-card-label">Steg 3 · PR</div>
-      <div class="tool-card-title">Newsroom</div>
-      <div class="tool-card-desc">Generera en professionell pressrelease på minuter – redo att skicka till svenska redaktioner.</div>
-      <div class="tool-card-tags">
-        <span class="tool-card-tag">Pressrelease</span>
-        <span class="tool-card-tag">PR</span>
-        <span class="tool-card-tag">Media</span>
-      </div>
-      <button class="tool-card-btn" onclick="goToToolLogin('newsroom')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
-    <div class="tool-card">
-      <div class="tool-card-num">04</div>
-      <div class="tool-card-icon" style="background:rgba(133,79,11,0.12)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"><path d="M3 14l2-2 8-8-2-2-8 8-2 2 2 2z"/><path d="M5 10l2 2"/></svg>
+    <div class="tsell-card">
+      <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(153,60,29,0.85),rgba(216,90,48,0.5)),url('images/nativeautoreach.jpeg')"><span class="tsell-img-badge" style="color:#993c1d">STEG 4 · PRODUKTION</span></div>
+      <div class="tsell-body">
+        <div class="tsell-title">Native Auto Reach</div>
+        <div class="tsell-desc">En färdig redaktionell nativeartikel och distributionsplan – klar att publicera hos svenska mediehus som Schibsted och Bonnier.</div>
+        <div class="tsell-gets-label">Du får:</div>
+        <div class="tsell-tags"><span class="tsell-tag" style="color:#993c1d;background:rgba(216,90,48,0.1)">Nativeartikel</span><span class="tsell-tag" style="color:#993c1d;background:rgba(216,90,48,0.1)">Distributionsplan</span></div>
+        <button class="tsell-btn" onclick="goToToolLogin('native')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
-      <div class="tool-card-label">Steg 4 · Produktion</div>
-      <div class="tool-card-title">Native Auto Reach</div>
-      <div class="tool-card-desc">Skapa en redaktionellt skriven nativeartikel redo för publicering hos Schibsted, Bonnier, Stampen och NTM.</div>
-      <div class="tool-card-tags">
-        <span class="tool-card-tag">Nativeartiklar</span>
-        <span class="tool-card-tag">AI-produktion</span>
-        <span class="tool-card-tag">Publicering</span>
-      </div>
-      <button class="tool-card-btn" onclick="goToToolLogin('native')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
-    <div class="tool-card">
-      <div class="tool-card-num">05</div>
-      <div class="tool-card-icon" style="background:rgba(83,74,183,0.12)">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8B85D4" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M6 8h6M6 11h4"/></svg>
+    <div class="tsell-card">
+      <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(83,74,183,0.85),rgba(127,119,221,0.5)),url('images/adgenerator.png')"><span class="tsell-img-badge" style="color:#534AB7">STEG 5 · ANNONS</span></div>
+      <div class="tsell-body">
+        <div class="tsell-title">AdStudio</div>
+        <div class="tsell-desc">Färdiga annonser i 14 äkta format – statiska bilder för sociala medier och HTML5-banners för display, med er egen logga inbäddad.</div>
+        <div class="tsell-gets-label">Du får:</div>
+        <div class="tsell-tags"><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">14 format</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">HTML5-banners</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">Sociala format</span></div>
+        <button class="tsell-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
-      <div class="tool-card-label">Steg 5 · Annonsering</div>
-      <div class="tool-card-title">AdStudio</div>
-      <div class="tool-card-desc">Generera färdig annonscopy och HTML-banners för Meta, LinkedIn, Google Ads och display.</div>
-      <div class="tool-card-tags">
-        <span class="tool-card-tag">Meta</span>
-        <span class="tool-card-tag">LinkedIn</span>
-        <span class="tool-card-tag">Google Ads</span>
-        <span class="tool-card-tag">Display</span>
-      </div>
-      <button class="tool-card-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
     </div>
   </div>
 </div>
