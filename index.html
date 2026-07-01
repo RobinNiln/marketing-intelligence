@@ -3753,15 +3753,51 @@ function briefReset() {
 ══════════════════════════════════════════ */
 
 const ADGEN_FORMATS = {
-  'meta-feed':          { label:'Meta Feed',          w:1080, h:1080 },
-  'meta-stories':       { label:'Meta Stories',       w:1080, h:1920 },
-  'linkedin':           { label:'LinkedIn',           w:1200, h:628  },
-  'display-medium':     { label:'Display Medium',     w:300,  h:250  },
-  'display-panorama':   { label:'Display Panorama',   w:980,  h:240  },
-  'display-skyscraper': { label:'Display Skyscraper', w:160,  h:600  },
+  'meta-feed':          { label:'Meta Feed',          w:1080, h:1080, html5:false },
+  'meta-stories':       { label:'Meta Stories',       w:1080, h:1920, html5:false },
+  'linkedin':           { label:'LinkedIn',           w:1200, h:628,  html5:false },
+  'display-medium':     { label:'Display Medium',     w:300,  h:250,  html5:true  },
+  'display-panorama':   { label:'Display Panorama',   w:980,  h:240,  html5:true  },
+  'display-skyscraper': { label:'Display Skyscraper', w:160,  h:600,  html5:true  },
 };
 
+function adgenEscapeHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildBannerHtml(fmt, copy) {
+  const w = fmt.w, h = fmt.h;
+  const vertical = h > w * 1.3;
+  const headline = adgenEscapeHtml(copy.headline || '');
+  const subline  = adgenEscapeHtml(copy.subline || '');
+  const cta       = adgenEscapeHtml(copy.cta || '');
+  const img = _adgenImageDataUrl || '';
+  const pad = vertical ? 16 : (w < 320 ? 14 : 22);
+  const hSize = vertical ? 20 : (w < 320 ? 17 : Math.min(30, Math.round(w/22)));
+  const sSize = vertical ? 13 : (w < 320 ? 11 : 14);
+  const ctaSize = vertical ? 13 : (w < 320 ? 11 : 13);
+  return '<!DOCTYPE html><html lang="sv"><head><meta charset="utf-8"><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box}' +
+    'html,body{width:' + w + 'px;height:' + h + 'px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}' +
+    '.b{position:relative;width:' + w + 'px;height:' + h + 'px;cursor:pointer;overflow:hidden}' +
+    '.b-img{position:absolute;inset:0;background-image:url(' + img + ');background-size:cover;background-position:center}' +
+    '.b-ov{position:absolute;inset:0;background:linear-gradient(' + (vertical?'0deg':'90deg') + ',rgba(20,14,8,0.82) 0%,rgba(20,14,8,0.45) 55%,rgba(20,14,8,0.12) 100%)}' +
+    '.b-c{position:absolute;inset:0;padding:' + pad + 'px;display:flex;flex-direction:column;justify-content:' + (vertical?'flex-end':'center') + '}' +
+    '.b-h{color:#fff;font-size:' + hSize + 'px;font-weight:700;line-height:1.12;letter-spacing:-0.01em;margin-bottom:6px}' +
+    '.b-s{color:rgba(255,255,255,0.88);font-size:' + sSize + 'px;line-height:1.4;margin-bottom:12px}' +
+    '.b-cta{align-self:flex-start;background:#fff;color:#1a1410;font-size:' + ctaSize + 'px;font-weight:600;padding:8px 16px;border-radius:100px;white-space:nowrap}' +
+    '</style></head><body>' +
+    '<a class="b" href="#" onclick="return false" style="text-decoration:none">' +
+    '<div class="b-img"></div><div class="b-ov"></div>' +
+    '<div class="b-c">' +
+    (headline ? '<div class="b-h">' + headline + '</div>' : '') +
+    (subline ? '<div class="b-s">' + subline + '</div>' : '') +
+    (cta ? '<div class="b-cta">' + cta + '</div>' : '') +
+    '</div></a></body></html>';
+}
+
 let _adgenImage = null;
+let _adgenImageDataUrl = null;
 let _adgenFormats = [];
 let _adgenCopyData = null;
 
@@ -3772,6 +3808,7 @@ function adgenHandleFile(file) {
     const img = new Image();
     img.onload = () => {
       _adgenImage = img;
+      _adgenImageDataUrl = e.target.result;
       const preview = document.getElementById('adgen-preview');
       preview.src = e.target.result;
       preview.style.display = 'block';
@@ -3855,8 +3892,7 @@ function renderAdGenResult() {
     const dispH = Math.round(fmt.h * scale);
     const card = document.createElement('div');
     card.className = 'adgen-result-card';
-    card.innerHTML =
-      '<div class="adgen-result-label">' + fmt.label + '</div>' +
+    let html = '<div class="adgen-result-label">' + fmt.label + '</div>' +
       '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px">' +
         '<canvas id="canvas-' + formatId + '" width="' + fmt.w + '" height="' + fmt.h + '" style="width:' + dispW + 'px;height:' + dispH + 'px"></canvas>' +
       '</div>' +
@@ -3864,9 +3900,42 @@ function renderAdGenResult() {
         '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
         'Ladda ner PNG (' + fmt.w + 'x' + fmt.h + ')' +
       '</button>';
+    if (fmt.html5) {
+      html +=
+      '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #F0EEE8">' +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:8px">HTML5-banner · live</div>' +
+        '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px;overflow:hidden">' +
+          '<iframe id="iframe-' + formatId + '" style="width:' + fmt.w + 'px;height:' + fmt.h + 'px;border:0;transform:scale(' + scale + ');transform-origin:top left" scrolling="no"></iframe>' +
+        '</div>' +
+        '<button class="adgen-dl-btn" onclick="adgenDownloadHtml(\'' + formatId + '\')">' +
+          '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
+          'Ladda ner HTML (' + fmt.w + 'x' + fmt.h + ')' +
+        '</button>' +
+      '</div>';
+    }
+    card.innerHTML = html;
     grid.appendChild(card);
     drawAd(formatId, fmt, copy);
+    if (fmt.html5) {
+      const iframe = document.getElementById('iframe-' + formatId);
+      if (iframe) iframe.srcdoc = buildBannerHtml(fmt, copy);
+    }
   });
+}
+
+function adgenDownloadHtml(formatId) {
+  const fmt = ADGEN_FORMATS[formatId];
+  const copy = (_adgenCopyData && _adgenCopyData[formatId]) || {};
+  const html = buildBannerHtml(fmt, copy);
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'banner-' + formatId + '-' + fmt.w + 'x' + fmt.h + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function drawAd(formatId, fmt, copy) {
