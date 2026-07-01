@@ -992,6 +992,11 @@ body.newsroom-mode{background:#FBFAF7}
 .newsroom-contact-block{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#5a5650;line-height:1.8}
 .newsroom-contact-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C4A576;margin-bottom:6px}
 .newsroom-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #F0EEE8}
+.nr-extra-block{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.5rem;margin-bottom:1rem}
+.nr-extra-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:1rem}
+.nr-extra-row{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2a2520;line-height:1.6;padding:6px 0}
+.nr-extra-tag{font-size:11px;font-weight:600;color:#9A8570;background:#F5F3EE;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.nr-extra-text{font-size:14px;color:#2a2520;line-height:1.75}
 .newsroom-action-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid #F0EEE8;background:#fff;color:#2a2520;transition:all 0.15s}
 .newsroom-action-btn:hover{border-color:#E8C878}
 .newsroom-action-btn.primary{background:#2a2520;color:#fff;border-color:#2a2520}
@@ -1563,6 +1568,8 @@ body.brief-mode{background:#FBFAF7}
         </div>
         <div class="newsroom-result-boilerplate" id="nr-result-boilerplate"></div>
       </div>
+
+      <div id="nr-result-extras"></div>
 
       <div class="newsroom-result-actions">
         <button class="newsroom-action-btn primary" onclick="newsroomCopy()">
@@ -3436,30 +3443,26 @@ async function generateNewsroom() {
 
   const mediaStr = _newsroomMedia.join(', ');
 
-  const prompt = `Du är en erfaren PR-konsult och kommunikationsexpert med gedigen erfarenhet av svenska medier och redaktionellt arbete. Du vet vad som får en journalist att faktiskt läsa vidare – och vad som får en pressrelease att hamna i papperskorgen. Din uppgift är att skriva en professionell pressrelease på svenska som håller redaktionell kvalitet.
+  const prompt = `Du är en mycket erfaren PR-konsult, presschef och journalistisk copywriter med över 20 års erfarenhet av att skriva pressmeddelanden som redaktioner faktiskt kan använda. Du skriver som någon som förstår hur journalister tänker – inte som en marknadsavdelning.
 
-GRUNDPRINCIPER:
-- Skriv som en nyhet, inte som en annons. Hitta den faktiska nyhetskroken: varför ska en journalist och en läsare bry sig om det här just nu?
-- Undvik säljspråk och tomma superlativ ("marknadsledande", "revolutionerande", "i världsklass", "unik"). Låt fakta och konkreta detaljer bära nyheten i stället.
-- Skriv professionellt och journalistiskt, i tredje person.
+Analysera underlaget och identifiera vad som egentligen är nyheten, varför den är relevant just nu, vilken vinkel som är starkast journalistiskt, vilka som påverkas, och vilka fakta som stärker trovärdigheten. Skriv sedan ett komplett pressmeddelande på svenska.
 
-VIKTIG FAKTAREGEL:
-- Använd ENBART fakta som framgår av underlaget nedan. Hitta aldrig på datum, siffror, namn, citat eller andra detaljer som användaren inte angett.
-- Om en uppgift saknas, skriv runt den i stället för att gissa. Det är bättre att utelämna en detalj än att uppfinna den.
+TON OCH STIL:
+- Professionellt, nyhetsmässigt, trovärdigt, konkret och redaktionellt gångbart.
+- Variera meningslängden. Skriv med driv och rytm som en människa, inte i det jämna, platta tonläge som avslöjar maskinskriven text.
+- Sätt nyheten först, företaget sedan. Börja aldrig med att företaget "är glada" eller "stolta".
+- Lyft omvärldsrelevansen: varför ska någon annan än avsändaren bry sig?
+- Var konkret: fakta, siffror, platser, datum, personer och konsekvenser slår allmänna påståenden.
 
-ANPASSA EFTER MÅLMEDIER (${mediaStr}):
-- Affärs- och investerarmedier: vinkla på siffror, tillväxt, marknad och affärsmässig betydelse.
-- Branschpress: vinkla på fackmässig relevans och vad nyheten betyder för branschen.
-- Lokalmedier: vinkla på lokal förankring, sysselsättning och regional betydelse.
-- Dagstidningar och nyhetsmedier: bredare allmänintresse och tydlig samhällsrelevans.
-- Väg in samtliga valda medier i ton och vinkel.
+FÖRBJUDNA FLOSKLER (använd aldrig): "spännande satsning", "unik möjlighet", "vi är stolta över", "tar nästa steg", "på en resa", "banbrytande", "innovativ lösning", "stärker vårt erbjudande", "framtidens lösning", "i framkant". Använd bara starka värdeord om de styrks av konkreta fakta.
 
-STRUKTUR:
-- Rubrik: nyhetsvärdig och konkret, lockar till läsning utan att vara en reklamrubrik.
-- Ingress: 2-3 meningar som besvarar de relevanta av vem, vad, när, var och varför – baserat på underlaget.
-- Brödtext: 3-4 stycken med fakta, kontext och betydelse. Bygg ut nyheten logiskt.
-- Citat: ${quote ? 'Använd det angivna citatet ordagrant – skriv inte om det.' : 'Skapa ett trovärdigt citat från en talesperson som säger något substantiellt om nyhetens betydelse. Undvik klyschor som "Vi är glada att...". Om ingen talesperson finns angiven, attribuera neutralt (t.ex. till företagets VD).'}
-- Boilerplate: kort standardpresentation av företaget som avslutar releasen.
+FAKTAREGEL: Hitta aldrig på fakta. Om viktig uppgift saknas, använd hakparentes som [datum saknas] eller [ort saknas] så användaren kan komplettera. Du får göra språkliga förbättringar och dra rimliga slutsatser om vinkel.
+
+CITAT: ${quote ? 'Använd det angivna citatet ordagrant – skriv inte om det.' : 'Skapa ett citat som låter som en verklig person, inte en reklamslogan. Citatet ska tillföra perspektiv, förklaring eller ambition – inte upprepa fakta från brödtexten. Undvik "Vi är stolta/glada".'}
+
+ANPASSA EFTER MÅLMEDIER (${mediaStr}): Lokalmedia → lyft plats, lokal påverkan, konkreta ortsnamn. Branschmedia → trender, utveckling, precис terminologi utan jargong. Riksmedia → bredare samhällsrelevans, hårt nyhetsvärde. Näringslivsmedia → affärslogik, tillväxt, marknad, resultat.
+
+Pressmeddelandet ska vara cirka 2500 tecken.
 
 Nyhetstyp: ${_newsroomType}
 
@@ -3474,14 +3477,25 @@ ${news}
 ${quote ? `ANGIVET CITAT (använd ordagrant):\n${quote}` : ''}
 ${contact ? `KONTAKTPERSON:\n${contact}` : ''}
 
-Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. Använd \\n\\n mellan styckena i brödtexten och se till att all text är korrekt escapead så att JSON går att parsa:
+Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. Använd \\n\\n mellan styckena. Se till att all text är korrekt escapead så att JSON går att parsa:
 {
-  "headline": "Pressreleasens rubrik",
-  "ingress": "Ingress på 2-3 meningar som sammanfattar hela nyheten",
-  "body": "Brödtext i 3-4 stycken med fakta, kontext och detaljer. Använd \\n\\n mellan styckena.",
-  "quote": "Citatet formaterat som: 'Citattexten' – Namn, Titel, Företag (lämna tom sträng om inget citat finns)",
-  "boilerplate": "Om ${company}: ${companyDesc} (detta är standardtexten som avslutar pressreleasen)",
-  "contact": "${contact || ''}"
+  "headline": "Rak, konkret nyhetsrubrik – inte reklam",
+  "ingress": "2-3 meningar som besvarar vad som händer, vem som står bakom och varför det är relevant",
+  "body": "Brödtext i 3-4 stycken, nyheten först. Använd \\n\\n mellan styckena.",
+  "quote": "Citatet formaterat som: 'Citattexten' – Namn, Titel, Företag (tom sträng om inget)",
+  "boilerplate": "Kort 'Om ${company}'-text som avslutar releasen",
+  "contact": "${contact || ''}",
+  "alt_headlines": ["Rak nyhetsrubrik", "Lokal vinkel", "Branschvinkel", "Mänsklig/emotionell vinkel", "Affärsmässig vinkel"],
+  "pitch": "Kort journalistpitch på 3-5 meningar som säljer in nyheten (inte företaget) till en journalist",
+  "subject_lines": ["Ämnesrad 1", "Ämnesrad 2", "Ämnesrad 3", "Ämnesrad 4", "Ämnesrad 5"],
+  "assessment": {
+    "nyhetsvarde": 3,
+    "tydlighet": 3,
+    "medial_potential": 3,
+    "lokal_relevans": 3,
+    "branschrelevans": 3,
+    "forslag": ["Konkret förslag på hur nyheten kan vässas", "Förslag 2", "Förslag 3"]
+  }
 }`;
 
   try {
@@ -3514,6 +3528,8 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
 
     document.getElementById('nr-result-boilerplate').textContent = result.boilerplate || '';
 
+    renderNewsroomExtras(result);
+
     window._newsroomResult = result;
     window._newsroomCompany = company;
 
@@ -3527,6 +3543,55 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
     document.getElementById('newsroom-btn').disabled = false;
     showToolError('newsroom-error', e.message, generateNewsroom);
   }
+}
+
+function renderNewsroomExtras(result) {
+  const box = document.getElementById('nr-result-extras');
+  if (!box) return;
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  let html = '';
+
+  if (Array.isArray(result.alt_headlines) && result.alt_headlines.length) {
+    const labels = ['Rak nyhetsrubrik','Lokal vinkel','Branschvinkel','Mänsklig vinkel','Affärsmässig vinkel'];
+    html += '<div class="nr-extra-block"><div class="nr-extra-title">Alternativa rubriker</div>';
+    result.alt_headlines.forEach(function(h,i){
+      html += '<div class="nr-extra-row"><span class="nr-extra-tag">' + esc(labels[i]||('Vinkel '+(i+1))) + '</span><span>' + esc(h) + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  if (result.pitch && result.pitch.trim()) {
+    html += '<div class="nr-extra-block"><div class="nr-extra-title">Journalistpitch</div><div class="nr-extra-text">' + esc(result.pitch) + '</div></div>';
+  }
+
+  if (Array.isArray(result.subject_lines) && result.subject_lines.length) {
+    html += '<div class="nr-extra-block"><div class="nr-extra-title">Förslag på ämnesrader</div>';
+    result.subject_lines.forEach(function(s){
+      html += '<div class="nr-extra-row"><span style="color:#C9A84C">›</span><span>' + esc(s) + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  if (result.assessment && typeof result.assessment === 'object') {
+    const a = result.assessment;
+    const metrics = [['Nyhetsvärde',a.nyhetsvarde],['Tydlighet',a.tydlighet],['Medial potential',a.medial_potential],['Lokal relevans',a.lokal_relevans],['Branschrelevans',a.branschrelevans]];
+    html += '<div class="nr-extra-block"><div class="nr-extra-title">PR-bedömning</div>';
+    metrics.forEach(function(m){
+      const val = Math.max(0, Math.min(5, parseInt(m[1],10) || 0));
+      let dots = '';
+      for (let i=0;i<5;i++){ dots += '<span style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px;background:' + (i<val?'#C9A84C':'#E8E4DB') + '"></span>'; }
+      html += '<div class="nr-extra-row" style="justify-content:space-between"><span>' + esc(m[0]) + '</span><span>' + dots + '</span></div>';
+    });
+    if (Array.isArray(a.forslag) && a.forslag.length) {
+      html += '<div style="margin-top:12px;font-size:12px;font-weight:600;color:#9A8570;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Så kan nyheten vässas</div>';
+      a.forslag.forEach(function(f){
+        html += '<div class="nr-extra-row"><span style="color:#C9A84C">›</span><span>' + esc(f) + '</span></div>';
+      });
+    }
+    html += '</div>';
+  }
+
+  box.innerHTML = html;
 }
 
 function newsroomCopy() {
