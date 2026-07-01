@@ -27,7 +27,7 @@ body.app-mode{background:#FBFAF7}
 
 /* Footer CTA side fillers (wide screens only) */
 .footer-cta-wrap{position:relative}
-.footer-side{position:absolute;top:64px;height:360px;width:calc((100% - 1100px) / 2 - 3rem - 20px);overflow:hidden;display:none}
+.footer-side{position:absolute;top:64px;bottom:0;width:calc((100% - 1100px) / 2 - 3rem - 20px);overflow:hidden;display:none}
 .footer-side.left{left:3rem}
 .footer-side.right{right:3rem}
 .footer-side .sep-top{position:absolute;top:0;left:10px;right:10px;height:1px;background:#d3d0ca}
@@ -1067,8 +1067,8 @@ body.brief-mode{background:#FBFAF7}
 <div id="landing">
 
   <!-- NAV -->
-  <nav class="site-nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:0.5px solid rgba(0,0,0,0);padding:0 3rem;height:52px;display:flex;align-items:center;justify-content:space-between;transition:background 0.3s,border-color 0.3s">
-    <button class="mava-logo on-dark" id="nav-logo" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:30px;width:30px"><span class="mava-word" style="font-size:19px">Mava</span></button>
+  <nav class="site-nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:0.5px solid rgba(0,0,0,0);padding:0 3rem;height:64px;display:flex;align-items:center;justify-content:space-between;transition:background 0.3s,border-color 0.3s">
+    <button class="mava-logo on-dark" id="nav-logo" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:40px;width:40px"><span class="mava-word" style="font-size:24px">Mava</span></button>
     <div style="display:flex;align-items:center;gap:2rem">
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
     </div>
