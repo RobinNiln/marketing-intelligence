@@ -1795,12 +1795,19 @@ body.brief-mode{background:#FBFAF7}
       <div style="margin-bottom:2rem"><h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">AdStudio</h1><p style="font-size:14px;color:#9A8570;line-height:1.6">Ladda upp en bild, fyll i kampanjinfo och välj format. AI genererar copy och sätter ihop färdiga annonser redo att ladda ner.</p></div>
       <div class="adcopy-section-title">Annonsens bild</div>
       <div class="adgen-upload-zone" id="adgen-upload-zone"><input type="file" id="adgen-file-input" accept="image/*" onchange="adgenHandleFile(this.files[0])"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:8px"><rect x="2" y="6" width="28" height="20" rx="3"/><circle cx="11" cy="14" r="3"/><path d="M2 24l7-6 5 5 4-4 7 7"/></svg><div style="font-size:14px;font-weight:600;color:#2C2520;margin-bottom:4px">Klicka eller dra hit en bild</div><div style="font-size:12px;color:#9A8570">JPG, PNG eller WebP</div><img id="adgen-preview" class="adgen-preview-img"></div>
+      <div class="adcopy-section-title">Logga <span style="font-weight:400;color:#b5b0a8;font-size:12px;text-transform:none;letter-spacing:0">valfritt</span></div>
+      <div class="adgen-upload-zone" id="adgen-logo-zone" style="padding:1.25rem"><input type="file" id="adgen-logo-input" accept="image/png,image/svg+xml,image/webp" onchange="adgenHandleLogo(this.files[0])"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:6px"><rect x="4" y="4" width="24" height="24" rx="4"/><path d="M11 20l4-6 3 4 2-2 3 4"/></svg><div style="font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px">Ladda upp er logga</div><div style="font-size:11px;color:#9A8570">Helst PNG med transparent bakgrund</div><img id="adgen-logo-preview" class="adgen-preview-img" style="max-height:60px"></div>
+      <div class="adcopy-field" id="adgen-logo-pos-field" style="display:none;margin-top:0.75rem"><label style="font-size:13px">Loggans placering</label><select class="adcopy-select" id="ac-logo-pos"><option value="top-left">Uppe till vänster</option><option value="top-right">Uppe till höger</option><option value="bottom-left">Nere till vänster</option><option value="bottom-right" selected>Nere till höger</option></select></div>
       <div class="adcopy-section-title">Om kampanjen</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Företag / Varumärke <span>*</span></label><input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping"></div><div class="adcopy-field"><label>Produkt / Kampanj <span>*</span></label><input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj"></div></div>
       <div class="adcopy-field"><label>Huvudbudskap <span>*</span></label><textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera?"></textarea></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Call to action <span>*</span></label><input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka provkörning, Läs mer"></div><div class="adcopy-field"><label>Ton</label><select class="adcopy-select" id="ac-tone"><option value="">Välj ton...</option><option>Professionell och förtroendegivande</option><option>Varm och personlig</option><option>Energisk och drivande</option><option>Mjuk och informativ</option></select></div></div>
+      <div class="adcopy-field"><label>Referens / stilriktning <span>valfritt</span></label><textarea class="adcopy-textarea" id="ac-reference" style="min-height:72px" placeholder="Klistra in text från en annons du gillar, eller beskriv tonen/stilen du vill efterlikna. Ex: 'Kort och peppig som Nikes annonser' eller klistra in befintlig annonstext."></textarea></div>
       <div class="adcopy-section-title">Välj annonsformat</div>
-      <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed')"><div class="adgen-fmt-name">Meta Feed</div><div class="adgen-fmt-size">1080 × 1080 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-stories')"><div class="adgen-fmt-name">Meta Stories</div><div class="adgen-fmt-size">1080 × 1920 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'linkedin')"><div class="adgen-fmt-name">LinkedIn</div><div class="adgen-fmt-size">1200 × 628 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-medium')"><div class="adgen-fmt-name">Display Medium</div><div class="adgen-fmt-size">300 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-panorama')"><div class="adgen-fmt-name">Display Panorama</div><div class="adgen-fmt-size">980 × 240 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'display-skyscraper')"><div class="adgen-fmt-name">Display Skyscraper</div><div class="adgen-fmt-size">160 × 600 px</div></div></div>
+      <div style="font-size:12px;font-weight:600;color:#9A8570;margin-bottom:8px">Sociala medier</div>
+      <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed-square')"><div class="adgen-fmt-name">Meta Feed (kvadrat)</div><div class="adgen-fmt-size">1080 × 1080 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed-portrait')"><div class="adgen-fmt-name">Meta Feed (porträtt)</div><div class="adgen-fmt-size">1080 × 1350 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-stories')"><div class="adgen-fmt-name">Meta Stories / Reels</div><div class="adgen-fmt-size">1080 × 1920 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-landscape')"><div class="adgen-fmt-name">Meta Landscape</div><div class="adgen-fmt-size">1200 × 628 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-instream')"><div class="adgen-fmt-name">Meta In-stream</div><div class="adgen-fmt-size">1920 × 1080 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'linkedin')"><div class="adgen-fmt-name">LinkedIn</div><div class="adgen-fmt-size">1200 × 628 px</div></div></div>
+      <div style="font-size:12px;font-weight:600;color:#9A8570;margin:16px 0 8px">Display / HTML5-banners</div>
+      <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-medium')"><div class="adgen-fmt-name">Medium Rectangle</div><div class="adgen-fmt-size">300 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-large-rect')"><div class="adgen-fmt-name">Large Rectangle</div><div class="adgen-fmt-size">336 × 280 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-leaderboard')"><div class="adgen-fmt-name">Leaderboard</div><div class="adgen-fmt-size">728 × 90 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-billboard')"><div class="adgen-fmt-name">Billboard</div><div class="adgen-fmt-size">970 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-halfpage')"><div class="adgen-fmt-name">Half Page</div><div class="adgen-fmt-size">300 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-skyscraper')"><div class="adgen-fmt-name">Wide Skyscraper</div><div class="adgen-fmt-size">160 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile')"><div class="adgen-fmt-name">Mobile Banner</div><div class="adgen-fmt-size">320 × 50 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile-large')"><div class="adgen-fmt-name">Large Mobile Banner</div><div class="adgen-fmt-size">320 × 100 px</div></div></div>
       <div id="adcopy-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem;margin-top:1rem"></div>
       <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
@@ -3753,12 +3760,20 @@ function briefReset() {
 ══════════════════════════════════════════ */
 
 const ADGEN_FORMATS = {
-  'meta-feed':          { label:'Meta Feed',          w:1080, h:1080, html5:false },
-  'meta-stories':       { label:'Meta Stories',       w:1080, h:1920, html5:false },
-  'linkedin':           { label:'LinkedIn',           w:1200, h:628,  html5:false },
-  'display-medium':     { label:'Display Medium',     w:300,  h:250,  html5:true  },
-  'display-panorama':   { label:'Display Panorama',   w:980,  h:240,  html5:true  },
-  'display-skyscraper': { label:'Display Skyscraper', w:160,  h:600,  html5:true  },
+  'meta-feed-square':   { label:'Meta Feed (kvadrat)',   w:1080, h:1080, html5:false, group:'meta' },
+  'meta-feed-portrait': { label:'Meta Feed (porträtt)',  w:1080, h:1350, html5:false, group:'meta' },
+  'meta-stories':       { label:'Meta Stories / Reels',  w:1080, h:1920, html5:false, group:'meta' },
+  'meta-landscape':     { label:'Meta Landscape',        w:1200, h:628,  html5:false, group:'meta' },
+  'meta-instream':      { label:'Meta In-stream (16:9)', w:1920, h:1080, html5:false, group:'meta' },
+  'linkedin':           { label:'LinkedIn',              w:1200, h:628,  html5:false, group:'meta' },
+  'iab-medium':         { label:'Medium Rectangle',      w:300,  h:250,  html5:true,  group:'display' },
+  'iab-large-rect':     { label:'Large Rectangle',       w:336,  h:280,  html5:true,  group:'display' },
+  'iab-leaderboard':    { label:'Leaderboard',           w:728,  h:90,   html5:true,  group:'display' },
+  'iab-billboard':      { label:'Billboard',             w:970,  h:250,  html5:true,  group:'display' },
+  'iab-halfpage':       { label:'Half Page',             w:300,  h:600,  html5:true,  group:'display' },
+  'iab-skyscraper':     { label:'Wide Skyscraper',       w:160,  h:600,  html5:true,  group:'display' },
+  'iab-mobile':         { label:'Mobile Banner',         w:320,  h:50,   html5:true,  group:'display' },
+  'iab-mobile-large':   { label:'Large Mobile Banner',   w:320,  h:100,  html5:true,  group:'display' },
 };
 
 function adgenEscapeHtml(s) {
@@ -3776,19 +3791,27 @@ function buildBannerHtml(fmt, copy) {
   const hSize = vertical ? 20 : (w < 320 ? 17 : Math.min(30, Math.round(w/22)));
   const sSize = vertical ? 13 : (w < 320 ? 11 : 14);
   const ctaSize = vertical ? 13 : (w < 320 ? 11 : 13);
+  let logoHtml = '';
+  if (_adgenLogoDataUrl) {
+    const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
+    const vpos = pos.indexOf('bottom') > -1 ? 'bottom:' + pad + 'px' : 'top:' + pad + 'px';
+    const hpos = pos.indexOf('right') > -1 ? 'right:' + pad + 'px' : 'left:' + pad + 'px';
+    const logoMax = Math.round(Math.min(w * 0.22, h * 0.16));
+    logoHtml = '<img src="' + _adgenLogoDataUrl + '" style="position:absolute;' + vpos + ';' + hpos + ';max-width:' + logoMax + 'px;max-height:' + Math.round(h*0.16) + 'px;z-index:2">';
+  }
   return '<!DOCTYPE html><html lang="sv"><head><meta charset="utf-8"><style>' +
     '*{margin:0;padding:0;box-sizing:border-box}' +
     'html,body{width:' + w + 'px;height:' + h + 'px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}' +
     '.b{position:relative;width:' + w + 'px;height:' + h + 'px;cursor:pointer;overflow:hidden}' +
     '.b-img{position:absolute;inset:0;background-image:url(' + img + ');background-size:cover;background-position:center}' +
     '.b-ov{position:absolute;inset:0;background:linear-gradient(' + (vertical?'0deg':'90deg') + ',rgba(20,14,8,0.82) 0%,rgba(20,14,8,0.45) 55%,rgba(20,14,8,0.12) 100%)}' +
-    '.b-c{position:absolute;inset:0;padding:' + pad + 'px;display:flex;flex-direction:column;justify-content:' + (vertical?'flex-end':'center') + '}' +
+    '.b-c{position:absolute;inset:0;padding:' + pad + 'px;display:flex;flex-direction:column;justify-content:' + (vertical?'flex-end':'center') + ';z-index:1}' +
     '.b-h{color:#fff;font-size:' + hSize + 'px;font-weight:700;line-height:1.12;letter-spacing:-0.01em;margin-bottom:6px}' +
     '.b-s{color:rgba(255,255,255,0.88);font-size:' + sSize + 'px;line-height:1.4;margin-bottom:12px}' +
     '.b-cta{align-self:flex-start;background:#fff;color:#1a1410;font-size:' + ctaSize + 'px;font-weight:600;padding:8px 16px;border-radius:100px;white-space:nowrap}' +
     '</style></head><body>' +
     '<a class="b" href="#" onclick="return false" style="text-decoration:none">' +
-    '<div class="b-img"></div><div class="b-ov"></div>' +
+    '<div class="b-img"></div><div class="b-ov"></div>' + logoHtml +
     '<div class="b-c">' +
     (headline ? '<div class="b-h">' + headline + '</div>' : '') +
     (subline ? '<div class="b-s">' + subline + '</div>' : '') +
@@ -3798,8 +3821,29 @@ function buildBannerHtml(fmt, copy) {
 
 let _adgenImage = null;
 let _adgenImageDataUrl = null;
+let _adgenLogo = null;
+let _adgenLogoDataUrl = null;
 let _adgenFormats = [];
 let _adgenCopyData = null;
+
+function adgenHandleLogo(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      _adgenLogo = img;
+      _adgenLogoDataUrl = e.target.result;
+      const preview = document.getElementById('adgen-logo-preview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      document.getElementById('adgen-logo-zone').style.borderColor = '#C9A84C';
+      document.getElementById('adgen-logo-pos-field').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
 function adgenHandleFile(file) {
   if (!file || !file.type.startsWith('image/')) return;
@@ -3834,6 +3878,7 @@ async function generateAdGen() {
   const message = document.getElementById('ac-message').value.trim();
   const cta     = document.getElementById('ac-cta').value.trim();
   const tone    = document.getElementById('ac-tone').value;
+  const reference = document.getElementById('ac-reference').value.trim();
   const errEl   = document.getElementById('adcopy-error');
   errEl.style.display = 'none';
 
@@ -3848,19 +3893,29 @@ async function generateAdGen() {
   document.getElementById('adcopy-form-section').style.display = 'none';
   document.getElementById('adcopy-loading').style.display = 'block';
 
-  const formatList = _adgenFormats.map(id => ADGEN_FORMATS[id].label).join(', ');
   const formatEntries = _adgenFormats.map(function(id){
-    return '"' + id + '": { "headline": "Kort slagkraftig rubrik (max 6 ord)", "subline": "Kompletterande mening (max 12 ord)", "cta": "' + cta + '" }';
+    const f = ADGEN_FORMATS[id];
+    const shape = f.h > f.w * 1.3 ? 'stående helskärm' : (f.w > f.h * 2.5 ? 'liggande smal banner' : (f.w > f.h ? 'liggande' : 'kvadratisk/stående'));
+    return '"' + id + '": { "headline": "...", "subline": "...", "cta": "..." }  // ' + f.label + ' (' + f.w + '×' + f.h + ', ' + shape + ')';
   }).join(',\n  ');
 
-  const prompt = 'Du är en expert på digital annonsering. Generera annonstext för följande kampanj.\n\n' +
+  const prompt = 'Du är en senior copywriter specialiserad på digital annonsering med bevisat höga konverteringsgrader. Du skriver annonstext som fångar uppmärksamhet på under en sekund och driver till handling.\n\n' +
+    'PRINCIPER FÖR EN STARK ANNONS:\n' +
+    '- En enda tydlig idé per annons. Fokusera på den viktigaste nyttan för kunden, inte en lista med funktioner.\n' +
+    '- Led med värdet för mottagaren ("vad får jag ut av det?"), inte med företagets perspektiv.\n' +
+    '- Rubriken ska vara konkret och specifik, inte vag. Undvik tomma superlativ som "bäst" och "marknadsledande" om de inte styrks.\n' +
+    '- Skapa en tydlig anledning att agera nu. CTA ska vara handlingsdriven och friktionsfri.\n' +
+    '- Anpassa längd och ton efter format: i smala banners (t.ex. 728×90, 320×50) måste rubriken vara mycket kort (3-5 ord) och sublinen minimal eller tom. I stora stående format (Stories 1080×1920) finns plats för mer.\n' +
+    '- Språket ska vara på svenska, naturligt och trovärdigt – aldrig som översatt reklamsvenska.\n\n' +
+    'KAMPANJINFORMATION:\n' +
     'Företag: ' + company + '\n' +
     'Produkt/Kampanj: ' + product + '\n' +
-    'Budskap: ' + message + '\n' +
-    'Call to action: ' + cta + '\n' +
+    'Huvudbudskap: ' + message + '\n' +
+    'Önskad call to action: ' + cta + '\n' +
     (tone ? 'Ton: ' + tone + '\n' : '') +
-    'Format: ' + formatList + '\n\n' +
-    'Returnera ENBART ett JSON-objekt med ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
+    (reference ? '\nREFERENS / STILRIKTNING (efterlikna tonen och känslan i detta, men skriv originaltext – kopiera inte ordagrant):\n"' + reference + '"\n' : '') +
+    '\nSkriv anpassad copy för varje format nedan. Varje format har olika dimensioner och proportioner – anpassa rubrikens och sublinens längd därefter. CTA kan varieras något men ska ligga nära den önskade.\n\n' +
+    'Returnera ENBART ett giltigt JSON-objekt (inga kommentarer i själva svaret) med exakt ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
 
   try {
     const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'ad-copy');
@@ -3987,6 +4042,21 @@ function drawAd(formatId, fmt, copy) {
   roundRect(ctx, padding, ctaY, ctaW, ctaH, ctaH * 0.2);
   ctx.fillStyle = '#0a0a0a'; ctx.textBaseline = 'middle';
   ctx.fillText(ctaText, padding + ctaSz * 0.8, ctaY + ctaH / 2);
+
+  if (_adgenLogo) {
+    ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 6;
+    const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
+    const maxLogoW = W * 0.22;
+    const maxLogoH = H * 0.14;
+    const lr = Math.min(maxLogoW / _adgenLogo.width, maxLogoH / _adgenLogo.height);
+    const lw = _adgenLogo.width * lr, lh = _adgenLogo.height * lr;
+    const m = Math.round(W * 0.04);
+    let lx = m, ly = m;
+    if (pos.indexOf('right') > -1) lx = W - lw - m;
+    if (pos.indexOf('bottom') > -1) ly = H - lh - m;
+    ctx.drawImage(_adgenLogo, lx, ly, lw, lh);
+    ctx.shadowBlur = 0;
+  }
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -4034,13 +4104,19 @@ function adgenDownload(formatId) {
 }
 
 function adgenReset() {
-  _adgenImage = null; _adgenFormats = []; _adgenCopyData = null;
+  _adgenImage = null; _adgenImageDataUrl = null; _adgenLogo = null; _adgenLogoDataUrl = null; _adgenFormats = []; _adgenCopyData = null;
   const prev = document.getElementById('adgen-preview');
   if (prev) { prev.style.display='none'; prev.src=''; }
+  const logoPrev = document.getElementById('adgen-logo-preview');
+  if (logoPrev) { logoPrev.style.display='none'; logoPrev.src=''; }
+  const logoPosField = document.getElementById('adgen-logo-pos-field');
+  if (logoPosField) logoPosField.style.display='none';
+  const logoZone = document.getElementById('adgen-logo-zone');
+  if (logoZone) logoZone.style.borderColor = '';
   const zone = document.getElementById('adgen-upload-zone');
   if (zone) zone.style.borderColor = '';
   document.querySelectorAll('.adgen-fmt').forEach(function(el){ el.classList.remove('sel'); });
-  ['ac-company','ac-product','ac-message','ac-cta'].forEach(function(id){
+  ['ac-company','ac-product','ac-message','ac-cta','ac-reference'].forEach(function(id){
     const el = document.getElementById(id); if (el) el.value='';
   });
   const tone = document.getElementById('ac-tone'); if (tone) tone.value='';
