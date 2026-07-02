@@ -1571,12 +1571,15 @@ body.brief-mode{background:#FBFAF7}
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">E-post</label>
         <input id="auth-email" type="email" autocomplete="email" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="namn@foretag.se">
       </div>
-      <div style="margin-bottom:1.5rem">
+      <div id="auth-password-row" style="margin-bottom:0.75rem">
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Lösenord</label>
         <input id="auth-password" type="password" autocomplete="current-password" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Minst 6 tecken">
       </div>
+      <div id="auth-forgot-row" style="text-align:right;margin-bottom:1.25rem">
+        <button onclick="authGoReset()" id="auth-forgot-btn" style="background:none;border:none;color:#8a7d6d;font-size:12px;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline">Glömt lösenord?</button>
+      </div>
       <button id="auth-submit" onclick="authSubmit()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:1rem">Logga in</button>
-      <div style="text-align:center;font-size:13px;color:#8a7d6d">
+      <div id="auth-toggle-row" style="text-align:center;font-size:13px;color:#8a7d6d">
         <span id="auth-toggle-text">Har du inget konto?</span>
         <button onclick="authToggleMode()" style="background:none;border:none;color:#C9A84C;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px;padding:0" id="auth-toggle-btn">Skapa konto</button>
       </div>
@@ -3295,6 +3298,7 @@ function goToTools(){
 
 /* ── Auth ──────────────────────────────────────────────────────────────── */
 let _authMode = 'login';
+let _recoveryMode = false; // true medan användaren sätter nytt lösenord via mejllänk
 
 function goToAuth(){
   hideAll();
@@ -3305,18 +3309,61 @@ function goToAuth(){
 }
 
 function authRenderMode(){
-  const login = _authMode === 'login';
-  document.getElementById('auth-title').textContent = login ? 'Logga in' : 'Skapa konto';
-  document.getElementById('auth-sub').textContent = login ? 'Välkommen tillbaka till Mava' : 'Kom igång med Mava';
-  document.getElementById('auth-submit').textContent = login ? 'Logga in' : 'Skapa konto';
-  document.getElementById('auth-toggle-text').textContent = login ? 'Har du inget konto?' : 'Har du redan ett konto?';
-  document.getElementById('auth-toggle-btn').textContent = login ? 'Skapa konto' : 'Logga in';
-  document.getElementById('auth-password').setAttribute('autocomplete', login ? 'current-password' : 'new-password');
+  const mode = _authMode; // 'login' | 'signup' | 'reset' | 'newpassword'
+  const passwordRow = document.getElementById('auth-password-row');
+  const forgotRow   = document.getElementById('auth-forgot-row');
+  const toggleRow   = document.getElementById('auth-toggle-row');
+  const emailRow    = document.getElementById('auth-email').parentElement;
+
+  // Standardläge: visa allt, dölj sen det som inte hör hemma i varje läge
+  emailRow.style.display = '';
+  passwordRow.style.display = '';
+  forgotRow.style.display = 'none';
+  toggleRow.style.display = '';
+
+  if (mode === 'login') {
+    document.getElementById('auth-title').textContent = 'Logga in';
+    document.getElementById('auth-sub').textContent = 'Välkommen tillbaka till Mava';
+    document.getElementById('auth-submit').textContent = 'Logga in';
+    document.getElementById('auth-toggle-text').textContent = 'Har du inget konto?';
+    document.getElementById('auth-toggle-btn').textContent = 'Skapa konto';
+    document.getElementById('auth-password').setAttribute('autocomplete', 'current-password');
+    forgotRow.style.display = '';
+  } else if (mode === 'signup') {
+    document.getElementById('auth-title').textContent = 'Skapa konto';
+    document.getElementById('auth-sub').textContent = 'Kom igång med Mava';
+    document.getElementById('auth-submit').textContent = 'Skapa konto';
+    document.getElementById('auth-toggle-text').textContent = 'Har du redan ett konto?';
+    document.getElementById('auth-toggle-btn').textContent = 'Logga in';
+    document.getElementById('auth-password').setAttribute('autocomplete', 'new-password');
+  } else if (mode === 'reset') {
+    document.getElementById('auth-title').textContent = 'Återställ lösenord';
+    document.getElementById('auth-sub').textContent = 'Fyll i din e-post så skickar vi en återställningslänk';
+    document.getElementById('auth-submit').textContent = 'Skicka länk';
+    document.getElementById('auth-toggle-text').textContent = 'Kom du på det?';
+    document.getElementById('auth-toggle-btn').textContent = 'Tillbaka till inloggning';
+    passwordRow.style.display = 'none'; // inget lösenord behövs för att begära länk
+  } else if (mode === 'newpassword') {
+    document.getElementById('auth-title').textContent = 'Välj nytt lösenord';
+    document.getElementById('auth-sub').textContent = 'Skriv in ditt nya lösenord nedan';
+    document.getElementById('auth-submit').textContent = 'Spara nytt lösenord';
+    document.getElementById('auth-password').setAttribute('autocomplete', 'new-password');
+    document.getElementById('auth-password').value = '';
+    emailRow.style.display = 'none';   // vi vet redan vem det är, via länken
+    toggleRow.style.display = 'none';  // ingen växling här
+  }
   authClearMsg();
 }
 
 function authToggleMode(){
-  _authMode = _authMode === 'login' ? 'signup' : 'login';
+  // Växlar mellan login och signup. Från reset går knappen tillbaka till login.
+  if (_authMode === 'reset') _authMode = 'login';
+  else _authMode = _authMode === 'login' ? 'signup' : 'login';
+  authRenderMode();
+}
+
+function authGoReset(){
+  _authMode = 'reset';
   authRenderMode();
 }
 
@@ -3345,9 +3392,57 @@ async function authSubmit(){
   const password = document.getElementById('auth-password').value;
   const btn = document.getElementById('auth-submit');
 
+  if (!sb()) { authShowError('Kunde inte ansluta till servern. Ladda om sidan och försök igen.'); return; }
+
+  // ── Läge: begär återställningslänk (bara e-post krävs) ──
+  if (_authMode === 'reset') {
+    if (!email) { authShowError('Fyll i din e-postadress.'); return; }
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Skickar...';
+    try {
+      // redirectTo måste peka på sajten och matcha en godkänd URL i Supabase-panelen.
+      const { error } = await sb().auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) throw error;
+      // Vi bekräftar alltid neutralt (avslöjar inte om e-posten finns – standard säkerhetspraxis).
+      authShowSuccess('Om det finns ett konto med den adressen har vi skickat en återställningslänk. Kolla din inkorg.');
+    } catch (e) {
+      authShowError(e.message || 'Kunde inte skicka länken. Försök igen.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+    return;
+  }
+
+  // ── Läge: sätt nytt lösenord (bara lösenord krävs; användaren är redan i recovery-session) ──
+  if (_authMode === 'newpassword') {
+    if (!password || password.length < 6) { authShowError('Lösenordet måste vara minst 6 tecken.'); return; }
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Sparar...';
+    try {
+      const { error } = await sb().auth.updateUser({ password });
+      if (error) throw error;
+      _recoveryMode = false;
+      authShowSuccess('Lösenordet är uppdaterat. Du är nu inloggad.');
+      // Rensa recovery-token ur URL:en så en omladdning inte fastnar i detta läge.
+      history.replaceState(null, '', window.location.pathname);
+      setTimeout(function(){ onAuthChanged(); }, 900);
+    } catch (e) {
+      authShowError(e.message || 'Kunde inte spara lösenordet. Begär en ny länk och försök igen.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+    return;
+  }
+
+  // ── Läge: login / signup ──
   if (!email) { authShowError('Fyll i din e-postadress.'); return; }
   if (!password || password.length < 6) { authShowError('Lösenordet måste vara minst 6 tecken.'); return; }
-  if (!sb()) { authShowError('Kunde inte ansluta till servern. Ladda om sidan och försök igen.'); return; }
 
   btn.disabled = true;
   const originalText = btn.textContent;
@@ -3391,6 +3486,7 @@ async function authLogout(){
 }
 
 function onAuthChanged(){
+  if (_recoveryMode) return; // användaren håller på att sätta nytt lösenord – släpp inte in dem ännu
   const authed = !!_currentUser;
   document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = authed ? '' : 'none'; });
   document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = authed ? 'none' : ''; });
@@ -3411,7 +3507,21 @@ async function authInit(){
   _currentUser = (data && data.session) ? data.session.user : null;
   onAuthChanged();
   sb().auth.onAuthStateChange(function(_event, session){
+    // När användaren klickar länken i återställningsmejlet skickar Supabase
+    // 'PASSWORD_RECOVERY'. Då visar vi "sätt nytt lösenord"-vyn i stället för
+    // att bara släppa in dem – annars har de ingen chans att byta lösenordet.
+    if (_event === 'PASSWORD_RECOVERY') {
+      _recoveryMode = true;
+      _currentUser = session ? session.user : null;
+      hideAll();
+      document.getElementById('auth-page').style.display = 'block';
+      _authMode = 'newpassword';
+      authRenderMode();
+      window.scrollTo(0,0);
+      return;
+    }
     _currentUser = session ? session.user : null;
+    if (_recoveryMode) return; // stör inte "sätt nytt lösenord"-vyn
     document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = _currentUser ? '' : 'none'; });
     document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = _currentUser ? 'none' : ''; });
     updateSidePanel();
