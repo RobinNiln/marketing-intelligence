@@ -1002,7 +1002,7 @@ body.newsroom-mode{background:#FBFAF7}
 .newsroom-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.5rem}
 .newsroom-result-headline{font-size:24px;font-weight:600;color:#1a1a1a;line-height:1.3;margin-bottom:1rem;letter-spacing:-0.02em}
 .newsroom-result-ingress{font-size:15px;color:#4A3F35;line-height:1.75;font-style:italic;border-left:3px solid #D4A857;padding-left:1rem;margin-bottom:1.5rem}
-.newsroom-result-body{font-size:14px;color:#2a2520;line-height:1.9;white-space:pre-line}
+.newsroom-result-body{font-size:14px;color:#2a2520;line-height:1.9}
 .newsroom-result-boilerplate{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EEE8;font-size:13px;color:#a8a39a;line-height:1.7;font-style:italic}
 .newsroom-result-quote{background:#FDFCFA;border-left:3px solid #D4A857;padding:1rem 1.25rem;border-radius:0 14px 14px 0;margin:1.25rem 0;font-size:14px;color:#2a2520;line-height:1.7;font-style:italic}
 .newsroom-contact-block{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#5a5650;line-height:1.8}
@@ -1097,15 +1097,15 @@ body.brief-mode{background:#FBFAF7}
 .brief-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:8px}
 .brief-section-content{font-size:14px;color:#2a2520;line-height:1.8}
-.brief-section-content p{margin:0 0 0.9em}
-.brief-section-content p:last-child{margin-bottom:0}
-.brief-section-content strong{font-weight:700;color:#1a1a1a}
-.brief-section-content .md-sub{font-size:13px;font-weight:700;color:#6b5d47;margin:1.2em 0 0.5em;letter-spacing:-0.01em}
-.brief-section-content .md-sub:first-child{margin-top:0}
-.brief-section-content .md-list{margin:0.4em 0 0.9em;padding-left:1.3em}
-.brief-section-content .md-list li{margin-bottom:0.45em;padding-left:0.2em}
-.brief-section-content .md-list li::marker{color:#C9A84C}
-.brief-section-content .md-list li:last-child{margin-bottom:0}
+.brief-section-content p,.mp-md p,.newsroom-result-body p,.newsroom-result-boilerplate p{margin:0 0 0.9em}
+.brief-section-content p:last-child,.mp-md p:last-child,.newsroom-result-body p:last-child,.newsroom-result-boilerplate p:last-child{margin-bottom:0}
+.brief-section-content strong,.mp-md strong,.newsroom-result-body strong{font-weight:700;color:#1a1a1a}
+.brief-section-content .md-sub,.mp-md .md-sub,.newsroom-result-body .md-sub{font-size:13px;font-weight:700;color:#6b5d47;margin:1.2em 0 0.5em;letter-spacing:-0.01em}
+.brief-section-content .md-sub:first-child,.mp-md .md-sub:first-child,.newsroom-result-body .md-sub:first-child{margin-top:0}
+.brief-section-content .md-list,.mp-md .md-list,.newsroom-result-body .md-list{margin:0.4em 0 0.9em;padding-left:1.3em}
+.brief-section-content .md-list li,.mp-md .md-list li,.newsroom-result-body .md-list li{margin-bottom:0.45em;padding-left:0.2em}
+.brief-section-content .md-list li::marker,.mp-md .md-list li::marker,.newsroom-result-body .md-list li::marker{color:#C9A84C}
+.brief-section-content .md-list li:last-child,.mp-md .md-list li:last-child,.newsroom-result-body .md-list li:last-child{margin-bottom:0}
 .brief-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:4px}
 .brief-kpi{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:12px 16px}
 .brief-kpi-name{font-size:12px;font-weight:700;color:#2a2520;margin-bottom:2px}
@@ -2815,9 +2815,9 @@ Budget: ${budget}
 
 Svara med exakt detta JSON-format:
 {
-  "summary": "2–3 meningar som sammanfattar de viktigaste affärs- och marknadsproblemen samt den övergripande strategin. Skriv begripligt för en person utan marknadsföringsbakgrund.",
+  "summary": "2–3 korta stycken som sammanfattar de viktigaste affärs- och marknadsproblemen samt den övergripande strategin. Separera stycken med tom rad (\\n\\n). Skriv begripligt för en person utan marknadsföringsbakgrund.",
   "prioritized_channels": [{"name":"Kanalnamn","priority":"Hög|Medium|Lägre","reason":"En mening om varför just denna kanal och hur den hänger ihop med övriga insatser, kalibrerad mot angiven budget"}],
-  "recommendations": [{"title":"Kort rubrik","description":"Konkret, specifikt råd kopplat till budskap, kanal och exekvering (2–4 meningar). Förklara VARFÖR, inte bara VAD."}],
+  "recommendations": [{"title":"Kort rubrik","description":"Konkret, specifikt råd kopplat till budskap, kanal och exekvering (2–4 meningar). Förklara VARFÖR, inte bara VAD. Om rådet har flera delsteg, använd en punktlista där varje rad börjar med '- '."}],
   "quick_wins": ["Åtgärd 1 – specifik för detta företag","Åtgärd 2 – specifik för detta företag","Åtgärd 3 – specifik för detta företag"],
   "next_step": "En konkret nästa åtgärd de kan ta denna vecka",
   "agency_brief": "Ett kort stycke (3–5 meningar) skrivet som om det skickas direkt till en byrå som ska utföra arbetet – sammanfatta vad som ska göras, för vem, med vilken budget och vilket mål. Skriv professionellt och redo att klistras in i ett mejl."
@@ -2859,10 +2859,10 @@ function pc(p){return p==='Hög'?'ph':p==='Medium'?'pm':'pl';}
 function renderResult(r){
   const ic=['🎯','📣','✍️','🔗','📱','📈'];
   const ch=(r.prioritized_channels||[]).map(c=>`<div class="chcard"><div class="chn">${c.name}</div><div class="prio ${pc(c.priority)}">${c.priority}</div><div style="font-size:12px;color:#5F5E5A;margin-top:6px;line-height:1.5">${c.reason}</div></div>`).join('');
-  const re=(r.recommendations||[]).map((rec,i)=>`<div style="padding:1rem 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ic[i%ic.length]}</span><span style="color:#2C2520">${rec.title}</span></div><div style="font-size:14px;line-height:1.7;color:#4A3F35">${rec.description}</div></div>`).join('');
+  const re=(r.recommendations||[]).map((rec,i)=>`<div style="padding:1rem 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ic[i%ic.length]}</span><span style="color:#2C2520">${rec.title}</span></div><div class="mp-md" style="font-size:14px;line-height:1.7;color:#4A3F35">${mdToHtml(rec.description)}</div></div>`).join('');
   const qw=(r.quick_wins||[]).map(w=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="width:20px;height:20px;background:var(--t50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:14px;line-height:1.6;color:#2C2520">${w}</span></div>`).join('');
   document.getElementById('result-content').innerHTML=`
-    <div class="rc"><div class="rh"><div class="ri te">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #C9A84C;color:#2C2520">${r.summary}</div></div>
+    <div class="rc"><div class="rh"><div class="ri te">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div class="mp-md" style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #C9A84C;color:#2C2520">${mdToHtml(r.summary)}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div><div class="chgrid">${ch}</div></div>
     <div class="rc"><div class="rh"><div class="ri am">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div><div>${re}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div><div>${qw}</div></div>
@@ -4520,7 +4520,7 @@ function renderNewsroomResult(result, typeLabel) {
   document.getElementById('nr-result-type').textContent = typeLabel || '';
   document.getElementById('nr-result-headline').textContent = result.headline || '';
   document.getElementById('nr-result-ingress').textContent = result.ingress || '';
-  document.getElementById('nr-result-body').textContent = result.body || '';
+  document.getElementById('nr-result-body').innerHTML = mdToHtml(result.body);
 
   const quoteEl = document.getElementById('nr-result-quote');
   if (result.quote && result.quote.trim()) {
@@ -4539,7 +4539,7 @@ function renderNewsroomResult(result, typeLabel) {
     contactEl.style.display = 'none';
   }
 
-  document.getElementById('nr-result-boilerplate').textContent = result.boilerplate || '';
+  document.getElementById('nr-result-boilerplate').innerHTML = mdToHtml(result.boilerplate);
   renderNewsroomExtras(result);
   window._newsroomResult = result;
 }
