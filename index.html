@@ -1427,37 +1427,83 @@ body.brief-mode{background:#FBFAF7}
 </div>
 
 <div id="plan-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <div style="max-width:640px;margin:0 auto;padding:3rem 1.5rem">
+  <div style="max-width:680px;margin:0 auto;padding:3rem 1.5rem">
     <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Min plan</h1>
     <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Din nuvarande prenumeration och vad som ingår.</p>
+
+    <!-- Nuvarande plan: Mellan -->
     <div style="background:linear-gradient(135deg,#2C2520,#453a30);border-radius:18px;padding:2rem;color:#fff;margin-bottom:1.5rem">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
         <div>
           <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#C9A84C;margin-bottom:6px">Nuvarande plan</div>
-          <div style="font-size:26px;font-weight:700">Premium</div>
+          <div style="font-size:26px;font-weight:700">Mellan</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:26px;font-weight:700">4 000 kr<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,0.6)">/mån</span></div>
+          <div style="font-size:26px;font-weight:700">2 500 kr<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,0.6)">/mån</span></div>
           <div style="font-size:12px;color:rgba(255,255,255,0.6)">exkl. moms</div>
         </div>
       </div>
       <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.15)">
         <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:8px">Genereringar denna månad</div>
-        <div style="background:rgba(255,255,255,0.15);border-radius:100px;height:8px;overflow:hidden"><div style="background:#C9A84C;height:100%;width:31%"></div></div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px">47 av 150 använda</div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:100px;height:8px;overflow:hidden"><div style="background:#C9A84C;height:100%;width:78%"></div></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px">62 av 80 använda</div>
       </div>
     </div>
-    <div style="background:#fff;border:1px solid #e8e4db;border-radius:18px;padding:1.75rem;margin-bottom:1.5rem">
-      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:1rem">Det här ingår</div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#1D9E75">✓</span> Alla fem verktyg utan begränsning per verktyg</div>
-        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#1D9E75">✓</span> 150 genereringar per månad</div>
-        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#1D9E75">✓</span> Obegränsat bibliotek för sparade produktioner</div>
-        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#1D9E75">✓</span> Varumärkesprofil med auto-ifyllning</div>
-        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#1D9E75">✓</span> Prioriterad support</div>
+
+    <!-- Uppgraderings-lockelse mot Premium -->
+    <div style="background:#fff;border:2px solid #C9A84C;border-radius:18px;padding:1.75rem;margin-bottom:2rem;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;right:0;background:#C9A84C;color:#2C2520;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 14px;border-bottom-left-radius:12px">UPPGRADERA</div>
+      <div style="font-size:18px;font-weight:700;color:#2C2520;margin-bottom:6px">Du har Mellan idag – det här får du med Premium</div>
+      <p style="font-size:13px;color:#8a7d6d;margin:0 0 1.25rem;line-height:1.5">Du använde 62 av 80 genereringar den här månaden. Med Premium får du nästan dubbelt så många – och mer därtill.</p>
+      <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:1.5rem">
+        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#C9A84C;font-weight:700">+</span> 150 genereringar per månad <span style="color:#9A8570">(mot 80 idag)</span></div>
+        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#C9A84C;font-weight:700">+</span> Prioriterad support med snabbare svar</div>
+        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#C9A84C;font-weight:700">+</span> Fler annonsstilar och mallar i AdStudio</div>
+        <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#2a2520"><span style="color:#C9A84C;font-weight:700">+</span> Tidig tillgång till nya verktyg</div>
+      </div>
+      <button onclick="goToBilling()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px">Uppgradera till Premium – 4 000 kr/mån <span style="font-size:16px">→</span></button>
+    </div>
+
+    <!-- Alla tre nivåer -->
+    <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:1rem">Alla planer</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.5rem">
+      <!-- Bas -->
+      <div style="background:#fff;border:1px solid #e8e4db;border-radius:14px;padding:1.25rem 1rem">
+        <div style="font-size:15px;font-weight:700;color:#2C2520;margin-bottom:3px">Bas</div>
+        <div style="font-size:20px;font-weight:700;color:#2C2520;margin-bottom:2px">1 200 kr</div>
+        <div style="font-size:11px;color:#9A8570;margin-bottom:14px">per månad</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#5F5E5A">
+          <div>30 genereringar/mån</div>
+          <div>Alla fem verktyg</div>
+          <div>Bibliotek</div>
+        </div>
+      </div>
+      <!-- Mellan (nuvarande) -->
+      <div style="background:#2C2520;border:1px solid #2C2520;border-radius:14px;padding:1.25rem 1rem;color:#fff;position:relative">
+        <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#C9A84C;color:#2C2520;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap">DIN PLAN</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:3px">Mellan</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:2px">2 500 kr</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:14px">per månad</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:rgba(255,255,255,0.85)">
+          <div>80 genereringar/mån</div>
+          <div>Varumärkesprofil</div>
+          <div>Auto-ifyllning</div>
+        </div>
+      </div>
+      <!-- Premium -->
+      <div style="background:#fff;border:2px solid #C9A84C;border-radius:14px;padding:1.25rem 1rem">
+        <div style="font-size:15px;font-weight:700;color:#2C2520;margin-bottom:3px">Premium</div>
+        <div style="font-size:20px;font-weight:700;color:#2C2520;margin-bottom:2px">4 000 kr</div>
+        <div style="font-size:11px;color:#9A8570;margin-bottom:14px">per månad</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#5F5E5A">
+          <div>150 genereringar/mån</div>
+          <div>Prioriterad support</div>
+          <div>Tidig tillgång</div>
+        </div>
       </div>
     </div>
-    <div style="background:#FBF6E9;border:1px solid #EAD9A8;border-radius:12px;padding:14px 18px;font-size:12px;color:#9c7d2e;text-align:center">Demovy – siffror och plan är exempel. Riktig prenumeration och betalning kopplas in senare.</div>
+
+    <div style="background:#FBF6E9;border:1px solid #EAD9A8;border-radius:12px;padding:14px 18px;font-size:12px;color:#9c7d2e;text-align:center">Demovy – siffror, planer och priser är exempel. Riktig prenumeration och betalning kopplas in senare.</div>
   </div>
 </div>
 
