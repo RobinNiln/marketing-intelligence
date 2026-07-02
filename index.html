@@ -1632,6 +1632,10 @@ body.brief-mode{background:#FBFAF7}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
           Skicka via e-post
         </button>
+        <button class="native-action-btn auth-when-in" style="display:none" id="native-save-btn" onclick="nativeSave()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
+          Spara i bibliotek
+        </button>
       </div>
 
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
@@ -1792,6 +1796,10 @@ body.brief-mode{background:#FBFAF7}
         <button class="newsroom-action-btn" onclick="newsroomEmail()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 3l6 5 6-5"/></svg>
           Skicka via e-post
+        </button>
+        <button class="newsroom-action-btn auth-when-in" style="display:none" id="newsroom-save-btn" onclick="newsroomSave()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
+          Spara i bibliotek
         </button>
       </div>
 
@@ -2453,6 +2461,10 @@ body.brief-mode{background:#FBFAF7}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="12" height="8" rx="1"/><path d="M1 3l6 5 6-5"/></svg>
             Mejla till mig
           </button>
+          <button class="action-bar-btn auth-when-in" style="display:none" id="market-save-btn" onclick="marketSave()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
+            Spara i bibliotek
+          </button>
         </div>
       </div>
     </div>
@@ -2599,6 +2611,7 @@ function showApp(){
   hideAll();
   document.getElementById('app').style.display='block';
   updateSidePanel('app');
+  applyBrandProfileToMarket();
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
   document.body.classList.add('app-mode');
@@ -2728,6 +2741,8 @@ async function analyzeMarketing(){
     const cleaned=raw.replace(/```json|```/g,'').trim();
     const result=JSON.parse(cleaned);
     localStorage.setItem(STORAGE_KEY,JSON.stringify(result));
+    window._marketResult = result;
+    window._marketCompany = (document.getElementById('company') && document.getElementById('company').value) || '';
     document.getElementById('loading-state').style.display='none';
     renderResult(result);
   }catch(err){
@@ -2960,6 +2975,7 @@ function goToNative(){
   hideAll();
   document.getElementById('native-page').style.display='block';
   updateSidePanel('native-page');
+  applyBrandProfileToNative();
   document.body.classList.add('native-mode');
   window.scrollTo(0,0);
   renderNativeMediaGrid();
@@ -3106,16 +3122,12 @@ Total kampanjbudget: ${budget.toLocaleString('sv-SE')} kr`;
     const clean = raw.replace(/```json|```/g,'').trim();
     const article = JSON.parse(clean);
 
-    document.getElementById('native-result-headline').textContent = article.headline||'';
-    document.getElementById('native-result-ingress').textContent  = article.ingress||'';
-    document.getElementById('native-result-body').textContent     = article.body||'';
+    window._nativeCompany = company;
+    renderNativeArticle(article);
 
     document.getElementById('native-loading').style.display='none';
     document.getElementById('native-result').style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
-
-    window._nativeArticle = article;
-    window._nativeCompany = company;
 
   } catch(e){
     document.getElementById('native-loading').style.display='none';
@@ -3123,6 +3135,13 @@ Total kampanjbudget: ${budget.toLocaleString('sv-SE')} kr`;
     document.getElementById('native-btn').disabled=false;
     showToolError('native-error', e.message, generateNative);
   }
+}
+
+function renderNativeArticle(article, label) {
+  document.getElementById('native-result-headline').textContent = article.headline||'';
+  document.getElementById('native-result-ingress').textContent  = article.ingress||'';
+  document.getElementById('native-result-body').textContent     = article.body||'';
+  window._nativeArticle = article;
 }
 
 function nativeCopy(){
@@ -3358,6 +3377,40 @@ async function briefSave() {
   if (error) alert('Kunde inte spara: ' + (error.message || error));
 }
 
+// Generell spara-hjälpare så vi slipper upprepa samma kod för varje verktyg.
+// tool = verktygs-id, result = resultatobjektet, defaultTitle = förslag på namn, btnId = knappens id.
+async function saveToolResult(tool, result, defaultTitle, btnId) {
+  if (!result) return;
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = btnId ? document.getElementById(btnId) : null;
+  const title = prompt('Namnge och spara i biblioteket:', defaultTitle);
+  if (title === null) return;
+  if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = 'Sparar...'; }
+  const { error } = await saveProduction(tool, title.trim() || defaultTitle, result);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Sparad';
+    const orig = btn.dataset.orig || 'Spara i bibliotek';
+    setTimeout(function(){ btn.textContent = orig; }, 2000);
+  }
+  if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
+
+function marketSave() {
+  const r = window._marketResult;
+  saveToolResult('market-pulse', r, (window._marketCompany || 'Analys') + ' – Market Pulse', 'market-save-btn');
+}
+
+function newsroomSave() {
+  const r = window._newsroomResult;
+  saveToolResult('newsroom', r, (r && r.headline) || 'Pressrelease', 'newsroom-save-btn');
+}
+
+function nativeSave() {
+  const a = window._nativeArticle;
+  saveToolResult('native', a, (a && a.title) || (window._nativeCompany || 'Nativeartikel'), 'native-save-btn');
+}
+
 let _libraryItems = [];
 let _libraryFilter = 'all';
 
@@ -3426,12 +3479,34 @@ function escapeHtmlLib(s){ return String(s||'').replace(/&/g,'&amp;').replace(/<
 function libraryOpen(id) {
   const item = _libraryItems.find(function(it){ return it.id === id; });
   if (!item) return;
+  const savedLabel = 'Sparad · ' + new Date(item.created_at).toLocaleDateString('sv-SE');
+
   if (item.tool === 'brief') {
     goToBrief();
     document.getElementById('brief-form-section').style.display = 'none';
-    renderBriefResult(item.content, 'Sparad · ' + new Date(item.created_at).toLocaleDateString('sv-SE'), '');
+    renderBriefResult(item.content, savedLabel, '');
     document.getElementById('brief-result').style.display = 'block';
     window.scrollTo(0,0);
+
+  } else if (item.tool === 'market-pulse') {
+    showApp();
+    document.getElementById('form-section').style.display = 'none';
+    renderResult(item.content);
+
+  } else if (item.tool === 'newsroom') {
+    goToNewsroom();
+    document.getElementById('newsroom-form-section').style.display = 'none';
+    renderNewsroomResult(item.content, savedLabel);
+    document.getElementById('newsroom-result').style.display = 'block';
+    window.scrollTo(0,0);
+
+  } else if (item.tool === 'native') {
+    goToNative();
+    document.getElementById('native-form-section').style.display = 'none';
+    renderNativeArticle(item.content, savedLabel);
+    document.getElementById('native-result').style.display = 'block';
+    window.scrollTo(0,0);
+
   } else {
     alert('Öppning för det här verktyget är inte inkopplat än.');
   }
@@ -3650,6 +3725,37 @@ async function applyBrandProfileToBrief() {
   fillIfEmpty('br-tone', p.tone);
 }
 
+async function applyBrandProfileToMarket() {
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('company', p.company);
+  fillIfEmpty('industry', p.industry);
+}
+
+async function applyBrandProfileToNative() {
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('n-company', p.company);
+  fillIfEmpty('n-industry', p.industry);
+  fillIfEmpty('n-website', p.website);
+}
+
+async function applyBrandProfileToNewsroom() {
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('nr-company', p.company);
+  fillIfEmpty('nr-industry', p.industry);
+  // Kontaktperson: använd första nyckelpersonen om den finns
+  if (Array.isArray(p.key_people) && p.key_people[0]) {
+    const person = p.key_people[0];
+    const contactStr = person.name + (person.role ? ', ' + person.role : '') + (p.contact_email ? ', ' + p.contact_email : '');
+    fillIfEmpty('nr-contact', contactStr);
+  }
+}
+
 function goToToolLogin(dest){
   if(dest==='native') goToNative();
   else if(dest==='dist') goToDist();
@@ -3681,6 +3787,7 @@ function goToNewsroom(){
   hideAll();
   document.getElementById('newsroom-page').style.display='block';
   updateSidePanel('newsroom-page');
+  applyBrandProfileToNewsroom();
   document.body.classList.add('newsroom-mode');
   window.scrollTo(0,0);
 }
@@ -4214,34 +4321,8 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
     const clean = raw.replace(/```json|```/g, '').trim();
     const result = JSON.parse(clean);
 
-    document.getElementById('nr-result-type').textContent = _newsroomType + ' · ' + company;
-    document.getElementById('nr-result-headline').textContent = result.headline || '';
-    document.getElementById('nr-result-ingress').textContent = result.ingress || '';
-    document.getElementById('nr-result-body').textContent = result.body || '';
-
-    const quoteEl = document.getElementById('nr-result-quote');
-    if (result.quote && result.quote.trim()) {
-      quoteEl.textContent = result.quote;
-      quoteEl.style.display = 'block';
-    } else {
-      quoteEl.style.display = 'none';
-    }
-
-    const contactEl = document.getElementById('nr-result-contact');
-    const contactTextEl = document.getElementById('nr-result-contact-text');
-    if (result.contact && result.contact.trim()) {
-      contactTextEl.textContent = result.contact;
-      contactEl.style.display = 'block';
-    } else {
-      contactEl.style.display = 'none';
-    }
-
-    document.getElementById('nr-result-boilerplate').textContent = result.boilerplate || '';
-
-    renderNewsroomExtras(result);
-
-    window._newsroomResult = result;
     window._newsroomCompany = company;
+    renderNewsroomResult(result, _newsroomType + ' · ' + company);
 
     document.getElementById('newsroom-loading').style.display = 'none';
     document.getElementById('newsroom-result').style.display = 'block';
@@ -4253,6 +4334,34 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
     document.getElementById('newsroom-btn').disabled = false;
     showToolError('newsroom-error', e.message, generateNewsroom);
   }
+}
+
+function renderNewsroomResult(result, typeLabel) {
+  document.getElementById('nr-result-type').textContent = typeLabel || '';
+  document.getElementById('nr-result-headline').textContent = result.headline || '';
+  document.getElementById('nr-result-ingress').textContent = result.ingress || '';
+  document.getElementById('nr-result-body').textContent = result.body || '';
+
+  const quoteEl = document.getElementById('nr-result-quote');
+  if (result.quote && result.quote.trim()) {
+    quoteEl.textContent = result.quote;
+    quoteEl.style.display = 'block';
+  } else {
+    quoteEl.style.display = 'none';
+  }
+
+  const contactEl = document.getElementById('nr-result-contact');
+  const contactTextEl = document.getElementById('nr-result-contact-text');
+  if (result.contact && result.contact.trim()) {
+    contactTextEl.textContent = result.contact;
+    contactEl.style.display = 'block';
+  } else {
+    contactEl.style.display = 'none';
+  }
+
+  document.getElementById('nr-result-boilerplate').textContent = result.boilerplate || '';
+  renderNewsroomExtras(result);
+  window._newsroomResult = result;
 }
 
 function renderNewsroomExtras(result) {
