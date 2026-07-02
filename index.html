@@ -1968,6 +1968,22 @@ body.brief-mode{background:#FBFAF7}
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
         <div class="brief-field">
+          <label>Geografisk räckvidd <span>*</span></label>
+          <select class="brief-input" id="br-reach">
+            <option value="">Välj räckvidd...</option>
+            <option value="Lokal">Lokal – en ort eller kommun</option>
+            <option value="Regional">Regional – ett län eller område</option>
+            <option value="Nationell">Nationell – hela Sverige</option>
+          </select>
+        </div>
+        <div class="brief-field">
+          <label>Ort / region <span>valfritt</span></label>
+          <input class="brief-input" id="br-region" type="text" placeholder="Ex. Norrköping, Östergötland">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="brief-field">
           <label>Total budget <span>*</span></label>
           <div style="display:flex;align-items:center;gap:8px">
             <input class="brief-input" id="br-budget" type="number" placeholder="Ex. 150000" min="0" step="5000" style="max-width:180px">
@@ -4626,6 +4642,8 @@ async function generateBrief() {
   const industry  = brv('br-industry');
   const message   = brv('br-message');
   const audience  = brv('br-audience');
+  const reach     = brv('br-reach');
+  const region    = brv('br-region');
   const budget    = brv('br-budget');
   const period    = brv('br-period');
   const tone      = brv('br-tone');
@@ -4639,6 +4657,7 @@ async function generateBrief() {
   if (!industry) { showToolError('brief-error', 'Fyll i bransch.'); return; }
   if (!message)  { showToolError('brief-error', 'Beskriv vad kampanjen ska kommunicera.'); return; }
   if (!audience) { showToolError('brief-error', 'Beskriv målgruppen.'); return; }
+  if (!reach)    { showToolError('brief-error', 'Välj geografisk räckvidd.'); return; }
   if (!budget)   { showToolError('brief-error', 'Ange total budget.'); return; }
   if (!period)   { showToolError('brief-error', 'Ange kampanjperiod.'); return; }
   if (_briefGoals.length === 0) { showToolError('brief-error', 'Välj minst ett kampanjmål.'); return; }
@@ -4657,6 +4676,7 @@ Skriv en komplett och professionell kampanjbrief på svenska baserad på informa
 - Varje sektion ska ge faktisk vägledning, inte allmänna floskler. Var specifik och handlingsorienterad.
 - Anpassa alla råd till den angivna budgeten. Föreslå aldrig kanaler eller insatser som är orealistiska för budgetens storlek (t.ex. ingen TV- eller storskalig utomhusreklam för en liten budget). Prioritera kanaler med låg tröskel, god mätbarhet och hög kostnadseffektivitet för mindre bolag.
 - Motivera varje kanal med var målgruppen faktiskt befinner sig och varför kanalen passar målet.
+- Väg in den geografiska räckvidden i kanalvalet. Vid LOKAL eller REGIONAL räckvidd: bedöm om lokalmedia och regional press (t.ex. lokaltidningar, regionala nyhetssajter, lokalradio) är kostnadseffektiva sätt att nå målgruppen, och prioritera geografiskt riktade kanaler (t.ex. geotargetad digital annonsering). Vid NATIONELL räckvidd: fokusera på skalbara rikstäckande kanaler och undvik att lägga budget på enskild lokalmedia om det inte finns särskilda skäl. Om en ort/region angetts, referera gärna konkret till den.
 - All budgetfördelning ska anges i BÅDE procent OCH kronor, och kronbeloppen ska summera till den totala budgeten.
 - KPI:er ska vara konkreta och mätbara med faktiska måltal (t.ex. "minst 150 leads till en kostnad under 80 kr/lead"), inte vaga ("öka antalet leads").
 - Tidslinjens faser ska ligga inom den angivna kampanjperioden.
@@ -4667,6 +4687,7 @@ Bransch: ${industry}
 Kampanjmål: ${goalsStr}
 Kommunikation: ${message}
 Målgrupp: ${audience}
+Geografisk räckvidd: ${reach}${region ? ` (${region})` : ''}
 Total budget: ${budget} kr exkl. moms
 Kampanjperiod: ${period}
 ${tone ? `Önskad ton: ${tone}` : ''}
