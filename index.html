@@ -708,6 +708,11 @@ body.native-mode{background:#FBFAF7}
 .native-budget-wrap .native-input{max-width:200px}
 .native-budget-note{font-size:12px;color:#a8a39a;margin-top:6px}
 .native-analyze-btn{width:100%;padding:16px;background:#2a2520;color:#fff;border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.01em;transition:background 0.15s;margin-top:1.5rem}
+.native-type-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.native-type-btn{padding:9px 16px;border:1.5px solid #F0EEE8;background:#fff;border-radius:100px;font-size:13px;font-weight:500;color:#5a5650;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.native-type-btn:hover{border-color:#E8C878}
+.native-type-btn.on{background:#2a2520;color:#fff;border-color:#2a2520}
+.native-type-hint{font-size:12.5px;color:#9A8570;line-height:1.55;margin-top:10px;min-height:1.2em}
 .native-analyze-btn:hover{background:#433a30}
 .native-analyze-btn:disabled{opacity:0.4;cursor:not-allowed}
 .native-loading{text-align:center;padding:3rem 1rem;display:none}
@@ -1638,6 +1643,20 @@ body.brief-mode{background:#FBFAF7}
       </div>
 
       <div class="native-section-title">Om kampanjen</div>
+
+      <div class="native-field">
+        <label>Typ av artikel <span>*</span></label>
+        <div class="native-type-grid" id="native-type-grid">
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Kundcase')">Kundcase</button>
+          <button type="button" class="native-type-btn on" onclick="nativeSelectType(this,'Guide')">Guide</button>
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Expertartikel')">Expertartikel</button>
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Erbjudande')">Erbjudande</button>
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Event')">Event</button>
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Varumärkesberättelse')">Varumärkesberättelse</button>
+          <button type="button" class="native-type-btn" onclick="nativeSelectType(this,'Lokal artikel')">Lokal artikel</button>
+        </div>
+        <div class="native-type-hint" id="native-type-hint">Praktiska råd och konkreta steg. Företaget är en trovärdig hjälpare, inte hela berättelsen.</div>
+      </div>
 
       <div class="native-field">
         <label>Beskriv kampanjen <span>*</span></label>
@@ -3156,6 +3175,26 @@ function renderBudgetDist(dist, totalBudget){
   `).join('');
 }
 
+/* Artikeltyp för Native. Styr vinkel och stil i prompten.
+   Hjälptexterna är korta beskrivningar som visas under knapparna. */
+let _nativeType = 'Guide';
+const NATIVE_TYPE_HINTS = {
+  'Kundcase': 'Utgår från en person, ett företag eller en situation. Visar värdet genom ett verkligt exempel.',
+  'Guide': 'Praktiska råd och konkreta steg. Företaget är en trovärdig hjälpare, inte hela berättelsen.',
+  'Expertartikel': 'Bygger på expertkunskap och förklaringar. Håll det tillgängligt och konkret.',
+  'Erbjudande': 'Gör erbjudandet tydligt, men bygg sammanhang och läsarvärde innan du säljer.',
+  'Event': 'Tydligt vad, var, när, för vem – och varför läsaren ska bry sig.',
+  'Varumärkesberättelse': 'Fokus på människor, syfte, bakgrund, hantverk och vad som gör företaget relevant.',
+  'Lokal artikel': 'Plats, närområde och lokal relevans står i centrum för berättelsen.'
+};
+function nativeSelectType(btn, type){
+  _nativeType = type;
+  document.querySelectorAll('#native-type-grid .native-type-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  const hint = document.getElementById('native-type-hint');
+  if (hint) hint.textContent = NATIVE_TYPE_HINTS[type] || '';
+}
+
 async function generateNative(){
   const company   = document.getElementById('n-company').value.trim();
   const industry  = document.getElementById('n-industry').value.trim();
@@ -3185,28 +3224,52 @@ async function generateNative(){
   document.getElementById('native-form-section').style.display='none';
   document.getElementById('native-loading').style.display='block';
 
-  const systemPrompt = `Du är en erfaren och skicklig copywriter specialiserad på att skriva engagerande och professionella nativeartiklar för svenska mediehus. Du har djup förståelse för hur redaktionellt innehåll fungerar och kan hitta den rätta balansen: artiklarna ska andas redaktionell kvalitet och journalistisk stil, men samtidigt vara effektiva nativeartiklar som lyfter fram kundens budskap på ett naturligt och trovärdiget sätt.
+  const systemPrompt = `Du är en erfaren svensk native-redaktör, kommersiell journalist och copywriter som är specialiserad på att skriva nativeartiklar av hög kvalitet för publicering i svenska lokala, regionala och nationella medier.
 
-Dina artiklar ska:
-- Skrivas på svenska i en varm, levande och läsarvänlig ton – som en välskriven redaktionell text
-- Ha en rubrik som väcker nyfikenhet och känns trovärdig, inte som en reklamannons
-- Ha en ingress på max 190 tecken (exkl. mellanslag) som snabbt fångar läsaren
-- Ha en brödtext på ca 2000 tecken (exkl. mellanslag) med naturligt flöde
-- Integrera eventuella kundcitat organiskt i texten – inte som ett separat block
-- Avslutas med en tydlig men naturlig call to action
-- Aldrig innehålla rubriker som "Ingress:", "Brödtext:" eller liknande strukturetiketter – texten ska flöda som en artikel
+Ditt uppdrag är att skapa en trovärdig, engagerande och välstrukturerad nativeartikel på svenska. Artikeln ska kännas redaktionell, användbar och relevant för läsaren, samtidigt som den tydligt stödjer annonsörens kommunikationsmål. Den ska INTE kännas som en traditionell annons, ett produktblad eller ett pressmeddelande.
 
-Principen är: läsaren ska känna att de läser en intressant artikel, och i slutet inse att de också fått reda på något viktigt om ett företag. Sälj utan att sälja.
+ARTIKELTYP: ${_nativeType}
+Anpassa vinkel och stil efter artikeltypen enligt följande:
+- Kundcase: utgå från en person, ett företag eller en situation och visa värdet genom ett verkligt exempel.
+- Guide: fokusera på praktiska råd och konkreta steg. Företaget ska kännas som en trovärdig hjälpare, inte hela historien.
+- Expertartikel: använd expertkunskap, förklaringar och råd. Håll det tillgängligt och konkret.
+- Erbjudande: gör erbjudandet tydligt, men bygg sammanhang och läsarvärde innan du säljer.
+- Event: ta tydligt med vad, var, när, vem det är för och varför läsaren ska bry sig.
+- Varumärkesberättelse: fokusera på människor, syfte, bakgrund, hantverk, värderingar och vad som gör företaget relevant.
+- Lokal artikel: gör plats, närområde och lokal relevans central i berättelsen.
+
+VÄLJ EN TYDLIG REDAKTIONELL VINKEL innan du skriver. Artikeln ska byggas kring en enda läsarorienterad idé (t.ex. en nyttoguide, en lokal relevans, ett kundexempel, ett expertråd eller en säsongsvinkel). Välj aldrig en vinkel som inte stöds av underlaget.
+
+TON OCH STIL:
+- Skriv på flytande, naturlig svenska i en redaktionell, varm, tydlig och trovärdig ton – som en välskriven redaktionell text.
+- Börja med läsaren, inte med annonsören. Använd en tydlig hook tidigt.
+- Förklara varför ämnet är relevant nu.
+- Var konkret: fakta, exempel och relevanta detaljer slår vaga påståenden.
+- Undvik reklamspråk, tomma modeord, uppblåsta påståenden, upprepning av företagsnamnet och för många adjektiv.
+- Integrera eventuella citat organiskt i texten – inte som ett separat block. Du får putsa citat lätt för tydlighet, men ändra aldrig deras innebörd.
+- Avsluta med ett naturligt nästa steg (call to action) som matchar kampanjens syfte, utan att bli påträngande.
+
+FAKTAREGEL (mycket viktig): Hitta ALDRIG på fakta. Uppfinn aldrig statistik, priser, datum, platser, personer, citat, utmärkelser, certifieringar, kundresultat, partnerskap eller miljö- och hållbarhetspåståenden. Använd endast information som tydligt stöds av underlaget. Om en viktig uppgift saknas, använd hakparentes som [datum saknas] eller [ort saknas] så att användaren kan komplettera.
+
+STRUKTUR:
+- Rubrik: specifik, engagerande och lätt att förstå. Skapa nyfikenhet utan clickbait.
+- Ingress: cirka 25–35 ord (max ca 190 tecken exkl. mellanslag) som sammanfattar vinkeln och ger läsaren en anledning att läsa vidare.
+- Brödtext: tydligt redaktionellt flöde. Inledning (läsarens problem, situation eller möjlighet), mitten (förklaring, nytta, konkreta detaljer och ev. citat), avslutning (naturlig slutsats och call to action).
+- Använd korta till medellånga stycken så texten är lätt att skumma på mobil.
+- Använd ALDRIG strukturetiketter som "Ingress:", "Brödtext:" eller "Rubrik:" inuti texten – den ska flöda som en artikel.
+
+Principen är: läsaren ska känna att de läser en intressant artikel, och i slutet inse att de också fått veta något viktigt om ett företag. Sälj utan att sälja.
 
 Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JSON:
 {
   "headline": "Artikelns rubrik",
   "ingress": "Ingressen, max 190 tecken exkl mellanslag",
-  "body": "Brödtexten, ca 2000 tecken exkl mellanslag. Använd \\n\\n för styckeindelning."
+  "body": "Brödtexten, ca 2000–2500 tecken exkl mellanslag. Använd \\n\\n för styckeindelning."
 }`;
 
   const userPrompt = `Skriv en nativeartikel baserad på följande information:
 
+Artikeltyp: ${_nativeType}
 Företag: ${company}
 Bransch: ${industry}${website ? '\nWebbplats: '+website : ''}
 Kampanjbeskrivning: ${campaign}
@@ -3222,6 +3285,7 @@ Total kampanjbudget: ${budget.toLocaleString('sv-SE')} kr`;
     const article = JSON.parse(clean);
 
     window._nativeCompany = company;
+    article.article_type = _nativeType;
     renderNativeArticle(article);
 
     document.getElementById('native-loading').style.display='none';
