@@ -1097,6 +1097,15 @@ body.brief-mode{background:#FBFAF7}
 .brief-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:8px}
 .brief-section-content{font-size:14px;color:#2a2520;line-height:1.8}
+.brief-section-content p{margin:0 0 0.9em}
+.brief-section-content p:last-child{margin-bottom:0}
+.brief-section-content strong{font-weight:700;color:#1a1a1a}
+.brief-section-content .md-sub{font-size:13px;font-weight:700;color:#6b5d47;margin:1.2em 0 0.5em;letter-spacing:-0.01em}
+.brief-section-content .md-sub:first-child{margin-top:0}
+.brief-section-content .md-list{margin:0.4em 0 0.9em;padding-left:1.3em}
+.brief-section-content .md-list li{margin-bottom:0.45em;padding-left:0.2em}
+.brief-section-content .md-list li::marker{color:#C9A84C}
+.brief-section-content .md-list li:last-child{margin-bottom:0}
 .brief-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:4px}
 .brief-kpi{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:12px 16px}
 .brief-kpi-name{font-size:12px;font-weight:700;color:#2a2520;margin-bottom:2px}
@@ -1571,15 +1580,12 @@ body.brief-mode{background:#FBFAF7}
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">E-post</label>
         <input id="auth-email" type="email" autocomplete="email" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="namn@foretag.se">
       </div>
-      <div id="auth-password-row" style="margin-bottom:0.75rem">
+      <div style="margin-bottom:1.5rem">
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Lösenord</label>
         <input id="auth-password" type="password" autocomplete="current-password" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Minst 6 tecken">
       </div>
-      <div id="auth-forgot-row" style="text-align:right;margin-bottom:1.25rem">
-        <button onclick="authGoReset()" id="auth-forgot-btn" style="background:none;border:none;color:#8a7d6d;font-size:12px;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline">Glömt lösenord?</button>
-      </div>
       <button id="auth-submit" onclick="authSubmit()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:1rem">Logga in</button>
-      <div id="auth-toggle-row" style="text-align:center;font-size:13px;color:#8a7d6d">
+      <div style="text-align:center;font-size:13px;color:#8a7d6d">
         <span id="auth-toggle-text">Har du inget konto?</span>
         <button onclick="authToggleMode()" style="background:none;border:none;color:#C9A84C;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px;padding:0" id="auth-toggle-btn">Skapa konto</button>
       </div>
@@ -3298,7 +3304,6 @@ function goToTools(){
 
 /* ── Auth ──────────────────────────────────────────────────────────────── */
 let _authMode = 'login';
-let _recoveryMode = false; // true medan användaren sätter nytt lösenord via mejllänk
 
 function goToAuth(){
   hideAll();
@@ -3309,61 +3314,18 @@ function goToAuth(){
 }
 
 function authRenderMode(){
-  const mode = _authMode; // 'login' | 'signup' | 'reset' | 'newpassword'
-  const passwordRow = document.getElementById('auth-password-row');
-  const forgotRow   = document.getElementById('auth-forgot-row');
-  const toggleRow   = document.getElementById('auth-toggle-row');
-  const emailRow    = document.getElementById('auth-email').parentElement;
-
-  // Standardläge: visa allt, dölj sen det som inte hör hemma i varje läge
-  emailRow.style.display = '';
-  passwordRow.style.display = '';
-  forgotRow.style.display = 'none';
-  toggleRow.style.display = '';
-
-  if (mode === 'login') {
-    document.getElementById('auth-title').textContent = 'Logga in';
-    document.getElementById('auth-sub').textContent = 'Välkommen tillbaka till Mava';
-    document.getElementById('auth-submit').textContent = 'Logga in';
-    document.getElementById('auth-toggle-text').textContent = 'Har du inget konto?';
-    document.getElementById('auth-toggle-btn').textContent = 'Skapa konto';
-    document.getElementById('auth-password').setAttribute('autocomplete', 'current-password');
-    forgotRow.style.display = '';
-  } else if (mode === 'signup') {
-    document.getElementById('auth-title').textContent = 'Skapa konto';
-    document.getElementById('auth-sub').textContent = 'Kom igång med Mava';
-    document.getElementById('auth-submit').textContent = 'Skapa konto';
-    document.getElementById('auth-toggle-text').textContent = 'Har du redan ett konto?';
-    document.getElementById('auth-toggle-btn').textContent = 'Logga in';
-    document.getElementById('auth-password').setAttribute('autocomplete', 'new-password');
-  } else if (mode === 'reset') {
-    document.getElementById('auth-title').textContent = 'Återställ lösenord';
-    document.getElementById('auth-sub').textContent = 'Fyll i din e-post så skickar vi en återställningslänk';
-    document.getElementById('auth-submit').textContent = 'Skicka länk';
-    document.getElementById('auth-toggle-text').textContent = 'Kom du på det?';
-    document.getElementById('auth-toggle-btn').textContent = 'Tillbaka till inloggning';
-    passwordRow.style.display = 'none'; // inget lösenord behövs för att begära länk
-  } else if (mode === 'newpassword') {
-    document.getElementById('auth-title').textContent = 'Välj nytt lösenord';
-    document.getElementById('auth-sub').textContent = 'Skriv in ditt nya lösenord nedan';
-    document.getElementById('auth-submit').textContent = 'Spara nytt lösenord';
-    document.getElementById('auth-password').setAttribute('autocomplete', 'new-password');
-    document.getElementById('auth-password').value = '';
-    emailRow.style.display = 'none';   // vi vet redan vem det är, via länken
-    toggleRow.style.display = 'none';  // ingen växling här
-  }
+  const login = _authMode === 'login';
+  document.getElementById('auth-title').textContent = login ? 'Logga in' : 'Skapa konto';
+  document.getElementById('auth-sub').textContent = login ? 'Välkommen tillbaka till Mava' : 'Kom igång med Mava';
+  document.getElementById('auth-submit').textContent = login ? 'Logga in' : 'Skapa konto';
+  document.getElementById('auth-toggle-text').textContent = login ? 'Har du inget konto?' : 'Har du redan ett konto?';
+  document.getElementById('auth-toggle-btn').textContent = login ? 'Skapa konto' : 'Logga in';
+  document.getElementById('auth-password').setAttribute('autocomplete', login ? 'current-password' : 'new-password');
   authClearMsg();
 }
 
 function authToggleMode(){
-  // Växlar mellan login och signup. Från reset går knappen tillbaka till login.
-  if (_authMode === 'reset') _authMode = 'login';
-  else _authMode = _authMode === 'login' ? 'signup' : 'login';
-  authRenderMode();
-}
-
-function authGoReset(){
-  _authMode = 'reset';
+  _authMode = _authMode === 'login' ? 'signup' : 'login';
   authRenderMode();
 }
 
@@ -3392,57 +3354,9 @@ async function authSubmit(){
   const password = document.getElementById('auth-password').value;
   const btn = document.getElementById('auth-submit');
 
-  if (!sb()) { authShowError('Kunde inte ansluta till servern. Ladda om sidan och försök igen.'); return; }
-
-  // ── Läge: begär återställningslänk (bara e-post krävs) ──
-  if (_authMode === 'reset') {
-    if (!email) { authShowError('Fyll i din e-postadress.'); return; }
-    btn.disabled = true;
-    const orig = btn.textContent;
-    btn.textContent = 'Skickar...';
-    try {
-      // redirectTo måste peka på sajten och matcha en godkänd URL i Supabase-panelen.
-      const { error } = await sb().auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + window.location.pathname
-      });
-      if (error) throw error;
-      // Vi bekräftar alltid neutralt (avslöjar inte om e-posten finns – standard säkerhetspraxis).
-      authShowSuccess('Om det finns ett konto med den adressen har vi skickat en återställningslänk. Kolla din inkorg.');
-    } catch (e) {
-      authShowError(e.message || 'Kunde inte skicka länken. Försök igen.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = orig;
-    }
-    return;
-  }
-
-  // ── Läge: sätt nytt lösenord (bara lösenord krävs; användaren är redan i recovery-session) ──
-  if (_authMode === 'newpassword') {
-    if (!password || password.length < 6) { authShowError('Lösenordet måste vara minst 6 tecken.'); return; }
-    btn.disabled = true;
-    const orig = btn.textContent;
-    btn.textContent = 'Sparar...';
-    try {
-      const { error } = await sb().auth.updateUser({ password });
-      if (error) throw error;
-      _recoveryMode = false;
-      authShowSuccess('Lösenordet är uppdaterat. Du är nu inloggad.');
-      // Rensa recovery-token ur URL:en så en omladdning inte fastnar i detta läge.
-      history.replaceState(null, '', window.location.pathname);
-      setTimeout(function(){ onAuthChanged(); }, 900);
-    } catch (e) {
-      authShowError(e.message || 'Kunde inte spara lösenordet. Begär en ny länk och försök igen.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = orig;
-    }
-    return;
-  }
-
-  // ── Läge: login / signup ──
   if (!email) { authShowError('Fyll i din e-postadress.'); return; }
   if (!password || password.length < 6) { authShowError('Lösenordet måste vara minst 6 tecken.'); return; }
+  if (!sb()) { authShowError('Kunde inte ansluta till servern. Ladda om sidan och försök igen.'); return; }
 
   btn.disabled = true;
   const originalText = btn.textContent;
@@ -3486,7 +3400,6 @@ async function authLogout(){
 }
 
 function onAuthChanged(){
-  if (_recoveryMode) return; // användaren håller på att sätta nytt lösenord – släpp inte in dem ännu
   const authed = !!_currentUser;
   document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = authed ? '' : 'none'; });
   document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = authed ? 'none' : ''; });
@@ -3507,21 +3420,7 @@ async function authInit(){
   _currentUser = (data && data.session) ? data.session.user : null;
   onAuthChanged();
   sb().auth.onAuthStateChange(function(_event, session){
-    // När användaren klickar länken i återställningsmejlet skickar Supabase
-    // 'PASSWORD_RECOVERY'. Då visar vi "sätt nytt lösenord"-vyn i stället för
-    // att bara släppa in dem – annars har de ingen chans att byta lösenordet.
-    if (_event === 'PASSWORD_RECOVERY') {
-      _recoveryMode = true;
-      _currentUser = session ? session.user : null;
-      hideAll();
-      document.getElementById('auth-page').style.display = 'block';
-      _authMode = 'newpassword';
-      authRenderMode();
-      window.scrollTo(0,0);
-      return;
-    }
     _currentUser = session ? session.user : null;
-    if (_recoveryMode) return; // stör inte "sätt nytt lösenord"-vyn
     document.querySelectorAll('.auth-when-in').forEach(function(el){ el.style.display = _currentUser ? '' : 'none'; });
     document.querySelectorAll('.auth-when-out').forEach(function(el){ el.style.display = _currentUser ? 'none' : ''; });
     updateSidePanel();
@@ -4791,6 +4690,14 @@ Skriv en komplett och professionell kampanjbrief på svenska baserad på informa
 - KPI:er ska vara konkreta och mätbara med faktiska måltal (t.ex. "minst 150 leads till en kostnad under 80 kr/lead"), inte vaga ("öka antalet leads").
 - Tidslinjens faser ska ligga inom den angivna kampanjperioden.
 
+FORMATERING (viktigt för läsbarheten):
+- Skriv INTE textfälten som en enda lång textmassa. Strukturera för snabb läsning.
+- Använd korta stycken (2-4 meningar). Separera stycken med en tom rad (\\n\\n).
+- Använd punktlistor (rader som börjar med "- ") när du räknar upp saker, t.ex. flera mål, kanaler eller målgruppssegment.
+- Använd korta feta delrubriker på egen rad när ett fält har flera delar, t.ex. **Primär målgrupp** och **Sekundär målgrupp** i audience-fältet, eller **Produktion** och **Media** i budget-fältet.
+- Fetstil skrivs med dubbla asterisker: **så här**. Använd det sparsamt för att lyfta nyckelbegrepp.
+- Målet är en brief som går att skumläsa – tydliga nedslag, inte en vägg av text.
+
 KAMPANJINFO:
 Företag: ${company}
 Bransch: ${industry}
@@ -4807,12 +4714,12 @@ ${extra ? `Övrigt: ${extra}` : ''}
 Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. Använd \\n för radbrytningar inuti strängar och se till att all text är korrekt escapead så att JSON går att parsa:
 {
   "campaign_name": "Ett kort, slagkraftigt namn på kampanjen",
-  "background": "2-3 meningar om företaget, marknadsläget och varför den här kampanjen görs nu",
-  "goals": "Konkreta, mätbara mål kopplade till de valda kampanjmålen. Lista med \\n mellan varje mål.",
-  "audience": "Detaljerad målgruppsbeskrivning – demografi, psykografi, beteenden, var de finns",
-  "message": "Kärnbudskap och tonalitet. Vad ska kampanjen säga? Hur ska den låta och kännas?",
-  "channels": "Rekommenderade kanaler med kort motivering per kanal kopplad till mål och målgrupp. Anpassat till budgetens storlek.",
-  "budget": "Budgetfördelning per kanal i både procent och kronor. Kronbeloppen ska summera till ${budget} kr. Inkludera både produktion och mediaköp.",
+  "background": "2-3 meningar om företaget, marknadsläget och varför den här kampanjen görs nu. Ett eller två korta stycken.",
+  "goals": "Konkreta, mätbara mål kopplade till de valda kampanjmålen, som en punktlista där varje mål börjar med '- ' på egen rad.",
+  "audience": "Detaljerad målgruppsbeskrivning. Använd feta delrubriker som **Primär målgrupp** och **Sekundär målgrupp**, och punktlistor för demografi, psykografi, beteenden och var de finns.",
+  "message": "Kärnbudskap och tonalitet i korta stycken. Använd gärna en delrubrik **Kärnbudskap** och en **Tonalitet**. Vad ska kampanjen säga? Hur ska den låta och kännas?",
+  "channels": "Rekommenderade kanaler som en punktlista. Varje kanal på egen rad som börjar med '- ', med kanalnamnet i fetstil följt av kort motivering kopplad till mål och målgrupp. Anpassat till budgetens storlek.",
+  "budget": "Budgetfördelning med delrubrikerna **Media** och **Produktion**. Under varje, en punktlista per post med procent OCH kronor. Kronbeloppen ska summera till ${budget} kr.",
   "timeline": [
     {"phase": "Fas 1 – namn", "period": "datumintervall inom kampanjperioden", "activities": "vad som görs"},
     {"phase": "Fas 2 – namn", "period": "datumintervall inom kampanjperioden", "activities": "vad som görs"},
@@ -4846,15 +4753,88 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
   }
 }
 
+/* ── mdToHtml ──────────────────────────────────────────────────────────────
+   Liten, säker Markdown→HTML-omvandlare för att presentera AI-text tydligt.
+   Stödjer: stycken (tom rad), punktlistor (- eller •), numrerade listor (1.),
+   fetstil (**text**) och delrubriker (en rad som är helt **fet**).
+   VIKTIGT: all råtext escapas först, så AI:n kan aldrig injicera egna HTML-taggar.
+   Vi bygger bara upp HTML från mönster VI känner igen. Återanvänds av flera verktyg.
+──────────────────────────────────────────────────────────────────────────── */
+function mdEscape(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+function mdInline(s) {
+  // Körs EFTER escaping. **text** -> <strong>. Inget annat tolkas.
+  return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+function mdToHtml(text) {
+  if (!text) return '';
+  const lines = String(text).replace(/\r\n/g, '\n').split('\n');
+  let html = '';
+  let listType = null;      // 'ul' | 'ol' | null
+  let paragraph = [];       // rader som hör till samma stycke
+
+  function flushParagraph() {
+    if (paragraph.length) {
+      html += '<p>' + mdInline(mdEscape(paragraph.join(' '))) + '</p>';
+      paragraph = [];
+    }
+  }
+  function closeList() {
+    if (listType) { html += '</' + listType + '>'; listType = null; }
+  }
+
+  for (let raw of lines) {
+    const line = raw.trim();
+
+    if (line === '') { flushParagraph(); closeList(); continue; }
+
+    // Delrubrik: hela raden är fet, t.ex. "**Kanalval**"
+    const heading = line.match(/^\*\*(.+?)\*\*:?$/);
+    if (heading) {
+      flushParagraph(); closeList();
+      html += '<h4 class="md-sub">' + mdInline(mdEscape('**' + heading[1] + '**')) + '</h4>';
+      continue;
+    }
+
+    // Punktlista: "- ", "* " eller "• "
+    const bullet = line.match(/^[-*•]\s+(.+)$/);
+    if (bullet) {
+      flushParagraph();
+      if (listType !== 'ul') { closeList(); html += '<ul class="md-list">'; listType = 'ul'; }
+      html += '<li>' + mdInline(mdEscape(bullet[1])) + '</li>';
+      continue;
+    }
+
+    // Numrerad lista: "1. ", "2) " osv
+    const num = line.match(/^\d+[.)]\s+(.+)$/);
+    if (num) {
+      flushParagraph();
+      if (listType !== 'ol') { closeList(); html += '<ol class="md-list">'; listType = 'ol'; }
+      html += '<li>' + mdInline(mdEscape(num[1])) + '</li>';
+      continue;
+    }
+
+    // Vanlig rad -> del av stycke
+    closeList();
+    paragraph.push(line);
+  }
+  flushParagraph(); closeList();
+  return html;
+}
+
 function renderBriefResult(r, label, company) {
     document.getElementById('br-result-label').textContent   = label || '';
     document.getElementById('br-result-title').textContent   = r.campaign_name || (company || '') + ' – Kampanjbrief';
-    document.getElementById('br-result-background').textContent = r.background || '';
-    document.getElementById('br-result-goals').textContent   = r.goals || '';
-    document.getElementById('br-result-audience').textContent = r.audience || '';
-    document.getElementById('br-result-message').textContent  = r.message || '';
-    document.getElementById('br-result-channels').textContent = r.channels || '';
-    document.getElementById('br-result-budget').textContent   = r.budget || '';
+    document.getElementById('br-result-background').innerHTML = mdToHtml(r.background);
+    document.getElementById('br-result-goals').innerHTML     = mdToHtml(r.goals);
+    document.getElementById('br-result-audience').innerHTML  = mdToHtml(r.audience);
+    document.getElementById('br-result-message').innerHTML   = mdToHtml(r.message);
+    document.getElementById('br-result-channels').innerHTML  = mdToHtml(r.channels);
+    document.getElementById('br-result-budget').innerHTML    = mdToHtml(r.budget);
 
     // Timeline
     const tlEl = document.getElementById('br-result-timeline');
@@ -4878,7 +4858,7 @@ function renderBriefResult(r, label, company) {
     // Constraints
     const constraintsSection = document.getElementById('br-result-constraints-section');
     if (r.constraints && r.constraints.trim()) {
-      document.getElementById('br-result-constraints').textContent = r.constraints;
+      document.getElementById('br-result-constraints').innerHTML = mdToHtml(r.constraints);
       constraintsSection.style.display = 'block';
     } else if (constraintsSection) {
       constraintsSection.style.display = 'none';
