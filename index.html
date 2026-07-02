@@ -1142,10 +1142,7 @@ body.brief-mode{background:#FBFAF7}
     <button class="mava-logo on-dark" id="nav-logo" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:40px;width:40px"><span class="mava-word" style="font-size:24px">Mava</span></button>
     <div style="display:flex;align-items:center;gap:1.25rem">
       <button class="auth-when-out" onclick="goToAuth()" style="background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Logga in</button>
-      <button class="auth-when-in" onclick="goToLibrary()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mitt bibliotek</button>
-      <button class="auth-when-in" onclick="goToBrandProfile()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Min profil</button>
-      <button class="auth-when-in" onclick="goToTools()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mina verktyg</button>
-      <button class="auth-when-in" onclick="authLogout()" style="display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
+      <button class="auth-when-in" onclick="goToTools()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Till appen →</button>
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
     </div>
   </nav>
@@ -2576,6 +2573,7 @@ function showToolError(errElId, message, retryFn) {
 function goToLanding(){
   hideAll();
   document.getElementById('landing').style.display='block';
+  updateSidePanel('landing');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -2600,6 +2598,7 @@ function goToLogin(dest){
 function showApp(){
   hideAll();
   document.getElementById('app').style.display='block';
+  updateSidePanel('app');
   document.getElementById('result-section').style.display='none';
   document.getElementById('stream-preview').style.display='none';
   document.body.classList.add('app-mode');
@@ -2960,6 +2959,7 @@ const NATIVE_MEDIA = [
 function goToNative(){
   hideAll();
   document.getElementById('native-page').style.display='block';
+  updateSidePanel('native-page');
   document.body.classList.add('native-mode');
   window.scrollTo(0,0);
   renderNativeMediaGrid();
@@ -3544,14 +3544,26 @@ function applyPanelState() {
   panel.classList.toggle('expanded', _panelExpanded);
 }
 
-// Visar panelen bara när man är inloggad, och markerar vilken sida man är på.
-function updateSidePanel() {
+// Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
+const PANEL_PAGES = ['tools-page','library-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page'];
+
+// Visar panelen bara när man är inloggad OCH på en inre app-sida.
+function updateSidePanel(currentPage) {
   const panel = document.getElementById('side-panel');
   if (!panel) return;
-  if (_currentUser) {
+  // Ta reda på vilken sida som visas just nu om ingen skickades in.
+  let page = currentPage;
+  if (!page) {
+    const visible = ALL_PAGES.find(function(id){
+      const el = document.getElementById(id);
+      return el && el.style.display !== 'none' && getComputedStyle(el).display !== 'none';
+    });
+    page = visible || 'landing';
+  }
+  const show = _currentUser && PANEL_PAGES.indexOf(page) > -1;
+  if (show) {
     panel.style.display = 'flex';
     document.body.classList.add('has-panel');
-    // Läs sparat läge (utfälld/hopfälld)
     try { _panelExpanded = localStorage.getItem('mava-panel') === '1'; } catch(e){}
     applyPanelState();
   } else {
@@ -3565,6 +3577,7 @@ function setActivePanelLink(pageId) {
   document.querySelectorAll('#side-panel .sp-link[data-page]').forEach(function(el){
     el.classList.toggle('active', el.getAttribute('data-page') === pageId);
   });
+  updateSidePanel(pageId);
 }
 
 function goToPlan() {
@@ -3649,6 +3662,7 @@ function goToToolLogin(dest){
 function goToDist(){
   hideAll();
   document.getElementById('dist-page').style.display='block';
+  updateSidePanel('dist-page');
   document.body.classList.add('dist-mode');
   window.scrollTo(0,0);
   renderDistChannels();
@@ -3657,6 +3671,7 @@ function goToDist(){
 function goToAdCopy(){
   hideAll();
   document.getElementById('adcopy-page').style.display='block';
+  updateSidePanel('adcopy-page');
   document.body.classList.add('adcopy-mode');
   window.scrollTo(0,0);
   renderAdCopyFormats();
@@ -3665,6 +3680,7 @@ function goToAdCopy(){
 function goToNewsroom(){
   hideAll();
   document.getElementById('newsroom-page').style.display='block';
+  updateSidePanel('newsroom-page');
   document.body.classList.add('newsroom-mode');
   window.scrollTo(0,0);
 }
@@ -3672,6 +3688,7 @@ function goToNewsroom(){
 function goToBrief(){
   hideAll();
   document.getElementById('brief-page').style.display='block';
+  updateSidePanel('brief-page');
   document.body.classList.add('brief-mode');
   window.scrollTo(0,0);
   applyBrandProfileToBrief();
