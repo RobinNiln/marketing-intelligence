@@ -2007,7 +2007,11 @@ body.brief-mode{background:#FBFAF7}
       </div>
 
       <div class="brief-result-actions">
-        <button class="brief-action-btn primary" onclick="briefCopy()">
+        <button class="brief-action-btn primary" id="brief-improve-btn" onclick="briefImprove()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1l1.5 4L13 6.5 8.5 8 7 12.5 5.5 8 1 6.5 5.5 5z"/></svg>
+          Gör skarpare med AI
+        </button>
+        <button class="brief-action-btn" onclick="briefCopy()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>
           Kopiera brief
         </button>
@@ -3399,6 +3403,48 @@ async function briefSave() {
   const { error } = await saveProduction('brief', title.trim() || suggested, r);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
   if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
+
+// AI-hjälp: skickar den befintliga briefen tillbaka till AI:n med instruktion
+// att göra den skarpare, och ritar upp det förbättrade resultatet.
+async function briefImprove() {
+  const r = window._briefResult;
+  if (!r) return;
+  const btn = document.getElementById('brief-improve-btn');
+  if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = 'Förbättrar...'; }
+
+  // Vi ger AI:n den nuvarande briefen (som JSON-text) och ber om en skarpare version
+  // i EXAKT samma struktur, så renderBriefResult kan rita den utan ändringar.
+  const prompt = 'Du är en senior marknadsstrateg. Nedan är en befintlig kampanjbrief i JSON-format. ' +
+    'Din uppgift är att göra den SKARPARE utan att ändra dess struktur:\n' +
+    '- Gör språket mer konkret och direkt. Ta bort svammel, klichéer och tomma superlativ.\n' +
+    '- Gör målen och KPI:erna mer specifika och mätbara om de är vaga.\n' +
+    '- Skärp budskapet och kanalmotiveringarna. Behåll allt som redan är bra.\n' +
+    '- Ändra INTE budgetsummorna eller kampanjperioden.\n' +
+    '- Behåll exakt samma JSON-fält och struktur som i originalet.\n\n' +
+    'BEFINTLIG BRIEF:\n' + JSON.stringify(r) + '\n\n' +
+    'Returnera ENBART det förbättrade JSON-objektet med exakt samma fält och struktur. Ingen text runt omkring, korrekt escapead så det går att parsa.';
+
+  try {
+    const data = await safeFetch([{ role: 'user', content: prompt }]);
+    const raw  = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const improved = JSON.parse(clean);
+
+    // Rita om med samma render-funktion. Behåll etikett/företag från förra gången.
+    const label = document.getElementById('br-result-label').textContent || '';
+    renderBriefResult(improved, label, window._briefCompany || '');
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '✓ Förbättrad';
+      setTimeout(function(){ btn.textContent = btn.dataset.orig || 'Gör skarpare med AI'; }, 2000);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = btn.dataset.orig || 'Gör skarpare med AI'; }
+    alert('Kunde inte förbättra briefen just nu. Försök igen.');
+  }
 }
 
 // Generell spara-hjälpare så vi slipper upprepa samma kod för varje verktyg.
