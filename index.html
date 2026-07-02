@@ -1013,6 +1013,21 @@ body.newsroom-mode{background:#FBFAF7}
 .nr-extra-row{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2a2520;line-height:1.6;padding:6px 0}
 .nr-extra-tag{font-size:11px;font-weight:600;color:#9A8570;background:#F5F3EE;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
 .nr-extra-text{font-size:14px;color:#2a2520;line-height:1.75}
+
+/* Bibliotek */
+.lib-filter{background:#fff;border:1px solid #e0dcd3;color:#8a7d6d;font-size:13px;font-weight:600;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.lib-filter.active{background:#2C2520;color:#fff;border-color:#2C2520}
+.lib-card{background:#fff;border:1px solid #e8e4db;border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:12px;display:flex;align-items:center;gap:1rem}
+.lib-card-tool{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:4px}
+.lib-card-title{font-size:16px;font-weight:600;color:#2C2520;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-card-date{font-size:12px;color:#9A8570}
+.lib-card-actions{display:flex;gap:6px;flex-shrink:0}
+.lib-btn{background:#F5F3EE;border:1px solid #e0dcd3;color:#5F5E5A;font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.lib-btn:hover{background:#ebe7de}
+.lib-btn-open{background:#2C2520;color:#fff;border-color:#2C2520}
+.lib-btn-open:hover{background:#453a30}
+.lib-btn-del:hover{background:#FCEBEB;color:#A32D2D;border-color:#f0d0d0}
+@media(max-width:600px){.lib-card{flex-direction:column;align-items:flex-start}.lib-card-actions{width:100%}}
 .newsroom-action-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid #F0EEE8;background:#fff;color:#2a2520;transition:all 0.15s}
 .newsroom-action-btn:hover{border-color:#E8C878}
 .newsroom-action-btn.primary{background:#2a2520;color:#fff;border-color:#2a2520}
@@ -1093,6 +1108,7 @@ body.brief-mode{background:#FBFAF7}
     <button class="mava-logo on-dark" id="nav-logo" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:40px;width:40px"><span class="mava-word" style="font-size:24px">Mava</span></button>
     <div style="display:flex;align-items:center;gap:1.25rem">
       <button class="auth-when-out" onclick="goToAuth()" style="background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Logga in</button>
+      <button class="auth-when-in" onclick="goToLibrary()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mitt bibliotek</button>
       <button class="auth-when-in" onclick="goToTools()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mina verktyg</button>
       <button class="auth-when-in" onclick="authLogout()" style="display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
@@ -1292,6 +1308,32 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="library-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+    <div style="display:flex;gap:1.25rem;align-items:center">
+      <button onclick="goToTools()" style="background:none;border:none;color:#8a7d6d;font-size:14px;cursor:pointer;font-family:inherit">Verktyg</button>
+      <button onclick="authLogout()" style="background:none;border:none;color:#8a7d6d;font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
+    </div>
+  </nav>
+  <div style="max-width:820px;margin:0 auto;padding:2.5rem 1.5rem">
+    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Mitt bibliotek</h1>
+    <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Alla dina sparade produktioner samlade på ett ställe.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.25rem">
+      <input id="library-search" oninput="librarySearch()" placeholder="Sök på namn..." style="flex:1;min-width:180px;padding:10px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem">
+      <button class="lib-filter active" data-filter="all" onclick="libraryFilter('all')">Alla</button>
+      <button class="lib-filter" data-filter="brief" onclick="libraryFilter('brief')">The Brief</button>
+      <button class="lib-filter" data-filter="newsroom" onclick="libraryFilter('newsroom')">Newsroom</button>
+      <button class="lib-filter" data-filter="market-pulse" onclick="libraryFilter('market-pulse')">Market Pulse</button>
+      <button class="lib-filter" data-filter="native" onclick="libraryFilter('native')">Native Auto Reach</button>
+      <button class="lib-filter" data-filter="adstudio" onclick="libraryFilter('adstudio')">AdStudio</button>
+    </div>
+    <div id="library-list"></div>
   </div>
 </div>
 
@@ -1790,6 +1832,10 @@ body.brief-mode{background:#FBFAF7}
         <button class="brief-action-btn" onclick="briefEmail()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 3l6 5 6-5"/></svg>
           Skicka via e-post
+        </button>
+        <button class="brief-action-btn" id="brief-save-btn" onclick="briefSave()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
+          Spara i bibliotek
         </button>
       </div>
 
@@ -2968,7 +3014,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','library-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -3107,6 +3153,151 @@ async function authInit(){
   });
 }
 window.addEventListener('load', function(){ setTimeout(authInit, 300); });
+
+/* ── Bibliotek ─────────────────────────────────────────────────────────── */
+
+// Sparar en produktion. tool = t.ex. 'brief', title = namn, content = hela resultatobjektet.
+async function saveProduction(tool, title, content) {
+  if (!_currentUser) { goToAuth(); return { error: 'not-logged-in' }; }
+  const { data, error } = await sb().from('productions').insert({
+    user_id: _currentUser.id,
+    tool: tool,
+    title: title,
+    content: content
+  }).select().single();
+  return { data, error };
+}
+
+// Hämtar alla produktioner för den inloggade användaren, nyast först.
+async function fetchProductions() {
+  if (!_currentUser) return { data: [], error: 'not-logged-in' };
+  const { data, error } = await sb().from('productions')
+    .select('*')
+    .order('created_at', { ascending: false });
+  return { data: data || [], error };
+}
+
+async function deleteProduction(id) {
+  const { error } = await sb().from('productions').delete().eq('id', id);
+  return { error };
+}
+
+async function renameProduction(id, newTitle) {
+  const { error } = await sb().from('productions').update({ title: newTitle }).eq('id', id);
+  return { error };
+}
+
+// Sparar The Brief-resultatet från resultatvyn.
+async function briefSave() {
+  const r = window._briefResult;
+  if (!r) return;
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = document.getElementById('brief-save-btn');
+  const suggested = r.campaign_name || (window._briefCompany || 'Brief');
+  const title = prompt('Namnge din brief:', suggested);
+  if (title === null) return; // avbröt
+  if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
+  const { error } = await saveProduction('brief', title.trim() || suggested, r);
+  if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
+  if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
+
+let _libraryItems = [];
+let _libraryFilter = 'all';
+
+async function goToLibrary() {
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('library-page').style.display = 'block';
+  window.scrollTo(0,0);
+  document.getElementById('library-list').innerHTML = '<div style="text-align:center;color:#9A8570;padding:3rem">Laddar...</div>';
+  const { data, error } = await fetchProductions();
+  if (error) {
+    document.getElementById('library-list').innerHTML = '<div style="text-align:center;color:#A32D2D;padding:3rem">Kunde inte ladda biblioteket.</div>';
+    return;
+  }
+  _libraryItems = data;
+  renderLibrary();
+}
+
+const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio' };
+
+function libraryFilter(tool) {
+  _libraryFilter = tool;
+  document.querySelectorAll('.lib-filter').forEach(function(el){
+    el.classList.toggle('active', el.getAttribute('data-filter') === tool);
+  });
+  renderLibrary();
+}
+
+function librarySearch() {
+  renderLibrary();
+}
+
+function renderLibrary() {
+  const search = (document.getElementById('library-search').value || '').toLowerCase();
+  const list = document.getElementById('library-list');
+  let items = _libraryItems;
+  if (_libraryFilter !== 'all') items = items.filter(function(it){ return it.tool === _libraryFilter; });
+  if (search) items = items.filter(function(it){ return (it.title || '').toLowerCase().indexOf(search) > -1; });
+
+  if (items.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#9A8570;padding:3rem;font-size:14px">Inga sparade produktioner än. Skapa något i ett verktyg och tryck "Spara i bibliotek".</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(function(it){
+    const date = new Date(it.created_at).toLocaleDateString('sv-SE', { year:'numeric', month:'short', day:'numeric' });
+    const label = TOOL_LABELS[it.tool] || it.tool;
+    return '<div class="lib-card">' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="lib-card-tool">' + label + '</div>' +
+        '<div class="lib-card-title">' + escapeHtmlLib(it.title) + '</div>' +
+        '<div class="lib-card-date">' + date + '</div>' +
+      '</div>' +
+      '<div class="lib-card-actions">' +
+        '<button onclick="libraryOpen(\'' + it.id + '\')" class="lib-btn lib-btn-open">Öppna</button>' +
+        '<button onclick="libraryRename(\'' + it.id + '\')" class="lib-btn">Byt namn</button>' +
+        '<button onclick="libraryDelete(\'' + it.id + '\')" class="lib-btn lib-btn-del">Radera</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function escapeHtmlLib(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function libraryOpen(id) {
+  const item = _libraryItems.find(function(it){ return it.id === id; });
+  if (!item) return;
+  if (item.tool === 'brief') {
+    goToBrief();
+    document.getElementById('brief-form-section').style.display = 'none';
+    renderBriefResult(item.content, 'Sparad · ' + new Date(item.created_at).toLocaleDateString('sv-SE'), '');
+    document.getElementById('brief-result').style.display = 'block';
+    window.scrollTo(0,0);
+  } else {
+    alert('Öppning för det här verktyget är inte inkopplat än.');
+  }
+}
+
+async function libraryRename(id) {
+  const item = _libraryItems.find(function(it){ return it.id === id; });
+  if (!item) return;
+  const newTitle = prompt('Nytt namn:', item.title);
+  if (newTitle === null || !newTitle.trim()) return;
+  const { error } = await renameProduction(id, newTitle.trim());
+  if (error) { alert('Kunde inte byta namn.'); return; }
+  item.title = newTitle.trim();
+  renderLibrary();
+}
+
+async function libraryDelete(id) {
+  if (!confirm('Radera den här produktionen? Det går inte att ångra.')) return;
+  const { error } = await deleteProduction(id);
+  if (error) { alert('Kunde inte radera.'); return; }
+  _libraryItems = _libraryItems.filter(function(it){ return it.id !== id; });
+  renderLibrary();
+}
 
 function goToToolLogin(dest){
   if(dest==='native') goToNative();
@@ -3890,8 +4081,23 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
     const clean = raw.replace(/```json|```/g, '').trim();
     const r = JSON.parse(clean);
 
-    document.getElementById('br-result-label').textContent   = goalsStr + ' · ' + period;
-    document.getElementById('br-result-title').textContent   = r.campaign_name || company + ' – Kampanjbrief';
+    renderBriefResult(r, goalsStr + ' · ' + period, company);
+
+    document.getElementById('brief-loading').style.display = 'none';
+    document.getElementById('brief-result').style.display  = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch(e) {
+    document.getElementById('brief-loading').style.display  = 'none';
+    document.getElementById('brief-form-section').style.display = 'block';
+    document.getElementById('brief-btn').disabled = false;
+    showToolError('brief-error', e.message, generateBrief);
+  }
+}
+
+function renderBriefResult(r, label, company) {
+    document.getElementById('br-result-label').textContent   = label || '';
+    document.getElementById('br-result-title').textContent   = r.campaign_name || (company || '') + ' – Kampanjbrief';
     document.getElementById('br-result-background').textContent = r.background || '';
     document.getElementById('br-result-goals').textContent   = r.goals || '';
     document.getElementById('br-result-audience').textContent = r.audience || '';
@@ -3919,24 +4125,16 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
     `).join('')}</div>`;
 
     // Constraints
+    const constraintsSection = document.getElementById('br-result-constraints-section');
     if (r.constraints && r.constraints.trim()) {
       document.getElementById('br-result-constraints').textContent = r.constraints;
-      document.getElementById('br-result-constraints-section').style.display = 'block';
+      constraintsSection.style.display = 'block';
+    } else if (constraintsSection) {
+      constraintsSection.style.display = 'none';
     }
 
     window._briefResult  = r;
-    window._briefCompany = company;
-
-    document.getElementById('brief-loading').style.display = 'none';
-    document.getElementById('brief-result').style.display  = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  } catch(e) {
-    document.getElementById('brief-loading').style.display  = 'none';
-    document.getElementById('brief-form-section').style.display = 'block';
-    document.getElementById('brief-btn').disabled = false;
-    showToolError('brief-error', e.message, generateBrief);
-  }
+    window._briefCompany = company || '';
 }
 
 function briefCopy() {
