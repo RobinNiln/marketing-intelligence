@@ -1347,6 +1347,25 @@ body.brief-mode{background:#FBFAF7}
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Önskad ton</label>
         <input id="brand-tone" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Professionell och förtroendegivande">
       </div>
+      <div style="margin-bottom:1.25rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Hemsida</label>
+        <input id="brand-website" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. www.foretaget.se">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem">
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Kontakt-e-post</label>
+          <input id="brand-contact-email" type="email" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="kontakt@foretaget.se">
+        </div>
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Telefon</label>
+          <input id="brand-contact-phone" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. 08-123 45 67">
+        </div>
+      </div>
+      <div style="margin-bottom:1.75rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Nyckelpersoner</label>
+        <div id="brand-people-list"></div>
+        <button type="button" onclick="brandAddPerson()" style="background:none;border:1px dashed #c9c2b5;color:#8a7d6d;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;font-family:inherit;width:100%;margin-top:6px">+ Lägg till person</button>
+      </div>
       <button id="brand-save-btn" onclick="saveBrandProfile()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Spara profil</button>
     </div>
   </div>
@@ -3366,6 +3385,49 @@ async function goToBrandProfile() {
   document.getElementById('brand-industry').value    = (p && p.industry) || '';
   document.getElementById('brand-description').value = (p && p.description) || '';
   document.getElementById('brand-tone').value        = (p && p.tone) || '';
+  document.getElementById('brand-website').value       = (p && p.website) || '';
+  document.getElementById('brand-contact-email').value = (p && p.contact_email) || '';
+  document.getElementById('brand-contact-phone').value = (p && p.contact_phone) || '';
+  // key_people kommer som en lista (array). Rita en rad per person.
+  const people = (p && Array.isArray(p.key_people)) ? p.key_people : [];
+  renderBrandPeople(people);
+}
+
+// Ritar upp person-raderna utifrån en lista. Varje rad har namn + roll + ta bort-knapp.
+function renderBrandPeople(people) {
+  const list = document.getElementById('brand-people-list');
+  list.innerHTML = '';
+  if (!people || people.length === 0) { return; }
+  people.forEach(function(person){ addBrandPersonRow(person.name || '', person.role || ''); });
+}
+
+// Lägger till en tom person-rad (anropas av "+ Lägg till person"-knappen).
+function brandAddPerson() {
+  addBrandPersonRow('', '');
+}
+
+function addBrandPersonRow(name, role) {
+  const list = document.getElementById('brand-people-list');
+  const row = document.createElement('div');
+  row.className = 'brand-person-row';
+  row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center';
+  row.innerHTML =
+    '<input type="text" class="bp-name" value="' + escapeHtmlLib(name) + '" placeholder="Namn" style="flex:1;padding:9px 12px;border:1px solid #e0dcd3;border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box">' +
+    '<input type="text" class="bp-role" value="' + escapeHtmlLib(role) + '" placeholder="Roll" style="flex:1;padding:9px 12px;border:1px solid #e0dcd3;border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box">' +
+    '<button type="button" onclick="this.parentElement.remove()" style="background:#F5F3EE;border:1px solid #e0dcd3;color:#A32D2D;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;flex-shrink:0" title="Ta bort">×</button>';
+  list.appendChild(row);
+}
+
+// Läser av alla person-rader och bygger ihop dem till en lista igen.
+function collectBrandPeople() {
+  const rows = document.querySelectorAll('#brand-people-list .brand-person-row');
+  const people = [];
+  rows.forEach(function(row){
+    const name = row.querySelector('.bp-name').value.trim();
+    const role = row.querySelector('.bp-role').value.trim();
+    if (name || role) people.push({ name: name, role: role });
+  });
+  return people;
 }
 
 async function saveBrandProfile() {
@@ -3377,6 +3439,10 @@ async function saveBrandProfile() {
     industry: document.getElementById('brand-industry').value.trim(),
     description: document.getElementById('brand-description').value.trim(),
     tone: document.getElementById('brand-tone').value.trim(),
+    website: document.getElementById('brand-website').value.trim(),
+    contact_email: document.getElementById('brand-contact-email').value.trim(),
+    contact_phone: document.getElementById('brand-contact-phone').value.trim(),
+    key_people: collectBrandPeople(),
     updated_at: new Date().toISOString()
   };
   btn.disabled = true; btn.textContent = 'Sparar...';
