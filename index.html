@@ -1397,6 +1397,30 @@ body.brief-mode{background:#FBFAF7}
         <div id="brand-people-list"></div>
         <button type="button" onclick="brandAddPerson()" style="background:none;border:1px dashed #c9c2b5;color:#8a7d6d;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;font-family:inherit;width:100%;margin-top:6px">+ Lägg till person</button>
       </div>
+      <div style="border-top:1px solid #f0eee8;padding-top:1.5rem;margin-bottom:1.5rem">
+        <div style="font-size:13px;font-weight:700;color:#2C2520;margin-bottom:4px">Annonsstil</div>
+        <p style="font-size:12px;color:#8a7d6d;margin:0 0 14px;line-height:1.5">Styr hur era annonser i AdStudio ser ut, så alla får samma känsla.</p>
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Layoutstil</label>
+        <div id="brand-style-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.25rem">
+          <div class="brand-style-opt" data-style="overlay" onclick="brandSelectStyle('overlay')" style="border:2px solid #C9A84C;border-radius:10px;padding:10px;cursor:pointer;text-align:center;background:rgba(201,168,76,0.06)">
+            <div style="height:40px;border-radius:5px;background:linear-gradient(135deg,#5a4a38,#2C2520);position:relative;margin-bottom:7px;overflow:hidden"><div style="position:absolute;bottom:5px;left:5px;right:5px;height:5px;background:rgba(255,255,255,0.85);border-radius:2px"></div></div>
+            <div style="font-size:12px;font-weight:600;color:#2C2520">Helbild</div>
+          </div>
+          <div class="brand-style-opt" data-style="band" onclick="brandSelectStyle('band')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
+            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#C9A84C"></div></div>
+            <div style="font-size:12px;font-weight:600;color:#2C2520">Band</div>
+          </div>
+          <div class="brand-style-opt" data-style="split" onclick="brandSelectStyle('split')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
+            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px;display:flex"><div style="width:50%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="width:50%;background:#C9A84C"></div></div>
+            <div style="font-size:12px;font-weight:600;color:#2C2520">Delad</div>
+          </div>
+        </div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Accentfärg</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="color" id="brand-color" value="#C9A84C" onchange="brandUpdateColorPreview()" style="width:52px;height:40px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff">
+          <span id="brand-color-hex" style="font-size:13px;color:#8a7d6d;font-family:monospace">#C9A84C</span>
+        </div>
+      </div>
       <button id="brand-save-btn" onclick="saveBrandProfile()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Spara profil</button>
     </div>
   </div>
@@ -3564,6 +3588,11 @@ async function goToBrandProfile() {
   // key_people kommer som en lista (array). Rita en rad per person.
   const people = (p && Array.isArray(p.key_people)) ? p.key_people : [];
   renderBrandPeople(people);
+  // Annonsstil + accentfärg
+  brandSelectStyle((p && p.ad_style) || 'overlay');
+  const color = (p && p.ad_color) || '#C9A84C';
+  document.getElementById('brand-color').value = color;
+  document.getElementById('brand-color-hex').textContent = color.toUpperCase();
 }
 
 // Ritar upp person-raderna utifrån en lista. Varje rad har namn + roll + ta bort-knapp.
@@ -3601,6 +3630,25 @@ function collectBrandPeople() {
     if (name || role) people.push({ name: name, role: role });
   });
   return people;
+}
+
+// Håller reda på vilken annonsstil kunden valt (overlay/band/split).
+let _brandAdStyle = 'overlay';
+
+// Markerar den valda stilrutan och kommer ihåg valet.
+function brandSelectStyle(style) {
+  _brandAdStyle = style;
+  document.querySelectorAll('#brand-style-grid .brand-style-opt').forEach(function(el){
+    const selected = el.getAttribute('data-style') === style;
+    el.style.borderColor = selected ? '#C9A84C' : '#e0dcd3';
+    el.style.background = selected ? 'rgba(201,168,76,0.06)' : 'transparent';
+  });
+}
+
+// Uppdaterar hex-texten bredvid färgväljaren.
+function brandUpdateColorPreview() {
+  const val = document.getElementById('brand-color').value;
+  document.getElementById('brand-color-hex').textContent = val.toUpperCase();
 }
 
 /* ── Sidopanel ─────────────────────────────────────────────────────────── */
@@ -3684,6 +3732,8 @@ async function saveBrandProfile() {
     contact_email: document.getElementById('brand-contact-email').value.trim(),
     contact_phone: document.getElementById('brand-contact-phone').value.trim(),
     key_people: collectBrandPeople(),
+    ad_style: _brandAdStyle,
+    ad_color: document.getElementById('brand-color').value,
     updated_at: new Date().toISOString()
   };
   btn.disabled = true; btn.textContent = 'Sparar...';
@@ -3781,6 +3831,19 @@ function goToAdCopy(){
   document.body.classList.add('adcopy-mode');
   window.scrollTo(0,0);
   renderAdCopyFormats();
+  // Ladda varumärkesprofilen så bannerstilen (layout + accentfärg) kan tillämpas.
+  if (_currentUser && !_brandProfile) fetchBrandProfile();
+  applyBrandProfileToAdgen();
+}
+
+// Fyller i AdStudios accentfärg-fält från profilen (om ett sådant fält finns), + företag.
+async function applyBrandProfileToAdgen() {
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('ac-company', p.company);
+  const colorField = document.getElementById('ac-color');
+  if (colorField && p.ad_color) colorField.value = p.ad_color;
 }
 
 function goToNewsroom(){
@@ -4671,43 +4734,130 @@ function adgenEscapeHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// Läser kundens valda accentfärg + stil från varumärkesprofilen.
+// Faller tillbaka på guld/overlay om ingen profil finns.
+function adgenBrandStyle() {
+  const p = _brandProfile;
+  return {
+    color: (p && p.ad_color) || '#C9A84C',
+    style: (p && p.ad_style) || 'overlay'
+  };
+}
+
+// Ljus eller mörk text beroende på hur ljus accentfärgen är (så texten alltid syns på färgytan).
+function adgenTextOn(hex) {
+  const c = hex.replace('#','');
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  const lum = (0.299*r + 0.587*g + 0.114*b);
+  return lum > 150 ? '#1a1410' : '#ffffff';
+}
+
 function buildBannerHtml(fmt, copy) {
   const w = fmt.w, h = fmt.h;
-  const vertical = h > w * 1.3;
+  const shortH = h < 130; // låga banners klarar bara overlay-stilen
+  const brand = adgenBrandStyle();
+  // Band/split kräver rimlig yta; tvinga overlay i låga/smala banners.
+  let style = brand.style;
+  if (shortH || w < 250) style = 'overlay';
+
   const headline = adgenEscapeHtml(copy.headline || '');
   const subline  = adgenEscapeHtml(copy.subline || '');
-  const cta       = adgenEscapeHtml(copy.cta || '');
+  const cta      = adgenEscapeHtml(copy.cta || '');
   const img = _adgenImageDataUrl || '';
-  const pad = vertical ? 16 : (w < 320 ? 14 : 22);
-  const hSize = vertical ? 20 : (w < 320 ? 17 : Math.min(30, Math.round(w/22)));
-  const sSize = vertical ? 13 : (w < 320 ? 11 : 14);
-  const ctaSize = vertical ? 13 : (w < 320 ? 11 : 13);
+  const accent = brand.color;
+  const onAccent = adgenTextOn(accent);
+
   let logoHtml = '';
   if (_adgenLogoDataUrl) {
     const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
-    const vpos = pos.indexOf('bottom') > -1 ? 'bottom:' + pad + 'px' : 'top:' + pad + 'px';
-    const hpos = pos.indexOf('right') > -1 ? 'right:' + pad + 'px' : 'left:' + pad + 'px';
-    const logoMax = Math.round(Math.min(w * 0.22, h * 0.16));
-    logoHtml = '<img src="' + _adgenLogoDataUrl + '" style="position:absolute;' + vpos + ';' + hpos + ';max-width:' + logoMax + 'px;max-height:' + Math.round(h*0.16) + 'px;z-index:2">';
+    const p = 14;
+    const vpos = pos.indexOf('bottom') > -1 ? 'bottom:' + p + 'px' : 'top:' + p + 'px';
+    const hpos = pos.indexOf('right') > -1 ? 'right:' + p + 'px' : 'left:' + p + 'px';
+    const logoMax = Math.round(Math.min(w * 0.2, h * 0.15));
+    logoHtml = '<img src="' + _adgenLogoDataUrl + '" style="position:absolute;' + vpos + ';' + hpos + ';max-width:' + logoMax + 'px;max-height:' + Math.round(h*0.15) + 'px;z-index:3">';
   }
-  return '<!DOCTYPE html><html lang="sv"><head><meta charset="utf-8"><style>' +
+
+  const head = '<!DOCTYPE html><html lang="sv"><head><meta charset="utf-8"><style>' +
     '*{margin:0;padding:0;box-sizing:border-box}' +
     'html,body{width:' + w + 'px;height:' + h + 'px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}' +
-    '.b{position:relative;width:' + w + 'px;height:' + h + 'px;cursor:pointer;overflow:hidden}' +
-    '.b-img{position:absolute;inset:0;background-image:url(' + img + ');background-size:cover;background-position:center}' +
-    '.b-ov{position:absolute;inset:0;background:linear-gradient(' + (vertical?'0deg':'90deg') + ',rgba(20,14,8,0.82) 0%,rgba(20,14,8,0.45) 55%,rgba(20,14,8,0.12) 100%)}' +
-    '.b-c{position:absolute;inset:0;padding:' + pad + 'px;display:flex;flex-direction:column;justify-content:' + (vertical?'flex-end':'center') + ';z-index:1}' +
-    '.b-h{color:#fff;font-size:' + hSize + 'px;font-weight:700;line-height:1.12;letter-spacing:-0.01em;margin-bottom:6px}' +
-    '.b-s{color:rgba(255,255,255,0.88);font-size:' + sSize + 'px;line-height:1.4;margin-bottom:12px}' +
-    '.b-cta{align-self:flex-start;background:#fff;color:#1a1410;font-size:' + ctaSize + 'px;font-weight:600;padding:8px 16px;border-radius:100px;white-space:nowrap}' +
-    '</style></head><body>' +
-    '<a class="b" href="#" onclick="return false" style="text-decoration:none">' +
-    '<div class="b-img"></div><div class="b-ov"></div>' + logoHtml +
-    '<div class="b-c">' +
-    (headline ? '<div class="b-h">' + headline + '</div>' : '') +
-    (subline ? '<div class="b-s">' + subline + '</div>' : '') +
-    (cta ? '<div class="b-cta">' + cta + '</div>' : '') +
-    '</div></a></body></html>';
+    '.b{position:relative;width:' + w + 'px;height:' + h + 'px;cursor:pointer;overflow:hidden}';
+
+  const parts = { w:w, h:h, shortH:shortH, headline:headline, subline:subline, cta:cta, img:img, accent:accent, onAccent:onAccent, logoHtml:logoHtml };
+  let inner;
+  if (style === 'band')       inner = adgenBandLayout(parts);
+  else if (style === 'split') inner = adgenSplitLayout(parts);
+  else                        inner = adgenOverlayLayout(parts);
+
+  return head + inner.css + '</style></head><body>' +
+    '<a class="b" href="#" onclick="return false" style="text-decoration:none">' + inner.html + '</a></body></html>';
+}
+
+// STIL 1: Overlay – text över helbild med toning (funkar i alla format).
+function adgenOverlayLayout(p) {
+  const w = p.w, h = p.h, shortH = p.shortH;
+  const pad = shortH ? 12 : (w < 320 ? 12 : 22);
+  const hSize = shortH ? Math.min(18, Math.round(h/5)) : (h > w*1.3 ? 22 : (w < 320 ? 17 : Math.min(32, Math.round(w/20))));
+  const sSize = shortH ? 11 : 14;
+  const ctaSize = shortH ? 11 : 13;
+  const vertical = h > w * 1.3;
+  const dir = shortH ? 'row' : 'column';
+  const align = shortH ? 'center;justify-content:space-between' : (vertical ? 'flex-start;justify-content:flex-end' : 'flex-start;justify-content:center');
+  const css =
+    '.b-img{position:absolute;inset:0;background-image:url(' + p.img + ');background-size:cover;background-position:center}' +
+    '.b-ov{position:absolute;inset:0;background:linear-gradient(' + (vertical?'0deg':'90deg') + ',rgba(20,14,8,0.85) 0%,rgba(20,14,8,0.5) 55%,rgba(20,14,8,0.12) 100%)}' +
+    '.b-c{position:absolute;inset:0;padding:' + pad + 'px;display:flex;flex-direction:' + dir + ';align-items:' + align + ';z-index:1;gap:' + (shortH?'10px':'0') + 'px}' +
+    '.b-txt{display:flex;flex-direction:column;min-width:0}' +
+    '.b-h{color:#fff;font-size:' + hSize + 'px;font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:' + (shortH?'2':'7') + 'px;text-shadow:0 1px 3px rgba(0,0,0,0.3)}' +
+    '.b-s{color:rgba(255,255,255,0.9);font-size:' + sSize + 'px;line-height:1.35;' + (shortH?'':'margin-bottom:14px;') + '}' +
+    '.b-cta{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;background:' + p.accent + ';color:' + p.onAccent + ';font-size:' + ctaSize + 'px;font-weight:700;padding:' + (shortH?'7px 13px':'9px 17px') + ';border-radius:8px;white-space:nowrap;flex-shrink:0}';
+  const html = '<div class="b-img"></div><div class="b-ov"></div>' + p.logoHtml +
+    '<div class="b-c"><div class="b-txt">' +
+    (p.headline ? '<div class="b-h">' + p.headline + '</div>' : '') +
+    (p.subline && !shortH ? '<div class="b-s">' + p.subline + '</div>' : '') +
+    '</div>' + (p.cta ? '<span class="b-cta">' + p.cta + ' <span style="font-size:0.9em">\u2192</span></span>' : '') + '</div>';
+  return { css:css, html:html };
+}
+
+// STIL 2: Band – bild upptill, färgat band med text nedtill.
+function adgenBandLayout(p) {
+  const w = p.w, h = p.h;
+  const bandH = Math.round(h * 0.42);
+  const hSize = Math.min(30, Math.round(w/22));
+  const css =
+    '.b-img{position:absolute;top:0;left:0;right:0;height:' + (h-bandH) + 'px;background-image:url(' + p.img + ');background-size:cover;background-position:center}' +
+    '.b-band{position:absolute;bottom:0;left:0;right:0;height:' + bandH + 'px;background:' + p.accent + ';padding:14px 18px;display:flex;flex-direction:column;justify-content:center}' +
+    '.b-h{color:' + p.onAccent + ';font-size:' + hSize + 'px;font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:5px}' +
+    '.b-s{color:' + p.onAccent + ';opacity:0.85;font-size:13px;line-height:1.3;margin-bottom:9px}' +
+    '.b-cta{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;background:' + p.onAccent + ';color:' + p.accent + ';font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;white-space:nowrap}';
+  const html = '<div class="b-img"></div>' + p.logoHtml + '<div class="b-band">' +
+    (p.headline ? '<div class="b-h">' + p.headline + '</div>' : '') +
+    (p.subline ? '<div class="b-s">' + p.subline + '</div>' : '') +
+    (p.cta ? '<span class="b-cta">' + p.cta + ' <span style="font-size:0.9em">\u2192</span></span>' : '') + '</div>';
+  return { css:css, html:html };
+}
+
+// STIL 3: Delad – bild på ena halvan, färgad yta med text på andra.
+function adgenSplitLayout(p) {
+  const w = p.w, h = p.h;
+  const vertical = h > w;
+  const hSize = Math.min(28, Math.round((vertical?w:w/2)/16));
+  const imgStyle = vertical
+    ? 'top:0;left:0;right:0;height:50%'
+    : 'top:0;left:0;bottom:0;width:50%';
+  const areaStyle = vertical
+    ? 'bottom:0;left:0;right:0;height:50%'
+    : 'top:0;right:0;bottom:0;width:50%';
+  const css =
+    '.b-img{position:absolute;' + imgStyle + ';background-image:url(' + p.img + ');background-size:cover;background-position:center}' +
+    '.b-area{position:absolute;' + areaStyle + ';background:' + p.accent + ';padding:16px 18px;display:flex;flex-direction:column;justify-content:center}' +
+    '.b-h{color:' + p.onAccent + ';font-size:' + hSize + 'px;font-weight:800;line-height:1.12;letter-spacing:-0.02em;margin-bottom:6px}' +
+    '.b-s{color:' + p.onAccent + ';opacity:0.85;font-size:13px;line-height:1.35;margin-bottom:12px}' +
+    '.b-cta{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;background:' + p.onAccent + ';color:' + p.accent + ';font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;white-space:nowrap}';
+  const html = '<div class="b-img"></div>' + p.logoHtml + '<div class="b-area">' +
+    (p.headline ? '<div class="b-h">' + p.headline + '</div>' : '') +
+    (p.subline ? '<div class="b-s">' + p.subline + '</div>' : '') +
+    (p.cta ? '<span class="b-cta">' + p.cta + ' <span style="font-size:0.9em">\u2192</span></span>' : '') + '</div>';
+  return { css:css, html:html };
 }
 
 let _adgenImage = null;
@@ -4790,14 +4940,16 @@ async function generateAdGen() {
     return '"' + id + '": { "headline": "...", "subline": "...", "cta": "..." }  // ' + f.label + ' (' + f.w + '×' + f.h + ', ' + shape + ')';
   }).join(',\n  ');
 
-  const prompt = 'Du är en senior copywriter specialiserad på digital annonsering med bevisat höga konverteringsgrader. Du skriver annonstext som fångar uppmärksamhet på under en sekund och driver till handling.\n\n' +
-    'PRINCIPER FÖR EN STARK ANNONS:\n' +
-    '- En enda tydlig idé per annons. Fokusera på den viktigaste nyttan för kunden, inte en lista med funktioner.\n' +
-    '- Led med värdet för mottagaren ("vad får jag ut av det?"), inte med företagets perspektiv.\n' +
-    '- Rubriken ska vara konkret och specifik, inte vag. Undvik tomma superlativ som "bäst" och "marknadsledande" om de inte styrks.\n' +
-    '- Skapa en tydlig anledning att agera nu. CTA ska vara handlingsdriven och friktionsfri.\n' +
-    '- Anpassa längd och ton efter format: i smala banners (t.ex. 728×90, 320×50) måste rubriken vara mycket kort (3-5 ord) och sublinen minimal eller tom. I stora stående format (Stories 1080×1920) finns plats för mer.\n' +
-    '- Språket ska vara på svenska, naturligt och trovärdigt – aldrig som översatt reklamsvenska.\n\n' +
+  const prompt = 'Du är en senior copywriter specialiserad på digital displayannonsering med bevisat höga konverteringsgrader. Du vet att mottagaren har 1-2 sekunder och skannar – inte läser. Du skriver annonstext som går fram direkt.\n\n' +
+    'RAMVERK FÖR STARK DISPLAYANNONS:\n' +
+    '- ETT budskap per annons. En huvudpoäng, ett värde, en handling. Aldrig flera budskap i samma annons.\n' +
+    '- Led med nyttan för mottagaren ("vad får jag ut av det?"), inte företagets perspektiv eller en funktionslista.\n' +
+    '- Minimal text: rubriken är ofta 3-7 ord, sublinen kort eller tom. Hela annonsen bör kännas som 5-10 ord totalt. Hellre för lite än för mycket.\n' +
+    '- Konkret framför vagt. "Sänk dina kostnader – börja idag" slår "Vi erbjuder marknadens bästa lösningar". Undvik tomma superlativ ("bäst", "marknadsledande") om de inte styrks.\n' +
+    '- CTA ska vara kort och handlingsorienterad: t.ex. "Läs mer", "Upptäck", "Börja nu", "Se erbjudandet". Den ska kännas som en knapp man vill trycka på.\n' +
+    '- Skriv ALDRIG in webbadresser (www), telefonnummer, e-post eller andra kontaktuppgifter i rubrik eller subline – klicklänken sköter det, och sådant skapar bara visuellt brus.\n' +
+    '- Anpassa efter format: i smala banners (728×90, 320×50, 320×100) måste rubriken vara mycket kort (3-5 ord) och sublinen minimal eller tom. I stora stående format (1080×1920) finns plats för något mer, men håll det ändå stramt.\n' +
+    '- Svenska som är naturlig och trovärdig – aldrig översatt reklamsvenska.\n\n' +
     'KAMPANJINFORMATION:\n' +
     'Företag: ' + company + '\n' +
     'Produkt/Kampanj: ' + product + '\n' +
@@ -4805,7 +4957,7 @@ async function generateAdGen() {
     'Önskad call to action: ' + cta + '\n' +
     (tone ? 'Ton: ' + tone + '\n' : '') +
     (reference ? '\nREFERENS / STILRIKTNING (efterlikna tonen och känslan i detta, men skriv originaltext – kopiera inte ordagrant):\n"' + reference + '"\n' : '') +
-    '\nSkriv anpassad copy för varje format nedan. Varje format har olika dimensioner och proportioner – anpassa rubrikens och sublinens längd därefter. CTA kan varieras något men ska ligga nära den önskade.\n\n' +
+    '\nSkriv anpassad copy för varje format nedan. Varje format har olika dimensioner och proportioner – anpassa rubrikens och sublinens längd därefter. Kom ihåg: ett budskap, minimal text, tydlig CTA. CTA kan varieras något men ska ligga nära den önskade.\n\n' +
     'Returnera ENBART ett giltigt JSON-objekt (inga kommentarer i själva svaret) med exakt ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
 
   try {
@@ -4889,16 +5041,52 @@ function drawAd(formatId, fmt, copy) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = fmt.w, H = fmt.h;
-  if (_adgenImage) {
-    const ia = _adgenImage.width / _adgenImage.height;
-    const ca = W / H;
-    let sx = 0, sy = 0, sw = _adgenImage.width, sh = _adgenImage.height;
-    if (ia > ca) { sw = _adgenImage.height * ca; sx = (_adgenImage.width - sw) / 2; }
-    else         { sh = _adgenImage.width / ca;  sy = (_adgenImage.height - sh) / 2; }
-    ctx.drawImage(_adgenImage, sx, sy, sw, sh, 0, 0, W, H);
-  } else {
-    ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, W, H);
-  }
+
+  // Läs kundens stil + färg (samma källa som HTML-bannern).
+  const brand = adgenBrandStyle();
+  let style = brand.style;
+  // Band/split behöver yta – tvinga overlay i låga/smala format.
+  if (H < 130 || W < 250) style = 'overlay';
+
+  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:brand.color, onAccent:adgenTextOn(brand.color) };
+  if (style === 'band')       drawAdBand(parts);
+  else if (style === 'split') drawAdSplit(parts);
+  else                        drawAdOverlay(parts);
+
+  drawAdLogo(ctx, W, H);
+}
+
+// Ritar loggan i valt hörn (gemensam för alla stilar).
+function drawAdLogo(ctx, W, H) {
+  if (!_adgenLogo) return;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 6;
+  const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
+  const lr = Math.min((W*0.22) / _adgenLogo.width, (H*0.14) / _adgenLogo.height);
+  const lw = _adgenLogo.width * lr, lh = _adgenLogo.height * lr;
+  const m = Math.round(W * 0.04);
+  let lx = m, ly = m;
+  if (pos.indexOf('right') > -1) lx = W - lw - m;
+  if (pos.indexOf('bottom') > -1) ly = H - lh - m;
+  ctx.drawImage(_adgenLogo, lx, ly, lw, lh);
+  ctx.restore();
+}
+
+// Hjälpare: rita bakgrundsbilden beskuren till en yta (x,y,w,h på canvasen).
+function drawAdImageInto(ctx, x, y, w, h) {
+  if (!_adgenImage) { ctx.fillStyle = '#1a1a2e'; ctx.fillRect(x, y, w, h); return; }
+  const ia = _adgenImage.width / _adgenImage.height;
+  const ca = w / h;
+  let sx = 0, sy = 0, sw = _adgenImage.width, sh = _adgenImage.height;
+  if (ia > ca) { sw = _adgenImage.height * ca; sx = (_adgenImage.width - sw) / 2; }
+  else         { sh = _adgenImage.width / ca;  sy = (_adgenImage.height - sh) / 2; }
+  ctx.drawImage(_adgenImage, sx, sy, sw, sh, x, y, w, h);
+}
+
+// STIL 1: Overlay – helbild med toning, text över.
+function drawAdOverlay(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
   const isWide = W / H > 3;
   const grad = ctx.createLinearGradient(0, isWide ? 0 : H * 0.3, 0, H);
   grad.addColorStop(0, 'rgba(0,0,0,0)');
@@ -4911,7 +5099,7 @@ function drawAd(formatId, fmt, copy) {
   const ctaSz      = isWide ? Math.round(H * 0.14) : Math.round(W * 0.034);
   let baseY = isPortrait ? H * 0.72 : (isWide ? H * 0.28 : H * 0.56);
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#E8341A';
+  ctx.fillStyle = p.accent;
   ctx.fillRect(padding, baseY - Math.round(W * 0.022), Math.round(W * 0.08), Math.round(Math.max(3, H * 0.008)));
   ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
   ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8;
@@ -4929,24 +5117,90 @@ function drawAd(formatId, fmt, copy) {
   const ctaW = ctx.measureText(ctaText).width + ctaSz * 1.6;
   const ctaH = ctaSz * 1.8;
   const ctaY = Math.min(afterSL, H - ctaH - padding);
-  ctx.fillStyle = '#C9A84C';
+  ctx.fillStyle = p.accent;
   roundRect(ctx, padding, ctaY, ctaW, ctaH, ctaH * 0.2);
-  ctx.fillStyle = '#0a0a0a'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = p.onAccent; ctx.textBaseline = 'middle';
   ctx.fillText(ctaText, padding + ctaSz * 0.8, ctaY + ctaH / 2);
+}
 
-  if (_adgenLogo) {
-    ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 6;
-    const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
-    const maxLogoW = W * 0.22;
-    const maxLogoH = H * 0.14;
-    const lr = Math.min(maxLogoW / _adgenLogo.width, maxLogoH / _adgenLogo.height);
-    const lw = _adgenLogo.width * lr, lh = _adgenLogo.height * lr;
-    const m = Math.round(W * 0.04);
-    let lx = m, ly = m;
-    if (pos.indexOf('right') > -1) lx = W - lw - m;
-    if (pos.indexOf('bottom') > -1) ly = H - lh - m;
-    ctx.drawImage(_adgenLogo, lx, ly, lw, lh);
-    ctx.shadowBlur = 0;
+// STIL 2: Band – bild upptill, färgat band med text nedtill.
+function drawAdBand(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const bandH = Math.round(H * 0.42);
+  drawAdImageInto(ctx, 0, 0, W, H - bandH);
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(0, H - bandH, W, bandH);
+  const pad = Math.round(W * 0.05);
+  const headlineSz = Math.round(W * 0.06);
+  const sublineSz = Math.round(W * 0.035);
+  const ctaSz = Math.round(W * 0.032);
+  let y = H - bandH + Math.round(bandH * 0.16);
+  ctx.textBaseline = 'top';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = p.onAccent; ctx.shadowBlur = 0;
+  wrapText(ctx, copy.headline || '', pad, y, W - pad*2, headlineSz*1.15);
+  const hlLines = estimateLines(ctx, copy.headline || '', W - pad*2);
+  y += hlLines * headlineSz * 1.15 + Math.round(H*0.012);
+  if (copy.subline) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.globalAlpha = 0.85;
+    wrapText(ctx, copy.subline, pad, y, W - pad*2, sublineSz*1.35);
+    ctx.globalAlpha = 1;
+    y += estimateLines(ctx, copy.subline, W - pad*2) * sublineSz * 1.35 + Math.round(H*0.015);
+  }
+  if (copy.cta) {
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
+    const ctaH = ctaSz * 1.9;
+    const ctaY = Math.min(y, H - ctaH - pad*0.6);
+    ctx.fillStyle = p.onAccent;
+    roundRect(ctx, pad, ctaY, ctaW, ctaH, ctaH*0.18);
+    ctx.fillStyle = p.accent; ctx.textBaseline = 'middle';
+    ctx.fillText(copy.cta, pad + ctaSz*0.8, ctaY + ctaH/2);
+  }
+}
+
+// STIL 3: Delad – bild på ena halvan, färgad yta med text på andra.
+function drawAdSplit(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const vertical = H > W;
+  if (vertical) {
+    drawAdImageInto(ctx, 0, 0, W, H/2);
+    ctx.fillStyle = p.accent; ctx.fillRect(0, H/2, W, H/2);
+  } else {
+    drawAdImageInto(ctx, 0, 0, W/2, H);
+    ctx.fillStyle = p.accent; ctx.fillRect(W/2, 0, W/2, H);
+  }
+  const areaX = vertical ? 0 : W/2;
+  const areaY = vertical ? H/2 : 0;
+  const areaW = vertical ? W : W/2;
+  const areaH = vertical ? H/2 : H;
+  const pad = Math.round(areaW * 0.09);
+  const headlineSz = Math.round(areaW * 0.075);
+  const sublineSz = Math.round(areaW * 0.045);
+  const ctaSz = Math.round(areaW * 0.04);
+  let y = areaY + Math.round(areaH * 0.2);
+  ctx.textBaseline = 'top'; ctx.shadowBlur = 0;
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = p.onAccent;
+  wrapText(ctx, copy.headline || '', areaX + pad, y, areaW - pad*2, headlineSz*1.15);
+  const hlLines = estimateLines(ctx, copy.headline || '', areaW - pad*2);
+  y += hlLines * headlineSz * 1.15 + Math.round(areaH*0.03);
+  if (copy.subline) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.globalAlpha = 0.85;
+    wrapText(ctx, copy.subline, areaX + pad, y, areaW - pad*2, sublineSz*1.35);
+    ctx.globalAlpha = 1;
+    y += estimateLines(ctx, copy.subline, areaW - pad*2) * sublineSz * 1.35 + Math.round(areaH*0.03);
+  }
+  if (copy.cta) {
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
+    const ctaH = ctaSz * 1.9;
+    ctx.fillStyle = p.onAccent;
+    roundRect(ctx, areaX + pad, y, ctaW, ctaH, ctaH*0.18);
+    ctx.fillStyle = p.accent; ctx.textBaseline = 'middle';
+    ctx.fillText(copy.cta, areaX + pad + ctaSz*0.8, y + ctaH/2);
   }
 }
 
