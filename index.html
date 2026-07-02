@@ -1109,6 +1109,7 @@ body.brief-mode{background:#FBFAF7}
     <div style="display:flex;align-items:center;gap:1.25rem">
       <button class="auth-when-out" onclick="goToAuth()" style="background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Logga in</button>
       <button class="auth-when-in" onclick="goToLibrary()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mitt bibliotek</button>
+      <button class="auth-when-in" onclick="goToBrandProfile()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Min profil</button>
       <button class="auth-when-in" onclick="goToTools()" style="display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Mina verktyg</button>
       <button class="auth-when-in" onclick="authLogout()" style="display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
       <button onclick="goToTools()" style="background:#fff;color:#1d1d1f;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.3s,color 0.3s" id="nav-btn-testa">Testa nu</button>
@@ -1244,10 +1245,15 @@ body.brief-mode{background:#FBFAF7}
 <div id="tools-page">
   <nav class="tools-nav">
     <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
-    <button onclick="goToLanding()" style="font-size:13px;color:#8a7d6d;cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
-      Till startsidan
-    </button>
+    <div style="display:flex;gap:1.25rem;align-items:center">
+      <button class="auth-when-in" onclick="goToLibrary()" style="display:none;font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Bibliotek</button>
+      <button class="auth-when-in" onclick="goToBrandProfile()" style="display:none;font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Min profil</button>
+      <button class="auth-when-in" onclick="authLogout()" style="display:none;font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Logga ut</button>
+      <button onclick="goToLanding()" style="font-size:13px;color:#8a7d6d;cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+        Till startsidan
+      </button>
+    </div>
   </nav>
   <div class="tools-hero">
     <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:1.5rem">
@@ -1307,6 +1313,41 @@ body.brief-mode{background:#FBFAF7}
         <div class="tsell-tags"><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">14 format</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">HTML5-banners</span><span class="tsell-tag" style="color:#534AB7;background:rgba(127,119,221,0.1)">Sociala format</span></div>
         <button class="tsell-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div id="brand-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+    <div style="display:flex;gap:1.25rem;align-items:center">
+      <button onclick="goToTools()" style="background:none;border:none;color:#8a7d6d;font-size:14px;cursor:pointer;font-family:inherit">Verktyg</button>
+      <button onclick="goToLibrary()" style="background:none;border:none;color:#8a7d6d;font-size:14px;cursor:pointer;font-family:inherit">Bibliotek</button>
+      <button onclick="authLogout()" style="background:none;border:none;color:#8a7d6d;font-size:14px;cursor:pointer;font-family:inherit">Logga ut</button>
+    </div>
+  </nav>
+  <div style="max-width:560px;margin:0 auto;padding:2.5rem 1.5rem">
+    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Min varumärkesprofil</h1>
+    <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem;line-height:1.6">Fyll i din företagsinfo en gång, så fylls den i automatiskt i verktygen. Du kan alltid ändra den direkt i respektive verktyg.</p>
+    <div id="brand-msg" style="display:none;font-size:13px;padding:12px 16px;border-radius:10px;margin-bottom:1.5rem;line-height:1.5"></div>
+    <div style="background:#fff;border:1px solid #e8e4db;border-radius:18px;padding:2rem">
+      <div style="margin-bottom:1.25rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Företagsnamn</label>
+        <input id="brand-company" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Björk & Partners AB">
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Bransch</label>
+        <input id="brand-industry" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Tech, Fastighet, Retail">
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Om företaget</label>
+        <textarea id="brand-description" style="width:100%;min-height:90px;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box;resize:vertical" placeholder="Kort beskrivning av vad ni gör, era värderingar och vad som gör er unika."></textarea>
+      </div>
+      <div style="margin-bottom:1.75rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Önskad ton</label>
+        <input id="brand-tone" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Professionell och förtroendegivande">
+      </div>
+      <button id="brand-save-btn" onclick="saveBrandProfile()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Spara profil</button>
     </div>
   </div>
 </div>
@@ -3014,7 +3055,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','library-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','library-page','brand-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -3299,6 +3340,84 @@ async function libraryDelete(id) {
   renderLibrary();
 }
 
+/* ── Varumärkesprofil ──────────────────────────────────────────────────── */
+let _brandProfile = null;
+
+// Hämtar användarens profil från databasen (om den finns).
+async function fetchBrandProfile() {
+  if (!_currentUser) return null;
+  // maybeSingle() returnerar en rad ELLER null utan att kasta fel om raden saknas
+  const { data, error } = await sb().from('brand_profiles')
+    .select('*')
+    .eq('user_id', _currentUser.id)
+    .maybeSingle();
+  if (error) { console.log('Profil-hämtning fel:', error); return null; }
+  _brandProfile = data;
+  return data;
+}
+
+async function goToBrandProfile() {
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('brand-page').style.display = 'block';
+  window.scrollTo(0,0);
+  const p = await fetchBrandProfile();
+  document.getElementById('brand-company').value     = (p && p.company) || '';
+  document.getElementById('brand-industry').value    = (p && p.industry) || '';
+  document.getElementById('brand-description').value = (p && p.description) || '';
+  document.getElementById('brand-tone').value        = (p && p.tone) || '';
+}
+
+async function saveBrandProfile() {
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = document.getElementById('brand-save-btn');
+  const profile = {
+    user_id: _currentUser.id,
+    company: document.getElementById('brand-company').value.trim(),
+    industry: document.getElementById('brand-industry').value.trim(),
+    description: document.getElementById('brand-description').value.trim(),
+    tone: document.getElementById('brand-tone').value.trim(),
+    updated_at: new Date().toISOString()
+  };
+  btn.disabled = true; btn.textContent = 'Sparar...';
+  // upsert = "uppdatera om raden finns, annars skapa den". Perfekt när det ska
+  // finnas exakt en profil per användare.
+  const { error } = await sb().from('brand_profiles').upsert(profile);
+  btn.disabled = false;
+  if (error) {
+    btn.textContent = 'Spara profil';
+    document.getElementById('brand-msg').style.display = 'block';
+    document.getElementById('brand-msg').style.background = '#FCEBEB';
+    document.getElementById('brand-msg').style.color = '#A32D2D';
+    document.getElementById('brand-msg').textContent = 'Kunde inte spara: ' + (error.message || error);
+    return;
+  }
+  _brandProfile = profile;
+  btn.textContent = '✓ Sparad';
+  const msg = document.getElementById('brand-msg');
+  msg.style.display = 'block';
+  msg.style.background = '#E1F5EE';
+  msg.style.color = '#0F6E56';
+  msg.textContent = 'Din varumärkesprofil är sparad och fylls nu i automatiskt i verktygen.';
+  setTimeout(function(){ btn.textContent = 'Spara profil'; }, 2500);
+}
+
+// Fyller i ett formulärfält bara om det är tomt (skriv aldrig över det kunden själv skrivit).
+function fillIfEmpty(id, value) {
+  const el = document.getElementById(id);
+  if (el && !el.value && value) el.value = value;
+}
+
+// Auto-fyller The Briefs formulär från den sparade profilen.
+async function applyBrandProfileToBrief() {
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('br-company', p.company);
+  fillIfEmpty('br-industry', p.industry);
+  fillIfEmpty('br-tone', p.tone);
+}
+
 function goToToolLogin(dest){
   if(dest==='native') goToNative();
   else if(dest==='dist') goToDist();
@@ -3336,6 +3455,7 @@ function goToBrief(){
   document.getElementById('brief-page').style.display='block';
   document.body.classList.add('brief-mode');
   window.scrollTo(0,0);
+  applyBrandProfileToBrief();
 }
 
 /* ══════════════════════════════════════════
