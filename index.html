@@ -715,7 +715,7 @@ body.native-mode{background:#FBFAF7}
 .native-result{display:none;background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:2rem;margin-top:1.5rem}
 .native-result-headline{font-size:24px;font-weight:600;color:#1a1a1a;line-height:1.3;margin-bottom:1rem;letter-spacing:-0.02em}
 .native-result-ingress{font-size:16px;color:#4A3F35;line-height:1.7;font-style:italic;border-left:3px solid #D4A857;padding-left:1rem;margin-bottom:1.5rem}
-.native-result-body{font-size:15px;color:#2a2520;line-height:1.85;white-space:pre-line}
+.native-result-body{font-size:15px;color:#2a2520;line-height:1.85}
 .native-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #F0EEE8}
 .native-action-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid #F0EEE8;background:#fff;color:#2a2520;transition:all 0.15s}
 .native-action-btn:hover{border-color:#E8C878}
@@ -1097,9 +1097,9 @@ body.brief-mode{background:#FBFAF7}
 .brief-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:8px}
 .brief-section-content{font-size:14px;color:#2a2520;line-height:1.8}
-.brief-section-content p,.mp-md p,.newsroom-result-body p,.newsroom-result-boilerplate p{margin:0 0 0.9em}
-.brief-section-content p:last-child,.mp-md p:last-child,.newsroom-result-body p:last-child,.newsroom-result-boilerplate p:last-child{margin-bottom:0}
-.brief-section-content strong,.mp-md strong,.newsroom-result-body strong{font-weight:700;color:#1a1a1a}
+.brief-section-content p,.mp-md p,.newsroom-result-body p,.newsroom-result-boilerplate p,.native-result-body p{margin:0 0 0.9em}
+.brief-section-content p:last-child,.mp-md p:last-child,.newsroom-result-body p:last-child,.newsroom-result-boilerplate p:last-child,.native-result-body p:last-child{margin-bottom:0}
+.brief-section-content strong,.mp-md strong,.newsroom-result-body strong,.native-result-body strong{font-weight:700;color:#1a1a1a}
 .brief-section-content .md-sub,.mp-md .md-sub,.newsroom-result-body .md-sub{font-size:13px;font-weight:700;color:#6b5d47;margin:1.2em 0 0.5em;letter-spacing:-0.01em}
 .brief-section-content .md-sub:first-child,.mp-md .md-sub:first-child,.newsroom-result-body .md-sub:first-child{margin-top:0}
 .brief-section-content .md-list,.mp-md .md-list,.newsroom-result-body .md-list{margin:0.4em 0 0.9em;padding-left:1.3em}
@@ -3239,7 +3239,7 @@ Total kampanjbudget: ${budget.toLocaleString('sv-SE')} kr`;
 function renderNativeArticle(article, label) {
   document.getElementById('native-result-headline').textContent = article.headline||'';
   document.getElementById('native-result-ingress').textContent  = article.ingress||'';
-  document.getElementById('native-result-body').textContent     = article.body||'';
+  document.getElementById('native-result-body').innerHTML       = mdToHtml(article.body);
   window._nativeArticle = article;
 }
 
