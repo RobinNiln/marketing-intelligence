@@ -2599,7 +2599,7 @@ let _currentUser = null;
    - Nätverksfel / proxy nere
    Kastar alltid ett Error med ett användarvänligt .message.
 ──────────────────────────────────────────────────────────────────────────── */
-async function safeFetch(messages, timeoutMs = 45000) {
+async function safeFetch(messages, timeoutMs = 80000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -2617,7 +2617,7 @@ async function safeFetch(messages, timeoutMs = 45000) {
   } catch (err) {
     clearTimeout(timer);
     if (err.name === 'AbortError') {
-      throw new Error('Förfrågan tog för lång tid (>45 s). Kontrollera din uppkoppling och försök igen.');
+      throw new Error('Förfrågan tog för lång tid (>' + Math.round(timeoutMs/1000) + ' s). Försök igen – ibland är servern trög en kort stund.');
     }
     throw new Error('Kunde inte nå servern. Kontrollera din uppkoppling och försök igen.');
   }
@@ -5053,7 +5053,7 @@ async function generateAdGen() {
     'Returnera ENBART ett giltigt JSON-objekt (inga kommentarer i själva svaret) med exakt ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
 
   try {
-    const data = await safeFetch([{ role: 'user', content: prompt }], 45000, 'ad-copy');
+    const data = await safeFetch([{ role: 'user', content: prompt }], 80000, 'ad-copy');
     const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = raw.replace(/```json|```/g, '').trim();
     _adgenCopyData = JSON.parse(clean);
