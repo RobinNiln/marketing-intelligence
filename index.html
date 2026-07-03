@@ -743,6 +743,47 @@ body.native-mode{background:#FBFAF7}
 @media(max-width:640px){.tools-hero{padding:3rem 1.5rem 2rem}}
 .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#e8e4db;border:1px solid #e8e4db;border-radius:12px;overflow:hidden;width:100%;margin:0 0 4rem}
 @media(max-width:700px){.tools-grid{grid-template-columns:1fr}}
+/* ── Inloggad startsida ── */
+.home-wrap{max-width:1080px;margin:0 auto;padding:2.5rem 2rem 4rem}
+.home-greeting{margin-bottom:2rem}
+.home-eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:1rem}
+.home-eyebrow span{display:block;width:24px;height:1px;background:#C9A84C}
+.home-greeting h1{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#2C2520;margin:0 0 0.5rem}
+.home-greeting p{font-size:15px;color:#8a7d6d;line-height:1.7;margin:0}
+.home-tip{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(201,168,76,0.09),rgba(201,168,76,0.04));border:1px solid rgba(201,168,76,0.28);border-radius:14px;padding:1.1rem 1.4rem;margin-bottom:2rem}
+.home-tip-icon{font-size:22px}
+.home-tip-title{font-size:14px;font-weight:700;color:#2C2520;margin-bottom:3px}
+.home-tip-text{font-size:13px;color:#8a7d6d;line-height:1.6}
+.home-tip-btn{flex-shrink:0;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem}
+.home-stat{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.5rem 1.6rem}
+.home-stat-num{font-size:2rem;font-weight:700;color:#2C2520;letter-spacing:-0.02em;line-height:1;margin-bottom:8px}
+.home-stat-label{font-size:12.5px;color:#9A8570;font-weight:500}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.home-card{background:#fff;border:1px solid #ece8df;border-radius:16px;padding:1.6rem}
+.home-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.home-card-title{font-size:15px;font-weight:700;color:#2C2520}
+.home-card-link{background:none;border:none;color:#9c7d2e;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.home-chart{display:flex;flex-direction:column;gap:14px}
+.home-bar-row{display:flex;align-items:center;gap:12px}
+.home-bar-label{width:120px;flex-shrink:0;font-size:13px;color:#5a5650;font-weight:500}
+.home-bar-track{flex:1;height:26px;background:#f4f1ea;border-radius:6px;overflow:hidden;position:relative}
+.home-bar-fill{height:100%;border-radius:6px;transition:width 0.6s ease;min-width:2px}
+.home-bar-val{width:30px;flex-shrink:0;text-align:right;font-size:13px;font-weight:700;color:#2C2520}
+.home-empty{text-align:center;color:#9A8570;padding:2.5rem 1rem;font-size:13.5px;line-height:1.6}
+.home-recent{display:flex;flex-direction:column;gap:2px}
+.home-recent-item{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:9px;cursor:pointer;transition:background 0.12s;border:none;background:none;font-family:inherit;text-align:left;width:100%}
+.home-recent-item:hover{background:#f7f4ee}
+.home-recent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.home-recent-main{flex:1;min-width:0}
+.home-recent-title{font-size:13.5px;font-weight:600;color:#2C2520;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-recent-meta{font-size:11.5px;color:#9A8570;margin-top:2px}
+.home-quick{display:flex;flex-wrap:wrap;gap:10px}
+.home-quick-btn{display:inline-flex;align-items:center;gap:9px;background:#faf8f4;border:1px solid #ece8df;border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.home-quick-btn:hover{background:#f2efe8;border-color:#dcd6ca}
+.hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+@media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
+
 .tool-card{background:#fdfcfa;padding:2rem;cursor:default;transition:background 0.15s;position:relative;display:flex;flex-direction:column;gap:0;min-height:280px}
 .tool-card:hover{background:#f7f4ee}
 .tool-card:hover .tool-card-cta{opacity:1}
@@ -1139,6 +1180,7 @@ body.brief-mode{background:#FBFAF7}
     <span class="sp-link-text" style="font-weight:700;color:#2C2520">Meny</span>
   </button>
   <nav class="sp-links">
+    <button class="sp-link" data-page="home-page" onclick="goToHome()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l8-7 8 7"/><path d="M5 9v10h12V9"/></svg><span class="sp-link-text">Hem</span></button>
     <button class="sp-link" data-page="tools-page" onclick="goToTools()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg><span class="sp-link-text">Verktyg</span></button>
     <button class="sp-link" data-page="library-page" onclick="goToLibrary()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h5v14H4zM9 4h5v14H9z"/><path d="M14 5l4 1-2 13-4-1"/></svg><span class="sp-link-text">Bibliotek</span></button>
     <button class="sp-link" data-page="brand-page" onclick="goToBrandProfile()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="8" r="3.5"/><path d="M4 19c0-3.5 3-6 7-6s7 2.5 7 6"/></svg><span class="sp-link-text">Min profil</span></button>
@@ -1285,6 +1327,78 @@ body.brief-mode{background:#FBFAF7}
     </div>
   </footer>
 
+</div>
+
+<div id="home-page" style="display:none">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+    <div style="display:flex;gap:1.25rem;align-items:center">
+      <button onclick="goToTools()" style="font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Verktyg</button>
+      <button onclick="goToLibrary()" style="font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Bibliotek</button>
+      <button onclick="goToBrandProfile()" style="font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Min profil</button>
+      <button onclick="authLogout()" style="font-size:13px;color:#8a7d6d;cursor:pointer;background:none;border:none;font-family:inherit">Logga ut</button>
+    </div>
+  </nav>
+
+  <div class="home-wrap">
+    <!-- Hälsning -->
+    <div class="home-greeting">
+      <div class="home-eyebrow"><span></span>Din översikt</div>
+      <h1 id="home-hello">Välkommen tillbaka</h1>
+      <p id="home-subtitle">Här är en överblick över ditt arbete i Mava.</p>
+    </div>
+
+    <!-- Profil-tips (visas bara om profilen är ofylld) -->
+    <div id="home-profile-tip" class="home-tip" style="display:none">
+      <div class="home-tip-icon">✨</div>
+      <div style="flex:1">
+        <div class="home-tip-title">Fyll i din varumärkesprofil</div>
+        <div class="home-tip-text">När din profil är ifylld förfylls verktygen automatiskt och AI:n följer er ton och era budskap – bättre resultat med mindre jobb.</div>
+      </div>
+      <button class="home-tip-btn" onclick="goToBrandProfile()">Fyll i profil</button>
+    </div>
+
+    <!-- Snabbstatistik -->
+    <div class="home-stats" id="home-stats">
+      <div class="home-stat"><div class="home-stat-num" id="stat-total">–</div><div class="home-stat-label">Produktioner totalt</div></div>
+      <div class="home-stat"><div class="home-stat-num" id="stat-month">–</div><div class="home-stat-label">Senaste 30 dagarna</div></div>
+      <div class="home-stat"><div class="home-stat-num" id="stat-top">–</div><div class="home-stat-label">Mest använda verktyg</div></div>
+    </div>
+
+    <div class="home-grid">
+      <!-- Användningsgraf -->
+      <div class="home-card">
+        <div class="home-card-head">
+          <div class="home-card-title">Produktioner per verktyg</div>
+        </div>
+        <div id="home-chart" class="home-chart"></div>
+      </div>
+
+      <!-- Senaste produktioner + bibliotek-genväg -->
+      <div class="home-card">
+        <div class="home-card-head">
+          <div class="home-card-title">Senaste produktioner</div>
+          <button class="home-card-link" onclick="goToLibrary()">Till biblioteket →</button>
+        </div>
+        <div id="home-recent" class="home-recent"></div>
+      </div>
+    </div>
+
+    <!-- Snabbåtkomst verktyg -->
+    <div class="home-card" style="margin-top:1.25rem">
+      <div class="home-card-head">
+        <div class="home-card-title">Snabbstart</div>
+        <button class="home-card-link" onclick="goToTools()">Alla verktyg →</button>
+      </div>
+      <div class="home-quick">
+        <button class="home-quick-btn" onclick="showApp()"><span class="hq-dot" style="background:#1D9E75"></span>Market Pulse</button>
+        <button class="home-quick-btn" onclick="goToBrief()"><span class="hq-dot" style="background:#C9A84C"></span>The Brief</button>
+        <button class="home-quick-btn" onclick="goToNewsroom()"><span class="hq-dot" style="background:#378ADD"></span>Newsroom</button>
+        <button class="home-quick-btn" onclick="goToNative()"><span class="hq-dot" style="background:#D85A30"></span>Native Auto Reach</button>
+        <button class="home-quick-btn" onclick="goToAdCopy()"><span class="hq-dot" style="background:#7F77DD"></span>AdStudio</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="tools-page">
@@ -3382,7 +3496,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -3397,6 +3511,102 @@ function goToTools(){
   document.getElementById('tools-page').style.display='block';
   setActivePanelLink('tools-page');
   window.scrollTo(0,0);
+}
+
+// Färger per verktyg – återanvänds i graf och "senaste"-prickar.
+const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD' };
+
+async function goToHome(){
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('home-page').style.display='block';
+  setActivePanelLink('home-page');
+  window.scrollTo(0,0);
+
+  // Hälsning – använd företaget från profilen om det finns.
+  const p = _brandProfile || await fetchBrandProfile();
+  const hello = document.getElementById('home-hello');
+  if (p && p.company) hello.textContent = 'Välkommen tillbaka, ' + p.company;
+  else hello.textContent = 'Välkommen tillbaka';
+
+  // Profil-tips: visa bara om profilen saknas eller är i stort sett tom.
+  const tip = document.getElementById('home-profile-tip');
+  const profileThin = !p || (!p.description && !p.key_messages && !p.default_audience);
+  tip.style.display = profileThin ? 'flex' : 'none';
+
+  // Hämta produktioner och bygg översikten på riktig data.
+  renderHomeData();
+}
+
+async function renderHomeData(){
+  const { data, error } = await fetchProductions();
+  const chart  = document.getElementById('home-chart');
+  const recent = document.getElementById('home-recent');
+
+  if (error) {
+    chart.innerHTML  = '<div class="home-empty">Kunde inte ladda data just nu.</div>';
+    recent.innerHTML = '';
+    return;
+  }
+
+  const items = data || [];
+
+  // ── Snabbstatistik ──
+  document.getElementById('stat-total').textContent = items.length;
+
+  const now = Date.now();
+  const monthCount = items.filter(function(it){
+    return (now - new Date(it.created_at).getTime()) <= 30*24*60*60*1000;
+  }).length;
+  document.getElementById('stat-month').textContent = monthCount;
+
+  // Räkna per verktyg.
+  const counts = {};
+  items.forEach(function(it){ counts[it.tool] = (counts[it.tool] || 0) + 1; });
+
+  // Mest använda verktyg.
+  let topTool = '–';
+  let topN = 0;
+  Object.keys(counts).forEach(function(t){ if (counts[t] > topN) { topN = counts[t]; topTool = TOOL_LABELS[t] || t; } });
+  document.getElementById('stat-top').textContent = items.length ? topTool : '–';
+
+  // ── Graf: en stapel per verktyg ──
+  if (items.length === 0) {
+    chart.innerHTML = '<div class="home-empty">Inga produktioner än. Skapa något i ett verktyg så dyker din statistik upp här.</div>';
+  } else {
+    const maxN = Math.max.apply(null, Object.values(counts));
+    // Visa alla fem verktyg i fast ordning, även de med 0, så grafen känns komplett.
+    const order = ['market-pulse','brief','newsroom','native','adstudio'];
+    chart.innerHTML = order.map(function(t){
+      const n = counts[t] || 0;
+      const pct = maxN ? Math.round((n / maxN) * 100) : 0;
+      const color = TOOL_COLORS[t] || '#C9A84C';
+      return '<div class="home-bar-row">' +
+        '<div class="home-bar-label">' + (TOOL_LABELS[t] || t) + '</div>' +
+        '<div class="home-bar-track"><div class="home-bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<div class="home-bar-val">' + n + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── Senaste produktioner (max 5) ──
+  if (items.length === 0) {
+    recent.innerHTML = '<div class="home-empty">Dina sparade produktioner visas här.</div>';
+  } else {
+    _libraryItems = items; // så libraryOpen kan hitta dem
+    recent.innerHTML = items.slice(0, 5).map(function(it){
+      const date = new Date(it.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
+      const label = TOOL_LABELS[it.tool] || it.tool;
+      const color = TOOL_COLORS[it.tool] || '#C9A84C';
+      return '<button class="home-recent-item" onclick="libraryOpen(\'' + it.id + '\')">' +
+        '<span class="home-recent-dot" style="background:' + color + '"></span>' +
+        '<span class="home-recent-main">' +
+          '<span class="home-recent-title">' + escapeHtmlLib(it.title) + '</span>' +
+          '<span class="home-recent-meta">' + label + ' · ' + date + '</span>' +
+        '</span>' +
+      '</button>';
+    }).join('');
+  }
 }
 
 /* ── Auth ──────────────────────────────────────────────────────────────── */
@@ -3504,7 +3714,7 @@ function onAuthChanged(){
   if (authed) {
     document.getElementById('auth-email').value = '';
     document.getElementById('auth-password').value = '';
-    goToTools();
+    goToHome();
   }
 }
 
