@@ -784,6 +784,40 @@ body.native-mode{background:#FBFAF7}
 .hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 @media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
 
+/* Onboarding-checklista */
+.home-onboard{background:#fff;border:1px solid #ece8df;border-radius:16px;padding:1.5rem 1.6rem;margin-bottom:2rem}
+.home-onboard-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
+.home-onboard-title{font-size:16px;font-weight:700;color:#2C2520;margin-bottom:3px}
+.home-onboard-sub{font-size:13px;color:#8a7d6d}
+.home-onboard-progress{flex-shrink:0;font-size:12px;font-weight:700;color:#9c7d2e;background:rgba(201,168,76,0.12);border-radius:100px;padding:5px 12px}
+.home-step{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid #f2efe8}
+.home-step-check{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.home-step-check.done{background:#1D9E75;color:#fff}
+.home-step-check.todo{background:#f2efe8;color:#c9c2b5;border:1.5px solid #e6e1d6}
+.home-step-main{flex:1;min-width:0}
+.home-step-title{font-size:14px;font-weight:600;color:#2C2520}
+.home-step-title.done{color:#9A8570;text-decoration:line-through}
+.home-step-btn{flex-shrink:0;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.home-step-btn.done{display:none}
+
+/* Notiser */
+.home-notices{background:linear-gradient(135deg,rgba(55,138,221,0.06),rgba(55,138,221,0.02));border:1px solid rgba(55,138,221,0.2);border-radius:14px;padding:1.3rem 1.5rem;margin-bottom:2rem}
+.home-notices-head{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.home-notices-dot{width:8px;height:8px;border-radius:50%;background:#378ADD}
+.home-notices-label{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#378ADD}
+.home-notice{padding:9px 0;border-top:1px solid rgba(55,138,221,0.12)}
+.home-notice:first-child{border-top:none;padding-top:0}
+.home-notice-title{font-size:13.5px;font-weight:700;color:#2C2520;margin-bottom:2px}
+.home-notice-date{font-size:11px;font-weight:600;color:#8aa8cc;margin-left:8px}
+.home-notice-text{font-size:13px;color:#6a7684;line-height:1.55}
+
+/* Aktivitet över tid */
+.home-activity{display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px}
+.home-activity-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.home-activity-bar{width:100%;max-width:38px;background:#C9A84C;border-radius:5px 5px 0 0;min-height:3px;transition:height 0.5s ease}
+.home-activity-num{font-size:11px;font-weight:700;color:#2C2520}
+.home-activity-label{font-size:10.5px;color:#9A8570;white-space:nowrap}
+
 .tool-card{background:#fdfcfa;padding:2rem;cursor:default;transition:background 0.15s;position:relative;display:flex;flex-direction:column;gap:0;min-height:280px}
 .tool-card:hover{background:#f7f4ee}
 .tool-card:hover .tool-card-cta{opacity:1}
@@ -1351,6 +1385,18 @@ body.brief-mode{background:#FBFAF7}
       <p id="home-subtitle">Här är en överblick över ditt arbete i Mava.</p>
     </div>
 
+    <!-- Onboarding-checklista (visas bara för nya kunder) -->
+    <div id="home-onboarding" class="home-onboard" style="display:none">
+      <div class="home-onboard-head">
+        <div>
+          <div class="home-onboard-title">Kom igång med Mava</div>
+          <div class="home-onboard-sub" id="home-onboard-sub">Slutför stegen för att få ut mest av verktygen.</div>
+        </div>
+        <div class="home-onboard-progress" id="home-onboard-progress">0 / 3</div>
+      </div>
+      <div id="home-onboard-steps"></div>
+    </div>
+
     <!-- Profil-tips (visas bara om profilen är ofylld) -->
     <div id="home-profile-tip" class="home-tip" style="display:none">
       <div class="home-tip-icon">✨</div>
@@ -1359,6 +1405,15 @@ body.brief-mode{background:#FBFAF7}
         <div class="home-tip-text">När din profil är ifylld förfylls verktygen automatiskt och AI:n följer er ton och era budskap – bättre resultat med mindre jobb.</div>
       </div>
       <button class="home-tip-btn" onclick="goToBrandProfile()">Fyll i profil</button>
+    </div>
+
+    <!-- Notiser / vad är nytt -->
+    <div id="home-notices" class="home-notices" style="display:none">
+      <div class="home-notices-head">
+        <span class="home-notices-dot"></span>
+        <span class="home-notices-label">Nytt i Mava</span>
+      </div>
+      <div id="home-notices-list"></div>
     </div>
 
     <!-- Snabbstatistik -->
@@ -1385,6 +1440,14 @@ body.brief-mode{background:#FBFAF7}
         </div>
         <div id="home-recent" class="home-recent"></div>
       </div>
+    </div>
+
+    <!-- Aktivitet över tid -->
+    <div class="home-card" id="home-activity-card" style="margin-top:1.25rem;display:none">
+      <div class="home-card-head">
+        <div class="home-card-title">Aktivitet senaste 8 veckorna</div>
+      </div>
+      <div id="home-activity" class="home-activity"></div>
     </div>
 
     <!-- Snabbåtkomst verktyg -->
@@ -3527,6 +3590,20 @@ function goToTools(){
 // Färger per verktyg – återanvänds i graf och "senaste"-prickar.
 const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD' };
 
+/* ════════════════════════════════════════════════════════════════════════
+   NOTISER / "VAD ÄR NYTT"  –  REDIGERA HÄR
+   Detta är den enda plats du behöver ändra för att uppdatera nyhetsrutan
+   på startsidan. Lägg nyaste överst. Håll det kort.
+   date = valfri etikett, title = rubrik, text = kort beskrivning.
+   Ta bort en rad genom att radera hela { ... }-blocket.
+   Tips: behåll max 3–4 notiser så rutan inte blir lång.
+   ════════════════════════════════════════════════════════════════════════ */
+const HOME_NOTICES = [
+  { date: 'Juli 2026', title: 'Newsroom kan nu skapa grafik', text: 'Lägg in siffror så ritar Newsroom ett diagram direkt i pressreleasen.' },
+  { date: 'Juli 2026', title: 'Utökad varumärkesprofil', text: 'Fyll i målgrupp, nyckelbudskap och förbjudna ord – så följer alla verktyg er stil automatiskt.' },
+  { date: 'Juli 2026', title: 'Ny startsida', text: 'Nu ser du din statistik, ditt bibliotek och dina senaste produktioner på ett ställe.' }
+];
+
 async function goToHome(){
   if (!_currentUser) { goToAuth(); return; }
   hideAll();
@@ -3545,11 +3622,30 @@ async function goToHome(){
   const profileThin = !p || (!p.description && !p.key_messages && !p.default_audience);
   tip.style.display = profileThin ? 'flex' : 'none';
 
+  // Notiser / vad är nytt (beror bara på listan HOME_NOTICES).
+  renderHomeNotices();
+
   // Hämta produktioner och bygg översikten på riktig data.
-  renderHomeData();
+  // Skicka med om profilen är ifylld, så onboarding-checklistan kan bockas av.
+  renderHomeData(!profileThin);
 }
 
-async function renderHomeData(){
+// Ritar notis-rutan från HOME_NOTICES. Döljs om listan är tom.
+function renderHomeNotices(){
+  const box = document.getElementById('home-notices');
+  const list = document.getElementById('home-notices-list');
+  if (!HOME_NOTICES || HOME_NOTICES.length === 0) { box.style.display = 'none'; return; }
+  list.innerHTML = HOME_NOTICES.map(function(n){
+    return '<div class="home-notice">' +
+      '<div class="home-notice-title">' + escapeHtmlLib(n.title) +
+        (n.date ? '<span class="home-notice-date">' + escapeHtmlLib(n.date) + '</span>' : '') + '</div>' +
+      '<div class="home-notice-text">' + escapeHtmlLib(n.text) + '</div>' +
+    '</div>';
+  }).join('');
+  box.style.display = 'block';
+}
+
+async function renderHomeData(profileFilled){
   const { data, error } = await fetchProductions();
   const chart  = document.getElementById('home-chart');
   const recent = document.getElementById('home-recent');
@@ -3618,6 +3714,80 @@ async function renderHomeData(){
       '</button>';
     }).join('');
   }
+
+  // ── Onboarding-checklista ──
+  renderHomeOnboarding(items, profileFilled);
+
+  // ── Aktivitet över tid ──
+  renderHomeActivity(items);
+}
+
+/* Onboarding: tre steg baserade på ärlig data.
+   1. Profil ifylld?  2. Första produktionen skapad?  3. Provat minst två verktyg?
+   Hela rutan döljs när alla tre är klara, så den bara stör nya kunder. */
+function renderHomeOnboarding(items, profileFilled){
+  const box = document.getElementById('home-onboarding');
+  const distinctTools = {};
+  items.forEach(function(it){ distinctTools[it.tool] = true; });
+  const toolsUsed = Object.keys(distinctTools).length;
+
+  const steps = [
+    { done: !!profileFilled, title: 'Fyll i din varumärkesprofil', action: 'goToBrandProfile()', btn: 'Fyll i' },
+    { done: items.length > 0, title: 'Skapa din första produktion', action: 'goToTools()', btn: 'Skapa' },
+    { done: toolsUsed >= 2,   title: 'Prova minst två olika verktyg', action: 'goToTools()', btn: 'Utforska' }
+  ];
+  const doneCount = steps.filter(function(s){ return s.done; }).length;
+
+  // Dölj hela rutan när allt är klart.
+  if (doneCount === steps.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+
+  document.getElementById('home-onboard-progress').textContent = doneCount + ' / ' + steps.length;
+  document.getElementById('home-onboard-steps').innerHTML = steps.map(function(s){
+    return '<div class="home-step">' +
+      '<div class="home-step-check ' + (s.done ? 'done' : 'todo') + '">' + (s.done ? '✓' : '') + '</div>' +
+      '<div class="home-step-main"><div class="home-step-title ' + (s.done ? 'done' : '') + '">' + s.title + '</div></div>' +
+      '<button class="home-step-btn ' + (s.done ? 'done' : '') + '" onclick="' + s.action + '">' + s.btn + '</button>' +
+    '</div>';
+  }).join('');
+}
+
+/* Aktivitet: antal produktioner per vecka de senaste 8 veckorna.
+   Döljs helt om det inte finns någon produktion (ny kund ser inte en tom graf). */
+function renderHomeActivity(items){
+  const card = document.getElementById('home-activity-card');
+  if (!items || items.length === 0) { card.style.display = 'none'; return; }
+
+  const now = new Date();
+  const weekMs = 7*24*60*60*1000;
+  // Bygg 8 hinkar, äldst först. Hink 7 = denna vecka.
+  const buckets = [];
+  for (let i = 7; i >= 0; i--) {
+    const end = now.getTime() - i*weekMs;
+    const start = end - weekMs;
+    buckets.push({ start: start, end: end, count: 0 });
+  }
+  items.forEach(function(it){
+    const t = new Date(it.created_at).getTime();
+    for (let b = 0; b < buckets.length; b++) {
+      if (t > buckets[b].start && t <= buckets[b].end) { buckets[b].count++; break; }
+    }
+  });
+
+  const max = Math.max.apply(null, buckets.map(function(b){ return b.count; }));
+  const activity = document.getElementById('home-activity');
+  activity.innerHTML = buckets.map(function(b, i){
+    const h = max ? Math.round((b.count / max) * 100) : 0;
+    // Etikett: "v." + ISO-veckonummer, ungefärligt via datum.
+    const d = new Date(b.end - weekMs/2);
+    const label = (i === 7) ? 'Nu' : d.toLocaleDateString('sv-SE', { day:'numeric', month:'short' });
+    return '<div class="home-activity-col">' +
+      '<div class="home-activity-num">' + (b.count || '') + '</div>' +
+      '<div class="home-activity-bar" style="height:' + h + '%' + (b.count === 0 ? ';background:#ece8df' : '') + '"></div>' +
+      '<div class="home-activity-label">' + label + '</div>' +
+    '</div>';
+  }).join('');
+  card.style.display = 'block';
 }
 
 /* ── Auth ──────────────────────────────────────────────────────────────── */
