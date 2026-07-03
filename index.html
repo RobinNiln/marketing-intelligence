@@ -784,6 +784,22 @@ body.native-mode{background:#FBFAF7}
 .hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 @media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
 
+/* FAQ-sida */
+.faq-wrap{max-width:760px;margin:0 auto;padding:3rem 2rem 4rem}
+.faq-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.03em;color:#2C2520;margin:1rem 0 0.6rem}
+.faq-intro{font-size:15px;color:#8a7d6d;line-height:1.7;margin:0 0 2.5rem;max-width:560px}
+.faq-item{background:#fff;border:1px solid #ece8df;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:18px 22px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;color:#2C2520;text-align:left}
+.faq-chevron{width:20px;height:20px;flex-shrink:0;color:#C9A84C;transition:transform 0.2s ease}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.25s ease}
+.faq-item.open .faq-a{max-height:400px}
+.faq-a-inner{padding:0 22px 20px;font-size:14px;line-height:1.75;color:#5F5E5A}
+.faq-contact{margin-top:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.09),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:1.8rem 2rem;text-align:center}
+.faq-contact-title{font-size:16px;font-weight:700;color:#2C2520;margin-bottom:6px}
+.faq-contact-text{font-size:13.5px;color:#8a7d6d;line-height:1.6;margin-bottom:1.2rem}
+.faq-contact-btn{display:inline-block;background:#2C2520;color:#fff;text-decoration:none;border-radius:100px;padding:11px 24px;font-size:14px;font-weight:600}
+
 /* Onboarding-checklista */
 .home-onboard{background:#fff;border:1px solid #ece8df;border-radius:16px;padding:1.5rem 1.6rem;margin-bottom:2rem}
 .home-onboard-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
@@ -1121,10 +1137,17 @@ body.newsroom-mode{background:#FBFAF7}
 .sp-link{display:flex;align-items:center;gap:14px;padding:12px 19px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:14px;color:#5F5E5A;white-space:nowrap;text-align:left;transition:background 0.12s}
 .sp-link:hover{background:#F5F3EE}
 .sp-link svg{flex-shrink:0;width:20px;height:20px;stroke:#8a7d6d}
-.sp-link-text{opacity:0;transition:opacity 0.15s}
-#side-panel.expanded .sp-link-text{opacity:1}
+.sp-link{align-items:flex-start}
+.sp-link-body{display:flex;flex-direction:column;gap:2px;opacity:0;transition:opacity 0.15s;min-width:0}
+#side-panel.expanded .sp-link-body{opacity:1}
+.sp-link-text{white-space:nowrap}
+.sp-link-desc{font-size:11.5px;color:#a89c8a;font-weight:400;white-space:nowrap;line-height:1.3}
 .sp-link.active{color:#2C2520;font-weight:600}
 .sp-link.active svg{stroke:#C9A84C}
+.sp-link.active .sp-link-desc{color:#b8a98f}
+.sp-back{border-bottom:1px solid #f0eee8;margin-bottom:4px;padding-top:14px;padding-bottom:14px}
+.sp-back svg{stroke:#2C2520}
+.sp-back:hover{background:#F5F3EE}
 .sp-foot{border-top:1px solid #f0eee8;padding:8px 0}
 /* Skjut in sidornas innehåll så panelen inte täcker det */
 body.has-panel #tools-page,body.has-panel #library-page,body.has-panel #brand-page,body.has-panel #plan-page,body.has-panel #billing-page{padding-right:60px}
@@ -1225,20 +1248,53 @@ body.brief-mode{background:#FBFAF7}
 </head>
 <body>
 <aside id="side-panel">
-  <button class="sp-toggle" onclick="toggleSidePanel()" title="Meny">
+  <button class="sp-toggle" onclick="toggleSidePanel()" title="Öppna/stäng meny">
     <svg id="sp-toggle-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2C2520" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h14M4 11h14M4 16h14"/></svg>
     <span class="sp-link-text" style="font-weight:700;color:#2C2520">Meny</span>
   </button>
+
+  <!-- Tillbaka: går till föregående sida i Mava -->
+  <button class="sp-link sp-back" onclick="goBack()" title="Tillbaka">
+    <svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l-6 6 6 6"/></svg>
+    <span class="sp-link-body"><span class="sp-link-text">Tillbaka</span><span class="sp-link-desc">Föregående sida</span></span>
+  </button>
+
   <nav class="sp-links">
-    <button class="sp-link" data-page="home-page" onclick="goToHome()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l8-7 8 7"/><path d="M5 9v10h12V9"/></svg><span class="sp-link-text">Hem</span></button>
-    <button class="sp-link" data-page="tools-page" onclick="goToTools()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg><span class="sp-link-text">Verktyg</span></button>
-    <button class="sp-link" data-page="library-page" onclick="goToLibrary()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h5v14H4zM9 4h5v14H9z"/><path d="M14 5l4 1-2 13-4-1"/></svg><span class="sp-link-text">Bibliotek</span></button>
-    <button class="sp-link" data-page="brand-page" onclick="goToBrandProfile()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="8" r="3.5"/><path d="M4 19c0-3.5 3-6 7-6s7 2.5 7 6"/></svg><span class="sp-link-text">Min profil</span></button>
-    <button class="sp-link" data-page="plan-page" onclick="goToPlan()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M11 2l2.5 5.5L19 8l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg><span class="sp-link-text">Min plan</span></button>
-    <button class="sp-link" data-page="billing-page" onclick="goToBilling()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="18" height="12" rx="2"/><path d="M2 9h18"/></svg><span class="sp-link-text">Betalning</span></button>
+    <button class="sp-link" data-page="home-page" onclick="goToHome()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5l8-6.5 8 6.5"/><path d="M5 8.5V18h4v-5h4v5h4V8.5"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Hem</span><span class="sp-link-desc">Din översikt och statistik</span></span>
+    </button>
+    <button class="sp-link" data-page="tools-page" onclick="goToTools()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Verktyg</span><span class="sp-link-desc">Alla fem AI-verktyg</span></span>
+    </button>
+    <button class="sp-link" data-page="library-page" onclick="goToLibrary()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14M8 4v14M4 4h4v14H4z"/><path d="M11 5l4-1 3 13-4 1z"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Bibliotek</span><span class="sp-link-desc">Allt du har sparat</span></span>
+    </button>
+    <button class="sp-link" data-page="brand-page" onclick="goToBrandProfile()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="7.5" r="3.5"/><path d="M4.5 18.5c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Min profil</span><span class="sp-link-desc">Varumärke, ton och budskap</span></span>
+    </button>
+    <button class="sp-link" data-page="plan-page" onclick="goToPlan()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L11 15.9l-5.3 2.7 1-5.8L2.5 8.7l5.9-.9z"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Min plan</span><span class="sp-link-desc">Din prisnivå och användning</span></span>
+    </button>
+    <button class="sp-link" data-page="billing-page" onclick="goToBilling()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="17" height="12" rx="2"/><path d="M2.5 9h17"/><path d="M6 13.5h4"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Betalning</span><span class="sp-link-desc">Kort och fakturor</span></span>
+    </button>
+    <button class="sp-link" data-page="faq-page" onclick="goToFaq()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8.5"/><path d="M8.6 8.6a2.4 2.4 0 0 1 4.6.9c0 1.6-2.2 2-2.2 2"/><path d="M11 15.2h.01"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Hjälp &amp; FAQ</span><span class="sp-link-desc">Vanliga frågor och support</span></span>
+    </button>
   </nav>
+
   <div class="sp-foot">
-    <button class="sp-link" onclick="authLogout()"><svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H4v16h4"/><path d="M14 7l4 4-4 4M18 11H8"/></svg><span class="sp-link-text">Logga ut</span></button>
+    <button class="sp-link" onclick="authLogout()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H4.5v16H8"/><path d="M14 7l4 4-4 4M18 11H8"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Logga ut</span></span>
+    </button>
   </div>
 </aside>
 <div id="landing">
@@ -1476,6 +1532,22 @@ body.brief-mode{background:#FBFAF7}
         <button class="home-quick-btn" onclick="goToNative()"><span class="hq-dot" style="background:#D85A30"></span>Native Auto Reach</button>
         <button class="home-quick-btn" onclick="goToAdCopy()"><span class="hq-dot" style="background:#7F77DD"></span>AdStudio</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div id="faq-page" style="display:none;min-height:100vh;background:#F5F3EE">
+  <div class="faq-wrap">
+    <div class="home-eyebrow"><span></span>Hjälp &amp; support</div>
+    <h1 class="faq-title">Vanliga frågor</h1>
+    <p class="faq-intro">Här hittar du svar på det vanligaste. Hittar du inte det du söker är du välkommen att höra av dig.</p>
+
+    <div class="faq-list" id="faq-list"></div>
+
+    <div class="faq-contact">
+      <div class="faq-contact-title">Hittade du inte svaret?</div>
+      <div class="faq-contact-text">Hör av dig så hjälper vi dig. Vi svarar normalt inom en arbetsdag.</div>
+      <a class="faq-contact-btn" href="mailto:support@mava.se">Kontakta support</a>
     </div>
   </div>
 </div>
@@ -3595,7 +3667,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -3603,6 +3675,51 @@ function hideAll(){
     if(el) el.style.display='none';
   });
   document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode','newsroom-mode','brief-mode');
+}
+
+/* ── Navigeringshistorik ────────────────────────────────────────────────────
+   Vi kommer ihåg vilka sidor användaren besökt, så "Tillbaka"-knappen i
+   panelen alltid vet vart den ska. Varje gång en sida blir aktiv lägger vi
+   till den i historiken. goBack() plockar bort nuvarande och går till förra.
+──────────────────────────────────────────────────────────────────────────── */
+let _navHistory = [];
+let _navigatingBack = false;
+
+function pushNav(page){
+  // Lägg inte till samma sida två gånger i rad.
+  if (_navHistory[_navHistory.length - 1] !== page) _navHistory.push(page);
+  // Håll historiken lagom kort.
+  if (_navHistory.length > 25) _navHistory.shift();
+}
+
+function goBack(){
+  // Ta bort nuvarande sida; gå till den innan.
+  _navHistory.pop();
+  const prev = _navHistory[_navHistory.length - 1];
+  _navigatingBack = true;
+  if (!prev) { goToHome(); }
+  else navigateTo(prev);
+  _navigatingBack = false;
+}
+
+// Skickar användaren till en sida via dess id. Används av goBack.
+function navigateTo(page){
+  switch (page) {
+    case 'home-page':     goToHome(); break;
+    case 'faq-page':      goToFaq(); break;
+    case 'tools-page':    goToTools(); break;
+    case 'library-page':  goToLibrary(); break;
+    case 'brand-page':    goToBrandProfile(); break;
+    case 'plan-page':     goToPlan(); break;
+    case 'billing-page':  goToBilling(); break;
+    case 'app':           showApp(); break;
+    case 'native-page':   goToNative(); break;
+    case 'newsroom-page': goToNewsroom(); break;
+    case 'brief-page':    goToBrief(); break;
+    case 'adcopy-page':   goToAdCopy(); break;
+    case 'dist-page':     if (typeof goToDist === 'function') goToDist(); else goToTools(); break;
+    default:              goToHome();
+  }
 }
 
 function goToTools(){
@@ -3628,6 +3745,50 @@ const HOME_NOTICES = [
   { date: 'Juli 2026', title: 'Utökad varumärkesprofil', text: 'Fyll i målgrupp, nyckelbudskap och förbjudna ord – så följer alla verktyg er stil automatiskt.' },
   { date: 'Juli 2026', title: 'Ny startsida', text: 'Nu ser du din statistik, ditt bibliotek och dina senaste produktioner på ett ställe.' }
 ];
+
+/* ════════════════════════════════════════════════════════════════════════
+   FAQ  –  REDIGERA HÄR
+   Lägg till, ändra eller ta bort frågor genom att redigera listan nedan.
+   Varje fråga är ett { q: 'frågan', a: 'svaret' }-block.
+   ════════════════════════════════════════════════════════════════════════ */
+const FAQ_ITEMS = [
+  { q: 'Vad är Mava?', a: 'Mava är ett verktyg med fem AI-drivna funktioner för marknadsföring: Market Pulse (marknadsanalys), The Brief (kampanjbrief), Newsroom (pressrelease), Native Auto Reach (nativeartikel) och AdStudio (annonser). Allt samlat på ett ställe.' },
+  { q: 'Hur kommer jag igång?', a: 'Börja med att fylla i din varumärkesprofil under Min profil. Då förfylls verktygen automatiskt och AI:n följer er ton och era budskap. Välj sedan ett verktyg och fyll i formuläret – resten sköter Mava.' },
+  { q: 'Vad gör varumärkesprofilen?', a: 'Profilen sparar information om ert företag – ton, målgrupp, nyckelbudskap och ord ni vill undvika. Den informationen skickas automatiskt med till verktygen, så ni slipper upprepa den varje gång och får mer träffsäkra resultat.' },
+  { q: 'Var hittar jag det jag skapat?', a: 'Allt du sparar hamnar i Biblioteket, som du når från menyn till höger. Där kan du öppna, läsa och exportera dina tidigare produktioner. Dina fem senaste syns även på startsidan.' },
+  { q: 'Kan jag redigera ett resultat?', a: 'Ja. I The Brief finns en Redigera-knapp under resultatet där du kan ändra texten innan du sparar. Vi rullar ut samma möjlighet till fler verktyg.' },
+  { q: 'Hur exporterar jag till Word, PDF eller PowerPoint?', a: 'Klicka på Exportera under ett färdigt resultat och välj format. Filen skapas direkt i din webbläsare. För Keynote: exportera som PowerPoint och öppna filen i Keynote, som kan spara om den som .key.' },
+  { q: 'Kan Newsroom visa statistik som grafik?', a: 'Ja. Fyll i fältet "Siffror att visualisera" i Newsroom, så skapar AI:n ett diagram direkt i pressreleasen. Lämnar du fältet tomt letar AI:n själv efter siffror i din text.' },
+  { q: 'Vad kostar Mava?', a: 'Se aktuella priser och nivåer under Min plan i menyn.' },
+  { q: 'Jag har glömt mitt lösenord. Vad gör jag?', a: 'Klicka på "Glömt lösenord?" på inloggningssidan, fyll i din e-post, så skickar vi en återställningslänk.' }
+];
+
+function renderFaq(){
+  const list = document.getElementById('faq-list');
+  if (!list) return;
+  list.innerHTML = FAQ_ITEMS.map(function(item, i){
+    return '<div class="faq-item" id="faq-item-' + i + '">' +
+      '<button class="faq-q" onclick="toggleFaq(' + i + ')">' +
+        '<span>' + escapeHtmlLib(item.q) + '</span>' +
+        '<svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"/></svg>' +
+      '</button>' +
+      '<div class="faq-a"><div class="faq-a-inner">' + escapeHtmlLib(item.a) + '</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleFaq(i){
+  const item = document.getElementById('faq-item-' + i);
+  if (item) item.classList.toggle('open');
+}
+
+function goToFaq(){
+  hideAll();
+  renderFaq();
+  document.getElementById('faq-page').style.display = 'block';
+  setActivePanelLink('faq-page');
+  window.scrollTo(0,0);
+}
 
 async function goToHome(){
   if (!_currentUser) { goToAuth(); return; }
@@ -4463,7 +4624,7 @@ function applyPanelState() {
 }
 
 // Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
-const PANEL_PAGES = ['tools-page','library-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page'];
+const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page'];
 
 // Visar panelen bara när man är inloggad OCH på en inre app-sida.
 function updateSidePanel(currentPage) {
@@ -4495,6 +4656,8 @@ function setActivePanelLink(pageId) {
   document.querySelectorAll('#side-panel .sp-link[data-page]').forEach(function(el){
     el.classList.toggle('active', el.getAttribute('data-page') === pageId);
   });
+  // Registrera i historiken – men inte när vi själva navigerar bakåt.
+  if (!_navigatingBack) pushNav(pageId);
   updateSidePanel(pageId);
 }
 
