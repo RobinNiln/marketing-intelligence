@@ -1181,6 +1181,13 @@ body.brief-mode{background:#FBFAF7}
 .brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:8px}
 .brief-section-content{font-size:14px;color:#2a2520;line-height:1.8}
 .brief-edit-area{width:100%;min-height:120px;padding:12px 14px;border:1.5px solid #C9A84C;border-radius:10px;font-size:14px;font-family:inherit;line-height:1.7;color:#2a2520;box-sizing:border-box;resize:vertical;background:#fffdf8}
+.export-wrap{position:relative;display:inline-block}
+.export-menu{position:absolute;bottom:calc(100% + 8px);left:0;background:#fff;border:1px solid #e6e1d6;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.12);padding:6px;min-width:190px;z-index:100;display:none}
+.export-menu.open{display:block}
+.export-menu-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;border-radius:8px;font-size:13.5px;font-weight:500;color:#2C2520;cursor:pointer;font-family:inherit;text-align:left;transition:background 0.12s}
+.export-menu-item:hover{background:#f7f4ee}
+.export-menu-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.export-menu-note{font-size:11px;color:#9A8570;padding:6px 12px 4px;line-height:1.5;border-top:1px solid #f2efe8;margin-top:4px}
 .brief-edit-area:focus{outline:none;border-color:#b8952f}
 .brief-section-content p,.mp-md p,.newsroom-result-body p,.newsroom-result-boilerplate p,.native-result-body p{margin:0 0 0.9em}
 .brief-section-content p:last-child,.mp-md p:last-child,.newsroom-result-body p:last-child,.newsroom-result-boilerplate p:last-child,.native-result-body p:last-child{margin-bottom:0}
@@ -1211,6 +1218,10 @@ body.brief-mode{background:#FBFAF7}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Exportbibliotek: skapar Word/PDF/PowerPoint direkt i webbläsaren -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
 <aside id="side-panel">
@@ -1946,6 +1957,7 @@ body.brief-mode{background:#FBFAF7}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
           Spara i bibliotek
         </button>
+        <span id="native-export-slot"></span>
       </div>
 
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
@@ -2116,6 +2128,7 @@ body.brief-mode{background:#FBFAF7}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
           Spara i bibliotek
         </button>
+        <span id="newsroom-export-slot"></span>
       </div>
 
       <button class="newsroom-new-btn" onclick="newsroomReset()">← Skapa ny pressrelease</button>
@@ -2330,6 +2343,7 @@ body.brief-mode{background:#FBFAF7}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
           <span id="brief-edit-btn-text">Redigera</span>
         </button>
+        <span id="brief-export-slot"></span>
         <button class="brief-action-btn" id="brief-save-btn" onclick="briefSave()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
           Spara i bibliotek
@@ -2804,6 +2818,7 @@ body.brief-mode{background:#FBFAF7}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
             Spara i bibliotek
           </button>
+          <span id="market-export-slot"></span>
         </div>
       </div>
     </div>
@@ -3087,6 +3102,8 @@ async function analyzeMarketing(){
     const result=JSON.parse(cleaned);
     localStorage.setItem(STORAGE_KEY,JSON.stringify(result));
     window._marketResult = result;
+    const mpExp = document.getElementById('market-export-slot');
+    if (mpExp) mpExp.innerHTML = exportMenuHtml('market', 'action-bar-btn');
     window._marketCompany = (document.getElementById('company') && document.getElementById('company').value) || '';
     document.getElementById('loading-state').style.display='none';
     renderResult(result);
@@ -3532,6 +3549,8 @@ function renderNativeArticle(article, label) {
   document.getElementById('native-result-ingress').textContent  = article.ingress||'';
   document.getElementById('native-result-body').innerHTML       = mdToHtml(article.body);
   window._nativeArticle = article;
+  const naExp = document.getElementById('native-export-slot');
+  if (naExp) naExp.innerHTML = exportMenuHtml('native', 'native-action-btn');
 }
 
 function nativeCopy(){
@@ -5344,6 +5363,8 @@ function renderNewsroomResult(result, typeLabel) {
   document.getElementById('nr-result-boilerplate').innerHTML = mdToHtml(result.boilerplate);
   renderNewsroomExtras(result);
   window._newsroomResult = result;
+  const nrExp = document.getElementById('newsroom-export-slot');
+  if (nrExp) nrExp.innerHTML = exportMenuHtml('newsroom', 'newsroom-action-btn');
 }
 
 function renderNewsroomExtras(result) {
@@ -5572,6 +5593,240 @@ function mdInline(s) {
   // Körs EFTER escaping. **text** -> <strong>. Inget annat tolkas.
   return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
+/* ════════════════════════════════════════════════════════════════════════
+   EXPORTMODUL  –  Word / PDF / PowerPoint
+   ────────────────────────────────────────────────────────────────────────
+   Så här fungerar det (bra att förstå):
+   1. Varje verktyg har sin egen datastruktur (brief, pressrelease osv).
+   2. En liten "översättare" per verktyg (längre ner) omvandlar resultatet
+      till ETT gemensamt format: { title, subtitle, sections: [{heading, body}] }.
+   3. De tre exportfunktionerna här nedan tar det gemensamma formatet och
+      bygger filen. Så formatlogiken skrivs EN gång och återanvänds av alla
+      verktyg – samma princip som mdToHtml och brandGuidance.
+
+   Filerna skapas direkt i webbläsaren med bibliotek som laddas via CDN.
+   Inget går via proxyn eller Supabase. Keynote saknar öppet format, men
+   Keynote kan öppna PowerPoint-filen (.pptx) och spara om som .key.
+   ════════════════════════════════════════════════════════════════════════ */
+
+// Gör en råtext (kan innehålla mdToHtml-stil: **fet**, - listor) till rena rader.
+// För export vill vi ha enkel text, inte HTML.
+function exportPlainLines(raw){
+  if (!raw) return [];
+  return String(raw).replace(/\r\n/g,'\n').split('\n').map(function(line){
+    return line.replace(/\*\*(.+?)\*\*/g, '$1').replace(/^[-*•]\s+/, '• ').trimEnd();
+  });
+}
+
+// Filnamn utan konstiga tecken.
+function exportSafeName(s){
+  return String(s || 'mava-export').replace(/[^\wåäöÅÄÖ\- ]/g,'').replace(/\s+/g,'-').slice(0,60) || 'mava-export';
+}
+
+// ── WORD (.docx) ──
+async function exportToWord(doc){
+  if (!window.docx) { alert('Word-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = window.docx;
+  const children = [];
+
+  children.push(new Paragraph({ text: doc.title, heading: HeadingLevel.TITLE }));
+  if (doc.subtitle) children.push(new Paragraph({ children:[ new TextRun({ text: doc.subtitle, italics:true, color:'888888' }) ] }));
+  children.push(new Paragraph({ text: '' }));
+
+  doc.sections.forEach(function(sec){
+    if (sec.heading) children.push(new Paragraph({ text: sec.heading, heading: HeadingLevel.HEADING_2 }));
+    exportPlainLines(sec.body).forEach(function(line){
+      children.push(new Paragraph({ text: line }));
+    });
+    children.push(new Paragraph({ text: '' }));
+  });
+
+  const document = new Document({ sections:[{ children: children }] });
+  const blob = await Packer.toBlob(document);
+  exportDownloadBlob(blob, exportSafeName(doc.title) + '.docx');
+}
+
+// ── PDF (.pdf) ──
+function exportToPdf(doc){
+  const jsPDFctor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFctor) { alert('PDF-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  const pdf = new jsPDFctor({ unit:'pt', format:'a4' });
+  const margin = 56, pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+  const maxW = pageW - margin*2;
+  let y = margin;
+
+  function ensureSpace(h){ if (y + h > pageH - margin) { pdf.addPage(); y = margin; } }
+  function write(text, size, style, color){
+    pdf.setFont('helvetica', style || 'normal');
+    pdf.setFontSize(size);
+    pdf.setTextColor(color || '#2C2520');
+    const lines = pdf.splitTextToSize(text, maxW);
+    lines.forEach(function(ln){
+      ensureSpace(size + 6);
+      pdf.text(ln, margin, y);
+      y += size + 6;
+    });
+  }
+
+  write(doc.title, 20, 'bold', '#2C2520');
+  y += 4;
+  if (doc.subtitle) { write(doc.subtitle, 11, 'italic', '#888888'); }
+  y += 10;
+
+  doc.sections.forEach(function(sec){
+    if (sec.heading) { y += 8; ensureSpace(20); write(sec.heading, 13, 'bold', '#9c7d2e'); y += 2; }
+    exportPlainLines(sec.body).forEach(function(line){
+      if (line.trim() === '') { y += 6; return; }
+      write(line, 10.5, 'normal', '#2C2520');
+    });
+  });
+
+  pdf.save(exportSafeName(doc.title) + '.pdf');
+}
+
+// ── POWERPOINT (.pptx) ──
+function exportToPptx(doc){
+  const PptxGen = window.PptxGenJS;
+  if (!PptxGen) { alert('PowerPoint-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  const pptx = new PptxGen();
+  pptx.defineLayout({ name:'MAVA', width:10, height:5.63 });
+  pptx.layout = 'MAVA';
+
+  // Titelslide.
+  const title = pptx.addSlide();
+  title.background = { color:'F5F3EE' };
+  title.addText(doc.title, { x:0.6, y:2.0, w:8.8, h:1.2, fontSize:32, bold:true, color:'2C2520', fontFace:'Arial' });
+  if (doc.subtitle) title.addText(doc.subtitle, { x:0.6, y:3.2, w:8.8, h:0.6, fontSize:15, italic:true, color:'8a7d6d', fontFace:'Arial' });
+
+  // En slide per sektion. Lång text delas automatiskt av PptxGenJS.
+  doc.sections.forEach(function(sec){
+    const s = pptx.addSlide();
+    s.background = { color:'FFFFFF' };
+    s.addText(sec.heading || '', { x:0.6, y:0.4, w:8.8, h:0.7, fontSize:22, bold:true, color:'2C2520', fontFace:'Arial' });
+    // Bygg text-rader; punktlistor blir bullets.
+    const runs = [];
+    exportPlainLines(sec.body).forEach(function(line){
+      if (line.trim()==='') return;
+      const isBullet = line.startsWith('• ');
+      runs.push({ text: isBullet ? line.slice(2) : line, options:{ bullet: isBullet, fontSize:14, color:'2C2520', fontFace:'Arial', paraSpaceAfter:6 } });
+    });
+    if (runs.length) s.addText(runs, { x:0.6, y:1.3, w:8.8, h:3.9, valign:'top' });
+  });
+
+  pptx.writeFile({ fileName: exportSafeName(doc.title) + '.pptx' });
+}
+
+function exportDownloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ── Översättare per verktyg → gemensamt dokumentformat ──
+   Varje funktion tar verktygets resultatobjekt och returnerar
+   { title, subtitle, sections:[{heading, body}] }. */
+function briefToDoc(r){
+  const secs = [];
+  if (r.background) secs.push({ heading:'Bakgrund', body:r.background });
+  if (r.goals)      secs.push({ heading:'Mål', body:r.goals });
+  if (r.audience)   secs.push({ heading:'Målgrupp', body:r.audience });
+  if (r.message)    secs.push({ heading:'Budskap och tonalitet', body:r.message });
+  if (r.channels)   secs.push({ heading:'Kanaler', body:r.channels });
+  if (r.budget)     secs.push({ heading:'Budget', body:r.budget });
+  if (r.timeline && r.timeline.length) {
+    secs.push({ heading:'Tidslinje', body: r.timeline.map(function(t){ return '• ' + t.phase + ' (' + t.period + '): ' + t.activities; }).join('\n') });
+  }
+  if (r.kpis && r.kpis.length) {
+    secs.push({ heading:'KPI:er', body: r.kpis.map(function(k){ return '• ' + k.name + ': ' + k.target; }).join('\n') });
+  }
+  if (r.constraints) secs.push({ heading:'Krav och begränsningar', body:r.constraints });
+  return { title: r.campaign_name || 'Kampanjbrief', subtitle: 'Kampanjbrief · Mava', sections: secs };
+}
+function newsroomToDoc(r){
+  const secs = [];
+  if (r.ingress) secs.push({ heading:'', body:r.ingress });
+  if (r.chart && r.chart.labels) {
+    secs.push({ heading: r.chart.title || 'Data', body: r.chart.labels.map(function(l,i){ return '• ' + l + ': ' + r.chart.values[i] + (r.chart.unit?(' '+r.chart.unit):''); }).join('\n') });
+  }
+  if (r.body) secs.push({ heading:'', body:r.body });
+  if (r.quote) secs.push({ heading:'Citat', body:r.quote });
+  if (r.boilerplate) secs.push({ heading:'Om företaget', body:r.boilerplate });
+  return { title: r.headline || 'Pressrelease', subtitle:'Pressrelease · Mava', sections: secs };
+}
+function nativeToDoc(a){
+  const secs = [];
+  if (a.ingress) secs.push({ heading:'', body:a.ingress });
+  if (a.body) secs.push({ heading:'', body:a.body });
+  return { title: a.headline || 'Nativeartikel', subtitle:(a.article_type ? a.article_type + ' · ' : '') + 'Nativeartikel · Mava', sections: secs };
+}
+function marketToDoc(r){
+  const secs = [];
+  if (r.summary) secs.push({ heading:'Strategi', body:r.summary });
+  if (r.prioritized_channels && r.prioritized_channels.length) {
+    secs.push({ heading:'Prioriterade kanaler', body: r.prioritized_channels.map(function(c){ return '• ' + c.name + ' (' + c.priority + '): ' + c.reason; }).join('\n') });
+  }
+  if (r.recommendations && r.recommendations.length) {
+    secs.push({ heading:'Rekommendationer', body: r.recommendations.map(function(x){ return x.title + '\n' + x.description; }).join('\n\n') });
+  }
+  if (r.quick_wins && r.quick_wins.length) {
+    secs.push({ heading:'Snabba vinster', body: r.quick_wins.map(function(w){ return '• ' + w; }).join('\n') });
+  }
+  return { title: 'Marknadsanalys', subtitle:'Market Pulse · Mava', sections: secs };
+}
+
+// Gemensam ingång: kör rätt översättare + rätt format.
+function runExport(tool, format){
+  exportCloseAllMenus();
+  let doc;
+  try {
+    if (tool === 'brief')    { if (!window._briefResult) return; doc = briefToDoc(window._briefResult); }
+    else if (tool === 'newsroom') { if (!window._newsroomResult) return; doc = newsroomToDoc(window._newsroomResult); }
+    else if (tool === 'native')   { if (!window._nativeArticle) return; doc = nativeToDoc(window._nativeArticle); }
+    else if (tool === 'market')   { if (!window._marketResult) return; doc = marketToDoc(window._marketResult); }
+    else return;
+  } catch (e) { alert('Kunde inte förbereda exporten: ' + e.message); return; }
+
+  if (format === 'word')  exportToWord(doc);
+  else if (format === 'pdf')   exportToPdf(doc);
+  else if (format === 'pptx')  exportToPptx(doc);
+}
+
+// Bygger HTML för en export-knapp med utfällbar meny, för ett givet verktyg.
+// btnClass gör att knappen matchar varje verktygs egen stil.
+function exportMenuHtml(tool, btnClass){
+  const cls = btnClass || 'brief-action-btn';
+  return '' +
+  '<div class="export-wrap">' +
+    '<button class="' + cls + '" onclick="exportToggleMenu(this)">' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v8M4 6l3 3 3-3M2 12h10"/></svg>' +
+      'Exportera' +
+    '</button>' +
+    '<div class="export-menu">' +
+      '<button class="export-menu-item" onclick="runExport(\'' + tool + '\',\'word\')"><span class="export-menu-dot" style="background:#2B579A"></span>Word (.docx)</button>' +
+      '<button class="export-menu-item" onclick="runExport(\'' + tool + '\',\'pdf\')"><span class="export-menu-dot" style="background:#D93831"></span>PDF (.pdf)</button>' +
+      '<button class="export-menu-item" onclick="runExport(\'' + tool + '\',\'pptx\')"><span class="export-menu-dot" style="background:#D24726"></span>PowerPoint (.pptx)</button>' +
+      '<div class="export-menu-note">Öppna .pptx i Keynote för att spara som .key</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function exportToggleMenu(btn){
+  const menu = btn.parentElement.querySelector('.export-menu');
+  const isOpen = menu.classList.contains('open');
+  exportCloseAllMenus();
+  if (!isOpen) menu.classList.add('open');
+}
+function exportCloseAllMenus(){
+  document.querySelectorAll('.export-menu.open').forEach(function(m){ m.classList.remove('open'); });
+}
+// Stäng menyn om man klickar utanför.
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.export-wrap')) exportCloseAllMenus();
+});
+
 function mdToHtml(text) {
   if (!text) return '';
   const lines = String(text).replace(/\r\n/g, '\n').split('\n');
@@ -5672,6 +5927,9 @@ function renderBriefResult(r, label, company) {
     _briefEditing = false;
     const editBtnText = document.getElementById('brief-edit-btn-text');
     if (editBtnText) editBtnText.textContent = 'Redigera';
+    // Fyll export-knappen.
+    const brExp = document.getElementById('brief-export-slot');
+    if (brExp) brExp.innerHTML = exportMenuHtml('brief');
 }
 
 function briefCopy() {
