@@ -1049,6 +1049,9 @@ body.newsroom-mode{background:#FBFAF7}
 .newsroom-result-headline{font-size:24px;font-weight:600;color:#1a1a1a;line-height:1.3;margin-bottom:1rem;letter-spacing:-0.02em}
 .newsroom-result-ingress{font-size:15px;color:#4A3F35;line-height:1.75;font-style:italic;border-left:3px solid #D4A857;padding-left:1rem;margin-bottom:1.5rem}
 .newsroom-result-body{font-size:14px;color:#2a2520;line-height:1.9}
+.nr-chart{background:#faf8f4;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.5rem;margin:1.5rem 0}
+.nr-chart-title{font-size:14px;font-weight:700;color:#2C2520;margin-bottom:1rem;text-align:center}
+.nr-chart-unit{font-weight:500;color:#8a7d6d}
 .newsroom-result-boilerplate{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F0EEE8;font-size:13px;color:#a8a39a;line-height:1.7;font-style:italic}
 .newsroom-result-quote{background:#FDFCFA;border-left:3px solid #D4A857;padding:1rem 1.25rem;border-radius:0 14px 14px 0;margin:1.25rem 0;font-size:14px;color:#2a2520;line-height:1.7;font-style:italic}
 .newsroom-contact-block{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#5a5650;line-height:1.8}
@@ -1970,6 +1973,10 @@ body.brief-mode{background:#FBFAF7}
         <textarea class="newsroom-textarea" id="nr-news" placeholder="Vad har hänt? Beskriv nyheten så detaljerat som möjligt – datum, siffror, bakgrund och varför det är viktigt."></textarea>
       </div>
       <div class="newsroom-field">
+        <label>Siffror att visualisera <span>valfritt</span></label>
+        <textarea class="newsroom-textarea" id="nr-data" style="min-height:64px" placeholder="Ex. Försäljning: 2,3 mkr 2023, 3,1 mkr 2024, 4,1 mkr 2025. Eller: 45% av kunderna i Stockholm, 30% i Göteborg, 25% övriga.&#10;&#10;Lämna tomt så letar AI:n själv efter siffror i din nyhetstext."></textarea>
+      </div>
+      <div class="newsroom-field">
         <label>Citat från nyckelperson <span>rekommenderas starkt</span></label>
         <textarea class="newsroom-textarea" id="nr-quote" style="min-height:80px" placeholder="Ex: 'Det här är ett viktigt steg för oss och våra kunder.' – Anna Svensson, VD Björk & Partners&#10;&#10;Namn och titel gör pressreleasen mer trovärdig."></textarea>
       </div>
@@ -2016,6 +2023,7 @@ body.brief-mode{background:#FBFAF7}
         <div class="newsroom-result-label" id="nr-result-type"></div>
         <div class="newsroom-result-headline" id="nr-result-headline"></div>
         <div class="newsroom-result-ingress" id="nr-result-ingress"></div>
+        <div id="nr-result-chart"></div>
         <div class="newsroom-result-body" id="nr-result-body"></div>
         <div class="newsroom-result-quote" id="nr-result-quote" style="display:none"></div>
         <div class="newsroom-contact-block" id="nr-result-contact" style="display:none">
@@ -4775,6 +4783,7 @@ async function generateNewsroom() {
   const industry = nrv('nr-industry');
   const companyDesc = nrv('nr-company-desc');
   const news = nrv('nr-news');
+  const dataInput = nrv('nr-data');
   const quote = nrv('nr-quote');
   const contact = nrv('nr-contact');
 
@@ -4825,6 +4834,12 @@ Om företaget: ${companyDesc}
 NYHETEN:
 ${news}
 
+${dataInput ? `SIFFROR ATT VISUALISERA (angivna av användaren):\n${dataInput}` : ''}
+
+DATAVISUALISERING: ${dataInput
+  ? 'Användaren har angett siffror ovan. Omvandla dem till ett diagram i chart-fältet nedan. Välj den diagramtyp som passar datan bäst: "bar" för att jämföra kategorier, "line" för utveckling över tid, "pie" för andelar av en helhet.'
+  : 'Om nyhetstexten innehåller konkreta siffror som skulle bli tydligare som ett diagram (t.ex. tillväxt över tid, marknadsandelar, jämförelser), skapa ett diagram i chart-fältet. Om det inte finns lämpliga siffror, sätt chart till null.'} Hitta ALDRIG på siffror – använd bara tal som faktiskt finns i underlaget. Håll diagrammet enkelt: 2–6 datapunkter.
+
 ${quote ? `ANGIVET CITAT (använd ordagrant):\n${quote}` : ''}
 ${contact ? `KONTAKTPERSON:\n${contact}` : ''}
 
@@ -4835,6 +4850,7 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
   "body": "Brödtext i 3-4 stycken, nyheten först. Använd \\n\\n mellan styckena.",
   "quote": "Citatet formaterat som: 'Citattexten' – Namn, Titel, Företag (tom sträng om inget)",
   "boilerplate": "Kort 'Om ${company}'-text som avslutar releasen",
+  "chart": {"type": "bar", "title": "Kort beskrivande titel", "unit": "mkr", "labels": ["2023", "2024", "2025"], "values": [2.3, 3.1, 4.1]} eller null om det inte finns lämpliga siffror. type ska vara "bar", "line" eller "pie". labels och values måste vara lika långa. values ska vara rena tal utan enhet.,
   "contact": "${contact || ''}",
   "alt_headlines": ["Rak nyhetsrubrik", "Lokal vinkel", "Branschvinkel", "Mänsklig/emotionell vinkel", "Affärsmässig vinkel"],
   "pitch": "Kort journalistpitch på 3-5 meningar som säljer in nyheten (inte företaget) till en journalist",
@@ -4870,10 +4886,103 @@ Returnera ENBART ett giltigt JSON-objekt med exakt dessa fält och inget annat. 
   }
 }
 
+/* ── renderChart ────────────────────────────────────────────────────────────
+   Ritar ett enkelt diagram som SVG utifrån strukturerad data från AI:n.
+   AI:n skickar {type, title, unit, labels[], values[]} – vi ritar exakt.
+   Returnerar '' om datan är ogiltig, så inget trasigt visas.
+   Stödjer: 'bar' (stapel), 'line' (linje), 'pie' (cirkel).
+──────────────────────────────────────────────────────────────────────────── */
+const CHART_PALETTE = ['#C9A84C','#378ADD','#1D9E75','#D85A30','#7F77DD','#B0873A'];
+
+function chartEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderChart(chart){
+  // Validera: måste finnas typ, och lika många etiketter som värden, minst 2.
+  if (!chart || typeof chart !== 'object') return '';
+  const type = chart.type;
+  const labels = Array.isArray(chart.labels) ? chart.labels : [];
+  const values = Array.isArray(chart.values) ? chart.values.map(Number) : [];
+  if (!['bar','line','pie'].includes(type)) return '';
+  if (labels.length < 2 || labels.length !== values.length) return '';
+  if (values.some(function(v){ return isNaN(v); })) return '';
+
+  const unit = chart.unit ? (' ' + chart.unit) : '';
+  const title = chart.title || '';
+  let inner = '';
+
+  if (type === 'bar') {
+    const W = 520, H = 240, pad = 34, gap = 14;
+    const max = Math.max.apply(null, values);
+    const bw = (W - pad*2 - gap*(values.length-1)) / values.length;
+    let bars = '';
+    values.forEach(function(v, i){
+      const bh = max ? (v / max) * (H - pad*2) : 0;
+      const x = pad + i*(bw + gap);
+      const y = H - pad - bh;
+      const color = CHART_PALETTE[i % CHART_PALETTE.length];
+      bars += '<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+color+'"/>';
+      bars += '<text x="'+(x+bw/2)+'" y="'+(y-8)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#2C2520">'+chartEsc(v)+'</text>';
+      bars += '<text x="'+(x+bw/2)+'" y="'+(H-pad+18)+'" text-anchor="middle" font-size="12" fill="#8a7d6d">'+chartEsc(labels[i])+'</text>';
+    });
+    inner = '<line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-pad)+'" y2="'+(H-pad)+'" stroke="#e0dcd3" stroke-width="1"/>' + bars;
+    return chartFrame(title, unit, W, H, inner);
+  }
+
+  if (type === 'line') {
+    const W = 520, H = 240, pad = 34;
+    const max = Math.max.apply(null, values), min = Math.min.apply(null, values, 0);
+    const span = (max - min) || 1;
+    const stepX = (W - pad*2) / (values.length - 1);
+    let pts = [], dots = '';
+    values.forEach(function(v, i){
+      const x = pad + i*stepX;
+      const y = H - pad - ((v - min) / span) * (H - pad*2);
+      pts.push(x + ',' + y);
+      dots += '<circle cx="'+x+'" cy="'+y+'" r="4" fill="#C9A84C"/>';
+      dots += '<text x="'+x+'" y="'+(y-12)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#2C2520">'+chartEsc(v)+'</text>';
+      dots += '<text x="'+x+'" y="'+(H-pad+18)+'" text-anchor="middle" font-size="12" fill="#8a7d6d">'+chartEsc(labels[i])+'</text>';
+    });
+    inner = '<line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-pad)+'" y2="'+(H-pad)+'" stroke="#e0dcd3" stroke-width="1"/>' +
+      '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' + dots;
+    return chartFrame(title, unit, W, H, inner);
+  }
+
+  // pie
+  const W = 420, H = 260, cx = 130, cy = 130, r = 95;
+  const total = values.reduce(function(a,b){ return a+b; }, 0) || 1;
+  let angle = -Math.PI/2, slices = '', legend = '';
+  values.forEach(function(v, i){
+    const frac = v / total;
+    const a2 = angle + frac * Math.PI*2;
+    const x1 = cx + r*Math.cos(angle), y1 = cy + r*Math.sin(angle);
+    const x2 = cx + r*Math.cos(a2),    y2 = cy + r*Math.sin(a2);
+    const large = frac > 0.5 ? 1 : 0;
+    const color = CHART_PALETTE[i % CHART_PALETTE.length];
+    slices += '<path d="M'+cx+' '+cy+' L'+x1+' '+y1+' A'+r+' '+r+' 0 '+large+' 1 '+x2+' '+y2+' Z" fill="'+color+'"/>';
+    const ly = 40 + i*26;
+    legend += '<rect x="270" y="'+(ly-10)+'" width="12" height="12" rx="2" fill="'+color+'"/>';
+    legend += '<text x="290" y="'+ly+'" font-size="12.5" fill="#2C2520">'+chartEsc(labels[i])+' ('+Math.round(frac*100)+'%)</text>';
+    angle = a2;
+  });
+  inner = slices + legend;
+  return chartFrame(title, unit, W, H, inner);
+}
+
+function chartFrame(title, unit, W, H, inner){
+  const cap = title ? '<div class="nr-chart-title">'+chartEsc(title)+(unit?' <span class="nr-chart-unit">('+chartEsc(unit.trim())+')</span>':'')+'</div>' : '';
+  return '<div class="nr-chart">'+cap+'<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg></div>';
+}
+
 function renderNewsroomResult(result, typeLabel) {
   document.getElementById('nr-result-type').textContent = typeLabel || '';
   document.getElementById('nr-result-headline').textContent = result.headline || '';
   document.getElementById('nr-result-ingress').textContent = result.ingress || '';
+
+  const chartEl = document.getElementById('nr-result-chart');
+  const chartHtml = renderChart(result.chart);
+  chartEl.innerHTML = chartHtml;
+  chartEl.style.display = chartHtml ? 'block' : 'none';
+
   document.getElementById('nr-result-body').innerHTML = mdToHtml(result.body);
 
   const quoteEl = document.getElementById('nr-result-quote');
