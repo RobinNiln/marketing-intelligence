@@ -784,6 +784,21 @@ body.native-mode{background:#FBFAF7}
 .hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 @media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
 
+/* Campaign Planner-resultat */
+.planner-phase{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem}
+.planner-phase-head{display:flex;align-items:center;gap:14px;margin-bottom:0.8rem}
+.planner-phase-num{width:30px;height:30px;flex-shrink:0;background:#2C2520;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.planner-phase-name{font-size:16px;font-weight:700;color:#2C2520}
+.planner-phase-timing{font-size:12.5px;color:#9A8570;margin-top:2px}
+.planner-phase-budget{margin-left:auto;flex-shrink:0;font-size:12px;font-weight:700;color:#9c7d2e;background:rgba(201,168,76,0.12);border-radius:100px;padding:5px 12px}
+.planner-phase-purpose{font-size:14px;color:#5F5E5A;line-height:1.7;margin:0 0 0.7rem}
+.planner-phase-channels{font-size:13px;color:#5F5E5A;margin-bottom:0.9rem}
+.planner-content-box{background:#faf8f4;border:1px solid #f0eee8;border-radius:10px;padding:1rem 1.2rem}
+.planner-budget-box{background:#faf8f4;border:1px solid #f0eee8;border-radius:12px;padding:1.3rem 1.5rem}
+.planner-content-title{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#9c7d2e;margin-bottom:0.6rem}
+.planner-content-list{margin:0;padding-left:1.2rem}
+.planner-content-list li{font-size:13.5px;color:#2C2520;margin-bottom:0.35rem;line-height:1.5}
+
 /* FAQ-sida */
 .faq-wrap{max-width:760px;margin:0 auto;padding:3rem 2rem 4rem}
 .faq-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.03em;color:#2C2520;margin:1rem 0 0.6rem}
@@ -1268,6 +1283,10 @@ body.brief-mode{background:#FBFAF7}
     <button class="sp-link" data-page="tools-page" onclick="goToTools()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg>
       <span class="sp-link-body"><span class="sp-link-text">Verktyg</span><span class="sp-link-desc">Alla fem AI-verktyg</span></span>
+    </button>
+    <button class="sp-link" data-page="planner-page" onclick="goToPlanner()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="16" height="15" rx="2"/><path d="M3 8h16M7 2v4M15 2v4M7 12h4M7 15h7"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Kampanjplan</span><span class="sp-link-desc">Planera kampanjer steg för steg</span></span>
     </button>
     <button class="sp-link" data-page="library-page" onclick="goToLibrary()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14M8 4v14M4 4h4v14H4z"/><path d="M11 5l4-1 3 13-4 1z"/></svg>
@@ -2408,6 +2427,94 @@ body.brief-mode{background:#FBFAF7}
       <button class="brief-new-btn" onclick="briefReset()">← Skapa ny brief</button>
     </div>
 
+  </div>
+</div>
+
+<div id="planner-page">
+  <div style="position:relative;height:42vh;min-height:320px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 2rem">
+    <div style="position:absolute;inset:0;background-image:url('images/kontor.png');background-size:cover;background-position:center"></div>
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.52)"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(0,0,0,0.15)">
+      <button class="mava-logo on-dark" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:26px;width:26px"><span class="mava-word" style="font-size:17px">Mava</span></button>
+      <button onclick="goToLanding()" style="font-size:13px;color:rgba(255,255,255,0.75);background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+        Tillbaka
+      </button>
+    </div>
+    <div style="position:relative;z-index:1;max-width:600px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.6rem">Kampanjplanerare</div>
+      <h1 style="font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.8rem">Campaign Planner</h1>
+      <p style="font-size:clamp(14px,1.6vw,17px);color:rgba(255,255,255,0.7);line-height:1.6;max-width:480px;margin:0 auto">En färdig kampanjplan med faser, kanaler, budget och innehåll – för Google Ads och sociala medier.</p>
+    </div>
+  </div>
+
+  <div class="brief-container">
+    <div id="planner-form-section">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Skapa din kampanjplan</h1>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så bygger AI:n en strukturerad kampanjplan – med faser, kanaler, budgetfördelning och vilket innehåll varje fas behöver.</p>
+      </div>
+
+      <div class="brief-section-title">Tidshorisont</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Ska planen vara en kort insats eller en långsiktig satsning?</p>
+      <div class="native-type-grid" id="planner-horizon-grid">
+        <button type="button" class="native-type-btn on" onclick="plannerSelectHorizon(this,'kort')">Kort kampanj (veckor)</button>
+        <button type="button" class="native-type-btn" onclick="plannerSelectHorizon(this,'lang')">Långsiktig plan (månader/kvartal)</button>
+      </div>
+
+      <div class="brief-section-title" style="margin-top:2rem">Kampanjmål</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Välj ett eller flera mål – de styr hur planen prioriterar.</p>
+      <div class="brief-goal-grid">
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Ökad varumärkeskännedom')"><div class="brief-goal-icon">📣</div><div class="brief-goal-name">Kännedom</div><div class="brief-goal-desc">Fler ska veta vem ni är</div></div>
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Leadsgenerering')"><div class="brief-goal-icon">🎯</div><div class="brief-goal-name">Leads</div><div class="brief-goal-desc">Fånga nya potentiella kunder</div></div>
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Direktförsäljning och konvertering')"><div class="brief-goal-icon">💰</div><div class="brief-goal-name">Försäljning</div><div class="brief-goal-desc">Driva köp och konvertering</div></div>
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Produktlansering')"><div class="brief-goal-icon">🚀</div><div class="brief-goal-name">Lansering</div><div class="brief-goal-desc">Introducera något nytt</div></div>
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Kundlojalitet och retention')"><div class="brief-goal-icon">🔄</div><div class="brief-goal-name">Lojalitet</div><div class="brief-goal-desc">Behåll och fördjupa relationer</div></div>
+        <div class="brief-goal" onclick="plannerToggleGoal(this,'Trafik till webbplatsen')"><div class="brief-goal-icon">🌐</div><div class="brief-goal-name">Trafik</div><div class="brief-goal-desc">Driva besök till sajten</div></div>
+      </div>
+
+      <div class="brief-section-title" style="margin-top:2rem">Kanaler</div>
+      <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Vilka kanaler ska planen omfatta?</p>
+      <div class="native-type-grid" id="planner-channel-grid">
+        <button type="button" class="native-type-btn on" onclick="plannerToggleChannel(this,'Google Ads (sök)')">Google Ads – Sök</button>
+        <button type="button" class="native-type-btn on" onclick="plannerToggleChannel(this,'Google Ads (display)')">Google Ads – Display</button>
+        <button type="button" class="native-type-btn on" onclick="plannerToggleChannel(this,'Meta (Facebook/Instagram)')">Meta</button>
+        <button type="button" class="native-type-btn" onclick="plannerToggleChannel(this,'LinkedIn')">LinkedIn</button>
+        <button type="button" class="native-type-btn" onclick="plannerToggleChannel(this,'YouTube')">YouTube</button>
+      </div>
+
+      <div class="brief-section-title" style="margin-top:2rem">Om företaget och kampanjen</div>
+      <div class="brief-field"><label>Företag <span>*</span></label><input type="text" id="pl-company" placeholder="Ert företagsnamn"></div>
+      <div class="brief-field"><label>Bransch</label><input type="text" id="pl-industry" placeholder="Ex. bilhandel, e-handel, B2B-tjänster"></div>
+      <div class="brief-field"><label>Vad ska marknadsföras? <span>*</span></label><textarea id="pl-what" placeholder="Beskriv produkten, tjänsten eller erbjudandet som kampanjen ska lyfta."></textarea></div>
+      <div class="brief-field"><label>Målgrupp</label><textarea id="pl-audience" placeholder="Vem vill ni nå? Ålder, plats, intressen, beteende."></textarea></div>
+      <div class="brief-field"><label>Total budget (kr) <span>*</span></label><input type="number" id="pl-budget" placeholder="Ex. 100000"></div>
+      <div class="brief-field"><label>Period / startdatum</label><input type="text" id="pl-period" placeholder="Ex. mars–maj 2026, eller lansering v.12"></div>
+
+      <button class="brief-generate-btn" onclick="generatePlan()" id="planner-generate-btn">Skapa kampanjplan</button>
+    </div>
+
+    <div id="planner-result-section" style="display:none">
+      <div class="brief-result-header">
+        <div>
+          <div class="brief-result-label" id="pl-result-label"></div>
+          <h2 class="brief-result-title">Din kampanjplan</h2>
+        </div>
+        <div class="brief-result-actions">
+          <span id="planner-export-slot"></span>
+          <button class="brief-action-btn auth-when-in" style="display:none" id="planner-save-btn" onclick="plannerSave()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
+            Spara i bibliotek
+          </button>
+        </div>
+      </div>
+
+      <div id="pl-result-overview" class="brief-section-content" style="margin-bottom:1.5rem"></div>
+      <div id="pl-result-phases"></div>
+      <div id="pl-result-budget" style="margin-top:1.5rem"></div>
+
+      <button class="brief-new-btn" onclick="plannerReset()">← Skapa ny plan</button>
+    </div>
   </div>
 </div>
 
@@ -3652,7 +3759,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -3701,6 +3808,7 @@ function navigateTo(page){
     case 'native-page':   goToNative(); break;
     case 'newsroom-page': goToNewsroom(); break;
     case 'brief-page':    goToBrief(); break;
+    case 'planner-page':  goToPlanner(); break;
     case 'adcopy-page':   goToAdCopy(); break;
     case 'dist-page':     if (typeof goToDist === 'function') goToDist(); else goToTools(); break;
     default:              goToHome();
@@ -4390,7 +4498,7 @@ async function goToLibrary() {
   renderLibrary();
 }
 
-const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio' };
+const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio', planner:'Campaign Planner' };
 
 function libraryFilter(tool) {
   _libraryFilter = tool;
@@ -4465,6 +4573,12 @@ function libraryOpen(id) {
     document.getElementById('native-form-section').style.display = 'none';
     renderNativeArticle(item.content, savedLabel);
     document.getElementById('native-result').style.display = 'block';
+    window.scrollTo(0,0);
+
+  } else if (item.tool === 'planner') {
+    goToPlanner();
+    renderPlanResult(item.content, savedLabel);
+    window._plannerResult = item.content;
     window.scrollTo(0,0);
 
   } else {
@@ -4611,7 +4725,7 @@ function applyPanelState() {
 }
 
 // Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
-const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page'];
+const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page'];
 
 // Visar panelen bara när man är inloggad OCH på en inre app-sida.
 function updateSidePanel(currentPage) {
@@ -4854,6 +4968,173 @@ function goToBrief(){
   document.body.classList.add('brief-mode');
   window.scrollTo(0,0);
   applyBrandProfileToBrief();
+}
+
+/* ══════════════════════════════════════════
+   CAMPAIGN PLANNER
+   Följer samma mönster som The Brief: formulär → AI-anrop → JSON → rendera.
+   Steg 2 (senare) kopplar planens innehållsbehov vidare till AdStudio.
+══════════════════════════════════════════ */
+let _plannerHorizon = 'kort';           // 'kort' | 'lang'
+let _plannerGoals = [];                 // valda mål
+let _plannerChannels = ['Google Ads (sök)','Google Ads (display)','Meta (Facebook/Instagram)']; // förvalda
+
+function plannerSelectHorizon(btn, val){
+  _plannerHorizon = val;
+  document.querySelectorAll('#planner-horizon-grid .native-type-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+function plannerToggleGoal(el, goal){
+  el.classList.toggle('on');
+  const i = _plannerGoals.indexOf(goal);
+  if (i > -1) _plannerGoals.splice(i,1); else _plannerGoals.push(goal);
+}
+function plannerToggleChannel(btn, channel){
+  btn.classList.toggle('on');
+  const i = _plannerChannels.indexOf(channel);
+  if (i > -1) _plannerChannels.splice(i,1); else _plannerChannels.push(channel);
+}
+
+function goToPlanner(){
+  hideAll();
+  document.getElementById('planner-page').style.display='block';
+  updateSidePanel('planner-page');
+  window.scrollTo(0,0);
+  applyBrandProfileToPlanner();
+}
+
+// Auto-ifyll från varumärkesprofilen, som de andra verktygen.
+async function applyBrandProfileToPlanner(){
+  if (!_currentUser) return;
+  const p = _brandProfile || await fetchBrandProfile();
+  if (!p) return;
+  fillIfEmpty('pl-company', p.company);
+  fillIfEmpty('pl-industry', p.industry);
+  fillIfEmpty('pl-audience', p.default_audience);
+  if (p.products_services) fillIfEmpty('pl-what', p.products_services);
+}
+
+async function generatePlan(){
+  const company = document.getElementById('pl-company').value.trim();
+  const industry = document.getElementById('pl-industry').value.trim();
+  const what = document.getElementById('pl-what').value.trim();
+  const audience = document.getElementById('pl-audience').value.trim();
+  const budget = parseInt(document.getElementById('pl-budget').value, 10) || 0;
+  const period = document.getElementById('pl-period').value.trim();
+
+  if (!company || !what || !budget) {
+    alert('Fyll i minst företag, vad som ska marknadsföras och budget.');
+    return;
+  }
+  if (_plannerChannels.length === 0) { alert('Välj minst en kanal.'); return; }
+
+  const btn = document.getElementById('planner-generate-btn');
+  btn.disabled = true; btn.textContent = 'Bygger din plan...';
+
+  const horizonText = _plannerHorizon === 'kort'
+    ? 'en kort kampanj som löper över några veckor'
+    : 'en långsiktig plan som löper över flera månader eller kvartal';
+  const goalsStr = _plannerGoals.length ? _plannerGoals.join(', ') : 'ökad kännedom och försäljning';
+
+  const prompt = `Du är en erfaren svensk digital strateg och mediaplanerare. Skapa en genomtänkt kampanjplan på svenska.
+
+Kampanjen är ${horizonText}.
+Företag: ${company}
+Bransch: ${industry || 'ej angiven'}
+Vad ska marknadsföras: ${what}
+Målgrupp: ${audience || 'ej angiven'}
+Kampanjmål: ${goalsStr}
+Kanaler att planera för: ${_plannerChannels.join(', ')}
+Total budget: ${budget.toLocaleString('sv-SE')} kr
+Period: ${period || 'ej angiven'}
+
+Bygg en plan som delar upp kampanjen i logiska FASER (t.ex. förberedelse, lansering, skalning, retargeting – anpassa efter mål och tidshorisont). För varje fas: beskriv syftet, vilka kanaler som används, och VILKET INNEHÅLL som behöver produceras (t.ex. "3 st Google Ads-sökannonser", "5 st Meta-bildannonser i format 1080x1080", "2 st display-banners"). Var konkret med antal och format så att innehållet sedan kan produceras.
+
+Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JSON:
+{
+  "plan_name": "Kort namn på kampanjplanen",
+  "overview": "2-3 stycken som sammanfattar strategin och den övergripande logiken. Använd \\n\\n mellan stycken.",
+  "phases": [
+    {
+      "name": "Fasens namn",
+      "timing": "När i kampanjen, t.ex. Vecka 1-2 eller Månad 1",
+      "purpose": "Kort om fasens syfte",
+      "channels": "Vilka kanaler som används i fasen",
+      "content_needed": ["3 st Google Ads sökannonser", "5 st Meta-bildannonser 1080x1080"],
+      "budget_share": "Ungefärlig andel av budgeten, t.ex. 30% (30 000 kr)"
+    }
+  ],
+  "budget_summary": "Kort sammanfattning av hur budgeten fördelas över faser och kanaler, med kronbelopp som summerar till ${budget} kr."
+}`;
+
+  try {
+    const data = await safeFetch([{ role:'user', content: prompt + brandGuidance() }], 80000, 'the-brief');
+    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const plan = JSON.parse(clean);
+    plan._meta = { company: company, horizon: _plannerHorizon, budget: budget };
+    renderPlanResult(plan, goalsStr);
+    window._plannerResult = plan;
+  } catch (e) {
+    alert('Kunde inte skapa planen: ' + (e.message || e) + '. Försök igen.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Skapa kampanjplan';
+  }
+}
+
+function renderPlanResult(plan, label){
+  document.getElementById('planner-form-section').style.display = 'none';
+  document.getElementById('planner-result-section').style.display = 'block';
+  document.getElementById('pl-result-label').textContent = label + (plan._meta ? ' · ' + (plan._meta.horizon === 'kort' ? 'Kort kampanj' : 'Långsiktig plan') : '');
+
+  document.getElementById('pl-result-overview').innerHTML = mdToHtml(plan.overview);
+
+  // Faser
+  const phasesHtml = (plan.phases || []).map(function(ph, i){
+    const content = (ph.content_needed || []).map(function(c){
+      return '<li>' + escapeHtmlLib(c) + '</li>';
+    }).join('');
+    return '<div class="planner-phase">' +
+      '<div class="planner-phase-head">' +
+        '<span class="planner-phase-num">' + (i+1) + '</span>' +
+        '<div><div class="planner-phase-name">' + escapeHtmlLib(ph.name || '') + '</div>' +
+        '<div class="planner-phase-timing">' + escapeHtmlLib(ph.timing || '') + '</div></div>' +
+        (ph.budget_share ? '<span class="planner-phase-budget">' + escapeHtmlLib(ph.budget_share) + '</span>' : '') +
+      '</div>' +
+      (ph.purpose ? '<p class="planner-phase-purpose">' + escapeHtmlLib(ph.purpose) + '</p>' : '') +
+      (ph.channels ? '<div class="planner-phase-channels"><strong>Kanaler:</strong> ' + escapeHtmlLib(ph.channels) + '</div>' : '') +
+      (content ? '<div class="planner-content-box"><div class="planner-content-title">Innehåll som behövs</div><ul class="planner-content-list">' + content + '</ul></div>' : '') +
+    '</div>';
+  }).join('');
+  document.getElementById('pl-result-phases').innerHTML = phasesHtml;
+
+  document.getElementById('pl-result-budget').innerHTML = plan.budget_summary
+    ? '<div class="planner-budget-box"><div class="planner-content-title">Budgetfördelning</div><div class="brief-section-content">' + mdToHtml(plan.budget_summary) + '</div></div>'
+    : '';
+
+  // Export-knapp
+  const slot = document.getElementById('planner-export-slot');
+  if (slot) slot.innerHTML = exportMenuHtml('planner', 'brief-action-btn');
+}
+
+async function plannerSave(){
+  const plan = window._plannerResult;
+  if (!plan) return;
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = document.getElementById('planner-save-btn');
+  const suggested = plan.plan_name || 'Kampanjplan';
+  const title = prompt('Namnge din kampanjplan:', suggested);
+  if (title === null) return;
+  if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
+  const { error } = await saveProduction('planner', title.trim() || suggested, plan);
+  if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
+  if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
+
+function plannerReset(){
+  document.getElementById('planner-result-section').style.display = 'none';
+  document.getElementById('planner-form-section').style.display = 'block';
+  window.scrollTo(0,0);
 }
 
 /* ══════════════════════════════════════════
@@ -5932,6 +6213,24 @@ function marketToDoc(r){
   return { title: 'Marknadsanalys', subtitle:'Market Pulse · Mava', sections: secs };
 }
 
+function plannerToDoc(p){
+  const secs = [];
+  if (p.overview) secs.push({ heading:'Översikt', body:p.overview });
+  (p.phases || []).forEach(function(ph, i){
+    let body = '';
+    if (ph.timing)  body += ph.timing + '\n';
+    if (ph.purpose) body += ph.purpose + '\n';
+    if (ph.channels) body += 'Kanaler: ' + ph.channels + '\n';
+    if (ph.content_needed && ph.content_needed.length) {
+      body += 'Innehåll som behövs:\n' + ph.content_needed.map(function(c){ return '• ' + c; }).join('\n');
+    }
+    if (ph.budget_share) body += '\nBudget: ' + ph.budget_share;
+    secs.push({ heading: 'Fas ' + (i+1) + ': ' + (ph.name || ''), body: body });
+  });
+  if (p.budget_summary) secs.push({ heading:'Budgetfördelning', body:p.budget_summary });
+  return { title: p.plan_name || 'Kampanjplan', subtitle:'Campaign Planner · Mava', sections: secs };
+}
+
 // Gemensam ingång: kör rätt översättare + rätt format.
 function runExport(tool, format){
   exportCloseAllMenus();
@@ -5941,6 +6240,7 @@ function runExport(tool, format){
     else if (tool === 'newsroom') { if (!window._newsroomResult) return; doc = newsroomToDoc(window._newsroomResult); }
     else if (tool === 'native')   { if (!window._nativeArticle) return; doc = nativeToDoc(window._nativeArticle); }
     else if (tool === 'market')   { if (!window._marketResult) return; doc = marketToDoc(window._marketResult); }
+    else if (tool === 'planner')  { if (!window._plannerResult) return; doc = plannerToDoc(window._plannerResult); }
     else return;
   } catch (e) { alert('Kunde inte förbereda exporten: ' + e.message); return; }
 
