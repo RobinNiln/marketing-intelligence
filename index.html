@@ -1266,7 +1266,7 @@ body.brief-mode{background:#FBFAF7}
 <aside id="side-panel">
   <button class="sp-toggle" onclick="toggleSidePanel()" title="Öppna/stäng meny">
     <svg id="sp-toggle-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2C2520" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h14M4 11h14M4 16h14"/></svg>
-    <span class="sp-link-text" style="font-weight:700;color:#2C2520">Meny</span>
+    <span class="sp-link-body"><span class="sp-link-text" style="font-weight:700;color:#2C2520">Meny</span></span>
   </button>
 
   <!-- Tillbaka: går till föregående sida i Mava -->
@@ -4993,7 +4993,7 @@ function plannerSelectHorizon(btn, val){
   btn.classList.add('on');
 }
 function plannerToggleGoal(el, goal){
-  el.classList.toggle('on');
+  el.classList.toggle('sel');
   const i = _plannerGoals.indexOf(goal);
   if (i > -1) _plannerGoals.splice(i,1); else _plannerGoals.push(goal);
 }
