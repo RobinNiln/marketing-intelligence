@@ -5044,9 +5044,12 @@ async function generatePlan(){
     : 'en långsiktig plan som löper över flera månader eller kvartal';
   const goalsStr = _plannerGoals.length ? _plannerGoals.join(', ') : 'ökad kännedom och försäljning';
 
-  const prompt = `Du är en erfaren svensk digital strateg och mediaplanerare. Skapa en genomtänkt kampanjplan på svenska.
+  const prompt = `Du är en av Sveriges skarpaste digitala mediastrateger, med bakgrund från både mediebyrå och annonsörssida. Du bygger kampanjplaner som marknadschefer faktiskt kan agera på – inte luftiga floskler, utan konkreta, prioriterade och budgeterade planer där varje krona har ett syfte. Du tänker alltid: vad är målet, var i köpresan är målgruppen, och vilken kanal gör vilket jobb?
 
-Kampanjen är ${horizonText}.
+Skapa en genomtänkt kampanjplan på svenska baserat på underlaget nedan.
+
+UNDERLAG:
+Tidshorisont: ${horizonText}
 Företag: ${company}
 Bransch: ${industry || 'ej angiven'}
 Vad ska marknadsföras: ${what}
@@ -5056,27 +5059,45 @@ Kanaler att planera för: ${_plannerChannels.join(', ')}
 Total budget: ${budget.toLocaleString('sv-SE')} kr
 Period: ${period || 'ej angiven'}
 
-Bygg en plan som delar upp kampanjen i logiska FASER (t.ex. förberedelse, lansering, skalning, retargeting – anpassa efter mål och tidshorisont). För varje fas: beskriv syftet, vilka kanaler som används, och VILKET INNEHÅLL som behöver produceras (t.ex. "3 st Google Ads-sökannonser", "5 st Meta-bildannonser i format 1080x1080", "2 st display-banners"). Var konkret med antal och format så att innehållet sedan kan produceras.
+SÅ HÄR TÄNKER DU NÄR DU BYGGER PLANEN:
 
-Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JSON:
+1. Kanalernas roll i köpresan. Fördela insatserna medvetet:
+   - Google Ads (sök) fångar befintlig efterfrågan – människor som redan söker. Prioritera detta för konvertering och när målet är försäljning/leads.
+   - Google Ads (display) och sociala medier (Meta/LinkedIn) bygger efterfrågan och kännedom – de skapar behovet snarare än fångar det. Prioritera tidigt i en kampanj och för kännedomsmål.
+   - Retargeting (via display/socialt) fångar upp de som visat intresse men inte konverterat – lägg alltid en del av budgeten här om kampanjen löper mer än några veckor.
+   - LinkedIn passar B2B och professionella målgrupper; Meta har bredast räckvidd för konsument.
+   Använd bara de kanaler som angetts ovan, men förklara hur var och en bidrar.
+
+2. Faser anpassade efter tidshorisont.
+   ${_plannerHorizon === 'kort'
+     ? 'Detta är en KORT kampanj (veckor). Håll det fokuserat: färre faser (2-3), snabb övergång från kännedom till konvertering, och tidig retargeting. Undvik långsamma varumärkesfaser – det finns inte tid.'
+     : 'Detta är en LÅNGSIKTIG plan (månader/kvartal). Bygg en genomtänkt trappa: börja med kännedom och efterfrågebyggande, gå vidare till konvertering, och lägg in återkommande optimerings- och retargetingfaser. Tänk uthållighet och att lära av datan över tid.'}
+
+3. Konkret innehåll per fas. För varje fas: ange EXAKT vilket annonsinnehåll som behöver produceras, med antal OCH format där det är relevant (t.ex. "3 st Google Ads sökannonser", "5 st Meta-bildannonser 1080x1080", "2 st display-banners 980x240"). Detta ska vara så konkret att en producent kan börja jobba direkt. Använd svenska standardformat för display (Panorama 980-bredd, Widescreen 250-bredd, Modul 468-bredd) och de vanliga sociala formaten (1080x1080, 1080x1350, 1080x1920).
+
+4. Budget som går ihop. Fördela hela budgeten medvetet mellan faser och kanaler. Kronbeloppen ska summera till ${budget.toLocaleString('sv-SE')} kr. Lägg mer där effekten är störst för det valda målet, inte jämnt utslaget.
+
+5. Var konkret, aldrig generisk. Undvik tomma fraser som "öka engagemanget". Skriv sådant en byrå faktiskt skulle leverera: specifika vinklar, prioriteringar och motiveringar kopplade till just detta företag och mål.
+
+Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JSON, inga kommentarer:
 {
-  "plan_name": "Kort namn på kampanjplanen",
-  "overview": "2-3 stycken som sammanfattar strategin och den övergripande logiken. Använd \\n\\n mellan stycken.",
+  "plan_name": "Kort, kärnfullt namn på kampanjplanen",
+  "overview": "2-3 stycken som sammanfattar strategin, den bärande idén och hur kanalerna spelar ihop. Förklara VARFÖR upplägget ser ut som det gör. Använd \\n\\n mellan stycken.",
   "phases": [
     {
       "name": "Fasens namn",
-      "timing": "När i kampanjen, t.ex. Vecka 1-2 eller Månad 1",
-      "purpose": "Kort om fasens syfte",
-      "channels": "Vilka kanaler som används i fasen",
+      "timing": "När i kampanjen, t.ex. Vecka 1-2 eller Månad 1-2",
+      "purpose": "Vad fasen ska uppnå och varför den kommer här i ordningen",
+      "channels": "Vilka kanaler som används och vilket jobb var och en gör i fasen",
       "content_needed": ["3 st Google Ads sökannonser", "5 st Meta-bildannonser 1080x1080"],
-      "budget_share": "Ungefärlig andel av budgeten, t.ex. 30% (30 000 kr)"
+      "budget_share": "Andel av budgeten med både procent och kronor, t.ex. 30% (30 000 kr)"
     }
   ],
-  "budget_summary": "Kort sammanfattning av hur budgeten fördelas över faser och kanaler, med kronbelopp som summerar till ${budget} kr."
+  "budget_summary": "Sammanfattning av hur budgeten fördelas över faser och kanaler, med motivering av prioriteringen. Kronbeloppen ska summera till ${budget.toLocaleString('sv-SE')} kr."
 }`;
 
   try {
-    const data = await safeFetch([{ role:'user', content: prompt + brandGuidance() }], 80000, 'the-brief');
+    const data = await safeFetch([{ role:'user', content: prompt + brandGuidance() }], 80000, 'newsroom');
     const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = raw.replace(/```json|```/g, '').trim();
     const plan = JSON.parse(clean);
