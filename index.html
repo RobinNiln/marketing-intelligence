@@ -4487,7 +4487,19 @@ async function saveProduction(tool, title, content, projectId) {
   };
   // Koppla till projekt om ett angetts (annars sparas den "projektlös" som förut).
   if (projectId) row.project_id = projectId;
+  // Diagnostik: visa i konsolen exakt vad vi försöker spara.
+  console.log('[Mava] Sparar produktion. project_id =', projectId || '(inget)');
   const { data, error } = await sb().from('productions').insert(row).select().single();
+  if (error) {
+    console.error('[Mava] Fel vid sparning:', error);
+  } else {
+    console.log('[Mava] Sparat. Databasen returnerade project_id =', data && data.project_id);
+    // Om vi skickade ett projekt men databasen INTE sparade det, saknas troligen
+    // kolumnen project_id – dvs SQL:en har inte körts i Supabase.
+    if (projectId && data && !data.project_id) {
+      alert('OBS: Produktionen sparades men kunde inte kopplas till projektet.\n\nTrolig orsak: databas-uppdateringen (SQL:en) har inte körts i Supabase än. Kör supabase_projekt.sql i Supabase SQL Editor och försök igen.');
+    }
+  }
   return { data, error };
 }
 
