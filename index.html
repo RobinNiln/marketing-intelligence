@@ -1171,6 +1171,11 @@ body.newsroom-mode{background:#FBFAF7}
 #side-panel.expanded{width:230px}
 .sp-toggle{display:flex;align-items:center;gap:12px;padding:18px 18px;background:none;border:none;cursor:pointer;font-family:inherit;border-bottom:1px solid #f0eee8}
 .sp-toggle svg{flex-shrink:0}
+/* Aktivt projekt-banner: neutral när inget valt, guldmarkerad när aktivt */
+#active-project-bar.has-project{background:rgba(201,168,76,0.12)}
+#active-project-bar.has-project .sp-link-text{color:#9c7d2e}
+#active-project-bar.has-project svg{stroke:#C9A84C}
+#active-project-bar.has-project .sp-link-desc{color:#9c7d2e;font-weight:600}
 .sp-links{display:flex;flex-direction:column;padding:8px 0;flex:1}
 .sp-link{display:flex;align-items:center;gap:14px;padding:12px 19px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:14px;color:#5F5E5A;white-space:nowrap;text-align:left;transition:background 0.12s}
 .sp-link:hover{background:#F5F3EE}
@@ -1313,6 +1318,12 @@ body.brief-mode{background:#FBFAF7}
   <button class="sp-link sp-back" onclick="goBack()" title="Tillbaka">
     <svg viewBox="0 0 22 22" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l-6 6 6 6"/></svg>
     <span class="sp-link-body"><span class="sp-link-text">Tillbaka</span><span class="sp-link-desc">Föregående sida</span></span>
+  </button>
+
+  <!-- Aktivt projekt: visar var du jobbar, klicka för att byta -->
+  <button id="active-project-bar" class="sp-link" onclick="chooseActiveProject()" title="Byt aktivt projekt">
+    <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 012-2h3l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span class="sp-link-body"><span class="sp-link-text">Projekt</span><span class="sp-link-desc" id="active-project-name">Inget projekt valt</span></span>
   </button>
 
   <nav class="sp-links">
@@ -4536,6 +4547,9 @@ async function deleteProject(projectId) {
    den kan förfinas till en snyggare dropdown senare. Frivilligt – man kan
    alltid hoppa över genom att lämna tomt. */
 async function pickProject() {
+  // Lager 2: om ett projekt är aktivt sparar vi dit automatiskt – ingen fråga.
+  if (_activeProject && _activeProject.id) return _activeProject.id;
+
   const { data: projects } = await fetchProjects();
   if (!projects || !projects.length) {
     // Inga projekt än – fråga om man vill skapa ett, annars spara utan.
@@ -4813,6 +4827,71 @@ const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Ma
 
 /* ── Projektsidan (Lager 1) ─────────────────────────────────────────────── */
 let _projectsCache = [];
+
+/* ── Aktivt projekt (Lager 2) ───────────────────────────────────────────────
+   Appen minns vilket projekt du jobbar i. Sparas i localStorage så det
+   överlever sidladdning. Frivilligt – null betyder "inget aktivt projekt",
+   då fungerar allt precis som förut.
+──────────────────────────────────────────────────────────────────────────── */
+let _activeProject = null; // { id, name } eller null
+
+function loadActiveProject() {
+  try {
+    const raw = localStorage.getItem('mava-active-project');
+    _activeProject = raw ? JSON.parse(raw) : null;
+  } catch(e) { _activeProject = null; }
+  updateActiveProjectUI();
+}
+
+function setActiveProject(project) {
+  _activeProject = project; // {id, name} eller null
+  try {
+    if (project) localStorage.setItem('mava-active-project', JSON.stringify(project));
+    else localStorage.removeItem('mava-active-project');
+  } catch(e){}
+  updateActiveProjectUI();
+}
+
+// Uppdaterar den synliga "projekt-bannern" så du alltid ser var du jobbar.
+function updateActiveProjectUI() {
+  const bar = document.getElementById('active-project-bar');
+  if (!bar) return;
+  const nameEl = document.getElementById('active-project-name');
+  if (_activeProject) {
+    bar.classList.add('has-project');
+    if (nameEl) nameEl.textContent = _activeProject.name;
+  } else {
+    bar.classList.remove('has-project');
+    if (nameEl) nameEl.textContent = 'Inget projekt valt';
+  }
+}
+
+// Väljare för aktivt projekt – öppnas från bannern. Låter dig byta projekt,
+// skapa nytt, eller koppla bort.
+async function chooseActiveProject() {
+  if (!_currentUser) { goToAuth(); return; }
+  const { data: projects } = await fetchProjects();
+  let menu = 'Välj aktivt projekt – allt du skapar sparas hit automatiskt.\n\n0 = Inget projekt\n';
+  (projects || []).forEach(function(p, i){ menu += (i+1) + ' = ' + p.name + '\n'; });
+  menu += '\nN = Nytt projekt\n\nSkriv en siffra, eller N för nytt:';
+  const choice = prompt(menu);
+  if (choice === null) return; // avbröt
+  const c = choice.trim().toLowerCase();
+  if (c === 'n') {
+    const name = prompt('Namnge ditt nya projekt:');
+    if (name === null || !name.trim()) return;
+    const { data, error } = await createProject(name.trim());
+    if (error) { alert('Kunde inte skapa projektet.'); return; }
+    setActiveProject({ id: data.id, name: data.name });
+    return;
+  }
+  const n = parseInt(c, 10);
+  if (!c || n === 0 || isNaN(n)) { setActiveProject(null); return; }
+  if (n >= 1 && n <= (projects||[]).length) {
+    setActiveProject({ id: projects[n-1].id, name: projects[n-1].name });
+  }
+}
+
 
 async function goToProjects() {
   if (!_currentUser) { goToAuth(); return; }
@@ -5154,6 +5233,7 @@ function updateSidePanel(currentPage) {
       _panelExpanded = (saved === null) ? true : (saved === '1');
     } catch(e){ _panelExpanded = true; }
     applyPanelState();
+    loadActiveProject();
   } else {
     panel.style.display = 'none';
     document.body.classList.remove('has-panel');
