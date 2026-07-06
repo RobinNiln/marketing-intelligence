@@ -794,6 +794,17 @@ body.native-mode{background:#FBFAF7}
 .hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 @media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
 
+/* Utvald funktion (Campaign Planner) på startsidan */
+.home-feature{display:grid;grid-template-columns:200px 1fr;gap:0;background:#fff;border:1px solid #ece8df;border-radius:16px;overflow:hidden;margin-bottom:2rem;cursor:pointer;transition:box-shadow 0.18s,transform 0.18s}
+.home-feature:hover{box-shadow:0 10px 30px rgba(44,37,32,0.1);transform:translateY(-2px)}
+.home-feature-img{background-image:linear-gradient(135deg,rgba(44,37,32,0.28),rgba(201,168,76,0.3)),url('images/planner.jpg');background-size:cover;background-position:center;min-height:150px}
+.home-feature-body{padding:1.6rem 1.8rem}
+.home-feature-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#9c7d2e;margin-bottom:0.5rem}
+.home-feature-title{font-size:19px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem}
+.home-feature-text{font-size:14px;color:#5F5E5A;line-height:1.65;margin-bottom:1.1rem;max-width:480px}
+.home-feature-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border-radius:100px;padding:10px 20px;font-size:13.5px;font-weight:600}
+@media(max-width:640px){.home-feature{grid-template-columns:1fr}.home-feature-img{min-height:120px}}
+
 /* Campaign Planner-resultat */
 .planner-phase{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem}
 .planner-phase-head{display:flex;align-items:center;gap:14px;margin-bottom:0.9rem}
@@ -1517,6 +1528,17 @@ body.brief-mode{background:#FBFAF7}
         <span class="home-notices-label">Nytt i Mava</span>
       </div>
       <div id="home-notices-list"></div>
+    </div>
+
+    <!-- Utvald funktion: Campaign Planner -->
+    <div class="home-feature" onclick="goToPlanner()">
+      <div class="home-feature-img"></div>
+      <div class="home-feature-body">
+        <div class="home-feature-eyebrow">Kampanjplanerare</div>
+        <div class="home-feature-title">Bygg en färdig kampanjplan</div>
+        <div class="home-feature-text">Faser, kanaler, budget och konkret innehåll – för Google Ads och sociala medier. Från idé till plan på någon minut.</div>
+        <span class="home-feature-btn">Öppna Campaign Planner <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6.5h8M6 2.5l4 4-4 4"/></svg></span>
+      </div>
     </div>
 
     <!-- Snabbstatistik -->
