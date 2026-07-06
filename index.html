@@ -6425,6 +6425,18 @@ function mdToHtml(text) {
       continue;
     }
 
+    // Ledtext-rubrik: rad som BÖRJAR med fet etikett följt av kolon och mer text,
+    // t.ex. "**Meta:** Retargeting mot videotittare..."
+    // Vi gör etiketten till en delrubrik och lägger resten som stycke under,
+    // så rubriken tydligt hör ihop med sin text.
+    const labelLead = line.match(/^\*\*(.+?):?\*\*:?\s+(.+)$/);
+    if (labelLead) {
+      flushParagraph(); closeList();
+      html += '<h4 class="md-sub">' + mdInline(mdEscape('**' + labelLead[1] + '**')) + '</h4>';
+      html += '<p>' + mdInline(mdEscape(labelLead[2])) + '</p>';
+      continue;
+    }
+
     // Punktlista: "- ", "* " eller "• "
     const bullet = line.match(/^[-*•]\s+(.+)$/);
     if (bullet) {
