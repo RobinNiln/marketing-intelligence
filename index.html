@@ -966,6 +966,8 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-fmt-name{font-size:13.5px;font-weight:600;color:#2a2520;margin-bottom:2px}
 .adgen-fmt-size{font-size:11.5px;color:#a8a39a}
 .adgen-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;margin-top:1rem}
+.adgen-dl-all-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;transition:background 0.15s}
+.adgen-dl-all-btn:hover{background:#433a30}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
 .adgen-canvas-wrap{display:flex;align-items:center;justify-content:center;background:#FDFCFA;border-radius:12px;overflow:hidden;margin-bottom:0.75rem}
@@ -1232,6 +1234,7 @@ body.brief-mode{background:#FBFAF7}
 .brief-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:8px}
 .brief-section-content{font-size:14px;color:#2a2520;line-height:1.8}
 .brief-edit-area{width:100%;min-height:120px;padding:12px 14px;border:1.5px solid #C9A84C;border-radius:10px;font-size:14px;font-family:inherit;line-height:1.7;color:#2a2520;box-sizing:border-box;resize:vertical;background:#fffdf8}
+.brief-edit-area-short{min-height:0;height:46px;line-height:1.4}
 .export-wrap{position:relative;display:inline-block}
 .export-menu{position:absolute;bottom:calc(100% + 8px);left:0;background:#fff;border:1px solid #e6e1d6;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.12);padding:6px;min-width:190px;z-index:100;display:none}
 .export-menu.open{display:block}
@@ -2067,6 +2070,10 @@ body.brief-mode{background:#FBFAF7}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
           Kopiera artikel
         </button>
+        <button class="native-action-btn" onclick="nativeToggleEdit()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
+          <span id="native-edit-btn-text">Redigera</span>
+        </button>
         <button class="native-action-btn" onclick="nativeDownload()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg>
           Ladda ner
@@ -2238,6 +2245,10 @@ body.brief-mode{background:#FBFAF7}
       <div id="nr-result-extras"></div>
 
       <div class="newsroom-result-actions">
+        <button class="newsroom-action-btn" onclick="newsroomToggleEdit()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
+          <span id="newsroom-edit-btn-text">Redigera</span>
+        </button>
         <button class="newsroom-action-btn primary" onclick="newsroomCopy()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>
           Kopiera text
@@ -2549,6 +2560,10 @@ body.brief-mode{background:#FBFAF7}
           <h2 class="brief-result-title">Din kampanjplan</h2>
         </div>
         <div class="brief-result-actions">
+          <button class="brief-action-btn" onclick="plannerToggleEdit()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
+            <span id="planner-edit-btn-text">Redigera</span>
+          </button>
           <span id="planner-export-slot"></span>
           <button class="brief-action-btn auth-when-in" style="display:none" id="planner-save-btn" onclick="plannerSave()">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
@@ -2609,7 +2624,7 @@ body.brief-mode{background:#FBFAF7}
       <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
     <div class="adcopy-loading" id="adcopy-loading" style="display:none;text-align:center;padding:3rem 1rem"><div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Genererar annonser...</div></div>
-    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><div id="adgen-result-grid" class="adgen-result-grid"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
+    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><button class="adgen-dl-all-btn" onclick="adgenDownloadAll()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v9M3.5 6.5L7 10l3.5-3.5"/><path d="M1 12h12"/></svg> Ladda ner alla som bilder</button><div id="adgen-result-grid" class="adgen-result-grid"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
   </div>
 </div>
 
@@ -3018,6 +3033,10 @@ body.brief-mode{background:#FBFAF7}
       <div class="action-bar-inner">
         <div class="action-bar-label">Spara din plan</div>
         <div class="action-bar-btns">
+          <button class="action-bar-btn" onclick="marketToggleEdit()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
+            <span id="market-edit-btn-text">Redigera</span>
+          </button>
           <button class="action-bar-btn" onclick="downloadPDF()">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1"/></svg>
             Ladda ner som PDF
@@ -3340,7 +3359,7 @@ function renderResult(r){
   const re=(r.recommendations||[]).map((rec,i)=>`<div style="padding:1rem 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ic[i%ic.length]}</span><span style="color:#2C2520">${rec.title}</span></div><div class="mp-md" style="font-size:14px;line-height:1.7;color:#4A3F35">${mdToHtml(rec.description)}</div></div>`).join('');
   const qw=(r.quick_wins||[]).map(w=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="width:20px;height:20px;background:var(--t50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:14px;line-height:1.6;color:#2C2520">${w}</span></div>`).join('');
   document.getElementById('result-content').innerHTML=`
-    <div class="rc"><div class="rh"><div class="ri te">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div class="mp-md" style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #C9A84C;color:#2C2520">${mdToHtml(r.summary)}</div></div>
+    <div class="rc"><div class="rh"><div class="ri te">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div id="mp-result-summary" class="mp-md" style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #C9A84C;color:#2C2520">${mdToHtml(r.summary)}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div><div class="chgrid">${ch}</div></div>
     <div class="rc"><div class="rh"><div class="ri am">🎯</div><div><h2>Konkreta rekommendationer</h2><p>Så här gör ni det i praktiken</p></div></div><div>${re}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div><div>${qw}</div></div>
@@ -3350,6 +3369,21 @@ function renderResult(r){
   document.getElementById('result-section').style.display='block';
   document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('clear-btn').style.display='block';
+  _editState['market'] = false;
+  const mpEditText = document.getElementById('market-edit-btn-text');
+  if (mpEditText) mpEditText.textContent = 'Redigera';
+}
+
+function marketToggleEdit(){
+  genericToggleEdit({
+    stateKey: 'market',
+    resultVar: '_marketResult',
+    btnTextId: 'market-edit-btn-text',
+    fields: {
+      'mp-result-summary': { key:'summary', plain:false }
+    },
+    rerender: function(data){ renderResult(data); }
+  });
 }
 
 function loadSaved(){
@@ -3767,8 +3801,26 @@ function renderNativeArticle(article, label) {
   document.getElementById('native-result-ingress').textContent  = article.ingress||'';
   document.getElementById('native-result-body').innerHTML       = mdToHtml(article.body);
   window._nativeArticle = article;
+  window._nativeLabel = label || '';
+  _editState['native'] = false;
+  const naEditText = document.getElementById('native-edit-btn-text');
+  if (naEditText) naEditText.textContent = 'Redigera';
   const naExp = document.getElementById('native-export-slot');
   if (naExp) naExp.innerHTML = exportMenuHtml('native', 'native-action-btn');
+}
+
+function nativeToggleEdit(){
+  genericToggleEdit({
+    stateKey: 'native',
+    resultVar: '_nativeArticle',
+    btnTextId: 'native-edit-btn-text',
+    fields: {
+      'native-result-headline': { key:'headline', plain:true },
+      'native-result-ingress':  { key:'ingress',  plain:true },
+      'native-result-body':     { key:'body',     plain:false }
+    },
+    rerender: function(data){ renderNativeArticle(data, window._nativeLabel); }
+  });
 }
 
 function nativeCopy(){
@@ -4445,6 +4497,61 @@ async function briefSave() {
    eftersom briefSave() sparar just _briefResult.
 ──────────────────────────────────────────────────────────────────────────── */
 let _briefEditing = false;
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GENERELL REDIGERINGSMOTOR (återanvänds av Newsroom, Native, Market, Planner)
+   ──────────────────────────────────────────────────────────────────────────
+   Samma idé som The Brief: växla varje textfält mellan visad HTML och en
+   textruta med råtexten. Men skriven EN gång och återanvänd, i stället för
+   en kopia per verktyg. Varje verktyg beskriver bara sina fält i en liten
+   config, så sköter motorn resten.
+
+   config = {
+     stateKey: 'newsroom',                    // unikt namn för redigeringsläget
+     resultVar: '_newsroomResult',            // window-variabeln med datan
+     btnTextId: 'newsroom-edit-btn-text',     // knappens text-element
+     fields: { 'nr-result-headline': {key:'headline', plain:true}, ... },
+     rerender: function(data){ renderNewsroomResult(data, ...); }
+   }
+   plain:true  → enkel text (textContent), en kort textruta
+   plain:false → markdown-text (innerHTML via mdToHtml), en hög textruta
+══════════════════════════════════════════════════════════════════════════ */
+const _editState = {}; // håller reda på om varje verktyg är i redigeringsläge
+
+function genericToggleEdit(config){
+  const data = window[config.resultVar];
+  if (!data) return;
+  const btnText = document.getElementById(config.btnTextId);
+  const editing = _editState[config.stateKey];
+
+  if (!editing) {
+    // Gå IN i redigeringsläge.
+    _editState[config.stateKey] = true;
+    if (btnText) btnText.textContent = 'Klar';
+    Object.keys(config.fields).forEach(function(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const field = config.fields[id];
+      const raw = data[field.key] || '';
+      const cls = field.plain ? 'brief-edit-area brief-edit-area-short' : 'brief-edit-area';
+      el.innerHTML = '<textarea class="' + cls + '">' + escapeHtmlLib(raw) + '</textarea>';
+    });
+  } else {
+    // Lämna redigeringsläge: läs tillbaka, uppdatera data, rendera om.
+    _editState[config.stateKey] = false;
+    if (btnText) btnText.textContent = 'Redigera';
+    Object.keys(config.fields).forEach(function(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const area = el.querySelector('textarea');
+      if (area) data[config.fields[id].key] = area.value;
+    });
+    window[config.resultVar] = data;
+    config.rerender(data);
+  }
+}
+
+
 // Vilka fält som är redigerbara: element-id → nyckel i resultatobjektet.
 const BRIEF_EDIT_FIELDS = {
   'br-result-background': 'background',
@@ -5202,6 +5309,10 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
 function renderPlanResult(plan, label){
   document.getElementById('planner-form-section').style.display = 'none';
   document.getElementById('planner-result-section').style.display = 'block';
+  window._plannerLabel = label || '';
+  _editState['planner'] = false;
+  const plEditText = document.getElementById('planner-edit-btn-text');
+  if (plEditText) plEditText.textContent = 'Redigera';
   document.getElementById('pl-result-label').textContent = label + (plan._meta ? ' · ' + (plan._meta.horizon === 'kort' ? 'Kort kampanj' : 'Långsiktig plan') : '');
 
   document.getElementById('pl-result-overview').innerHTML = mdToHtml(plan.overview);
@@ -5226,12 +5337,25 @@ function renderPlanResult(plan, label){
   document.getElementById('pl-result-phases').innerHTML = phasesHtml;
 
   document.getElementById('pl-result-budget').innerHTML = plan.budget_summary
-    ? '<div class="planner-budget-box"><div class="planner-content-title">Budgetfördelning</div><div class="brief-section-content">' + mdToHtml(plan.budget_summary) + '</div></div>'
+    ? '<div class="planner-budget-box"><div class="planner-content-title">Budgetfördelning</div><div id="pl-result-budget-inner" class="brief-section-content">' + mdToHtml(plan.budget_summary) + '</div></div>'
     : '';
 
   // Export-knapp
   const slot = document.getElementById('planner-export-slot');
   if (slot) slot.innerHTML = exportMenuHtml('planner', 'brief-action-btn');
+}
+
+function plannerToggleEdit(){
+  genericToggleEdit({
+    stateKey: 'planner',
+    resultVar: '_plannerResult',
+    btnTextId: 'planner-edit-btn-text',
+    fields: {
+      'pl-result-overview':      { key:'overview',        plain:false },
+      'pl-result-budget-inner':  { key:'budget_summary',  plain:false }
+    },
+    rerender: function(data){ renderPlanResult(data, window._plannerLabel); }
+  });
 }
 
 async function plannerSave(){
@@ -5892,6 +6016,10 @@ function chartFrame(title, unit, W, H, inner){
 
 function renderNewsroomResult(result, typeLabel) {
   document.getElementById('nr-result-type').textContent = typeLabel || '';
+  window._newsroomLabel = typeLabel || '';
+  _editState['newsroom'] = false;
+  const nrEditText = document.getElementById('newsroom-edit-btn-text');
+  if (nrEditText) nrEditText.textContent = 'Redigera';
   document.getElementById('nr-result-headline').textContent = result.headline || '';
   document.getElementById('nr-result-ingress').textContent = result.ingress || '';
 
@@ -5924,6 +6052,21 @@ function renderNewsroomResult(result, typeLabel) {
   window._newsroomResult = result;
   const nrExp = document.getElementById('newsroom-export-slot');
   if (nrExp) nrExp.innerHTML = exportMenuHtml('newsroom', 'newsroom-action-btn');
+}
+
+function newsroomToggleEdit(){
+  genericToggleEdit({
+    stateKey: 'newsroom',
+    resultVar: '_newsroomResult',
+    btnTextId: 'newsroom-edit-btn-text',
+    fields: {
+      'nr-result-headline':    { key:'headline',    plain:true },
+      'nr-result-ingress':     { key:'ingress',     plain:true },
+      'nr-result-body':        { key:'body',        plain:false },
+      'nr-result-boilerplate': { key:'boilerplate', plain:false }
+    },
+    rerender: function(data){ renderNewsroomResult(data, window._newsroomLabel); }
+  });
 }
 
 function renderNewsroomExtras(result) {
@@ -7121,6 +7264,16 @@ function adgenDownload(formatId) {
   link.download = 'annons-' + fmt.label.toLowerCase().replace(/\s/g,'-') + '-' + fmt.w + 'x' + fmt.h + '.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
+}
+
+// Laddar ner ALLA genererade annonser som bilder, en efter en.
+// Vi lägger en liten fördröjning mellan varje, annars blockerar webbläsaren
+// flera nedladdningar i rad.
+function adgenDownloadAll() {
+  if (!_adgenFormats || !_adgenFormats.length) return;
+  _adgenFormats.forEach(function(formatId, i) {
+    setTimeout(function() { adgenDownload(formatId); }, i * 400);
+  });
 }
 
 function adgenReset() {
