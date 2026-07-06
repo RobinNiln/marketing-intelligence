@@ -419,6 +419,16 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 
 .loading-state{text-align:center;padding:3rem 2rem;display:none}
 .spinner{width:36px;height:36px;border:3px solid rgba(0,0,0,0.1);border-top-color:#C9A84C;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+/* Mava-laddningsoverlay – visas när ett verktyg arbetar */
+#mava-loading-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(245,243,238,0.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#mava-loading-overlay.show{display:flex}
+.mava-load-box{text-align:center;padding:2rem}
+.mava-load-logo{width:72px;height:72px;border-radius:22%;animation:mavaPulse 1.6s ease-in-out infinite;box-shadow:0 8px 30px rgba(201,168,76,0.35)}
+.mava-load-ring{position:absolute;width:104px;height:104px;margin:-16px 0 0 -16px;border:2px solid rgba(201,168,76,0.3);border-top-color:#C9A84C;border-radius:50%;animation:spin 1.1s linear infinite}
+.mava-load-logo-wrap{position:relative;display:inline-block;margin-bottom:1.6rem}
+.mava-load-text{font-size:15px;font-weight:600;color:#2C2520;letter-spacing:-0.01em;min-height:1.4em;transition:opacity 0.3s}
+.mava-load-sub{font-size:13px;color:#9A8570;margin-top:6px}
+@keyframes mavaPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.85}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-state p{color:#5F5E5A;font-size:14px}
 #stream-preview{display:none;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:1.75rem;margin-bottom:1rem}
@@ -786,12 +796,15 @@ body.native-mode{background:#FBFAF7}
 
 /* Campaign Planner-resultat */
 .planner-phase{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem}
-.planner-phase-head{display:flex;align-items:center;gap:14px;margin-bottom:0.8rem}
-.planner-phase-num{width:30px;height:30px;flex-shrink:0;background:#2C2520;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
-.planner-phase-name{font-size:16px;font-weight:700;color:#2C2520}
-.planner-phase-timing{font-size:12.5px;color:#9A8570;margin-top:2px}
-.planner-phase-budget{margin-left:auto;flex-shrink:0;font-size:12px;font-weight:700;color:#9c7d2e;background:rgba(201,168,76,0.12);border-radius:100px;padding:5px 12px}
-.planner-phase-purpose{font-size:14px;color:#5F5E5A;line-height:1.7;margin:0 0 0.7rem}
+.planner-phase-head{display:flex;align-items:center;gap:14px;margin-bottom:0.9rem}
+.planner-phase-titles{min-width:0}
+.planner-phase-num{width:32px;height:32px;flex-shrink:0;background:#2C2520;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.planner-phase-name{font-size:17px;font-weight:700;color:#2C2520;line-height:1.3}
+.planner-phase-timing{font-size:12.5px;color:#9A8570;margin-top:3px}
+.planner-phase-budget{display:inline-block;font-size:12.5px;font-weight:700;color:#9c7d2e;background:rgba(201,168,76,0.12);border-radius:8px;padding:8px 14px;margin-bottom:1rem;line-height:1.4}
+.planner-phase-purpose{font-size:14px;color:#5F5E5A;line-height:1.7;margin:0 0 1.1rem}
+.planner-phase-channels{font-size:13.5px;color:#5F5E5A;line-height:1.7;margin-bottom:1.1rem;padding-top:1rem;border-top:1px solid #f2efe8}
+.planner-phase-channels strong{display:block;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#9c7d2e;margin-bottom:0.4rem}
 .planner-phase-channels{font-size:13px;color:#5F5E5A;margin-bottom:0.9rem}
 .planner-content-box{background:#faf8f4;border:1px solid #f0eee8;border-radius:10px;padding:1rem 1.2rem}
 .planner-budget-box{background:#faf8f4;border:1px solid #f0eee8;border-radius:12px;padding:1.3rem 1.5rem}
@@ -1263,6 +1276,17 @@ body.brief-mode{background:#FBFAF7}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
+<div id="mava-loading-overlay">
+  <div class="mava-load-box">
+    <div class="mava-load-logo-wrap">
+      <div class="mava-load-ring"></div>
+      <img class="mava-load-logo" src="images/mava-symbol.png" alt="Mava">
+    </div>
+    <div class="mava-load-text" id="mava-load-text">Arbetar...</div>
+    <div class="mava-load-sub">Ett ögonblick</div>
+  </div>
+</div>
+
 <aside id="side-panel">
   <button class="sp-toggle" onclick="toggleSidePanel()" title="Öppna/stäng meny">
     <svg id="sp-toggle-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2C2520" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h14M4 11h14M4 16h14"/></svg>
@@ -3776,6 +3800,37 @@ function hideAll(){
   document.body.classList.remove('app-mode','native-mode','dist-mode','adcopy-mode','newsroom-mode','brief-mode');
 }
 
+/* ── Mava-laddningsoverlay ───────────────────────────────────────────────────
+   Visar en pulserande Mava-logga med roterande statustexter medan ett verktyg
+   arbetar. Återanvändbar: anropa showMavaLoading([texter]) och hideMavaLoading().
+   Texterna byts automatiskt med jämna mellanrum för att signalera framsteg.
+──────────────────────────────────────────────────────────────────────────── */
+let _mavaLoadTimer = null;
+function showMavaLoading(messages){
+  const overlay = document.getElementById('mava-loading-overlay');
+  const textEl = document.getElementById('mava-load-text');
+  if (!overlay || !textEl) return;
+  const msgs = (messages && messages.length) ? messages : ['Arbetar...'];
+  let i = 0;
+  textEl.textContent = msgs[0];
+  overlay.classList.add('show');
+  clearInterval(_mavaLoadTimer);
+  if (msgs.length > 1) {
+    _mavaLoadTimer = setInterval(function(){
+      i = (i + 1) % msgs.length;
+      // Tona ut, byt text, tona in – mjukare än ett hårt hopp.
+      textEl.style.opacity = '0';
+      setTimeout(function(){ textEl.textContent = msgs[i]; textEl.style.opacity = '1'; }, 250);
+    }, 2600);
+  }
+}
+function hideMavaLoading(){
+  const overlay = document.getElementById('mava-loading-overlay');
+  if (overlay) overlay.classList.remove('show');
+  clearInterval(_mavaLoadTimer);
+  _mavaLoadTimer = null;
+}
+
 /* ── Navigeringshistorik ────────────────────────────────────────────────────
    Vi kommer ihåg vilka sidor användaren besökt, så "Tillbaka"-knappen i
    panelen alltid vet vart den ska. Varje gång en sida blir aktiv lägger vi
@@ -5038,6 +5093,13 @@ async function generatePlan(){
 
   const btn = document.getElementById('planner-generate-btn');
   btn.disabled = true; btn.textContent = 'Bygger din plan...';
+  showMavaLoading([
+    'Analyserar ditt underlag...',
+    'Lägger upp kampanjens faser...',
+    'Fördelar budget och kanaler...',
+    'Planerar innehåll per fas...',
+    'Färdigställer din plan...'
+  ]);
 
   const horizonText = _plannerHorizon === 'kort'
     ? 'en kort kampanj som löper över några veckor'
@@ -5088,7 +5150,7 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
       "name": "Fasens namn",
       "timing": "När i kampanjen, t.ex. Vecka 1-2 eller Månad 1-2",
       "purpose": "Vad fasen ska uppnå och varför den kommer här i ordningen",
-      "channels": "Vilka kanaler som används och vilket jobb var och en gör i fasen",
+      "channels": "Vilka kanaler som används och vilket jobb var och en gör i fasen. Skriv en kanal per rad, varje rad börjar med kanalnamnet i fetstil följt av kolon, t.ex. **Meta:** ... (ny rad) **Google Sök:** ... Använd \\n mellan kanalerna.",
       "content_needed": ["3 st Google Ads sökannonser", "5 st Meta-bildannonser 1080x1080"],
       "budget_share": "Andel av budgeten med både procent och kronor, t.ex. 30% (30 000 kr)"
     }
@@ -5107,6 +5169,7 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
   } catch (e) {
     alert('Kunde inte skapa planen: ' + (e.message || e) + '. Försök igen.');
   } finally {
+    hideMavaLoading();
     btn.disabled = false; btn.textContent = 'Skapa kampanjplan';
   }
 }
@@ -5126,12 +5189,12 @@ function renderPlanResult(plan, label){
     return '<div class="planner-phase">' +
       '<div class="planner-phase-head">' +
         '<span class="planner-phase-num">' + (i+1) + '</span>' +
-        '<div><div class="planner-phase-name">' + escapeHtmlLib(ph.name || '') + '</div>' +
-        '<div class="planner-phase-timing">' + escapeHtmlLib(ph.timing || '') + '</div></div>' +
-        (ph.budget_share ? '<span class="planner-phase-budget">' + escapeHtmlLib(ph.budget_share) + '</span>' : '') +
+        '<div class="planner-phase-titles"><div class="planner-phase-name">' + escapeHtmlLib(ph.name || '') + '</div>' +
+        (ph.timing ? '<div class="planner-phase-timing">' + escapeHtmlLib(ph.timing) + '</div>' : '') + '</div>' +
       '</div>' +
+      (ph.budget_share ? '<div class="planner-phase-budget">' + escapeHtmlLib(ph.budget_share) + '</div>' : '') +
       (ph.purpose ? '<p class="planner-phase-purpose">' + escapeHtmlLib(ph.purpose) + '</p>' : '') +
-      (ph.channels ? '<div class="planner-phase-channels"><strong>Kanaler:</strong> ' + escapeHtmlLib(ph.channels) + '</div>' : '') +
+      (ph.channels ? '<div class="planner-phase-channels"><strong>Kanaler</strong><div class="brief-section-content">' + mdToHtml(ph.channels) + '</div></div>' : '') +
       (content ? '<div class="planner-content-box"><div class="planner-content-title">Innehåll som behövs</div><ul class="planner-content-list">' + content + '</ul></div>' : '') +
     '</div>';
   }).join('');
