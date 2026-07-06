@@ -548,6 +548,27 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 }
 .email-modal-note{font-size:11px;color:#aaa;margin-top:8px;text-align:center}
 
+/* Spar-dialog (snygg ersättare för de gamla prompt-rutorna) */
+#save-modal{display:none;position:fixed;inset:0;background:rgba(44,37,32,0.55);z-index:10000;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#save-modal.open{display:flex}
+.save-modal-box{background:#FBFAF7;border-radius:18px;padding:2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(44,37,32,0.25)}
+.save-modal-title{font-size:19px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 1.4rem}
+.save-modal-label{display:block;font-size:12px;font-weight:600;color:#9A8570;letter-spacing:0.03em;margin-bottom:0.5rem}
+.save-modal-input{width:100%;border:1.5px solid #e6e1d6;border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff;transition:border-color 0.15s}
+.save-modal-input:focus{outline:none;border-color:#C9A84C}
+.save-modal-check{display:flex;align-items:center;gap:10px;margin:1.3rem 0 0;cursor:pointer;font-size:14px;color:#2C2520;user-select:none}
+.save-modal-check input{width:17px;height:17px;accent-color:#C9A84C;cursor:pointer}
+.save-modal-project-inner{display:flex;gap:8px;margin-top:0.8rem}
+.save-modal-select{flex:1;min-width:0;border:1.5px solid #e6e1d6;border-radius:10px;padding:11px 14px;font-size:14px;font-family:inherit;color:#2C2520;background:#fff;cursor:pointer}
+.save-modal-select:focus{outline:none;border-color:#C9A84C}
+.save-modal-newproj{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;background:#fff;color:#9c7d2e;border:1.5px solid rgba(201,168,76,0.4);border-radius:10px;padding:0 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.save-modal-newproj:hover{background:rgba(201,168,76,0.1)}
+.save-modal-actions{display:flex;gap:10px;margin-top:1.8rem}
+.save-modal-cancel{background:#fff;color:#6b5d47;border:1.5px solid #e6e1d6;border-radius:100px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.save-modal-cancel:hover{background:#f5f3ee}
+.save-modal-save{flex:1;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.save-modal-save:hover{background:#433a30}
+
 
 /* ─── ADDITIONAL MOBILE FIXES ─── */
 @media(max-width:640px){
@@ -1297,6 +1318,34 @@ body.brief-mode{background:#FBFAF7}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
+<div id="save-modal">
+  <div class="save-modal-box">
+    <h3 class="save-modal-title">Spara i biblioteket</h3>
+    <label class="save-modal-label">Namn</label>
+    <input type="text" id="save-modal-name" class="save-modal-input" placeholder="Namnge din produktion">
+
+    <label class="save-modal-check">
+      <input type="checkbox" id="save-modal-project-toggle" onchange="saveModalToggleProject()">
+      <span>Spara i ett projekt</span>
+    </label>
+
+    <div id="save-modal-project-row" style="display:none">
+      <div class="save-modal-project-inner">
+        <select id="save-modal-project-select" class="save-modal-select"></select>
+        <button type="button" class="save-modal-newproj" onclick="saveModalNewProject()" title="Nytt projekt">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7.5 2v11M2 7.5h11"/></svg>
+          Nytt
+        </button>
+      </div>
+    </div>
+
+    <div class="save-modal-actions">
+      <button class="save-modal-cancel" onclick="saveModalClose()">Avbryt</button>
+      <button class="save-modal-save" id="save-modal-save-btn" onclick="saveModalConfirm()">Spara</button>
+    </div>
+  </div>
+</div>
+
 <div id="mava-loading-overlay">
   <div class="mava-load-box">
     <div class="mava-load-logo-wrap">
@@ -4542,10 +4591,85 @@ async function deleteProject(projectId) {
   return { error };
 }
 
-/* Projektväljare vid sparande. Returnerar ett projekt-id, eller null för
-   "inget projekt". För Lager 1 använder vi en enkel prompt-baserad väljare;
-   den kan förfinas till en snyggare dropdown senare. Frivilligt – man kan
-   alltid hoppa över genom att lämna tomt. */
+/* ── Snygg spar-dialog (ersätter de gamla prompt-rutorna) ───────────────────
+   openSaveModal visar en modal och VÄNTAR på att användaren trycker Spara
+   eller Avbryt. Eftersom en modal inte kan "pausa" koden som prompt() gör,
+   använder vi ett Promise: ett löfte om ett svar senare. Koden som anropar
+   skriver `const val = await openSaveModal(...)` och får tillbaka antingen
+   { title, projectId } (Spara) eller null (Avbryt).
+──────────────────────────────────────────────────────────────────────────── */
+let _saveModalResolve = null; // sparar "svarsfunktionen" medan modalen är öppen
+
+async function openSaveModal(defaultName) {
+  // Fyll i namn-förslaget.
+  document.getElementById('save-modal-name').value = defaultName || '';
+
+  // Förbered projektdelen: hämta projekt och fyll dropdownen.
+  const { data: projects } = await fetchProjects();
+  const select = document.getElementById('save-modal-project-select');
+  select.innerHTML = (projects || []).map(function(p){
+    return '<option value="' + p.id + '">' + escapeHtmlLib(p.name) + '</option>';
+  }).join('') || '<option value="">(Inga projekt än – skapa ett nytt)</option>';
+
+  // Om ett projekt är aktivt: bocka i rutan och förvälj det projektet.
+  const toggle = document.getElementById('save-modal-project-toggle');
+  const row = document.getElementById('save-modal-project-row');
+  if (_activeProject && _activeProject.id) {
+    toggle.checked = true;
+    row.style.display = 'block';
+    select.value = _activeProject.id;
+  } else {
+    toggle.checked = false;
+    row.style.display = 'none';
+  }
+
+  document.getElementById('save-modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('save-modal-name').focus(); }, 50);
+
+  // Returnera ett löfte som löses när användaren trycker Spara/Avbryt.
+  return new Promise(function(resolve){ _saveModalResolve = resolve; });
+}
+
+function saveModalToggleProject() {
+  const on = document.getElementById('save-modal-project-toggle').checked;
+  document.getElementById('save-modal-project-row').style.display = on ? 'block' : 'none';
+}
+
+async function saveModalNewProject() {
+  const name = prompt('Namnge ditt nya projekt:');
+  if (name === null || !name.trim()) return;
+  const { data, error } = await createProject(name.trim());
+  if (error) { alert('Kunde inte skapa projektet.'); return; }
+  // Lägg till det nya projektet i dropdownen och välj det.
+  const select = document.getElementById('save-modal-project-select');
+  const opt = document.createElement('option');
+  opt.value = data.id; opt.textContent = data.name;
+  select.insertBefore(opt, select.firstChild);
+  select.value = data.id;
+  // Se till att kryssrutan är i och raden syns.
+  document.getElementById('save-modal-project-toggle').checked = true;
+  document.getElementById('save-modal-project-row').style.display = 'block';
+}
+
+function saveModalClose() {
+  document.getElementById('save-modal').classList.remove('open');
+  if (_saveModalResolve) { _saveModalResolve(null); _saveModalResolve = null; }
+}
+
+function saveModalConfirm() {
+  const title = document.getElementById('save-modal-name').value.trim();
+  const useProject = document.getElementById('save-modal-project-toggle').checked;
+  const select = document.getElementById('save-modal-project-select');
+  const projectId = (useProject && select.value) ? select.value : null;
+  document.getElementById('save-modal').classList.remove('open');
+  if (_saveModalResolve) {
+    _saveModalResolve({ title: title, projectId: projectId });
+    _saveModalResolve = null;
+  }
+}
+
+/* Gammal prompt-baserad projektväljare – behålls som reserv men används inte
+   längre i huvudflödet (spar-dialogen sköter det nu). */
 async function pickProject() {
   // Lager 2: om ett projekt är aktivt sparar vi dit automatiskt – ingen fråga.
   if (_activeProject && _activeProject.id) return _activeProject.id;
@@ -4601,12 +4725,10 @@ async function briefSave() {
   if (_briefEditing) briefToggleEdit();
   const btn = document.getElementById('brief-save-btn');
   const suggested = r.campaign_name || (window._briefCompany || 'Brief');
-  const title = prompt('Namnge din brief:', suggested);
-  if (title === null) return; // avbröt
-  const projectId = await pickProject();
-  if (projectId === undefined) return;
+  const choice = await openSaveModal(suggested);
+  if (!choice) return; // avbröt
   if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
-  const { error } = await saveProduction('brief', title.trim() || suggested, r, projectId);
+  const { error } = await saveProduction('brief', choice.title || suggested, r, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
   if (error) alert('Kunde inte spara: ' + (error.message || error));
 }
@@ -4765,12 +4887,12 @@ async function saveToolResult(tool, result, defaultTitle, btnId) {
   if (!result) return;
   if (!_currentUser) { goToAuth(); return; }
   const btn = btnId ? document.getElementById(btnId) : null;
-  const title = prompt('Namnge och spara i biblioteket:', defaultTitle);
-  if (title === null) return;
-  const projectId = await pickProject();
-  if (projectId === undefined) return; // användaren avbröt projektvalet
+  // Öppna den snygga spar-dialogen och vänta på användarens val.
+  const choice = await openSaveModal(defaultTitle);
+  if (!choice) return; // avbröt
+  const title = choice.title || defaultTitle;
   if (btn) { btn.disabled = true; btn.dataset.orig = btn.textContent; btn.textContent = 'Sparar...'; }
-  const { error } = await saveProduction(tool, title.trim() || defaultTitle, result, projectId);
+  const { error } = await saveProduction(tool, title, result, choice.projectId);
   if (btn) {
     btn.disabled = false;
     btn.innerHTML = '✓ Sparad';
@@ -5655,12 +5777,10 @@ async function plannerSave(){
   if (!_currentUser) { goToAuth(); return; }
   const btn = document.getElementById('planner-save-btn');
   const suggested = plan.plan_name || 'Kampanjplan';
-  const title = prompt('Namnge din kampanjplan:', suggested);
-  if (title === null) return;
-  const projectId = await pickProject();
-  if (projectId === undefined) return;
+  const choice = await openSaveModal(suggested);
+  if (!choice) return;
   if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
-  const { error } = await saveProduction('planner', title.trim() || suggested, plan, projectId);
+  const { error } = await saveProduction('planner', choice.title || suggested, plan, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
   if (error) alert('Kunde inte spara: ' + (error.message || error));
 }
