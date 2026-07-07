@@ -995,6 +995,8 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;margin-top:1rem}
 .adgen-dl-all-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;transition:background 0.15s}
 .adgen-dl-all-btn:hover{background:#433a30}
+.adgen-save-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#2C2520;border:1.5px solid #e6e1d6;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;margin-left:8px;transition:border-color 0.15s}
+.adgen-save-btn:hover{border-color:#C9A84C}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
 .adgen-canvas-wrap{display:flex;align-items:center;justify-content:center;background:#FDFCFA;border-radius:12px;overflow:hidden;margin-bottom:0.75rem}
@@ -2725,7 +2727,7 @@ body.brief-mode{background:#FBFAF7}
       <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
     <div class="adcopy-loading" id="adcopy-loading" style="display:none;text-align:center;padding:3rem 1rem"><div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Genererar annonser...</div></div>
-    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><button class="adgen-dl-all-btn" onclick="adgenDownloadAll()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v9M3.5 6.5L7 10l3.5-3.5"/><path d="M1 12h12"/></svg> Ladda ner alla som bilder</button><div id="adgen-result-grid" class="adgen-result-grid"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
+    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><button class="adgen-dl-all-btn" onclick="adgenDownloadAll()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v9M3.5 6.5L7 10l3.5-3.5"/><path d="M1 12h12"/></svg> Ladda ner alla som bilder</button><button class="adgen-save-btn auth-when-in" style="display:none" id="adgen-save-btn" onclick="adgenSave()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg> Spara i bibliotek</button><div id="adgen-result-grid" class="adgen-result-grid"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
   </div>
 </div>
 
@@ -5192,9 +5194,59 @@ function libraryOpen(id) {
     window._plannerResult = item.content;
     window.scrollTo(0,0);
 
+  } else if (item.tool === 'adstudio') {
+    restoreAdStudioFromSaved(item.content);
+
   } else {
     alert('Öppning för det här verktyget är inte inkopplat än.');
   }
+}
+
+/* Återskapar en sparad AdStudio-annons: fyller i alla fält, laddar tillbaka
+   bilden (från base64), markerar formaten, och renderar annonserna på nytt. */
+function restoreAdStudioFromSaved(cfg) {
+  if (!cfg) return;
+  goToAdCopy();
+  // Vänta så AdStudio-sidan hunnit ritas innan vi fyller i den.
+  setTimeout(function(){
+    // 1) Textfält
+    const setVal = function(id, v){ const el = document.getElementById(id); if (el) el.value = v || ''; };
+    setVal('ac-company', cfg.company);
+    setVal('ac-product', cfg.product);
+    setVal('ac-message', cfg.message);
+    setVal('ac-cta', cfg.cta);
+    setVal('ac-tone', cfg.tone);
+    setVal('ac-reference', cfg.reference);
+    setVal('ac-logo-pos', cfg.logoPos);
+
+    // 2) Bild och logga tillbaka från base64
+    _adgenImageDataUrl = cfg.imageDataUrl || null;
+    _adgenImage = cfg.imageDataUrl ? true : null;
+    _adgenLogoDataUrl = cfg.logoDataUrl || null;
+    _adgenLogo = cfg.logoDataUrl ? true : null;
+    const prev = document.getElementById('adgen-preview');
+    if (prev && cfg.imageDataUrl) { prev.src = cfg.imageDataUrl; prev.style.display = 'block'; }
+    const logoPrev = document.getElementById('adgen-logo-preview');
+    if (logoPrev && cfg.logoDataUrl) { logoPrev.src = cfg.logoDataUrl; logoPrev.style.display = 'block'; }
+
+    // 3) Format
+    _adgenFormats = (cfg.formats || []).slice();
+    document.querySelectorAll('.adgen-fmt').forEach(function(el){
+      const oc = el.getAttribute('onclick') || '';
+      const isSelected = _adgenFormats.some(function(fid){ return oc.indexOf("'" + fid + "'") > -1; });
+      el.classList.toggle('sel', isSelected);
+    });
+
+    // 4) Rendera annonserna direkt (vi har ju copy-datan sparad)
+    _adgenCopyData = cfg.copyData || null;
+    window._adgenLastConfig = cfg;
+    if (_adgenCopyData) {
+      document.getElementById('adcopy-form-section').style.display = 'none';
+      document.getElementById('adcopy-result').style.display = 'block';
+      renderAdGenResult();
+    }
+    window.scrollTo(0,0);
+  }, 80);
 }
 
 async function libraryRename(id) {
@@ -7489,6 +7541,22 @@ async function generateAdGen() {
     const clean = raw.replace(/```json|```/g, '').trim();
     _adgenCopyData = JSON.parse(clean);
 
+    // Lager: paketera ALLA ingredienser som behövs för att återskapa annonsen.
+    // Detta är "receptet" – text, inställningar och bilden (som base64-text).
+    window._adgenLastConfig = {
+      company: company,
+      product: product,
+      message: message,
+      cta: cta,
+      tone: tone,
+      reference: reference,
+      formats: _adgenFormats.slice(),        // kopia av formatlistan
+      logoPos: (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right',
+      imageDataUrl: _adgenImageDataUrl,       // grundbilden som base64
+      logoDataUrl: _adgenLogoDataUrl,         // ev. logga som base64
+      copyData: _adgenCopyData                // AI:ns genererade texter
+    };
+
     document.getElementById('adcopy-loading').style.display = 'none';
     hideMavaLoading();
     document.getElementById('adcopy-result').style.display = 'block';
@@ -7808,6 +7876,29 @@ function adgenReset() {
 }
 
 function generateAdCopy(){ generateAdGen(); }
+
+/* ── Spara AdStudio-annons i biblioteket ────────────────────────────────────
+   Sparar "receptet" (text, inställningar, bild som base64) så annonsen kan
+   återskapas senare. Använder den snygga spar-dialogen så projektval fungerar.
+──────────────────────────────────────────────────────────────────────────── */
+async function adgenSave() {
+  const cfg = window._adgenLastConfig;
+  if (!cfg) { alert('Inget att spara – generera annonser först.'); return; }
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = document.getElementById('adgen-save-btn');
+  const suggested = (cfg.product || cfg.company || 'Annons');
+  const choice = await openSaveModal(suggested);
+  if (!choice) return;
+  if (btn) { btn.disabled = true; btn.dataset.orig = btn.innerHTML; btn.textContent = 'Sparar...'; }
+  // Vi sparar med verktygsnamnet 'adstudio' så biblioteket vet hur det ska visas.
+  const { error } = await saveProduction('adstudio', choice.title || suggested, cfg, choice.projectId);
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Sparad';
+    setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000);
+  }
+  if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
 function adcopyReset(){ adgenReset(); }
 function renderAdCopyFormats(){}
 
