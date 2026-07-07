@@ -832,6 +832,11 @@ body.native-mode{background:#FBFAF7}
 .planner-content-title{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#9c7d2e;margin-bottom:0.6rem}
 .planner-content-list{margin:0;padding-left:1.2rem}
 .planner-content-list li{font-size:13.5px;color:#2C2520;margin-bottom:0.35rem;line-height:1.5}
+/* Lager 3: "Skapa i AdStudio"-knapp per innehållsrad */
+.planner-adstudio-btn{display:inline-flex;align-items:center;gap:5px;margin-left:10px;background:#fff;color:#9c7d2e;border:1px solid rgba(201,168,76,0.45);border-radius:100px;padding:3px 11px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;vertical-align:middle;transition:background 0.15s}
+.planner-adstudio-btn:hover{background:rgba(201,168,76,0.12)}
+/* Notis i AdStudio när format är förvalt från en plan */
+#adgen-preselect-banner{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);border-radius:12px;padding:12px 16px;margin-bottom:1.5rem;font-size:13.5px;color:#7a6428;line-height:1.5}
 
 /* FAQ-sida */
 .faq-wrap{max-width:760px;margin:0 auto;padding:3rem 2rem 4rem}
@@ -2697,6 +2702,7 @@ body.brief-mode{background:#FBFAF7}
   </div>
   <div class="adcopy-container">
     <div id="adcopy-form-section">
+      <div id="adgen-preselect-banner" style="display:none"></div>
       <div style="margin-bottom:2rem"><h1 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">AdStudio</h1><p style="font-size:14px;color:#9A8570;line-height:1.6">Ladda upp en bild, fyll i kampanjinfo och välj format. AI genererar copy och sätter ihop färdiga annonser redo att ladda ner.</p></div>
       <div class="adcopy-section-title">Annonsens bild</div>
       <div class="adgen-upload-zone" id="adgen-upload-zone"><input type="file" id="adgen-file-input" accept="image/*" onchange="adgenHandleFile(this.files[0])"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:8px"><rect x="2" y="6" width="28" height="20" rx="3"/><circle cx="11" cy="14" r="3"/><path d="M2 24l7-6 5 5 4-4 7 7"/></svg><div style="font-size:14px;font-weight:600;color:#2C2520;margin-bottom:4px">Klicka eller dra hit en bild</div><div style="font-size:12px;color:#9A8570">JPG, PNG eller WebP</div><img id="adgen-preview" class="adgen-preview-img"></div>
@@ -5549,6 +5555,42 @@ function goToAdCopy(){
   applyBrandProfileToAdgen();
 }
 
+/* ── Lager 3: hoppa från kampanjplan till AdStudio med format förvalt ────────
+   Anropas av "Skapa i AdStudio"-knappen i en kampanjplan. Tar användaren till
+   AdStudio, rensar tidigare val, och förväljer det format planen pekade på.
+   Det aktiva projektet rör vi inte – så det man skapar hör ihop med kampanjen.
+──────────────────────────────────────────────────────────────────────────── */
+function goToAdStudioWithFormat(formatId) {
+  goToAdCopy(); // navigera dit och rendera formatväljaren först
+
+  // Rensa ev. tidigare val, sätt bara det önskade formatet.
+  _adgenFormats = formatId ? [formatId] : [];
+
+  // Markera rätt format-ruta visuellt (och avmarkera övriga).
+  // renderAdCopyFormats() har just ritat om rutorna, så vi väntar ett ögonblick
+  // så DOM:en hunnit uppdateras innან vi letar efter knappen.
+  setTimeout(function(){
+    document.querySelectorAll('.adgen-fmt').forEach(function(el){
+      el.classList.remove('sel');
+    });
+    if (formatId) {
+      document.querySelectorAll('.adgen-fmt').forEach(function(el){
+        const oc = el.getAttribute('onclick') || '';
+        if (oc.indexOf("'" + formatId + "'") > -1) el.classList.add('sel');
+      });
+    }
+    // En liten notis så användaren förstår att formatet är förvalt.
+    const banner = document.getElementById('adgen-preselect-banner');
+    if (banner) {
+      const fmt = ADGEN_FORMATS[formatId];
+      banner.textContent = fmt
+        ? 'Format förvalt från din kampanjplan: ' + fmt.label + ' (' + fmt.w + '×' + fmt.h + '). Fyll i budskapet och generera.'
+        : '';
+      banner.style.display = fmt ? 'block' : 'none';
+    }
+  }, 60);
+}
+
 // Fyller i AdStudios accentfärg-fält från profilen (om ett sådant fält finns), + företag.
 async function applyBrandProfileToAdgen() {
   if (!_currentUser) return;
@@ -5734,7 +5776,14 @@ function renderPlanResult(plan, label){
   // Faser
   const phasesHtml = (plan.phases || []).map(function(ph, i){
     const content = (ph.content_needed || []).map(function(c){
-      return '<li>' + escapeHtmlLib(c) + '</li>';
+      // Lager 3: om raden motsvarar ett annonsformat, lägg till en knapp som
+      // tar användaren till AdStudio med rätt format förvalt.
+      const fmtId = matchAdFormat(c);
+      const btn = fmtId
+        ? '<button class="planner-adstudio-btn" onclick="goToAdStudioWithFormat(\'' + fmtId + '\')" title="Skapa denna annons i AdStudio">' +
+            '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg> Skapa i AdStudio</button>'
+        : '';
+      return '<li>' + escapeHtmlLib(c) + btn + '</li>';
     }).join('');
     return '<div class="planner-phase">' +
       '<div class="planner-phase-head">' +
@@ -7159,6 +7208,50 @@ const ADGEN_FORMATS = {
   'se-modul-360':       { label:'Modul',                 w:468,  h:360,  html5:true,  group:'swedish' },
   'se-modul-480':       { label:'Modul',                 w:468,  h:480,  html5:true,  group:'swedish' },
 };
+
+/* ── Lager 3: översätt planens innehåll → AdStudio-format ────────────────────
+   Planen skriver saker som "5 st Meta-bildannonser 1080x1080". Vi behöver
+   hitta vilket AdStudio-format det motsvarar. Storleken (bredd x höjd) är det
+   mest pålitliga att matcha på – "1080x1080" är alltid samma sak, oavsett hur
+   AI:n råkar formulera texten runt omkring.
+   Returnerar ett format-id (t.ex. 'meta-feed-square') eller null om inget hittas.
+──────────────────────────────────────────────────────────────────────────── */
+function matchAdFormat(text) {
+  if (!text) return null;
+  const t = text.toLowerCase();
+
+  // LinkedIn har samma storlek som Meta Landscape (1200x628), så om texten
+  // uttryckligen nämner LinkedIn väljer vi det formatet före storleksmatchning.
+  if (t.indexOf('linkedin') > -1) return 'linkedin';
+
+  // 1) Försök hitta en storlek i texten, t.ex. "1080x1080" eller "980 × 240".
+  //    Vi tillåter x, ×, eller * som separator, med valfria mellanslag.
+  const sizeMatch = t.match(/(\d{2,4})\s*[x×*]\s*(\d{2,4})/);
+  if (sizeMatch) {
+    const w = parseInt(sizeMatch[1], 10);
+    const h = parseInt(sizeMatch[2], 10);
+    for (const id in ADGEN_FORMATS) {
+      if (ADGEN_FORMATS[id].w === w && ADGEN_FORMATS[id].h === h) return id;
+    }
+  }
+
+  // 2) Ingen storlek hittad – gissa utifrån nyckelord, med rimliga standardval.
+  if (t.indexOf('stories') > -1 || t.indexOf('reels') > -1) return 'meta-stories';
+  if (t.indexOf('story') > -1) return 'meta-stories';
+  if (t.indexOf('linkedin') > -1) return 'linkedin';
+  if (t.indexOf('panorama') > -1) return 'se-panorama-240';
+  if (t.indexOf('widescreen') > -1) return 'se-widescreen-240';
+  if (t.indexOf('modul') > -1) return 'se-modul-240';
+  if (t.indexOf('leaderboard') > -1) return 'iab-leaderboard';
+  if (t.indexOf('billboard') > -1) return 'iab-billboard';
+  if (t.indexOf('skyscraper') > -1) return 'iab-skyscraper';
+  if (t.indexOf('halfpage') > -1 || t.indexOf('half page') > -1) return 'iab-halfpage';
+  if (t.indexOf('mobil') > -1) return 'iab-mobile-large';
+  if (t.indexOf('display') > -1 || t.indexOf('banner') > -1) return 'se-panorama-240';
+  if (t.indexOf('meta') > -1 || t.indexOf('instagram') > -1 || t.indexOf('facebook') > -1) return 'meta-feed-square';
+
+  return null; // inget säkert format hittat
+}
 
 function adgenEscapeHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
