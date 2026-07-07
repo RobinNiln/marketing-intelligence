@@ -753,6 +753,7 @@ body.native-mode{background:#FBFAF7}
 .native-result-ingress{font-size:16px;color:#4A3F35;line-height:1.7;font-style:italic;border-left:3px solid #D4A857;padding-left:1rem;margin-bottom:1.5rem}
 .native-result-body{font-size:15px;color:#2a2520;line-height:1.85}
 .native-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #F0EEE8}
+.native-result-actions-top{margin-top:0;padding-top:0;border-top:none;margin-bottom:1.75rem;padding-bottom:1.5rem;border-bottom:1px solid #F0EEE8}
 .native-action-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid #F0EEE8;background:#fff;color:#2a2520;transition:all 0.15s}
 .native-action-btn:hover{border-color:#E8C878}
 .native-action-btn.primary{background:#2a2520;color:#fff;border-color:#2a2520}
@@ -1157,6 +1158,7 @@ body.newsroom-mode{background:#FBFAF7}
 .newsroom-contact-block{background:#FDFCFA;border:1.5px solid #F0EEE8;border-radius:14px;padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#5a5650;line-height:1.8}
 .newsroom-contact-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C4A576;margin-bottom:6px}
 .newsroom-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #F0EEE8}
+.newsroom-result-actions-top{margin-top:0;padding-top:0;border-top:none;margin-bottom:1.75rem;padding-bottom:1.5rem;border-bottom:1px solid #F0EEE8}
 .nr-extra-block{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.5rem;margin-bottom:1rem}
 .nr-extra-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:1rem}
 .nr-extra-row{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2a2520;line-height:1.6;padding:6px 0}
@@ -2150,16 +2152,7 @@ body.brief-mode{background:#FBFAF7}
 
     <div class="native-result" id="native-result">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:1rem">Nativeartikel – klar för publicering</div>
-      <div class="native-result-headline" id="native-result-headline"></div>
-      <div class="native-result-ingress" id="native-result-ingress"></div>
-      <div class="native-result-body" id="native-result-body"></div>
-
-      <div class="native-budget-dist" id="native-budget-dist" style="display:none">
-        <div class="native-budget-dist-title">Föreslagen budgetfördelning</div>
-        <div id="native-budget-rows"></div>
-      </div>
-
-      <div class="native-result-actions">
+      <div class="native-result-actions native-result-actions-top">
         <button class="native-action-btn primary" onclick="nativeCopy()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M9 5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
           Kopiera artikel
@@ -2181,6 +2174,14 @@ body.brief-mode{background:#FBFAF7}
           Spara i bibliotek
         </button>
         <span id="native-export-slot"></span>
+      </div>
+      <div class="native-result-headline" id="native-result-headline"></div>
+      <div class="native-result-ingress" id="native-result-ingress"></div>
+      <div class="native-result-body" id="native-result-body"></div>
+
+      <div class="native-budget-dist" id="native-budget-dist" style="display:none">
+        <div class="native-budget-dist-title">Föreslagen budgetfördelning</div>
+        <div id="native-budget-rows"></div>
       </div>
 
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
@@ -2322,23 +2323,7 @@ body.brief-mode{background:#FBFAF7}
     </div>
 
     <div class="newsroom-result" id="newsroom-result">
-      <div class="newsroom-result-card">
-        <div class="newsroom-result-label" id="nr-result-type"></div>
-        <div class="newsroom-result-headline" id="nr-result-headline"></div>
-        <div class="newsroom-result-ingress" id="nr-result-ingress"></div>
-        <div id="nr-result-chart"></div>
-        <div class="newsroom-result-body" id="nr-result-body"></div>
-        <div class="newsroom-result-quote" id="nr-result-quote" style="display:none"></div>
-        <div class="newsroom-contact-block" id="nr-result-contact" style="display:none">
-          <div class="newsroom-contact-label">Kontakt för media</div>
-          <div id="nr-result-contact-text"></div>
-        </div>
-        <div class="newsroom-result-boilerplate" id="nr-result-boilerplate"></div>
-      </div>
-
-      <div id="nr-result-extras"></div>
-
-      <div class="newsroom-result-actions">
+      <div class="newsroom-result-actions newsroom-result-actions-top">
         <button class="newsroom-action-btn" onclick="newsroomToggleEdit()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l3 3-7 7H2v-3z"/></svg>
           <span id="newsroom-edit-btn-text">Redigera</span>
@@ -2357,6 +2342,22 @@ body.brief-mode{background:#FBFAF7}
         </button>
         <span id="newsroom-export-slot"></span>
       </div>
+      <div class="newsroom-result-card">
+        <div class="newsroom-result-label" id="nr-result-type"></div>
+        <div class="newsroom-result-headline" id="nr-result-headline"></div>
+        <div class="newsroom-result-ingress" id="nr-result-ingress"></div>
+        <div id="nr-result-chart"></div>
+        <div class="newsroom-result-body" id="nr-result-body"></div>
+        <div class="newsroom-result-quote" id="nr-result-quote" style="display:none"></div>
+        <div class="newsroom-contact-block" id="nr-result-contact" style="display:none">
+          <div class="newsroom-contact-label">Kontakt för media</div>
+          <div id="nr-result-contact-text"></div>
+        </div>
+        <div class="newsroom-result-boilerplate" id="nr-result-boilerplate"></div>
+      </div>
+
+      <div id="nr-result-extras"></div>
+
 
       <button class="newsroom-new-btn" onclick="newsroomReset()">← Skapa ny pressrelease</button>
     </div>
