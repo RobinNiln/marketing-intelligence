@@ -810,16 +810,16 @@ body.native-mode{background:#FBFAF7}
 .home-bar-val{width:30px;flex-shrink:0;text-align:right;font-size:13px;font-weight:700;color:#2C2520}
 .home-empty{text-align:center;color:#9A8570;padding:2.5rem 1rem;font-size:13.5px;line-height:1.6}
 .home-recent{display:flex;flex-direction:column;gap:2px}
-.home-recent-item{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:9px;cursor:pointer;transition:background 0.12s;border:none;background:none;font-family:inherit;text-align:left;width:100%}
+.home-recent-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;cursor:pointer;transition:background 0.12s;border:none;background:none;font-family:inherit;text-align:left;width:100%}
 .home-recent-item:hover{background:#f7f4ee}
-.home-recent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.home-recent-icon{flex-shrink:0;display:flex;align-items:center}
 .home-recent-main{flex:1;min-width:0}
-.home-recent-title{font-size:13.5px;font-weight:600;color:#2C2520;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.home-recent-meta{font-size:11.5px;color:#9A8570;margin-top:2px}
+.home-recent-title{font-size:13.5px;font-weight:600;color:#2C2520;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.home-recent-meta{font-size:11.5px;color:#9A8570;margin-top:3px;display:block}
 .home-quick{display:flex;flex-wrap:wrap;gap:10px}
-.home-quick-btn{display:inline-flex;align-items:center;gap:9px;background:#faf8f4;border:1px solid #ece8df;border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.home-quick-btn{display:inline-flex;align-items:center;gap:10px;background:#faf8f4;border:1px solid #ece8df;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.home-quick-btn svg{flex-shrink:0}
 .home-quick-btn:hover{background:#f2efe8;border-color:#dcd6ca}
-.hq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 @media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
 
 /* Campaign Planner-resultat */
@@ -1217,9 +1217,9 @@ body.newsroom-mode{background:#FBFAF7}
 .pd-stat-label{font-size:12px;color:#9A8570;margin-top:2px}
 .pd-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9A8570;margin:0 0 1rem}
 .pd-quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:2rem}
-.pd-quick{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #ece8df;border-radius:12px;padding:13px 16px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
+.pd-quick{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ece8df;border-radius:12px;padding:13px 16px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
+.pd-quick svg{flex-shrink:0}
 .pd-quick:hover{border-color:#C9A84C;box-shadow:0 4px 14px rgba(44,37,32,0.06)}
-.pd-quick-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .pd-prod{display:flex;align-items:center;gap:1rem;background:#fff;border:1px solid #ece8df;border-radius:12px;padding:1rem 1.3rem;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s}
 .pd-prod:hover{border-color:#C9A84C}
 .pd-prod-main{flex:1;min-width:0}
@@ -1718,12 +1718,12 @@ body.brief-mode{background:#FBFAF7}
         <button class="home-card-link" onclick="goToTools()">Alla verktyg →</button>
       </div>
       <div class="home-quick">
-        <button class="home-quick-btn" onclick="showApp()"><span class="hq-dot" style="background:#1D9E75"></span>Market Pulse</button>
-        <button class="home-quick-btn" onclick="goToBrief()"><span class="hq-dot" style="background:#C9A84C"></span>The Brief</button>
-        <button class="home-quick-btn" onclick="goToNewsroom()"><span class="hq-dot" style="background:#378ADD"></span>Newsroom</button>
-        <button class="home-quick-btn" onclick="goToNative()"><span class="hq-dot" style="background:#D85A30"></span>Native Auto Reach</button>
-        <button class="home-quick-btn" onclick="goToAdCopy()"><span class="hq-dot" style="background:#7F77DD"></span>AdStudio</button>
-        <button class="home-quick-btn" onclick="goToPlanner()"><span class="hq-dot" style="background:#9c7d2e"></span>Campaign Planner</button>
+        <button class="home-quick-btn" style="border-left:3px solid #1D9E75" onclick="showApp()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13V7M6 13V3M10 13V9M14 13V5"/></svg>Market Pulse</button>
+        <button class="home-quick-btn" style="border-left:3px solid #C9A84C" onclick="goToBrief()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4z"/><path d="M10 2v3h3M6 8h4M6 11h4"/></svg>The Brief</button>
+        <button class="home-quick-btn" style="border-left:3px solid #378ADD" onclick="goToNewsroom()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 6h6M5 9h4"/></svg>Newsroom</button>
+        <button class="home-quick-btn" style="border-left:3px solid #D85A30" onclick="goToNative()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h10v10H3z"/><path d="M6 7h4M6 10h4"/></svg>Native Auto Reach</button>
+        <button class="home-quick-btn" style="border-left:3px solid #7F77DD" onclick="goToAdCopy()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/></svg>AdStudio</button>
+        <button class="home-quick-btn" style="border-left:3px solid #9c7d2e" onclick="goToPlanner()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6h12M5 2v3M11 2v3M5 9h3M5 11h5"/></svg>Campaign Planner</button>
       </div>
     </div>
   </div>
@@ -2111,12 +2111,12 @@ body.brief-mode{background:#FBFAF7}
     <!-- Snabbknappar: skapa nytt inom projektet -->
     <div class="pd-section-title">Skapa nytt i projektet</div>
     <div class="pd-quick-grid">
-      <button class="pd-quick" onclick="showApp()"><span class="pd-quick-dot" style="background:#1D9E75"></span>Market Pulse</button>
-      <button class="pd-quick" onclick="goToBrief()"><span class="pd-quick-dot" style="background:#C9A84C"></span>The Brief</button>
-      <button class="pd-quick" onclick="goToNewsroom()"><span class="pd-quick-dot" style="background:#378ADD"></span>Newsroom</button>
-      <button class="pd-quick" onclick="goToNative()"><span class="pd-quick-dot" style="background:#D85A30"></span>Native</button>
-      <button class="pd-quick" onclick="goToAdCopy()"><span class="pd-quick-dot" style="background:#7F77DD"></span>AdStudio</button>
-      <button class="pd-quick" onclick="goToPlanner()"><span class="pd-quick-dot" style="background:#9c7d2e"></span>Campaign Planner</button>
+      <button class="pd-quick" style="border-left:3px solid #1D9E75" onclick="showApp()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13V7M6 13V3M10 13V9M14 13V5"/></svg>Market Pulse</button>
+      <button class="pd-quick" style="border-left:3px solid #C9A84C" onclick="goToBrief()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4z"/><path d="M10 2v3h3M6 8h4M6 11h4"/></svg>The Brief</button>
+      <button class="pd-quick" style="border-left:3px solid #378ADD" onclick="goToNewsroom()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 6h6M5 9h4"/></svg>Newsroom</button>
+      <button class="pd-quick" style="border-left:3px solid #D85A30" onclick="goToNative()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h10v10H3z"/><path d="M6 7h4M6 10h4"/></svg>Native</button>
+      <button class="pd-quick" style="border-left:3px solid #7F77DD" onclick="goToAdCopy()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/></svg>AdStudio</button>
+      <button class="pd-quick" style="border-left:3px solid #9c7d2e" onclick="goToPlanner()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6h12M5 2v3M11 2v3M5 9h3M5 11h5"/></svg>Campaign Planner</button>
     </div>
 
     <!-- Projektets produktioner -->
@@ -4216,6 +4216,20 @@ function applyRoleToolOrder(){
 // Färger per verktyg – återanvänds i graf och "senaste"-prickar.
 const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD' };
 
+/* Ger SVG-ikonen för ett verktyg – samma ikoner som snabbknapparna, så
+   verktygen ser likadana ut överallt. Grå streckfärg; färgen bärs av kanten. */
+function toolIconSvg(tool){
+  const p = {
+    'market-pulse': '<path d="M2 13V7M6 13V3M10 13V9M14 13V5"/>',
+    brief: '<path d="M4 2h6l3 3v9H4z"/><path d="M10 2v3h3M6 8h4M6 11h4"/>',
+    newsroom: '<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 6h6M5 9h4"/>',
+    native: '<path d="M3 3h10v10H3z"/><path d="M6 7h4M6 10h4"/>',
+    adstudio: '<rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/>',
+    planner: '<rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6h12M5 2v3M11 2v3M5 9h3M5 11h5"/>'
+  };
+  return '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (p[tool] || p.brief) + '</svg>';
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    NOTISER / "VAD ÄR NYTT"  –  REDIGERA HÄR
    Detta är den enda plats du behöver ändra för att uppdatera nyhetsrutan
@@ -4375,8 +4389,8 @@ async function renderHomeData(profileFilled){
       const date = new Date(it.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
       const label = TOOL_LABELS[it.tool] || it.tool;
       const color = TOOL_COLORS[it.tool] || '#C9A84C';
-      return '<button class="home-recent-item" onclick="libraryOpen(\'' + it.id + '\')">' +
-        '<span class="home-recent-dot" style="background:' + color + '"></span>' +
+      return '<button class="home-recent-item" style="border-left:3px solid ' + color + '" onclick="libraryOpen(\'' + it.id + '\')">' +
+        '<span class="home-recent-icon">' + toolIconSvg(it.tool) + '</span>' +
         '<span class="home-recent-main">' +
           '<span class="home-recent-title">' + escapeHtmlLib(it.title) + '</span>' +
           '<span class="home-recent-meta">' + label + ' · ' + date + '</span>' +
