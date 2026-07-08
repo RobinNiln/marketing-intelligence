@@ -1191,6 +1191,35 @@ body.newsroom-mode{background:#FBFAF7}
 .proj-card-meta{font-size:13px;color:#9A8570}
 .proj-card-del{flex-shrink:0;background:none;border:none;border-left:1px solid #f0eee8;color:#c0b8a8;cursor:pointer;padding:0 18px;transition:color 0.15s}
 .proj-card-del:hover{color:#A32D2D}
+
+/* Projekt-hubb (detaljsida) */
+.pd-hero{background:#fff;border:1px solid #ece8df;border-radius:18px;padding:1.8rem 2rem;margin-bottom:1.5rem}
+.pd-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem}
+.pd-active-badge{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#9c7d2e}
+.pd-edit-btn,.pd-cancel-btn{background:#fff;color:#6b5d47;border:1.5px solid #e6e1d6;border-radius:100px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.pd-edit-btn:hover,.pd-cancel-btn:hover{background:#f5f3ee}
+.pd-name{font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem}
+.pd-desc{font-size:14.5px;color:#5F5E5A;line-height:1.6;margin:0}
+.pd-name-input{width:100%;border:1.5px solid #C9A84C;border-radius:10px;padding:12px 14px;font-size:20px;font-weight:700;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fffdf8}
+.pd-desc-input{width:100%;min-height:80px;border:1.5px solid #e6e1d6;border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;line-height:1.6;color:#2C2520;box-sizing:border-box;margin-top:0.8rem;resize:vertical}
+.pd-desc-input:focus,.pd-name-input:focus{outline:none;border-color:#C9A84C}
+.pd-save-btn{background:#2C2520;color:#fff;border:none;border-radius:100px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.pd-save-btn:hover{background:#433a30}
+.pd-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:2rem}
+.pd-stat{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.2rem;text-align:center}
+.pd-stat-num{font-size:24px;font-weight:700;color:#2C2520;letter-spacing:-0.02em}
+.pd-stat-label{font-size:12px;color:#9A8570;margin-top:2px}
+.pd-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9A8570;margin:0 0 1rem}
+.pd-quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:2rem}
+.pd-quick{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #ece8df;border-radius:12px;padding:13px 16px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
+.pd-quick:hover{border-color:#C9A84C;box-shadow:0 4px 14px rgba(44,37,32,0.06)}
+.pd-quick-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.pd-prod{display:flex;align-items:center;gap:1rem;background:#fff;border:1px solid #ece8df;border-radius:12px;padding:1rem 1.3rem;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s}
+.pd-prod:hover{border-color:#C9A84C}
+.pd-prod-main{flex:1;min-width:0}
+.pd-prod-title{font-size:15px;font-weight:600;color:#2C2520;margin-bottom:2px}
+.pd-prod-meta{font-size:12.5px;color:#9A8570}
+.pd-empty{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:2rem;text-align:center;font-size:13.5px;color:#9A8570;line-height:1.6}
 .lib-card-tool{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:4px}
 .lib-card-title{font-size:16px;font-weight:600;color:#2C2520;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lib-card-date{font-size:12px;color:#9A8570}
@@ -2037,6 +2066,56 @@ body.brief-mode{background:#FBFAF7}
     </div>
     <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Samla ditt arbete kring en kampanj. Produktioner du sparar kan kopplas till ett projekt.</p>
     <div id="projects-list"></div>
+  </div>
+</div>
+
+<div id="project-detail-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+  </nav>
+  <div style="max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem">
+    <button onclick="goToProjects()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:#9A8570;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:1.5rem;padding:0">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3L5 7l4 4"/></svg>
+      Alla projekt
+    </button>
+
+    <!-- Projekt-hjälte: namn + beskrivning, redigerbara -->
+    <div class="pd-hero">
+      <div class="pd-hero-top">
+        <span class="pd-active-badge" id="pd-active-badge">● Aktivt projekt</span>
+        <button class="pd-edit-btn" id="pd-edit-btn" onclick="pdToggleEdit()">Redigera</button>
+      </div>
+      <div id="pd-view-mode">
+        <h1 class="pd-name" id="pd-name"></h1>
+        <p class="pd-desc" id="pd-desc"></p>
+      </div>
+      <div id="pd-edit-mode" style="display:none">
+        <input type="text" id="pd-name-input" class="pd-name-input" placeholder="Projektnamn">
+        <textarea id="pd-desc-input" class="pd-desc-input" placeholder="Beskriv kampanjen (valfritt) – mål, målgrupp, tidsram..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:0.8rem">
+          <button class="pd-save-btn" onclick="pdSaveEdit()">Spara ändringar</button>
+          <button class="pd-cancel-btn" onclick="pdToggleEdit()">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Översikt -->
+    <div class="pd-stats" id="pd-stats"></div>
+
+    <!-- Snabbknappar: skapa nytt inom projektet -->
+    <div class="pd-section-title">Skapa nytt i projektet</div>
+    <div class="pd-quick-grid">
+      <button class="pd-quick" onclick="showApp()"><span class="pd-quick-dot" style="background:#1D9E75"></span>Market Pulse</button>
+      <button class="pd-quick" onclick="goToBrief()"><span class="pd-quick-dot" style="background:#C9A84C"></span>The Brief</button>
+      <button class="pd-quick" onclick="goToNewsroom()"><span class="pd-quick-dot" style="background:#378ADD"></span>Newsroom</button>
+      <button class="pd-quick" onclick="goToNative()"><span class="pd-quick-dot" style="background:#D85A30"></span>Native</button>
+      <button class="pd-quick" onclick="goToAdCopy()"><span class="pd-quick-dot" style="background:#7F77DD"></span>AdStudio</button>
+      <button class="pd-quick" onclick="goToPlanner()"><span class="pd-quick-dot" style="background:#9c7d2e"></span>Campaign Planner</button>
+    </div>
+
+    <!-- Projektets produktioner -->
+    <div class="pd-section-title">Innehåll i projektet</div>
+    <div id="pd-productions"></div>
   </div>
 </div>
 
@@ -3989,7 +4068,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -4621,6 +4700,14 @@ async function deleteProject(projectId) {
   return { error };
 }
 
+// Uppdaterar ett projekts namn och/eller beskrivning.
+async function updateProject(projectId, fields) {
+  if (!_currentUser) return { error: 'not-logged-in' };
+  const { data, error } = await sb().from('projects')
+    .update(fields).eq('id', projectId).select().single();
+  return { data, error };
+}
+
 /* ── Snygg spar-dialog (ersätter de gamla prompt-rutorna) ───────────────────
    openSaveModal visar en modal och VÄNTAR på att användaren trycker Spara
    eller Avbryt. Eftersom en modal inte kan "pausa" koden som prompt() gör,
@@ -5130,9 +5217,111 @@ async function projectDeleteConfirm(projectId, name) {
 }
 
 // Öppnar ett projekt och visar dess produktioner (återanvänder biblioteksvyn filtrerad).
-function goToProjectDetail(projectId) {
-  _projectFilter = projectId;
-  goToLibrary();
+async function goToProjectDetail(projectId) {
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('project-detail-page').style.display = 'block';
+  updateSidePanel('projects-page');
+  window.scrollTo(0,0);
+
+  // Hämta projektet och dess produktioner.
+  const [projRes, prodRes] = await Promise.all([fetchProjects(), fetchProductions()]);
+  const project = (projRes.data || []).find(function(p){ return p.id === projectId; });
+  if (!project) { goToProjects(); return; }
+  window._pdProject = project;
+  _projectsCache = projRes.data || [];
+
+  // Öppna = gör projektet aktivt (som du valde).
+  setActiveProject({ id: project.id, name: project.name });
+
+  const productions = (prodRes.data || []).filter(function(p){ return p.project_id === projectId; });
+  window._pdProductions = productions;
+
+  renderProjectDetail(project, productions);
+}
+
+function renderProjectDetail(project, productions) {
+  // Hjälte
+  document.getElementById('pd-name').textContent = project.name;
+  const descEl = document.getElementById('pd-desc');
+  if (project.description) {
+    descEl.textContent = project.description;
+    descEl.style.display = 'block';
+  } else {
+    descEl.textContent = 'Ingen beskrivning än. Klicka Redigera för att lägga till.';
+    descEl.style.opacity = '0.6';
+    descEl.style.display = 'block';
+  }
+
+  // Översikt: antal produktioner, senaste aktivitet, verktygsfördelning.
+  const total = productions.length;
+  let latest = '–';
+  if (total) {
+    const newest = productions.reduce(function(a, b){
+      return new Date(a.created_at) > new Date(b.created_at) ? a : b;
+    });
+    latest = new Date(newest.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
+  }
+  const toolCounts = {};
+  productions.forEach(function(p){ toolCounts[p.tool] = (toolCounts[p.tool]||0) + 1; });
+  const toolsUsed = Object.keys(toolCounts).length;
+
+  document.getElementById('pd-stats').innerHTML =
+    '<div class="pd-stat"><div class="pd-stat-num">' + total + '</div><div class="pd-stat-label">produktioner</div></div>' +
+    '<div class="pd-stat"><div class="pd-stat-num">' + toolsUsed + '</div><div class="pd-stat-label">verktyg använda</div></div>' +
+    '<div class="pd-stat"><div class="pd-stat-num">' + latest + '</div><div class="pd-stat-label">senaste</div></div>';
+
+  // Produktionslista
+  const list = document.getElementById('pd-productions');
+  if (!total) {
+    list.innerHTML = '<div class="pd-empty">Inget innehåll än. Använd snabbknapparna ovan för att skapa något i projektet – det sparas hit automatiskt.</div>';
+    return;
+  }
+  list.innerHTML = productions.map(function(it){
+    const label = TOOL_LABELS[it.tool] || it.tool;
+    const date = new Date(it.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
+    return '<div class="pd-prod" onclick="libraryOpen(\'' + it.id + '\')">' +
+      '<div class="pd-prod-main"><div class="pd-prod-title">' + escapeHtmlLib(it.title) + '</div>' +
+      '<div class="pd-prod-meta">' + escapeHtmlLib(label) + ' · ' + date + '</div></div>' +
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#c0b8a8" stroke-width="1.8" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>' +
+    '</div>';
+  }).join('');
+}
+
+// Redigeringsläge för namn + beskrivning
+function pdToggleEdit() {
+  const view = document.getElementById('pd-view-mode');
+  const edit = document.getElementById('pd-edit-mode');
+  const btn = document.getElementById('pd-edit-btn');
+  const editing = edit.style.display !== 'none';
+  if (!editing) {
+    const p = window._pdProject;
+    document.getElementById('pd-name-input').value = p.name || '';
+    document.getElementById('pd-desc-input').value = p.description || '';
+    view.style.display = 'none';
+    edit.style.display = 'block';
+    btn.style.display = 'none';
+  } else {
+    view.style.display = 'block';
+    edit.style.display = 'none';
+    btn.style.display = 'inline-block';
+  }
+}
+
+async function pdSaveEdit() {
+  const p = window._pdProject;
+  const name = document.getElementById('pd-name-input').value.trim();
+  const desc = document.getElementById('pd-desc-input').value.trim();
+  if (!name) { alert('Projektet måste ha ett namn.'); return; }
+  const { data, error } = await updateProject(p.id, { name: name, description: desc });
+  if (error) { alert('Kunde inte spara: ' + (error.message || error)); return; }
+  window._pdProject = data || Object.assign({}, p, { name: name, description: desc });
+  // Om det var det aktiva projektet, uppdatera namnet där också.
+  if (_activeProject && _activeProject.id === p.id) {
+    setActiveProject({ id: p.id, name: name });
+  }
+  pdToggleEdit();
+  renderProjectDetail(window._pdProject, window._pdProductions);
 }
 
 
@@ -5429,7 +5618,7 @@ function applyPanelState() {
 }
 
 // Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
-const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page'];
+const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page'];
 
 // Visar panelen bara när man är inloggad OCH på en inre app-sida.
 function updateSidePanel(currentPage) {
