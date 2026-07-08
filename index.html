@@ -911,6 +911,12 @@ body.native-mode{background:#FBFAF7}
 /* Wide selling cards for tools page */
 .tools-sell{max-width:900px;margin:0 auto 4rem;display:flex;flex-direction:column;gap:16px;padding:0 1.5rem}
 .tsell-card{background:#fff;border:1px solid #e8e4db;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:220px 1fr;transition:box-shadow 0.2s,transform 0.2s}
+.auth-role-grid{display:flex;flex-direction:column;gap:8px}
+.auth-role-opt{text-align:left;background:#fff;border:1.5px solid #e0dcd3;border-radius:10px;padding:11px 14px;cursor:pointer;font-family:inherit;transition:border-color 0.15s,background 0.15s}
+.auth-role-opt:hover{border-color:#C9A84C}
+.auth-role-opt.sel{border-color:#C9A84C;background:rgba(201,168,76,0.08)}
+.auth-role-name{font-size:14px;font-weight:600;color:#2C2520}
+.auth-role-desc{font-size:12px;color:#8a7d6d;margin-top:2px}
 .tsell-card:hover{box-shadow:0 8px 30px rgba(44,37,32,0.08);transform:translateY(-2px)}
 .tsell-img{position:relative;min-height:180px;background-size:cover;background-position:center}
 .tsell-img-badge{position:absolute;top:14px;left:14px;background:rgba(255,255,255,0.92);font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 11px;border-radius:20px}
@@ -1758,7 +1764,7 @@ body.brief-mode{background:#FBFAF7}
     <p style="font-size:15px;color:#8a7d6d;line-height:1.75;max-width:520px">Från kampanjbrief och distributionsplan till nativeartikel, annonscopy, pressrelease och kampanjanalys – konkreta resultat på minuter.</p>
   </div>
   <div class="tools-sell">
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="app">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(15,110,86,0.85),rgba(29,158,117,0.5)),url('images/stock.jpg')"><span class="tsell-img-badge" style="color:#0F6E56">STEG 1 · ANALYS</span></div>
       <div class="tsell-body">
         <div class="tsell-title">Market Pulse</div>
@@ -1768,7 +1774,7 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('app')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="brief">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(156,125,46,0.85),rgba(201,168,76,0.5)),url('images/kontor.png')"><span class="tsell-img-badge" style="color:#9c7d2e">STEG 2 · BRIEF</span></div>
       <div class="tsell-body">
         <div class="tsell-title">The Brief</div>
@@ -1778,7 +1784,7 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('brief')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="newsroom">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(24,95,165,0.85),rgba(55,138,221,0.5)),url('images/newsroom.jpeg')"><span class="tsell-img-badge" style="color:#185FA5">STEG 3 · PR</span></div>
       <div class="tsell-body">
         <div class="tsell-title">Newsroom</div>
@@ -1788,7 +1794,7 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('newsroom')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="native">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(153,60,29,0.85),rgba(216,90,48,0.5)),url('images/nativeautoreach.jpeg')"><span class="tsell-img-badge" style="color:#993c1d">STEG 4 · PRODUKTION</span></div>
       <div class="tsell-body">
         <div class="tsell-title">Native Auto Reach</div>
@@ -1798,7 +1804,7 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('native')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="adcopy">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(83,74,183,0.85),rgba(127,119,221,0.5)),url('images/adgenerator.png')"><span class="tsell-img-badge" style="color:#534AB7">STEG 5 · ANNONS</span></div>
       <div class="tsell-body">
         <div class="tsell-title">AdStudio</div>
@@ -1808,7 +1814,7 @@ body.brief-mode{background:#FBFAF7}
         <button class="tsell-btn" onclick="goToToolLogin('adcopy')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
       </div>
     </div>
-    <div class="tsell-card">
+    <div class="tsell-card" data-tool="planner">
       <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(44,37,32,0.82),rgba(201,168,76,0.5)),url('images/planner.jpg')"><span class="tsell-img-badge" style="color:#9c7d2e">PLANERING</span></div>
       <div class="tsell-body">
         <div class="tsell-title">Campaign Planner</div>
@@ -2139,6 +2145,23 @@ body.brief-mode{background:#FBFAF7}
       </div>
       <div id="auth-forgot-row" style="text-align:right;margin-bottom:1.5rem">
         <button onclick="authGoReset()" style="background:none;border:none;color:#8a7d6d;font-size:12px;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline">Glömt lösenord?</button>
+      </div>
+      <div id="auth-role-row" style="display:none;margin-bottom:1.5rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Vad beskriver dig bäst?</label>
+        <div class="auth-role-grid">
+          <button type="button" class="auth-role-opt" data-role="annonsor" onclick="authPickRole(this,'annonsor')">
+            <div class="auth-role-name">Annonsör</div>
+            <div class="auth-role-desc">Jag marknadsför mitt företag</div>
+          </button>
+          <button type="button" class="auth-role-opt" data-role="publicist" onclick="authPickRole(this,'publicist')">
+            <div class="auth-role-name">Publicist / plattform</div>
+            <div class="auth-role-desc">Jag driver medier och annonsytor</div>
+          </button>
+          <button type="button" class="auth-role-opt" data-role="byra" onclick="authPickRole(this,'byra')">
+            <div class="auth-role-name">Byrå</div>
+            <div class="auth-role-desc">Jag jobbar åt flera kunder</div>
+          </button>
+        </div>
       </div>
       <button id="auth-submit" onclick="authSubmit()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:1rem">Logga in</button>
       <div id="auth-toggle-row" style="text-align:center;font-size:13px;color:#8a7d6d">
@@ -4161,6 +4184,33 @@ function goToTools(){
   document.getElementById('tools-page').style.display='block';
   setActivePanelLink('tools-page');
   window.scrollTo(0,0);
+  applyRoleToolOrder();
+}
+
+/* ── Rollbaserad verktygsordning ────────────────────────────────────────────
+   Publicist ser publicistnära verktyg överst, annonsör sina, byrå bred ordning.
+   Vi DÖLJER aldrig något – vi bara flyttar upp det relevanta (mjukaste varianten).
+   Utan roll behålls standardordningen.
+──────────────────────────────────────────────────────────────────────────── */
+const ROLE_TOOL_ORDER = {
+  publicist: ['native','adcopy','newsroom','app','planner','brief'],
+  annonsor:  ['brief','planner','app','adcopy','newsroom','native'],
+  byra:      ['app','brief','planner','newsroom','native','adcopy']
+};
+
+function applyRoleToolOrder(){
+  const role = _brandProfile && _brandProfile.role;
+  const order = ROLE_TOOL_ORDER[role];
+  if (!order) return; // ingen roll → behåll standardordningen
+  // Hitta korten och deras gemensamma förälder.
+  const cards = Array.from(document.querySelectorAll('.tsell-card'));
+  if (!cards.length) return;
+  const parent = cards[0].parentNode;
+  // Sortera korten enligt rollens ordning och lägg tillbaka dem i den ordningen.
+  order.forEach(function(toolId){
+    const card = cards.find(function(c){ return c.getAttribute('data-tool') === toolId; });
+    if (card) parent.appendChild(card); // appendChild flyttar (inte kopierar)
+  });
 }
 
 // Färger per verktyg – återanvänds i graf och "senaste"-prickar.
@@ -4434,6 +4484,8 @@ function authRenderMode(){
   passwordRow.style.display = '';
   forgotRow.style.display = 'none';
   toggleRow.style.display = '';
+  const roleRow = document.getElementById('auth-role-row');
+  if (roleRow) roleRow.style.display = 'none';
 
   if (mode === 'login') {
     document.getElementById('auth-title').textContent = 'Logga in';
@@ -4450,6 +4502,7 @@ function authRenderMode(){
     document.getElementById('auth-toggle-text').textContent = 'Har du redan ett konto?';
     document.getElementById('auth-toggle-btn').textContent = 'Logga in';
     document.getElementById('auth-password').setAttribute('autocomplete', 'new-password');
+    if (roleRow) roleRow.style.display = 'block';
   } else if (mode === 'reset') {
     document.getElementById('auth-title').textContent = 'Återställ lösenord';
     document.getElementById('auth-sub').textContent = 'Fyll i din e-post så skickar vi en återställningslänk';
@@ -4474,6 +4527,27 @@ function authToggleMode(){
   if (_authMode === 'reset') _authMode = 'login';
   else _authMode = _authMode === 'login' ? 'signup' : 'login';
   authRenderMode();
+}
+
+// Roll-val vid registrering
+let _authPickedRole = null;
+function authPickRole(el, role){
+  _authPickedRole = role;
+  document.querySelectorAll('.auth-role-opt').forEach(function(b){ b.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+// Skriver en "väntande" roll (från signup) till användarens profil, om det finns
+// en. Kräver att användaren är inloggad (RLS). Rör inget om ingen roll väntar.
+async function savePendingRole() {
+  if (!_currentUser) return;
+  let pending = null;
+  try { pending = localStorage.getItem('mava-pending-role'); } catch(e){}
+  if (!pending) return;
+  try {
+    await sb().from('brand_profiles').upsert({ user_id: _currentUser.id, role: pending });
+    localStorage.removeItem('mava-pending-role');
+  } catch(e){ console.log('Kunde inte spara roll än:', e); }
 }
 
 function authGoReset(){
@@ -4566,18 +4640,24 @@ async function authSubmit(){
     if (_authMode === 'signup') {
       const { data, error } = await sb().auth.signUp({ email, password });
       if (error) throw error;
+      // Kom ihåg vald roll så den kan sparas så snart användaren är inloggad.
+      if (_authPickedRole) {
+        try { localStorage.setItem('mava-pending-role', _authPickedRole); } catch(e){}
+      }
       if (data.user && !data.session) {
         authShowSuccess('Konto skapat. Kolla din e-post för att bekräfta adressen, logga sedan in.');
         _authMode = 'login';
         authRenderMode();
       } else {
         _currentUser = data.user;
+        await savePendingRole(); // vi är inloggade direkt – spara rollen nu
         onAuthChanged();
       }
     } else {
       const { data, error } = await sb().auth.signInWithPassword({ email, password });
       if (error) throw error;
       _currentUser = data.user;
+      await savePendingRole(); // om en roll väntar från signup, skriv den nu
       onAuthChanged();
     }
   } catch (e) {
