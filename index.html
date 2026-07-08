@@ -551,6 +551,12 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 /* Spar-dialog (snygg ersättare för de gamla prompt-rutorna) */
 #save-modal{display:none;position:fixed;inset:0;background:rgba(44,37,32,0.55);z-index:10000;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 #save-modal.open{display:flex}
+#active-project-modal{display:none;position:fixed;inset:0;background:rgba(44,37,32,0.55);z-index:10000;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#active-project-modal.open{display:flex}
+.active-proj-option{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:#fff;border:1.5px solid #e6e1d6;border-radius:10px;padding:12px 15px;margin-bottom:8px;font-size:14px;font-family:inherit;color:#2C2520;cursor:pointer;transition:border-color 0.15s}
+.active-proj-option:hover{border-color:#C9A84C}
+.active-proj-option.selected{border-color:#C9A84C;background:rgba(201,168,76,0.08)}
+.active-proj-check{color:#9c7d2e;font-weight:700}
 .save-modal-box{background:#FBFAF7;border-radius:18px;padding:2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(44,37,32,0.25)}
 .save-modal-title{font-size:19px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 1.4rem}
 .save-modal-label{display:block;font-size:12px;font-weight:600;color:#9A8570;letter-spacing:0.03em;margin-bottom:0.5rem}
@@ -1327,6 +1333,21 @@ body.brief-mode{background:#FBFAF7}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
+<div id="active-project-modal">
+  <div class="save-modal-box">
+    <h3 class="save-modal-title">Aktivt projekt</h3>
+    <p style="font-size:13.5px;color:#8a7d6d;line-height:1.6;margin:0 0 1.3rem">Allt du skapar sparas automatiskt i det aktiva projektet.</p>
+    <div id="active-project-list"></div>
+    <button class="save-modal-newproj" style="margin-top:0.5rem" onclick="activeProjectModalNew()">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7.5 2v11M2 7.5h11"/></svg>
+      Nytt projekt
+    </button>
+    <div class="save-modal-actions">
+      <button class="save-modal-cancel" onclick="activeProjectModalClose()">Stäng</button>
+    </div>
+  </div>
+</div>
+
 <div id="save-modal">
   <div class="save-modal-box">
     <h3 class="save-modal-title">Spara i biblioteket</h3>
@@ -1380,8 +1401,8 @@ body.brief-mode{background:#FBFAF7}
 
   <!-- Aktivt projekt: visar var du jobbar, klicka för att byta -->
   <button id="active-project-bar" class="sp-link" onclick="chooseActiveProject()" title="Byt aktivt projekt">
-    <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 012-2h3l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-    <span class="sp-link-body"><span class="sp-link-text">Projekt</span><span class="sp-link-desc" id="active-project-name">Inget projekt valt</span></span>
+    <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M7.5 11l2.5 2.5 4.5-5"/></svg>
+    <span class="sp-link-body"><span class="sp-link-text">Aktivt projekt</span><span class="sp-link-desc" id="active-project-name">Inget projekt valt</span></span>
   </button>
 
   <nav class="sp-links">
@@ -5002,25 +5023,45 @@ function updateActiveProjectUI() {
 async function chooseActiveProject() {
   if (!_currentUser) { goToAuth(); return; }
   const { data: projects } = await fetchProjects();
-  let menu = 'Välj aktivt projekt – allt du skapar sparas hit automatiskt.\n\n0 = Inget projekt\n';
-  (projects || []).forEach(function(p, i){ menu += (i+1) + ' = ' + p.name + '\n'; });
-  menu += '\nN = Nytt projekt\n\nSkriv en siffra, eller N för nytt:';
-  const choice = prompt(menu);
-  if (choice === null) return; // avbröt
-  const c = choice.trim().toLowerCase();
-  if (c === 'n') {
-    const name = prompt('Namnge ditt nya projekt:');
-    if (name === null || !name.trim()) return;
-    const { data, error } = await createProject(name.trim());
-    if (error) { alert('Kunde inte skapa projektet.'); return; }
-    setActiveProject({ id: data.id, name: data.name });
-    return;
-  }
-  const n = parseInt(c, 10);
-  if (!c || n === 0 || isNaN(n)) { setActiveProject(null); return; }
-  if (n >= 1 && n <= (projects||[]).length) {
-    setActiveProject({ id: projects[n-1].id, name: projects[n-1].name });
-  }
+  const list = document.getElementById('active-project-list');
+
+  // Bygg en klickbar lista: "Inget projekt" överst, sen alla projekt.
+  // Det aktiva markeras med en bock.
+  let html = '';
+  const activeId = _activeProject ? _activeProject.id : null;
+
+  html += '<button class="active-proj-option' + (!activeId ? ' selected' : '') + '" onclick="activeProjectPick(null,null)">' +
+    '<span>Inget projekt</span>' + (!activeId ? '<span class="active-proj-check">✓</span>' : '') + '</button>';
+
+  (projects || []).forEach(function(p){
+    const isActive = p.id === activeId;
+    html += '<button class="active-proj-option' + (isActive ? ' selected' : '') + '" onclick="activeProjectPick(\'' + p.id + '\',\'' + escapeHtmlLib(p.name).replace(/'/g,"\\'") + '\')">' +
+      '<span>' + escapeHtmlLib(p.name) + '</span>' + (isActive ? '<span class="active-proj-check">✓</span>' : '') + '</button>';
+  });
+
+  list.innerHTML = html;
+  document.getElementById('active-project-modal').classList.add('open');
+}
+
+// Väljer ett projekt (eller inget) och stänger modalen.
+function activeProjectPick(id, name) {
+  if (id) setActiveProject({ id: id, name: name });
+  else setActiveProject(null);
+  activeProjectModalClose();
+}
+
+// Skapar ett nytt projekt direkt och gör det aktivt.
+async function activeProjectModalNew() {
+  const name = prompt('Namnge ditt nya projekt:');
+  if (name === null || !name.trim()) return;
+  const { data, error } = await createProject(name.trim());
+  if (error) { alert('Kunde inte skapa projektet.'); return; }
+  setActiveProject({ id: data.id, name: data.name });
+  activeProjectModalClose();
+}
+
+function activeProjectModalClose() {
+  document.getElementById('active-project-modal').classList.remove('open');
 }
 
 
