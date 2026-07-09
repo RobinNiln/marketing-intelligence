@@ -1929,6 +1929,19 @@ body.brief-mode{background:#FBFAF7}
           <input type="color" id="brand-color" value="#C9A84C" onchange="brandUpdateColorPreview()" style="width:52px;height:40px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff">
           <span id="brand-color-hex" style="font-size:13px;color:#8a7d6d;font-family:monospace">#C9A84C</span>
         </div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin:1.25rem 0 8px">Logga (återanvänds i AdStudio)</label>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div id="brand-logo-preview-wrap" style="width:80px;height:80px;border:1px solid #e0dcd3;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#faf8f4;overflow:hidden;flex-shrink:0">
+            <img id="brand-logo-preview" style="max-width:100%;max-height:100%;display:none">
+            <span id="brand-logo-placeholder" style="font-size:11px;color:#b0a897;text-align:center;padding:4px">Ingen logga</span>
+          </div>
+          <div>
+            <input type="file" id="brand-logo-input" accept="image/*" onchange="brandLogoUpload(event)" style="display:none">
+            <button type="button" onclick="document.getElementById('brand-logo-input').click()" style="background:#fff;color:#2C2520;border:1.5px solid #e0dcd3;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Ladda upp logga</button>
+            <button type="button" id="brand-logo-remove" onclick="brandLogoRemove()" style="display:none;background:none;color:#A32D2D;border:none;padding:9px 10px;font-size:12.5px;cursor:pointer;font-family:inherit">Ta bort</button>
+            <div style="font-size:11.5px;color:#9A8570;margin-top:4px">PNG med transparent bakgrund fungerar bäst.</div>
+          </div>
+        </div>
       </div>
       <button id="brand-save-btn" onclick="saveBrandProfile()" style="width:100%;background:#2C2520;color:#fff;border:none;border-radius:22px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Spara profil</button>
     </div>
@@ -5647,10 +5660,13 @@ async function goToBrandProfile() {
   const people = (p && Array.isArray(p.key_people)) ? p.key_people : [];
   renderBrandPeople(people);
   // Annonsstil + accentfärg
-  brandSelectStyle((p && p.ad_style) || 'overlay');
+  brandSelectStyle((p && p.ad_style) || 'template-light');
   const color = (p && p.ad_color) || '#C9A84C';
   document.getElementById('brand-color').value = color;
   document.getElementById('brand-color-hex').textContent = color.toUpperCase();
+  // Logga
+  _brandLogoDataUrl = (p && p.ad_logo) || null;
+  brandShowLogo();
 }
 
 // Ritar upp person-raderna utifrån en lista. Varje rad har namn + roll + ta bort-knapp.
@@ -5787,6 +5803,53 @@ function goToBilling() {
   window.scrollTo(0,0);
 }
 
+// Loggan i varumärkesprofilen (base64). Återanvänds automatiskt i AdStudio.
+let _brandLogoDataUrl = null;
+
+function brandLogoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Komprimera loggan så base64-strängen inte blir onödigt stor.
+    const img = new Image();
+    img.onload = function() {
+      const maxDim = 400; // loggor behöver inte vara större än så
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const s = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * s); h = Math.round(h * s);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      // PNG bevarar transparens (viktigt för loggor).
+      _brandLogoDataUrl = canvas.toDataURL('image/png');
+      brandShowLogo();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function brandShowLogo() {
+  const prev = document.getElementById('brand-logo-preview');
+  const ph = document.getElementById('brand-logo-placeholder');
+  const rm = document.getElementById('brand-logo-remove');
+  if (_brandLogoDataUrl) {
+    prev.src = _brandLogoDataUrl; prev.style.display = 'block';
+    ph.style.display = 'none'; rm.style.display = 'inline-block';
+  } else {
+    prev.style.display = 'none'; ph.style.display = 'block'; rm.style.display = 'none';
+  }
+}
+
+function brandLogoRemove() {
+  _brandLogoDataUrl = null;
+  document.getElementById('brand-logo-input').value = '';
+  brandShowLogo();
+}
+
 async function saveBrandProfile() {
   if (!_currentUser) { goToAuth(); return; }
   const btn = document.getElementById('brand-save-btn');
@@ -5807,6 +5870,7 @@ async function saveBrandProfile() {
     key_people: collectBrandPeople(),
     ad_style: _brandAdStyle,
     ad_color: document.getElementById('brand-color').value,
+    ad_logo: _brandLogoDataUrl || null,
     updated_at: new Date().toISOString()
   };
   btn.disabled = true; btn.textContent = 'Sparar...';
@@ -5991,6 +6055,21 @@ async function applyBrandProfileToAdgen() {
   fillIfEmpty('ac-company', p.company);
   const colorField = document.getElementById('ac-color');
   if (colorField && p.ad_color) colorField.value = p.ad_color;
+  const hex = document.getElementById('ac-color-hex');
+  if (hex && p.ad_color) hex.textContent = p.ad_color.toUpperCase();
+  // Auto-ladda sparad logga (om ingen logga redan valts i denna session).
+  if (p.ad_logo && !_adgenLogo) {
+    const img = new Image();
+    img.onload = function() {
+      _adgenLogo = img;
+      _adgenLogoDataUrl = p.ad_logo;
+      const lp = document.getElementById('adgen-logo-preview');
+      if (lp) { lp.src = p.ad_logo; lp.style.display = 'block'; }
+      const lf = document.getElementById('adgen-logo-pos-field');
+      if (lf) lf.style.display = 'block';
+    };
+    img.src = p.ad_logo;
+  }
 }
 
 function goToNewsroom(){
@@ -7994,6 +8073,10 @@ function drawAd(formatId, fmt, copy) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = fmt.w, H = fmt.h;
+
+  // Rensa canvasen först, annars kan en tidigare rendering ligga kvar under den
+  // nya (t.ex. vid omritning efter färgbyte) och annonsen ser "dubbel" ut.
+  ctx.clearRect(0, 0, W, H);
 
   // Läs kundens stil + färg (samma källa som HTML-bannern).
   const brand = adgenBrandStyle();
