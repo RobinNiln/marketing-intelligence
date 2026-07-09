@@ -8331,8 +8331,8 @@ function drawAdTemplate(p) {
 function drawAdBoldField(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
 
-  // Bild övre 60%, mörkt textfält nedtill.
-  const imgH = Math.round(H * 0.60);
+  // Bild övre 54%, mörkt textfält nedtill (större fält = plats för djärv text).
+  const imgH = Math.round(H * 0.54);
   drawAdImageInto(ctx, 0, 0, W, imgH);
   const fieldY = imgH, fieldH = H - imgH;
   ctx.fillStyle = '#241f1b';
@@ -8343,10 +8343,10 @@ function drawAdBoldField(p) {
   const hasCta = !!(copy.cta && copy.cta.trim());
   const hasSub = !!(copy.subline && copy.subline.trim());
 
-  const headlineSz = Math.round(W * 0.06);
+  const headlineSz = Math.round(W * 0.082);
   const sublineSz  = Math.round(W * 0.034);
-  const ctaSz      = Math.round(W * 0.036);
-  const labelSz    = Math.round(W * 0.032);
+  const ctaSz      = Math.round(W * 0.038);
+  const labelSz    = Math.round(W * 0.036);
 
   // Etikett som bryter över kanten (en kort "kampanj-flagga").
   const label = (copy.badge || 'ERBJUDANDE').toUpperCase();
