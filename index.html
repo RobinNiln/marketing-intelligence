@@ -1015,6 +1015,8 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-edit-label:first-child{margin-top:0}
 .adgen-edit-input{width:100%;border:1.5px solid #e6e1d6;border-radius:8px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff}
 .adgen-edit-input:focus{outline:none;border-color:#C9A84C}
+.adgen-edit-done{width:100%;margin-top:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.adgen-edit-done:hover{background:#433a30}
 .adgen-save-btn:hover{border-color:#C9A84C}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
@@ -8076,6 +8078,20 @@ async function generateAdGen() {
 }
 
 // Live-redigering av en enskild annons: fäll ut/in redigeringsfältet.
+// "Klar": stänger redigeringsfältet. Ändringarna ligger redan i _adgenCopyData
+// (uppdaterade live), så vi ger bara en tydlig bekräftelse och fäller in fältet.
+function adgenSaveEdit(formatId) {
+  adgenEditField(formatId); // säkerställ att senaste värdena är sparade
+  const panel = document.getElementById('edit-panel-' + formatId);
+  if (panel) panel.style.display = 'none';
+  const btn = panel && panel.parentNode ? panel.parentNode.querySelector('.adgen-edit-btn') : null;
+  if (btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Sparat';
+    setTimeout(function(){ btn.innerHTML = orig; }, 1500);
+  }
+}
+
 function adgenToggleEdit(formatId) {
   const panel = document.getElementById('edit-panel-' + formatId);
   if (panel) panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
@@ -8135,6 +8151,7 @@ function renderAdGenResult() {
         '<input class="adgen-edit-input" id="edit-cta-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.cta || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
         '<label class="adgen-edit-label">Accentfärg</label>' +
         '<div style="display:flex;align-items:center;gap:10px"><input type="color" id="edit-color-' + formatId + '" value="' + (document.getElementById('ac-color') ? document.getElementById('ac-color').value : '#C9A84C') + '" oninput="adgenEditField(\'' + formatId + '\')" style="width:44px;height:36px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff"><span style="font-size:12px;color:#9A8570">gäller denna annons</span></div>' +
+        '<button class="adgen-edit-done" onclick="adgenSaveEdit(\'' + formatId + '\')">Klar</button>' +
       '</div>';
     if (fmt.html5) {
       html +=
@@ -8290,19 +8307,22 @@ function drawAdLogo(ctx, W, H) {
   if (!_adgenLogo) return;
   ctx.save();
   const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
-  // Något större än förr (26% bredd / 16% höjd) för tydligare avsändare.
-  const lr = Math.min((W*0.26) / _adgenLogo.width, (H*0.16) / _adgenLogo.height);
+  // Loggan ska vara SYNLIG men diskret (enligt displayramverket) – inte dominera.
+  // Vi skalar efter annonsens minsta sida, så den blir lagom oavsett format,
+  // och sätter ett tak i pixlar så den aldrig blir jättestor på stora annonser.
+  const minSide = Math.min(W, H);
+  const targetH = Math.min(minSide * 0.11, 64);   // ~11% av kortaste sidan, max 64px
+  const lr = targetH / _adgenLogo.height;
   const lw = _adgenLogo.width * lr, lh = _adgenLogo.height * lr;
-  const m = Math.round(W * 0.04);
+  const m = Math.round(minSide * 0.045);
   let lx = m, ly = m;
   if (pos.indexOf('right') > -1) lx = W - lw - m;
   if (pos.indexOf('bottom') > -1) ly = H - lh - m;
 
-  // Läsbarhetsplatta: en ljus, lätt rundad platta bakom loggan så den alltid
-  // framträder – även en mörk logga på en mörk bild. Diskret, inte påträngande.
-  const padP = Math.round(lh * 0.35);
-  ctx.fillStyle = 'rgba(255,255,255,0.82)';
-  roundRect(ctx, lx - padP, ly - padP, lw + padP*2, lh + padP*2, Math.round(lh*0.22));
+  // Diskret läsbarhetsplatta så loggan syns mot vilken bakgrund som helst.
+  const padP = Math.round(lh * 0.28);
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  roundRect(ctx, lx - padP, ly - padP, lw + padP*2, lh + padP*2, Math.round(lh*0.2));
 
   ctx.drawImage(_adgenLogo, lx, ly, lw, lh);
   ctx.restore();
