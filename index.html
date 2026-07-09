@@ -7848,6 +7848,11 @@ async function generateAdGen() {
   }).join(',\n  ');
 
   const prompt = 'Du är en senior copywriter specialiserad på digital displayannonsering med bevisat höga konverteringsgrader. Du vet att mottagaren har 1-2 sekunder och skannar – inte läser. Du skriver annonstext som går fram direkt.\n\n' +
+    'FORSKNINGSGRUND (Schibsted Attention Study, eye-tracking av 34 kampanjer):\n' +
+    '- Exponeringstiden är KORT – ofta 1-2 sekunder, på mobil ännu kortare. Budskapet måste uppfattas på ett ögonblick.\n' +
+    '- Tydlig avsändare är det ENSKILT viktigaste. Mottagaren måste omedelbart förstå vilket företag som står bakom. Väv därför gärna in företagsnamnet naturligt i rubriken eller sublinen när det stärker igenkänningen (t.ex. "Vårrea hos [Företag]" eller "[Företag] – nu med fri frakt"). Tvinga inte in det om det blir onaturligt, men prioritera att avsändaren är tydlig.\n' +
+    '- Tydlighet slår kreativitet under 2,5 sekunder. Det enkla och direkta vinner över ordvitsar och finurligheter som kräver eftertanke. Var hellre kristallklar än smart.\n' +
+    '- EN uppgift per annons. Sälj ELLER bygg varumärke ELLER driv en handling – inte allt samtidigt. Ju mindre hjärnan behöver bearbeta, desto mer går fram.\n\n' +
     'RAMVERK FÖR STARK DISPLAYANNONS:\n' +
     '- ETT budskap per annons. En huvudpoäng, ett värde, en handling. Aldrig flera budskap i samma annons.\n' +
     '- Led med nyttan för mottagaren ("vad får jag ut av det?"), inte företagets perspektiv eller en funktionslista.\n' +
@@ -7864,7 +7869,7 @@ async function generateAdGen() {
     'Önskad call to action: ' + cta + '\n' +
     (tone ? 'Ton: ' + tone + '\n' : '') +
     (reference ? '\nREFERENS / STILRIKTNING (efterlikna tonen och känslan i detta, men skriv originaltext – kopiera inte ordagrant):\n"' + reference + '"\n' : '') +
-    '\nSkriv anpassad copy för varje format nedan. Varje format har olika dimensioner och proportioner – anpassa rubrikens och sublinens längd därefter. Kom ihåg: ett budskap, minimal text, tydlig CTA. CTA kan varieras något men ska ligga nära den önskade.\n\n' +
+    '\nSkriv anpassad copy för varje format nedan. Varje format har olika dimensioner och proportioner – anpassa rubrikens och sublinens längd därefter. Kom ihåg: ett budskap, minimal text, tydlig avsändare, tydlig CTA. CTA kan varieras något men ska ligga nära den önskade.\n\n' +
     'Returnera ENBART ett giltigt JSON-objekt (inga kommentarer i själva svaret) med exakt ett fält per format-id:\n{\n  ' + formatEntries + '\n}';
 
   try {
@@ -8068,17 +8073,27 @@ function drawAdTemplate(p) {
 }
 
 // Ritar loggan i valt hörn (gemensam för alla stilar).
+// Studien (Schibsted Attention Study): tydlig avsändare är det enskilt
+// viktigaste. Därför: större logga + en subtil läsbarhetsplatta bakom, så den
+// syns mot vilken bakgrund som helst.
 function drawAdLogo(ctx, W, H) {
   if (!_adgenLogo) return;
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 6;
   const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
-  const lr = Math.min((W*0.22) / _adgenLogo.width, (H*0.14) / _adgenLogo.height);
+  // Något större än förr (26% bredd / 16% höjd) för tydligare avsändare.
+  const lr = Math.min((W*0.26) / _adgenLogo.width, (H*0.16) / _adgenLogo.height);
   const lw = _adgenLogo.width * lr, lh = _adgenLogo.height * lr;
   const m = Math.round(W * 0.04);
   let lx = m, ly = m;
   if (pos.indexOf('right') > -1) lx = W - lw - m;
   if (pos.indexOf('bottom') > -1) ly = H - lh - m;
+
+  // Läsbarhetsplatta: en ljus, lätt rundad platta bakom loggan så den alltid
+  // framträder – även en mörk logga på en mörk bild. Diskret, inte påträngande.
+  const padP = Math.round(lh * 0.35);
+  ctx.fillStyle = 'rgba(255,255,255,0.82)';
+  roundRect(ctx, lx - padP, ly - padP, lw + padP*2, lh + padP*2, Math.round(lh*0.22));
+
   ctx.drawImage(_adgenLogo, lx, ly, lw, lh);
   ctx.restore();
 }
