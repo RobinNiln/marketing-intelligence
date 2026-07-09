@@ -1004,7 +1004,7 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-fmt.sel .adgen-fmt-size{color:rgba(255,255,255,0.55)}
 .adgen-fmt-name{font-size:13.5px;font-weight:600;color:#2a2520;margin-bottom:2px}
 .adgen-fmt-size{font-size:11.5px;color:#a8a39a}
-.adgen-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;margin-top:1rem}
+.adgen-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;margin-top:1rem}
 .adgen-dl-all-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;transition:background 0.15s}
 .adgen-dl-all-btn:hover{background:#433a30}
 .adgen-save-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#2C2520;border:1.5px solid #e6e1d6;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;margin-left:8px;transition:border-color 0.15s}
@@ -1012,7 +1012,7 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
 .adgen-canvas-wrap{display:flex;align-items:center;justify-content:center;background:#FDFCFA;border-radius:12px;overflow:hidden;margin-bottom:0.75rem}
-.adgen-canvas-wrap canvas{max-width:100%;height:auto}
+.adgen-canvas-wrap canvas{display:block;max-width:100%}
 .adgen-dl-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px 14px;border-radius:100px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid #F0EEE8;background:#fff;color:#2a2520;transition:all 0.15s}
 .adgen-dl-btn:hover{border-color:#E8C878}
 .adcopy-format-block{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.75rem;margin-bottom:1rem}
@@ -2842,6 +2842,13 @@ body.brief-mode{background:#FBFAF7}
       <div class="adcopy-section-title">Logga <span style="font-weight:400;color:#b5b0a8;font-size:12px;text-transform:none;letter-spacing:0">valfritt</span></div>
       <div class="adgen-upload-zone" id="adgen-logo-zone" style="padding:1.25rem"><input type="file" id="adgen-logo-input" accept="image/png,image/svg+xml,image/webp" onchange="adgenHandleLogo(this.files[0])"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:6px"><rect x="4" y="4" width="24" height="24" rx="4"/><path d="M11 20l4-6 3 4 2-2 3 4"/></svg><div style="font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px">Ladda upp er logga</div><div style="font-size:11px;color:#9A8570">Helst PNG med transparent bakgrund</div><img id="adgen-logo-preview" class="adgen-preview-img" style="max-height:60px"></div>
       <div class="adcopy-field" id="adgen-logo-pos-field" style="display:none;margin-top:0.75rem"><label style="font-size:13px">Loggans placering</label><select class="adcopy-select" id="ac-logo-pos"><option value="top-left">Uppe till vänster</option><option value="top-right">Uppe till höger</option><option value="bottom-left">Nere till vänster</option><option value="bottom-right" selected>Nere till höger</option></select></div>
+      <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Accentfärg (knapp och streck)</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="color" id="ac-color" value="#C9A84C" onchange="adgenColorChanged()" style="width:52px;height:40px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff">
+          <span id="ac-color-hex" style="font-size:13px;color:#8a7d6d;font-family:monospace">#C9A84C</span>
+          <span style="font-size:12px;color:#9A8570">– lämna som är för att följa varumärkesprofilen</span>
+        </div>
+      </div>
       <div class="adcopy-section-title">Om kampanjen</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Företag / Varumärke <span>*</span></label><input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping"></div><div class="adcopy-field"><label>Produkt / Kampanj <span>*</span></label><input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj"></div></div>
       <div class="adcopy-field"><label>Huvudbudskap <span>*</span></label><textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera?"></textarea></div>
@@ -5550,6 +5557,7 @@ function restoreAdStudioFromSaved(cfg) {
     setVal('ac-tone', cfg.tone);
     setVal('ac-reference', cfg.reference);
     setVal('ac-logo-pos', cfg.logoPos);
+    if (cfg.color) { setVal('ac-color', cfg.color); const h = document.getElementById('ac-color-hex'); if (h) h.textContent = cfg.color.toUpperCase(); }
 
     // 2) Bild och logga tillbaka från base64
     _adgenImageDataUrl = cfg.imageDataUrl || null;
@@ -7645,10 +7653,21 @@ function adgenEscapeHtml(s) {
 // Faller tillbaka på guld/overlay om ingen profil finns.
 function adgenBrandStyle() {
   const p = _brandProfile;
+  // Verktygets egen färgväljare vinner om den finns; annars varumärkesprofilen.
+  const picker = document.getElementById('ac-color');
+  const pickerColor = picker ? picker.value : null;
   return {
-    color: (p && p.ad_color) || '#C9A84C',
+    color: pickerColor || (p && p.ad_color) || '#C9A84C',
     style: (p && p.ad_style) || 'template-light'
   };
+}
+
+// Uppdaterar hex-etiketten och ritar om annonserna live när färgen ändras.
+function adgenColorChanged() {
+  const picker = document.getElementById('ac-color');
+  const hex = document.getElementById('ac-color-hex');
+  if (picker && hex) hex.textContent = picker.value.toUpperCase();
+  if (_adgenCopyData) renderAdGenResult();
 }
 
 // Ljus eller mörk text beroende på hur ljus accentfärgen är (så texten alltid syns på färgytan).
@@ -7889,6 +7908,7 @@ async function generateAdGen() {
       reference: reference,
       formats: _adgenFormats.slice(),        // kopia av formatlistan
       logoPos: (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right',
+      color: (document.getElementById('ac-color') || {}).value || '#C9A84C',
       imageDataUrl: _adgenImageDataUrl,       // grundbilden som base64
       logoDataUrl: _adgenLogoDataUrl,         // ev. logga som base64
       copyData: _adgenCopyData                // AI:ns genererade texter
@@ -7915,14 +7935,17 @@ function renderAdGenResult() {
   _adgenFormats.forEach(function(formatId) {
     const fmt  = ADGEN_FORMATS[formatId];
     const copy = _adgenCopyData[formatId] || {};
-    const scale = Math.min(1, 480 / fmt.w);
+    // Skala så annonsen får plats i kortet (~300px brett) och behåller exakt
+    // proportion. Vi skalar på bredden; höjden följer med samma skala.
+    const maxDisp = 300;
+    const scale = Math.min(1, maxDisp / fmt.w);
     const dispW = Math.round(fmt.w * scale);
     const dispH = Math.round(fmt.h * scale);
     const card = document.createElement('div');
     card.className = 'adgen-result-card';
     let html = '<div class="adgen-result-label">' + fmt.label + '</div>' +
       '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px">' +
-        '<canvas id="canvas-' + formatId + '" width="' + fmt.w + '" height="' + fmt.h + '" style="width:' + dispW + 'px;height:' + dispH + 'px"></canvas>' +
+        '<canvas id="canvas-' + formatId + '" width="' + fmt.w + '" height="' + fmt.h + '" style="width:' + dispW + 'px;aspect-ratio:' + fmt.w + '/' + fmt.h + ';height:auto"></canvas>' +
       '</div>' +
       '<button class="adgen-dl-btn" onclick="adgenDownload(\'' + formatId + '\')">' +
         '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
