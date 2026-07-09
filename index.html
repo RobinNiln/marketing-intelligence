@@ -2852,6 +2852,10 @@ body.brief-mode{background:#FBFAF7}
             <div class="adgen-style-thumb" style="position:relative;background:#1c1a1e"><div style="position:absolute;inset:0;clip-path:polygon(0 0,100% 0,100% 46%,0 60%);background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="position:absolute;left:5px;bottom:4px;width:14px;height:3px;background:#C9A84C"></div></div>
             <div class="adgen-style-name">Diagonal</div>
           </div>
+          <div class="adgen-style-opt" data-style="template-colorblock" onclick="adgenSelectStyle('template-colorblock')">
+            <div class="adgen-style-thumb" style="position:relative;background:#C9A84C"><div style="position:absolute;top:3px;left:5px;right:5px;height:3px;background:rgba(255,255,255,0.9);border-radius:1px"></div><div style="position:absolute;top:12px;left:8px;right:8px;bottom:8px;background:linear-gradient(135deg,#8a7355,#5a4a38);border-radius:2px"></div></div>
+            <div class="adgen-style-name">Färgblock</div>
+          </div>
           <div class="adgen-style-opt" data-style="template-light" onclick="adgenSelectStyle('template-light')">
             <div class="adgen-style-thumb"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
             <div class="adgen-style-name">Ljus</div>
@@ -8250,6 +8254,7 @@ function drawAd(formatId, fmt, copy) {
     // Mappning stil → ritfunktion. Lätt att lägga till fler mallar.
     const templates = {
       'template-diagonal': drawAdDiagonal,
+      'template-colorblock': drawAdColorBlock,
       'template-bold': drawAdBoldField,
       'template-light': drawAdTemplate,
       'template-dark': drawAdTemplate
@@ -8267,6 +8272,70 @@ function drawAd(formatId, fmt, copy) {
 // MALL 1: Diagonal – bild och färgfält möts i en diagonal (à la Podme).
 // Tekniken: en klippbana (clip) begränsar var bilden ritas; resten fylls med
 // färg. Text ligger på färgsidan. Diagonalen ger energi och rörelse.
+// MALL 2: Färgblock – hela ytan är färg, rubrik stor upptill, bild inbäddad
+// nedtill (à la Telia/Tre). Här BÄR färgen annonsen; bilden är ett komplement,
+// inte bakgrund. Passar starka varumärkesfärger.
+function drawAdColorBlock(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+
+  // Hela bakgrunden i accentfärgen (en aning mörkare nertill för djup).
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.22)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  const onColor = p.onAccent;               // kontrastfärg mot färgblocket
+  const pad = Math.round(W * 0.07);
+  const textMaxW = W - pad * 2;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+
+  // Rubrik stor upptill.
+  const headlineSz = Math.round(W * 0.085);
+  const sublineSz  = Math.round(W * 0.036);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = onColor;
+  let y = Math.round(H * 0.09);
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.05);
+  y += hlLines * headlineSz * 1.05 + Math.round(H * 0.015);
+
+  if (hasSub) {
+    ctx.font = '500 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.globalAlpha = 0.9;
+    wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.3);
+    ctx.globalAlpha = 1;
+  }
+
+  // Bild inbäddad i nedre delen, som ett "kort" med rundade hörn.
+  const imgTop = Math.round(H * 0.40);
+  const imgBottom = hasCta ? Math.round(H * 0.82) : Math.round(H * 0.92);
+  const imgX = pad, imgW = W - pad * 2, imgH = imgBottom - imgTop;
+  ctx.save();
+  roundRect(ctx, imgX, imgTop, imgW, imgH, Math.round(W * 0.03));
+  ctx.clip();
+  drawAdImageInto(ctx, imgX, imgTop, imgW, imgH);
+  ctx.restore();
+
+  // CTA-knapp nedtill (ljus pill med accentfärgad text).
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.036);
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta).width + ctaSz * 2;
+    const ch = ctaSz * 2.3;
+    const cy = H - pad - ch;
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, pad, cy, cw, ch, ch * 0.5);
+    ctx.fillStyle = p.accent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta, pad + cw / 2, cy + ch / 2);
+    ctx.textAlign = 'left';
+  }
+}
+
 function drawAdDiagonal(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
   const isWide = W / H > 1.4;
