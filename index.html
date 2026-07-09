@@ -1903,17 +1903,25 @@ body.brief-mode{background:#FBFAF7}
         <p style="font-size:12px;color:#8a7d6d;margin:0 0 14px;line-height:1.5">Styr hur era annonser i AdStudio ser ut, så alla får samma känsla.</p>
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Layoutstil</label>
         <div id="brand-style-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.25rem">
-          <div class="brand-style-opt" data-style="overlay" onclick="brandSelectStyle('overlay')" style="border:2px solid #C9A84C;border-radius:10px;padding:10px;cursor:pointer;text-align:center;background:rgba(201,168,76,0.06)">
+          <div class="brand-style-opt" data-style="template-light" onclick="brandSelectStyle('template-light')" style="border:2px solid #C9A84C;border-radius:10px;padding:10px;cursor:pointer;text-align:center;background:rgba(201,168,76,0.06)">
+            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;border-top:1px solid #eee;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall ljus</div>
+          </div>
+          <div class="brand-style-opt" data-style="template-dark" onclick="brandSelectStyle('template-dark')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
+            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#241f1b;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#555;border-radius:1px"></div></div></div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall mörk</div>
+          </div>
+          <div class="brand-style-opt" data-style="overlay" onclick="brandSelectStyle('overlay')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
             <div style="height:40px;border-radius:5px;background:linear-gradient(135deg,#5a4a38,#2C2520);position:relative;margin-bottom:7px;overflow:hidden"><div style="position:absolute;bottom:5px;left:5px;right:5px;height:5px;background:rgba(255,255,255,0.85);border-radius:2px"></div></div>
-            <div style="font-size:12px;font-weight:600;color:#2C2520">Helbild</div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Helbild</div>
           </div>
           <div class="brand-style-opt" data-style="band" onclick="brandSelectStyle('band')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
             <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#C9A84C"></div></div>
-            <div style="font-size:12px;font-weight:600;color:#2C2520">Band</div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Band</div>
           </div>
           <div class="brand-style-opt" data-style="split" onclick="brandSelectStyle('split')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
             <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px;display:flex"><div style="width:50%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="width:50%;background:#C9A84C"></div></div>
-            <div style="font-size:12px;font-weight:600;color:#2C2520">Delad</div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Delad</div>
           </div>
         </div>
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Accentfärg</label>
@@ -7639,7 +7647,7 @@ function adgenBrandStyle() {
   const p = _brandProfile;
   return {
     color: (p && p.ad_color) || '#C9A84C',
-    style: (p && p.ad_style) || 'overlay'
+    style: (p && p.ad_style) || 'template-light'
   };
 }
 
@@ -7961,7 +7969,9 @@ function drawAd(formatId, fmt, copy) {
 
   // Läs kundens stil + färg (samma källa som HTML-bannern).
   const brand = adgenBrandStyle();
-  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:brand.color, onAccent:adgenTextOn(brand.color) };
+  // Variant för den nya mallen: 'light' (vitt textfält) eller 'dark' (mörkt fält).
+  const variant = (brand.style === 'template-dark') ? 'dark' : 'light';
+  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:brand.color, onAccent:adgenTextOn(brand.color), variant:variant };
 
   // FORM-medveten layout: proportionerna avgör upplägget, inte bara stilen.
   // Detta är nyckeln till att en tunn banner och en kvadrat ser olika bra ut.
@@ -7973,11 +7983,88 @@ function drawAd(formatId, fmt, copy) {
     // Smal och hög (skyscraper, stående): text staplad, gott om höjd.
     drawAdVertical(parts);
   } else {
-    // Kvadratisk / medelrektangel: staplad text med bild som bakgrund.
-    drawAdVertical(parts);
+    // Kvadrat / medelrektangel: den nya rena mallen (separata ytor för bild och text).
+    drawAdTemplate(parts);
   }
 
   drawAdLogo(ctx, W, H);
+}
+
+// NY MALL: rena separata ytor – bild upptill, textfält nedtill. Detta är
+// grunden i "väg C": kvaliteten kommer från kompositionen, inte från tur i
+// fotot. Två varianter: 'light' (vitt fält) och 'dark' (mörkt fält).
+function drawAdTemplate(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const dark = p.variant === 'dark';
+
+  // Ytfördelning: bilden tar övre ~58%, textfältet resten.
+  const imgH = Math.round(H * 0.58);
+  drawAdImageInto(ctx, 0, 0, W, imgH);
+
+  // Textfältets bakgrund – rent, vi styr kontrasten helt.
+  const fieldY = imgH;
+  const fieldH = H - imgH;
+  ctx.fillStyle = dark ? '#241f1b' : '#ffffff';
+  ctx.fillRect(0, fieldY, W, fieldH);
+
+  const pad = Math.round(W * 0.06);
+  const textMaxW = W - pad * 2;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+
+  const headlineSz = Math.round(W * 0.062);
+  const sublineSz  = Math.round(W * 0.035);
+  const ctaSz      = Math.round(W * 0.034);
+
+  // Mät textblocket så vi kan centrera det vertikalt i fältet.
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  const hlBlock = hlLines * headlineSz * 1.15;
+  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  const slLines = hasSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
+  const slBlock = slLines * sublineSz * 1.4;
+
+  const accentH = Math.max(3, Math.round(H * 0.006));
+  const gapAccent = Math.round(H * 0.02);
+  const gapAfterHL = hasSub ? Math.round(H * 0.015) : 0;
+  const ctaH = hasCta ? ctaSz * 2.0 : 0;
+  const gapBeforeCta = hasCta ? Math.round(H * 0.028) : 0;
+
+  const totalBlock = accentH + gapAccent + hlBlock + gapAfterHL + slBlock + gapBeforeCta + ctaH;
+  let y = fieldY + (fieldH - totalBlock) / 2;
+
+  // Accent-streck.
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(pad, y, Math.round(W * 0.10), accentH);
+  y += accentH + gapAccent;
+
+  // Rubrik.
+  ctx.textBaseline = 'top';
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = dark ? '#ffffff' : '#1e1a17';
+  wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.15);
+  y += hlBlock + gapAfterHL;
+
+  // Subline.
+  if (hasSub) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = dark ? 'rgba(255,255,255,0.72)' : '#6b655c';
+    wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.4);
+    y += slBlock;
+  }
+
+  // CTA-knapp.
+  if (hasCta) {
+    y += gapBeforeCta;
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.7;
+    ctx.fillStyle = p.accent;
+    roundRect(ctx, pad, y, ctaW, ctaH, ctaH * 0.22);
+    ctx.fillStyle = p.onAccent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta, pad + ctaW / 2, y + ctaH / 2);
+    ctx.textAlign = 'left';
+  }
 }
 
 // Ritar loggan i valt hörn (gemensam för alla stilar).
