@@ -1008,6 +1008,13 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-dl-all-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;transition:background 0.15s}
 .adgen-dl-all-btn:hover{background:#433a30}
 .adgen-save-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#2C2520;border:1.5px solid #e6e1d6;border-radius:100px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:0.5rem;margin-left:8px;transition:border-color 0.15s}
+.adgen-edit-btn{display:inline-flex;align-items:center;gap:7px;width:100%;justify-content:center;background:#fff;color:#6b5d47;border:1.5px solid #e6e1d6;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;transition:border-color 0.15s}
+.adgen-edit-btn:hover{border-color:#C9A84C}
+.adgen-edit-panel{margin-top:12px;padding:14px;background:#faf8f4;border:1px solid #ece8df;border-radius:10px}
+.adgen-edit-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#9A8570;margin:10px 0 5px}
+.adgen-edit-label:first-child{margin-top:0}
+.adgen-edit-input{width:100%;border:1.5px solid #e6e1d6;border-radius:8px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff}
+.adgen-edit-input:focus{outline:none;border-color:#C9A84C}
 .adgen-save-btn:hover{border-color:#C9A84C}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
@@ -1938,8 +1945,9 @@ body.brief-mode{background:#FBFAF7}
           <div>
             <input type="file" id="brand-logo-input" accept="image/*" onchange="brandLogoUpload(event)" style="display:none">
             <button type="button" onclick="document.getElementById('brand-logo-input').click()" style="background:#fff;color:#2C2520;border:1.5px solid #e0dcd3;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Ladda upp logga</button>
+            <button type="button" id="brand-logo-cutout-btn" onclick="brandLogoCutout()" style="display:none;background:rgba(201,168,76,0.12);color:#9c7d2e;border:1.5px solid rgba(201,168,76,0.4);border-radius:20px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:6px">✂ Ta bort vit bakgrund</button>
             <button type="button" id="brand-logo-remove" onclick="brandLogoRemove()" style="display:none;background:none;color:#A32D2D;border:none;padding:9px 10px;font-size:12.5px;cursor:pointer;font-family:inherit">Ta bort</button>
-            <div style="font-size:11.5px;color:#9A8570;margin-top:4px">PNG med transparent bakgrund fungerar bäst.</div>
+            <div style="font-size:11.5px;color:#9A8570;margin-top:6px;line-height:1.5">Tips: en <strong>PNG med transparent bakgrund</strong> ger snyggast resultat. Laddar du upp en logga med vit bakgrund kan vi ta bort den åt dig.</div>
           </div>
         </div>
       </div>
@@ -5811,7 +5819,6 @@ function brandLogoUpload(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
-    // Komprimera loggan så base64-strängen inte blir onödigt stor.
     const img = new Image();
     img.onload = function() {
       const maxDim = 400; // loggor behöver inte vara större än så
@@ -5822,14 +5829,72 @@ function brandLogoUpload(event) {
       }
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      // PNG bevarar transparens (viktigt för loggor).
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+
       _brandLogoDataUrl = canvas.toDataURL('image/png');
       brandShowLogo();
+
+      // Kolla om loggan har en ljus enfärgad bakgrund som kan tas bort.
+      // Vi erbjuder det bara när det är rimligt – annars lämnas loggan i fred.
+      window._brandLogoHasWhiteBg = logoHasLightBackground(ctx, w, h);
+      const btn = document.getElementById('brand-logo-cutout-btn');
+      if (btn) btn.style.display = window._brandLogoHasWhiteBg ? 'inline-block' : 'none';
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+// Tittar på hörnpixlarna. Är de enhetligt ljusa (vit/nästan vit) tolkar vi det
+// som en vit bakgrund som troligen ska bort. Är hörnen redan transparenta, eller
+// mörka/färgade, låter vi bli (då är bakgrunden nog avsiktlig).
+function logoHasLightBackground(ctx, w, h) {
+  try {
+    const corners = [[2,2],[w-3,2],[2,h-3],[w-3,h-3]];
+    let lightCount = 0, transparentCount = 0;
+    corners.forEach(function(c){
+      const d = ctx.getImageData(c[0], c[1], 1, 1).data;
+      if (d[3] < 20) { transparentCount++; return; }        // redan transparent
+      if (d[0] > 235 && d[1] > 235 && d[2] > 235) lightCount++; // ljus/vit
+    });
+    // Redan transparent i hörnen → behöver ingen utklippning.
+    if (transparentCount >= 2) return false;
+    // Minst 3 av 4 hörn ljusa → sannolikt vit bakgrund som kan tas bort.
+    return lightCount >= 3;
+  } catch(e) { return false; }
+}
+
+// Gör ljus bakgrund transparent. Enkel "chroma key" mot vitt: pixlar som är
+// nära vita blir genomskinliga. Fungerar bäst på loggor med ren vit bakgrund.
+function brandLogoCutout() {
+  if (!_brandLogoDataUrl) return;
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width; canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = imgData.data;
+    // Gå igenom varje pixel (4 värden: R,G,B,Alpha). Nära vitt → transparent.
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i+1], b = d[i+2];
+      if (r > 230 && g > 230 && b > 230) {
+        d[i+3] = 0; // helt genomskinlig
+      } else if (r > 200 && g > 200 && b > 200) {
+        // Nästan vit (kantpixlar) → delvis genomskinlig för mjukare kant.
+        d[i+3] = Math.round(d[i+3] * 0.35);
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    _brandLogoDataUrl = canvas.toDataURL('image/png');
+    brandShowLogo();
+    // Dölj knappen – utklippningen är gjord.
+    const btn = document.getElementById('brand-logo-cutout-btn');
+    if (btn) btn.style.display = 'none';
+  };
+  img.src = _brandLogoDataUrl;
 }
 
 function brandShowLogo() {
@@ -5847,6 +5912,8 @@ function brandShowLogo() {
 function brandLogoRemove() {
   _brandLogoDataUrl = null;
   document.getElementById('brand-logo-input').value = '';
+  const cut = document.getElementById('brand-logo-cutout-btn');
+  if (cut) cut.style.display = 'none';
   brandShowLogo();
 }
 
@@ -8008,6 +8075,31 @@ async function generateAdGen() {
   }
 }
 
+// Live-redigering av en enskild annons: fäll ut/in redigeringsfältet.
+function adgenToggleEdit(formatId) {
+  const panel = document.getElementById('edit-panel-' + formatId);
+  if (panel) panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
+}
+
+// Läser textrutorna för EN annons, uppdaterar datan, ritar om just den annonsen.
+function adgenEditField(formatId) {
+  if (!_adgenCopyData[formatId]) _adgenCopyData[formatId] = {};
+  const hl = document.getElementById('edit-headline-' + formatId);
+  const sl = document.getElementById('edit-subline-' + formatId);
+  const cta = document.getElementById('edit-cta-' + formatId);
+  const col = document.getElementById('edit-color-' + formatId);
+  if (hl) _adgenCopyData[formatId].headline = hl.value;
+  if (sl) _adgenCopyData[formatId].subline = sl.value;
+  if (cta) _adgenCopyData[formatId].cta = cta.value;
+  // Per-annons färg sparas separat så den överlever omritning.
+  if (col) {
+    if (!window._adgenColorOverrides) window._adgenColorOverrides = {};
+    window._adgenColorOverrides[formatId] = col.value;
+  }
+  // Rita om BARA denna annons (inte hela listan).
+  drawAd(formatId, ADGEN_FORMATS[formatId], _adgenCopyData[formatId]);
+}
+
 function renderAdGenResult() {
   const grid = document.getElementById('adgen-result-grid');
   grid.innerHTML = '';
@@ -8029,7 +8121,21 @@ function renderAdGenResult() {
       '<button class="adgen-dl-btn" onclick="adgenDownload(\'' + formatId + '\')">' +
         '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
         'Ladda ner PNG (' + fmt.w + 'x' + fmt.h + ')' +
-      '</button>';
+      '</button>' +
+      '<button class="adgen-edit-btn" onclick="adgenToggleEdit(\'' + formatId + '\')">' +
+        '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l3 3-6.5 6.5H2v-3z"/></svg>' +
+        'Redigera' +
+      '</button>' +
+      '<div class="adgen-edit-panel" id="edit-panel-' + formatId + '" style="display:none">' +
+        '<label class="adgen-edit-label">Rubrik</label>' +
+        '<input class="adgen-edit-input" id="edit-headline-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.headline || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
+        '<label class="adgen-edit-label">Underrubrik</label>' +
+        '<input class="adgen-edit-input" id="edit-subline-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.subline || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
+        '<label class="adgen-edit-label">Knapptext (CTA)</label>' +
+        '<input class="adgen-edit-input" id="edit-cta-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.cta || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
+        '<label class="adgen-edit-label">Accentfärg</label>' +
+        '<div style="display:flex;align-items:center;gap:10px"><input type="color" id="edit-color-' + formatId + '" value="' + (document.getElementById('ac-color') ? document.getElementById('ac-color').value : '#C9A84C') + '" oninput="adgenEditField(\'' + formatId + '\')" style="width:44px;height:36px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff"><span style="font-size:12px;color:#9A8570">gäller denna annons</span></div>' +
+      '</div>';
     if (fmt.html5) {
       html +=
       '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #F0EEE8">' +
@@ -8080,9 +8186,12 @@ function drawAd(formatId, fmt, copy) {
 
   // Läs kundens stil + färg (samma källa som HTML-bannern).
   const brand = adgenBrandStyle();
+  // Per-annons färg-override från redigering vinner om den finns.
+  const override = window._adgenColorOverrides && window._adgenColorOverrides[formatId];
+  const accent = override || brand.color;
   // Variant för den nya mallen: 'light' (vitt textfält) eller 'dark' (mörkt fält).
   const variant = (brand.style === 'template-dark') ? 'dark' : 'light';
-  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:brand.color, onAccent:adgenTextOn(brand.color), variant:variant };
+  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:accent, onAccent:adgenTextOn(accent), variant:variant };
 
   // FORM-medveten layout: proportionerna avgör upplägget, inte bara stilen.
   // Detta är nyckeln till att en tunn banner och en kvadrat ser olika bra ut.
