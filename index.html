@@ -7961,14 +7961,21 @@ function drawAd(formatId, fmt, copy) {
 
   // Läs kundens stil + färg (samma källa som HTML-bannern).
   const brand = adgenBrandStyle();
-  let style = brand.style;
-  // Band/split behöver yta – tvinga overlay i låga/smala format.
-  if (H < 130 || W < 250) style = 'overlay';
-
   const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:brand.color, onAccent:adgenTextOn(brand.color) };
-  if (style === 'band')       drawAdBand(parts);
-  else if (style === 'split') drawAdSplit(parts);
-  else                        drawAdOverlay(parts);
+
+  // FORM-medveten layout: proportionerna avgör upplägget, inte bara stilen.
+  // Detta är nyckeln till att en tunn banner och en kvadrat ser olika bra ut.
+  const ratio = W / H;
+  if (ratio >= 2.2) {
+    // Bred och låg (panorama, leaderboard, mobilbanner): text + knapp bredvid varandra.
+    drawAdHorizontal(parts);
+  } else if (ratio <= 0.6) {
+    // Smal och hög (skyscraper, stående): text staplad, gott om höjd.
+    drawAdVertical(parts);
+  } else {
+    // Kvadratisk / medelrektangel: staplad text med bild som bakgrund.
+    drawAdVertical(parts);
+  }
 
   drawAdLogo(ctx, W, H);
 }
@@ -7998,6 +8005,152 @@ function drawAdImageInto(ctx, x, y, w, h) {
   if (ia > ca) { sw = _adgenImage.height * ca; sx = (_adgenImage.width - sw) / 2; }
   else         { sh = _adgenImage.width / ca;  sy = (_adgenImage.height - sh) / 2; }
   ctx.drawImage(_adgenImage, sx, sy, sw, sh, x, y, w, h);
+}
+
+// LAYOUT: Horisontell – för breda, låga banners (panorama, leaderboard, mobil).
+// Text till vänster, CTA-knapp till höger. De delar bredden och krockar aldrig.
+function drawAdHorizontal(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+
+  // Mörk toning från vänster så texten alltid är läsbar mot bilden.
+  const grad = ctx.createLinearGradient(0, 0, W, 0);
+  grad.addColorStop(0, 'rgba(0,0,0,0.78)');
+  grad.addColorStop(0.65, 'rgba(0,0,0,0.45)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.15)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  const pad = Math.round(H * 0.22);          // luft, skalad efter höjden
+  const hasCta = !!(copy.cta && copy.cta.trim());
+
+  // 1) Mät CTA-knappen FÖRST, så vi vet hur mycket bredd texten får.
+  let ctaW = 0, ctaH = 0, ctaSz = 0, ctaX = 0, ctaY = 0;
+  if (hasCta) {
+    ctaSz = Math.round(H * 0.26);
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.4;
+    ctaH = Math.round(H * 0.5);
+    ctaX = W - ctaW - pad;
+    ctaY = (H - ctaH) / 2;
+  }
+
+  // 2) Textytan: från vänster padding till strax före knappen.
+  const textX = pad;
+  const textMaxW = (hasCta ? ctaX - pad * 0.8 : W - pad) - textX;
+
+  // 3) Rubrik + subline, vertikalt centrerade i banderollen.
+  const headlineSz = Math.round(H * 0.30);
+  const sublineSz  = Math.round(H * 0.19);
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  const showSub = !!(copy.subline && copy.subline.trim()) && H >= 90 && hlLines === 1;
+
+  const hlBlock = hlLines * headlineSz * 1.12;
+  const subBlock = showSub ? sublineSz * 1.3 + Math.round(H*0.04) : 0;
+  let ty = (H - (hlBlock + subBlock)) / 2;
+
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  wrapText(ctx, copy.headline || '', textX, ty, textMaxW, headlineSz * 1.12);
+
+  if (showSub) {
+    ty += hlBlock + Math.round(H*0.04);
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.shadowBlur = 3;
+    wrapText(ctx, copy.subline, textX, ty, textMaxW, sublineSz * 1.3);
+  }
+
+  // 4) Rita CTA-knappen (vi mätte den redan i steg 1).
+  if (hasCta) {
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = p.accent;
+    roundRect(ctx, ctaX, ctaY, ctaW, ctaH, ctaH * 0.24);
+    ctx.fillStyle = p.onAccent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillText(copy.cta, ctaX + ctaW / 2, ctaY + ctaH / 2);
+    ctx.textAlign = 'left'; // återställ
+  }
+}
+
+// LAYOUT: Vertikal – för kvadrat, medelrektangel och stående format.
+// Text staplad nedtill över bilden, med ordentlig luft och ingen överlappning.
+function drawAdVertical(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+
+  // Toning underifrån så texten vilar mot en mörkare bas.
+  const grad = ctx.createLinearGradient(0, H * 0.35, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.86)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  const pad = Math.round(W * 0.07);
+  const textMaxW = W - pad * 2;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+
+  // Typstorlekar skalade efter bredden.
+  const headlineSz = Math.round(W * 0.078);
+  const sublineSz  = Math.round(W * 0.044);
+  const ctaSz      = Math.round(W * 0.04);
+
+  // 1) Mät alla block FÖRST, så vi kan placera dem utan överlapp.
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  const hlBlock = hlLines * headlineSz * 1.15;
+
+  const showSub = !!(copy.subline && copy.subline.trim());
+  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  const slLines = showSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
+  const slBlock = slLines * sublineSz * 1.35;
+
+  const gapAfterHL = showSub ? Math.round(H * 0.02) : 0;
+  const ctaH = hasCta ? ctaSz * 1.9 : 0;
+  const gapBeforeCta = hasCta ? Math.round(H * 0.035) : 0;
+
+  // Hela textblockets höjd, så vi kan förankra det snyggt nedtill.
+  const totalBlock = hlBlock + gapAfterHL + slBlock + gapBeforeCta + ctaH;
+  let y = H - pad - totalBlock;
+  // Om bilden är stående med mycket höjd, lägg blocket en bit upp från kanten.
+  if (H > W) y = Math.max(y, H * 0.5);
+
+  // 2) Accent-streck ovanför rubriken.
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(pad, y - Math.round(H * 0.03), Math.round(W * 0.12), Math.max(3, Math.round(H * 0.006)));
+
+  // 3) Rubrik.
+  ctx.textBaseline = 'top';
+  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8;
+  wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.15);
+  y += hlBlock + gapAfterHL;
+
+  // 4) Subline.
+  if (showSub) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    ctx.shadowBlur = 4;
+    wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.35);
+    y += slBlock;
+  }
+
+  // 5) CTA-knapp.
+  if (hasCta) {
+    y += gapBeforeCta;
+    ctx.shadowBlur = 0;
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
+    ctx.fillStyle = p.accent;
+    roundRect(ctx, pad, y, ctaW, ctaH, ctaH * 0.22);
+    ctx.fillStyle = p.onAccent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta, pad + ctaW / 2, y + ctaH / 2);
+    ctx.textAlign = 'left';
+  }
 }
 
 // STIL 1: Overlay – helbild med toning, text över.
