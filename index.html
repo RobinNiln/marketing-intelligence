@@ -2848,6 +2848,10 @@ body.brief-mode{background:#FBFAF7}
       <div class="adgen-upload-zone" id="adgen-logo-zone" style="padding:1.25rem"><input type="file" id="adgen-logo-input" accept="image/png,image/svg+xml,image/webp" onchange="adgenHandleLogo(this.files[0])"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:6px"><rect x="4" y="4" width="24" height="24" rx="4"/><path d="M11 20l4-6 3 4 2-2 3 4"/></svg><div style="font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px">Ladda upp er logga</div><div style="font-size:11px;color:#9A8570">Helst PNG med transparent bakgrund</div><img id="adgen-logo-preview" class="adgen-preview-img" style="max-height:60px"></div>
       <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Mall (annonsens stil)</label>
         <div id="adgen-style-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:6px">
+          <div class="adgen-style-opt" data-style="template-diagonal" onclick="adgenSelectStyle('template-diagonal')">
+            <div class="adgen-style-thumb" style="position:relative;background:#1c1a1e"><div style="position:absolute;inset:0;clip-path:polygon(0 0,100% 0,100% 46%,0 60%);background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="position:absolute;left:5px;bottom:4px;width:14px;height:3px;background:#C9A84C"></div></div>
+            <div class="adgen-style-name">Diagonal</div>
+          </div>
           <div class="adgen-style-opt" data-style="template-light" onclick="adgenSelectStyle('template-light')">
             <div class="adgen-style-thumb"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
             <div class="adgen-style-name">Ljus</div>
@@ -8243,11 +8247,15 @@ function drawAd(formatId, fmt, copy) {
     drawAdVertical(parts);
   } else {
     // Kvadrat / medelrektangel: välj mall efter kundens stilval.
-    if (brand.style === 'template-bold') {
-      drawAdBoldField(parts);           // Stil D: färgfält + etikett + pil-CTA
-    } else {
-      drawAdTemplate(parts);            // Rena separata ytor (ljus/mörk)
-    }
+    // Mappning stil → ritfunktion. Lätt att lägga till fler mallar.
+    const templates = {
+      'template-diagonal': drawAdDiagonal,
+      'template-bold': drawAdBoldField,
+      'template-light': drawAdTemplate,
+      'template-dark': drawAdTemplate
+    };
+    const fn = templates[brand.style] || drawAdTemplate;
+    fn(parts);
   }
 
   drawAdLogo(ctx, W, H);
@@ -8256,6 +8264,57 @@ function drawAd(formatId, fmt, copy) {
 // NY MALL: rena separata ytor – bild upptill, textfält nedtill. Detta är
 // grunden i "väg C": kvaliteten kommer från kompositionen, inte från tur i
 // fotot. Två varianter: 'light' (vitt fält) och 'dark' (mörkt fält).
+// MALL 1: Diagonal – bild och färgfält möts i en diagonal (à la Podme).
+// Tekniken: en klippbana (clip) begränsar var bilden ritas; resten fylls med
+// färg. Text ligger på färgsidan. Diagonalen ger energi och rörelse.
+function drawAdDiagonal(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const isWide = W / H > 1.4;
+
+  ctx.fillStyle = '#1c1a1e';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.beginPath();
+  if (isWide) {
+    ctx.moveTo(0, 0); ctx.lineTo(W * 0.52, 0); ctx.lineTo(W * 0.40, H); ctx.lineTo(0, H);
+  } else {
+    ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H * 0.46); ctx.lineTo(0, H * 0.60);
+  }
+  ctx.closePath();
+  ctx.clip();
+  drawAdImageInto(ctx, 0, 0, W, H);
+  ctx.restore();
+
+  const pad = Math.round(Math.min(W, H) * 0.07);
+  let tx, tw, ty;
+  if (isWide) { tx = Math.round(W * 0.50); tw = W - tx - pad; ty = H * 0.42; }
+  else { tx = pad; tw = W - pad * 2; ty = H * 0.66; }
+
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const headlineSz = isWide ? Math.round(H * 0.11) : Math.round(W * 0.078);
+  const ctaSz = isWide ? Math.round(H * 0.05) : Math.round(W * 0.036);
+
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = '#ffffff';
+  const hlLines = estimateLines(ctx, copy.headline || '', tw);
+  wrapText(ctx, copy.headline || '', tx, ty, tw, headlineSz * 1.1);
+  let y = ty + hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
+
+  if (hasCta) {
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta).width + ctaSz * 1.8;
+    const ch = ctaSz * 2.1;
+    ctx.fillStyle = p.accent;
+    roundRect(ctx, tx, y, cw, ch, ch * 0.5);
+    ctx.fillStyle = p.onAccent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta, tx + cw / 2, y + ch / 2);
+    ctx.textAlign = 'left';
+  }
+}
+
 function drawAdTemplate(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
   const dark = p.variant === 'dark';
