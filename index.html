@@ -1017,6 +1017,11 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-edit-input:focus{outline:none;border-color:#C9A84C}
 .adgen-edit-done{width:100%;margin-top:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
 .adgen-edit-done:hover{background:#433a30}
+.adgen-style-opt{border:2px solid #e0dcd3;border-radius:9px;padding:6px;cursor:pointer;text-align:center;transition:border-color 0.15s}
+.adgen-style-opt:hover{border-color:#C9A84C}
+.adgen-style-opt.sel{border-color:#C9A84C;background:rgba(201,168,76,0.07)}
+.adgen-style-thumb{height:34px;border-radius:4px;overflow:hidden;margin-bottom:5px}
+.adgen-style-name{font-size:11px;font-weight:600;color:#2C2520}
 .adgen-save-btn:hover{border-color:#C9A84C}
 .adgen-result-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:1.25rem}
 .adgen-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C4A576;margin-bottom:0.75rem}
@@ -1908,35 +1913,8 @@ body.brief-mode{background:#FBFAF7}
         <button type="button" onclick="brandAddPerson()" style="background:none;border:1px dashed #c9c2b5;color:#8a7d6d;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;font-family:inherit;width:100%;margin-top:6px">+ Lägg till person</button>
       </div>
       <div style="border-top:1px solid #f0eee8;padding-top:1.5rem;margin-bottom:1.5rem">
-        <div style="font-size:13px;font-weight:700;color:#2C2520;margin-bottom:4px">Annonsstil</div>
-        <p style="font-size:12px;color:#8a7d6d;margin:0 0 14px;line-height:1.5">Styr hur era annonser i AdStudio ser ut, så alla får samma känsla.</p>
-        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Layoutstil</label>
-        <div id="brand-style-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.25rem">
-          <div class="brand-style-opt" data-style="template-light" onclick="brandSelectStyle('template-light')" style="border:2px solid #C9A84C;border-radius:10px;padding:10px;cursor:pointer;text-align:center;background:rgba(201,168,76,0.06)">
-            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;border-top:1px solid #eee;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall ljus</div>
-          </div>
-          <div class="brand-style-opt" data-style="template-dark" onclick="brandSelectStyle('template-dark')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
-            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#241f1b;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#555;border-radius:1px"></div></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall mörk</div>
-          </div>
-          <div class="brand-style-opt" data-style="template-bold" onclick="brandSelectStyle('template-bold')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
-            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#241f1b;position:relative"><div style="position:absolute;top:-4px;left:5px;width:16px;height:5px;background:#C9A84C"></div><div style="position:absolute;top:8px;left:5px;right:5px;height:4px;background:#fff;border-radius:1px"></div></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall djärv</div>
-          </div>
-          <div class="brand-style-opt" data-style="overlay" onclick="brandSelectStyle('overlay')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
-            <div style="height:40px;border-radius:5px;background:linear-gradient(135deg,#5a4a38,#2C2520);position:relative;margin-bottom:7px;overflow:hidden"><div style="position:absolute;bottom:5px;left:5px;right:5px;height:5px;background:rgba(255,255,255,0.85);border-radius:2px"></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Helbild</div>
-          </div>
-          <div class="brand-style-opt" data-style="band" onclick="brandSelectStyle('band')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
-            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#C9A84C"></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Band</div>
-          </div>
-          <div class="brand-style-opt" data-style="split" onclick="brandSelectStyle('split')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
-            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px;display:flex"><div style="width:50%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="width:50%;background:#C9A84C"></div></div>
-            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Delad</div>
-          </div>
-        </div>
+        <div style="font-size:13px;font-weight:700;color:#2C2520;margin-bottom:4px">Annonsfärg</div>
+        <p style="font-size:12px;color:#8a7d6d;margin:0 0 14px;line-height:1.5">Standardfärg för era annonser i AdStudio. Mallen väljer du direkt i AdStudio när du skapar annonsen.</p>
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:8px">Accentfärg</label>
         <div style="display:flex;align-items:center;gap:12px">
           <input type="color" id="brand-color" value="#C9A84C" onchange="brandUpdateColorPreview()" style="width:52px;height:40px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff">
@@ -2868,6 +2846,22 @@ body.brief-mode{background:#FBFAF7}
       <div class="adgen-upload-zone" id="adgen-upload-zone"><input type="file" id="adgen-file-input" accept="image/*" onchange="adgenHandleFile(this.files[0])"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:8px"><rect x="2" y="6" width="28" height="20" rx="3"/><circle cx="11" cy="14" r="3"/><path d="M2 24l7-6 5 5 4-4 7 7"/></svg><div style="font-size:14px;font-weight:600;color:#2C2520;margin-bottom:4px">Klicka eller dra hit en bild</div><div style="font-size:12px;color:#9A8570">JPG, PNG eller WebP</div><img id="adgen-preview" class="adgen-preview-img"></div>
       <div class="adcopy-section-title">Logga <span style="font-weight:400;color:#b5b0a8;font-size:12px;text-transform:none;letter-spacing:0">valfritt</span></div>
       <div class="adgen-upload-zone" id="adgen-logo-zone" style="padding:1.25rem"><input type="file" id="adgen-logo-input" accept="image/png,image/svg+xml,image/webp" onchange="adgenHandleLogo(this.files[0])"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:6px"><rect x="4" y="4" width="24" height="24" rx="4"/><path d="M11 20l4-6 3 4 2-2 3 4"/></svg><div style="font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px">Ladda upp er logga</div><div style="font-size:11px;color:#9A8570">Helst PNG med transparent bakgrund</div><img id="adgen-logo-preview" class="adgen-preview-img" style="max-height:60px"></div>
+      <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Mall (annonsens stil)</label>
+        <div id="adgen-style-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:6px">
+          <div class="adgen-style-opt" data-style="template-light" onclick="adgenSelectStyle('template-light')">
+            <div class="adgen-style-thumb"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
+            <div class="adgen-style-name">Ljus</div>
+          </div>
+          <div class="adgen-style-opt" data-style="template-dark" onclick="adgenSelectStyle('template-dark')">
+            <div class="adgen-style-thumb"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#241f1b;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#555;border-radius:1px"></div></div></div>
+            <div class="adgen-style-name">Mörk</div>
+          </div>
+          <div class="adgen-style-opt" data-style="template-bold" onclick="adgenSelectStyle('template-bold')">
+            <div class="adgen-style-thumb"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#241f1b;position:relative"><div style="position:absolute;top:-4px;left:5px;width:16px;height:5px;background:#C9A84C"></div><div style="position:absolute;top:8px;left:5px;right:5px;height:4px;background:#fff;border-radius:1px"></div></div></div>
+            <div class="adgen-style-name">Djärv</div>
+          </div>
+        </div>
+      </div>
       <div class="adcopy-field" id="adgen-logo-pos-field" style="display:none;margin-top:0.75rem"><label style="font-size:13px">Loggans placering</label><select class="adcopy-select" id="ac-logo-pos"><option value="top-left">Uppe till vänster</option><option value="top-right">Uppe till höger</option><option value="bottom-left">Nere till vänster</option><option value="bottom-right" selected>Nere till höger</option></select></div>
       <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Accentfärg (knapp och streck)</label>
         <div style="display:flex;align-items:center;gap:12px">
@@ -6126,6 +6120,11 @@ async function applyBrandProfileToAdgen() {
   const p = _brandProfile || await fetchBrandProfile();
   if (!p) return;
   fillIfEmpty('ac-company', p.company);
+  // Förvälj sparad mall i AdStudio-galleriet.
+  _adgenStyle = p.ad_style || 'template-light';
+  document.querySelectorAll('#adgen-style-grid .adgen-style-opt').forEach(function(el){
+    el.classList.toggle('sel', el.getAttribute('data-style') === _adgenStyle);
+  });
   const colorField = document.getElementById('ac-color');
   if (colorField && p.ad_color) colorField.value = p.ad_color;
   const hex = document.getElementById('ac-color-hex');
@@ -7803,6 +7802,8 @@ function adgenEscapeHtml(s) {
 
 // Läser kundens valda accentfärg + stil från varumärkesprofilen.
 // Faller tillbaka på guld/overlay om ingen profil finns.
+let _adgenStyle = null; // vald mall i AdStudio (vinner över profilen)
+
 function adgenBrandStyle() {
   const p = _brandProfile;
   // Verktygets egen färgväljare vinner om den finns; annars varumärkesprofilen.
@@ -7810,8 +7811,24 @@ function adgenBrandStyle() {
   const pickerColor = picker ? picker.value : null;
   return {
     color: pickerColor || (p && p.ad_color) || '#C9A84C',
-    style: (p && p.ad_style) || 'template-light'
+    style: _adgenStyle || (p && p.ad_style) || 'template-light'
   };
+}
+
+// Väljer mall i AdStudio: markerar valet, ritar om annonserna live, och sparar
+// valet till profilen så det minns till nästa gång.
+function adgenSelectStyle(style) {
+  _adgenStyle = style;
+  document.querySelectorAll('#adgen-style-grid .adgen-style-opt').forEach(function(el){
+    el.classList.toggle('sel', el.getAttribute('data-style') === style);
+  });
+  // Rita om alla genererade annonser med nya mallen.
+  if (_adgenCopyData) renderAdGenResult();
+  // Spara tyst till profilen (om inloggad) så valet blir kvar.
+  if (_currentUser && _brandProfile) {
+    _brandProfile.ad_style = style;
+    sb().from('brand_profiles').update({ ad_style: style }).eq('user_id', _currentUser.id).then(function(){}, function(){});
+  }
 }
 
 // Uppdaterar hex-etiketten och ritar om annonserna live när färgen ändras.
