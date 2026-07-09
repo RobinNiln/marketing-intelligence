@@ -1920,6 +1920,10 @@ body.brief-mode{background:#FBFAF7}
             <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#241f1b;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#555;border-radius:1px"></div></div></div>
             <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall mörk</div>
           </div>
+          <div class="brand-style-opt" data-style="template-bold" onclick="brandSelectStyle('template-bold')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
+            <div style="height:40px;border-radius:5px;overflow:hidden;margin-bottom:7px"><div style="height:60%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:40%;background:#241f1b;position:relative"><div style="position:absolute;top:-4px;left:5px;width:16px;height:5px;background:#C9A84C"></div><div style="position:absolute;top:8px;left:5px;right:5px;height:4px;background:#fff;border-radius:1px"></div></div></div>
+            <div style="font-size:11.5px;font-weight:600;color:#2C2520">Mall djärv</div>
+          </div>
           <div class="brand-style-opt" data-style="overlay" onclick="brandSelectStyle('overlay')" style="border:2px solid #e0dcd3;border-radius:10px;padding:10px;cursor:pointer;text-align:center">
             <div style="height:40px;border-radius:5px;background:linear-gradient(135deg,#5a4a38,#2C2520);position:relative;margin-bottom:7px;overflow:hidden"><div style="position:absolute;bottom:5px;left:5px;right:5px;height:5px;background:rgba(255,255,255,0.85);border-radius:2px"></div></div>
             <div style="font-size:11.5px;font-weight:600;color:#2C2520">Helbild</div>
@@ -8011,7 +8015,7 @@ async function generateAdGen() {
   const formatEntries = _adgenFormats.map(function(id){
     const f = ADGEN_FORMATS[id];
     const shape = f.h > f.w * 1.3 ? 'stående helskärm' : (f.w > f.h * 2.5 ? 'liggande smal banner' : (f.w > f.h ? 'liggande' : 'kvadratisk/stående'));
-    return '"' + id + '": { "headline": "...", "subline": "...", "cta": "..." }  // ' + f.label + ' (' + f.w + '×' + f.h + ', ' + shape + ')';
+    return '"' + id + '": { "headline": "...", "subline": "...", "cta": "...", "badge": "..." }  // ' + f.label + ' (' + f.w + '×' + f.h + ', ' + shape + ')';
   }).join(',\n  ');
 
   const prompt = 'Du är en senior copywriter specialiserad på digital displayannonsering med bevisat höga konverteringsgrader. Du vet att mottagaren har 1-2 sekunder och skannar – inte läser. Du skriver annonstext som går fram direkt.\n\n' +
@@ -8027,6 +8031,7 @@ async function generateAdGen() {
     '- Konkret framför vagt. "Sänk dina kostnader – börja idag" slår "Vi erbjuder marknadens bästa lösningar". Undvik tomma superlativ ("bäst", "marknadsledande") om de inte styrks.\n' +
     '- CTA ska vara kort och handlingsorienterad: t.ex. "Läs mer", "Upptäck", "Börja nu", "Se erbjudandet". Den ska kännas som en knapp man vill trycka på.\n' +
     '- Skriv ALDRIG in webbadresser (www), telefonnummer, e-post eller andra kontaktuppgifter i rubrik eller subline – klicklänken sköter det, och sådant skapar bara visuellt brus.\n' +
+    '- "badge" är en mycket kort etikett (1-2 ord, versaler passar) som kan visas som en liten kampanj-flagga, t.ex. "REA", "NYHET", "-20%", "ERBJUDANDE", "SOMMAR". Välj något som passar kampanjen. Håll den kort.\n' +
     '- Anpassa efter format: i smala/låga banners (728×90, 320×50, 320×100, 980×120, 250×120, 468×120) måste rubriken vara mycket kort (3-5 ord) och sublinen minimal eller tom. I smala stående format (250×360, 250×480) ryms bara en kort rubrik staplad i höjd. I stora format (1080×1920, 980×360) finns plats för något mer, men håll det ändå stramt.\n' +
     '- Svenska som är naturlig och trovärdig – aldrig översatt reklamsvenska.\n\n' +
     'KAMPANJINFORMATION:\n' +
@@ -8220,8 +8225,12 @@ function drawAd(formatId, fmt, copy) {
     // Smal och hög (skyscraper, stående): text staplad, gott om höjd.
     drawAdVertical(parts);
   } else {
-    // Kvadrat / medelrektangel: den nya rena mallen (separata ytor för bild och text).
-    drawAdTemplate(parts);
+    // Kvadrat / medelrektangel: välj mall efter kundens stilval.
+    if (brand.style === 'template-bold') {
+      drawAdBoldField(parts);           // Stil D: färgfält + etikett + pil-CTA
+    } else {
+      drawAdTemplate(parts);            // Rena separata ytor (ljus/mörk)
+    }
   }
 
   drawAdLogo(ctx, W, H);
@@ -8299,7 +8308,82 @@ function drawAdTemplate(p) {
   }
 }
 
-// Ritar loggan i valt hörn (gemensam för alla stilar).
+// STIL D: Färgfält + etikett. Släkt med mallen men djärvare – mörkt textfält,
+// en färg-etikett som bryter över kanten mellan bild och fält, och CTA som
+// text med pil. Ger ett modernare, mer "designat" intryck.
+function drawAdBoldField(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+
+  // Bild övre 60%, mörkt textfält nedtill.
+  const imgH = Math.round(H * 0.60);
+  drawAdImageInto(ctx, 0, 0, W, imgH);
+  const fieldY = imgH, fieldH = H - imgH;
+  ctx.fillStyle = '#241f1b';
+  ctx.fillRect(0, fieldY, W, fieldH);
+
+  const pad = Math.round(W * 0.06);
+  const textMaxW = W - pad * 2;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+
+  const headlineSz = Math.round(W * 0.06);
+  const sublineSz  = Math.round(W * 0.034);
+  const ctaSz      = Math.round(W * 0.036);
+  const labelSz    = Math.round(W * 0.032);
+
+  // Etikett som bryter över kanten (en kort "kampanj-flagga").
+  const label = (copy.badge || 'ERBJUDANDE').toUpperCase();
+  ctx.font = '800 ' + labelSz + 'px -apple-system,Arial,sans-serif';
+  const labelW = ctx.measureText(label).width + labelSz * 1.4;
+  const labelH = Math.round(labelSz * 1.9);
+  const labelY = fieldY - Math.round(labelH * 0.5); // bryter över kanten
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(pad, labelY, labelW, labelH);
+  ctx.fillStyle = p.onAccent;
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.fillText(label, pad + labelSz * 0.7, labelY + labelH / 2);
+
+  // Mät text (rubrik + ev. subline) för att placera i fältet under etiketten.
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  const hlBlock = hlLines * headlineSz * 1.1;
+  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  const slLines = hasSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
+  const slBlock = slLines * sublineSz * 1.35;
+
+  const gapAfterHL = hasSub ? Math.round(H * 0.012) : 0;
+  const gapBeforeCta = hasCta ? Math.round(H * 0.022) : 0;
+  const ctaBlock = hasCta ? ctaSz * 1.3 : 0;
+  const contentH = hlBlock + gapAfterHL + slBlock + gapBeforeCta + ctaBlock;
+
+  // Starta strax under etiketten, centrera resten i kvarvarande fält-yta.
+  const contentTop = labelY + labelH + Math.round(H * 0.02);
+  let y = contentTop + Math.max(0, (fieldY + fieldH - pad - contentTop - contentH) / 2);
+
+  // Rubrik (stor, tight, djärv).
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = '#ffffff';
+  wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.1);
+  y += hlBlock + gapAfterHL;
+
+  if (hasSub) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.72)';
+    wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.35);
+    y += slBlock;
+  }
+
+  // CTA som text med pil (accentfärgad), inte knapp.
+  if (hasCta) {
+    y += gapBeforeCta;
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = p.accent;
+    ctx.textBaseline = 'top';
+    ctx.fillText(copy.cta + '  →', pad, y);
+  }
+}
+
 // Studien (Schibsted Attention Study): tydlig avsändare är det enskilt
 // viktigaste. Därför: större logga + en subtil läsbarhetsplatta bakom, så den
 // syns mot vilken bakgrund som helst.
