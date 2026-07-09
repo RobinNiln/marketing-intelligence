@@ -8086,12 +8086,7 @@ function drawAdTemplate(p) {
     y += gapBeforeCta;
     ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.7;
-    ctx.fillStyle = p.accent;
-    roundRect(ctx, pad, y, ctaW, ctaH, ctaH * 0.22);
-    ctx.fillStyle = p.onAccent;
-    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
-    ctx.fillText(copy.cta, pad + ctaW / 2, y + ctaH / 2);
-    ctx.textAlign = 'left';
+    drawAdButton(ctx, pad, y, ctaW, ctaH, p.accent, p.onAccent, copy.cta, ctaSz);
   }
 }
 
@@ -8191,13 +8186,7 @@ function drawAdHorizontal(p) {
   // 4) Rita CTA-knappen (vi mätte den redan i steg 1).
   if (hasCta) {
     ctx.shadowBlur = 0;
-    ctx.fillStyle = p.accent;
-    roundRect(ctx, ctaX, ctaY, ctaW, ctaH, ctaH * 0.24);
-    ctx.fillStyle = p.onAccent;
-    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
-    ctx.fillText(copy.cta, ctaX + ctaW / 2, ctaY + ctaH / 2);
-    ctx.textAlign = 'left'; // återställ
+    drawAdButton(ctx, ctaX, ctaY, ctaW, ctaH, p.accent, p.onAccent, copy.cta, ctaSz);
   }
 }
 
@@ -8269,12 +8258,7 @@ function drawAdVertical(p) {
     ctx.shadowBlur = 0;
     ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
-    ctx.fillStyle = p.accent;
-    roundRect(ctx, pad, y, ctaW, ctaH, ctaH * 0.22);
-    ctx.fillStyle = p.onAccent;
-    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
-    ctx.fillText(copy.cta, pad + ctaW / 2, y + ctaH / 2);
-    ctx.textAlign = 'left';
+    drawAdButton(ctx, pad, y, ctaW, ctaH, p.accent, p.onAccent, copy.cta, ctaSz);
   }
 }
 
@@ -8431,6 +8415,37 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
   ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
   ctx.closePath(); ctx.fill();
+}
+
+// Ljushet 0-255 för en hex-färg (samma formel som adgenTextOn).
+function adgenLum(hex) {
+  const c = hex.replace('#','');
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  return (0.299*r + 0.587*g + 0.114*b);
+}
+
+// Ritar en CTA-knapp. Om accentfärgen är väldigt ljus (t.ex. vit) får knappen
+// en kant i textfärgen, så den syns även mot ett ljust textfält.
+function drawAdButton(ctx, x, y, w, h, accent, textColor, label, fontPx) {
+  ctx.fillStyle = accent;
+  roundRect(ctx, x, y, w, h, h * 0.22);
+  // Kant vid ljus knapp så den inte försvinner mot ljus bakgrund.
+  if (adgenLum(accent) > 210) {
+    ctx.strokeStyle = textColor;
+    ctx.lineWidth = Math.max(1.5, h * 0.04);
+    ctx.beginPath();
+    const r = h * 0.22;
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath(); ctx.stroke();
+  }
+  ctx.fillStyle = textColor;
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+  ctx.font = '600 ' + fontPx + 'px -apple-system,Arial,sans-serif';
+  ctx.fillText(label, x + w / 2, y + h / 2);
+  ctx.textAlign = 'left';
 }
 
 function adgenDownload(formatId) {
