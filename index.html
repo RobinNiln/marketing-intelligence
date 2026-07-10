@@ -6,7 +6,7 @@
 <title>Mava – AI-verktyg för marknadsförare</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Poppins:wght@400;500;600;800&family=Montserrat:wght@400;500;700;800&family=Archivo:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Poppins:wght@400;500;600;800&family=Montserrat:wght@400;500;700;800&family=Archivo:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Roboto:wght@400;500;700;900&family=Work+Sans:wght@400;500;700;800&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;500;700;800&family=Rubik:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@400;500;700;800&family=Sora:wght@400;500;700;800&family=Lexend:wght@400;500;700;800&family=Figtree:wght@400;500;700;800&family=Playfair+Display:wght@400;500;700;800&family=Fraunces:wght@400;500;700&family=Lora:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=DM+Serif+Display&family=Libre+Baskerville:wght@400;700&family=Spectral:wght@400;500;700&family=Bebas+Neue&family=Anton&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -2891,12 +2891,45 @@ body.brief-mode{background:#FBFAF7}
       </div>
       <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Typsnitt</label>
         <select class="adcopy-select" id="ac-font" onchange="adgenFontChanged()">
-          <option value="Inter">Inter – rent & modernt</option>
-          <option value="Poppins">Poppins – rund & vänlig</option>
-          <option value="Montserrat">Montserrat – bred & självsäker</option>
-          <option value="Archivo">Archivo – kompakt & kraftfull</option>
-          <option value="Plus Jakarta Sans">Plus Jakarta Sans – elegant</option>
+          <optgroup label="Rena & moderna (sans-serif)">
+            <option value="Inter">Inter – rent & modernt</option>
+            <option value="Poppins">Poppins – rund & vänlig</option>
+            <option value="Montserrat">Montserrat – bred & självsäker</option>
+            <option value="Archivo">Archivo – kompakt & kraftfull</option>
+            <option value="Plus Jakarta Sans">Plus Jakarta Sans – elegant</option>
+            <option value="Roboto">Roboto – neutralt & tydligt</option>
+            <option value="Work Sans">Work Sans – modernt & lugnt</option>
+            <option value="DM Sans">DM Sans – geometriskt</option>
+            <option value="Manrope">Manrope – mjukt & modernt</option>
+            <option value="Rubik">Rubik – rundat & vänligt</option>
+            <option value="Space Grotesk">Space Grotesk – tekniskt & distinkt</option>
+            <option value="Outfit">Outfit – rent & samtida</option>
+            <option value="Sora">Sora – modernt & öppet</option>
+            <option value="Lexend">Lexend – extra läsbart</option>
+            <option value="Figtree">Figtree – vänligt & rent</option>
+          </optgroup>
+          <optgroup label="Eleganta (serif)">
+            <option value="Playfair Display">Playfair Display – klassiskt & elegant</option>
+            <option value="Fraunces">Fraunces – karaktärsfullt</option>
+            <option value="Lora">Lora – varm & läsbar</option>
+            <option value="Cormorant Garamond">Cormorant – förfinat</option>
+            <option value="DM Serif Display">DM Serif – högrest & tydligt</option>
+            <option value="Libre Baskerville">Libre Baskerville – tidningsklassiskt</option>
+            <option value="Spectral">Spectral – modern serif</option>
+          </optgroup>
+          <optgroup label="Djärva (display)">
+            <option value="Bebas Neue">Bebas Neue – smal & stor</option>
+            <option value="Anton">Anton – kraftfull & fet</option>
+            <option value="Oswald">Oswald – komprimerat</option>
+          </optgroup>
+          <optgroup label="Eget val (sökt)" id="ac-font-custom-group" style="display:none">
+            <option value="" id="ac-font-custom-opt"></option>
+          </optgroup>
         </select>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <input type="text" id="ac-font-search" placeholder="Sök annat Google-typsnitt…" style="flex:1;border:1.5px solid #e6e1d6;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;color:#2C2520;box-sizing:border-box" oninput="adgenFontSearch()" onkeydown="if(event.key==='Enter'){event.preventDefault();adgenFontPickFirst();}">
+        </div>
+        <div id="ac-font-results" style="display:none;margin-top:6px;border:1px solid #ece8df;border-radius:8px;max-height:160px;overflow-y:auto;background:#fff"></div>
       </div>
       <div class="adcopy-field" id="adgen-logo-pos-field" style="display:none;margin-top:0.75rem"><label style="font-size:13px">Loggans placering</label><select class="adcopy-select" id="ac-logo-pos"><option value="top-left">Uppe till vänster</option><option value="top-right">Uppe till höger</option><option value="bottom-left">Nere till vänster</option><option value="bottom-right" selected>Nere till höger</option></select></div>
       <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Accentfärg (knapp och streck)</label>
@@ -7887,6 +7920,57 @@ function adgenSelectStyle(style) {
 // Uppdaterar hex-etiketten och ritar om annonserna live när färgen ändras.
 // Byter typsnitt: väntar tills fonten är inladdad i webbläsaren innan omritning,
 // annars ritas annonsen med fel (fallback-)font första gången.
+// Populära Google Fonts att söka bland (utöver de kurerade i listan).
+// Täcker de vanligaste – räcker i praktiken för nästan alla behov.
+const GOOGLE_FONTS_LIST = ['Roboto','Open Sans','Lato','Montserrat','Poppins','Inter','Raleway','Nunito','Nunito Sans','Ubuntu','Merriweather','Playfair Display','Roboto Condensed','Oswald','Roboto Slab','PT Sans','PT Serif','Noto Sans','Noto Serif','Mukta','Rubik','Work Sans','Fira Sans','Quicksand','Barlow','Barlow Condensed','Josefin Sans','Titillium Web','Karla','Arvo','Hind','Cabin','Dosis','Bitter','Libre Franklin','Libre Baskerville','Source Sans 3','Source Serif 4','Crimson Text','Archivo','Archivo Narrow','Archivo Black','DM Sans','DM Serif Display','DM Serif Text','Space Grotesk','Space Mono','Manrope','Sora','Outfit','Lexend','Figtree','Plus Jakarta Sans','Jost','Kanit','Prompt','Sarabun','Mulish','Heebo','Assistant','Overpass','Exo 2','Teko','Bebas Neue','Anton','Fraunces','Lora','Cormorant Garamond','Cormorant','Spectral','EB Garamond','Zilla Slab','Abril Fatface','Comfortaa','Pacifico','Lobster','Caveat','Dancing Script','Righteous','Fjalla One','Alfa Slab One','Passion One','Cairo','Tajawal','IBM Plex Sans','IBM Plex Serif','IBM Plex Mono','Red Hat Display','Red Hat Text','Epilogue','Albert Sans','Onest','Schibsted Grotesk','Instrument Sans','Hanken Grotesk','Geist','Bricolage Grotesque','Unbounded','Gabarito','Familjen Grotesk'];
+
+// Söker i listan och visar träffar under sökfältet.
+function adgenFontSearch() {
+  const q = (document.getElementById('ac-font-search').value || '').trim().toLowerCase();
+  const box = document.getElementById('ac-font-results');
+  if (!q) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const hits = GOOGLE_FONTS_LIST.filter(function(f){ return f.toLowerCase().indexOf(q) > -1; }).slice(0, 12);
+  if (!hits.length) {
+    box.innerHTML = '<div style="padding:9px 12px;font-size:13px;color:#9A8570">Inga träffar</div>';
+  } else {
+    box.innerHTML = hits.map(function(f){
+      return '<div onclick="adgenFontPickCustom(\'' + f.replace(/'/g,"\\'") + '\')" style="padding:9px 12px;font-size:13.5px;cursor:pointer;border-bottom:1px solid #f4f1ea" onmouseover="this.style.background=\'#faf8f4\'" onmouseout="this.style.background=\'#fff\'">' + f + '</div>';
+    }).join('');
+  }
+  box.style.display = 'block';
+}
+
+// Väljer första träffen (Enter i sökfältet).
+function adgenFontPickFirst() {
+  const q = (document.getElementById('ac-font-search').value || '').trim().toLowerCase();
+  if (!q) return;
+  const hit = GOOGLE_FONTS_LIST.filter(function(f){ return f.toLowerCase().indexOf(q) > -1; })[0];
+  if (hit) adgenFontPickCustom(hit);
+}
+
+// Laddar in en sökt font dynamiskt, väljer den och ritar om.
+function adgenFontPickCustom(font) {
+  // Lägg till en Google Fonts-länk för just denna font (om inte redan inne).
+  const id = 'gf-' + font.replace(/\s+/g,'-');
+  if (!document.getElementById(id)) {
+    const link = document.createElement('link');
+    link.id = id; link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(font).replace(/%20/g,'+') + ':wght@400;500;700;800&display=swap';
+    document.head.appendChild(link);
+  }
+  // Lägg in i dropdownens "eget val"-grupp och markera den.
+  const grp = document.getElementById('ac-font-custom-group');
+  const opt = document.getElementById('ac-font-custom-opt');
+  opt.value = font; opt.textContent = font + ' (sökt)';
+  grp.style.display = '';
+  document.getElementById('ac-font').value = font;
+  // Rensa sökfältet/resultaten.
+  document.getElementById('ac-font-search').value = '';
+  document.getElementById('ac-font-results').style.display = 'none';
+  // Sätt fonten och rita om (vänta på inladdning).
+  adgenFontChanged();
+}
+
 function adgenFontChanged() {
   const sel = document.getElementById('ac-font');
   _adgenFont = sel ? sel.value : 'Inter';
