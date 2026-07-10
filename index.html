@@ -8272,7 +8272,21 @@ function drawAd(formatId, fmt, copy, uid, style) {
 
   const ratio = W / H;
   if (ratio >= 2.2) {
-    drawAdHorizontal(parts);
+    // Breda banners: välj variant efter stil (samma namn som kvadraten), så en
+    // kampanj håller ihop stilen över format. Fallback = ren bild-variant.
+    const bannerTemplates = {
+      'template-diagonal': drawBannerDiagonal,
+      'template-colorblock': drawBannerColorBlock,
+      'template-premium': drawBannerPremium,
+      'template-split': drawBannerSplit,
+      'template-light': drawBannerClean,
+      'template-dark': drawBannerClean,
+      'template-boldtext': drawBannerClean,
+      'template-bold': drawBannerClean,
+      'template-angle': drawBannerDiagonal
+    };
+    const bfn = bannerTemplates[useStyle] || drawBannerClean;
+    bfn(parts);
   } else if (ratio <= 0.6) {
     drawAdVertical(parts);
   } else {
@@ -8847,6 +8861,160 @@ function drawAdImageInto(ctx, x, y, w, h) {
 
 // LAYOUT: Horisontell – för breda, låga banners (panorama, leaderboard, mobil).
 // Text till vänster, CTA-knapp till höger. De delar bredden och krockar aldrig.
+// ── BREDA BANNER-MALLAR ─────────────────────────────────────────────────────
+// Gemensam princip: text VÄNSTER, knapp HÖGER, uppmätta så de aldrig krockar.
+// Höjden är liten, så allt ligger sida vid sida (aldrig staplat).
+
+// Hjälpare: mät CTA-knappen för en banner och returnera dess mått.
+function bannerCta(ctx, copy, H) {
+  if (!(copy.cta && copy.cta.trim())) return null;
+  const sz = Math.round(H * 0.26);
+  ctx.font = '700 ' + sz + 'px -apple-system,Arial,sans-serif';
+  const w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
+  const h = Math.round(H * 0.52);
+  return { sz:sz, w:w, h:h };
+}
+
+// Ritar text (rubrik + ev. subline) i ett vänsterfält med given maxbredd.
+function bannerText(ctx, copy, x, W_area, H, color, subColor) {
+  const hlSz = Math.round(H * 0.30);
+  const subSz = Math.round(H * 0.17);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + hlSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', W_area);
+  const showSub = !!(copy.subline && copy.subline.trim()) && hlLines === 1 && H >= 110;
+  const hlBlock = hlLines * hlSz * 1.04;
+  const subBlock = showSub ? subSz * 1.3 + Math.round(H*0.03) : 0;
+  let y = (H - (hlBlock + subBlock)) / 2;
+  ctx.fillStyle = color;
+  wrapText(ctx, copy.headline || '', x, y, W_area, hlSz * 1.04);
+  if (showSub) {
+    y += hlBlock + Math.round(H*0.03);
+    ctx.font = '500 ' + subSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = subColor;
+    ctx.fillText(copy.subline, x, y);
+  }
+}
+
+// A · Ren – bild bakgrund + toning, text vänster, knapp höger.
+function drawBannerClean(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, W, 0);
+  grad.addColorStop(0, 'rgba(0,0,0,0.8)');
+  grad.addColorStop(0.6, 'rgba(0,0,0,0.35)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.12)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  const pad = Math.round(H * 0.22);
+  const cta = bannerCta(ctx, copy, H);
+  const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
+  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.85)');
+  if (cta) {
+    const cx = W - cta.w - pad, cy = (H - cta.h)/2;
+    drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
+  }
+}
+
+// B · Delad – färgfält vänster (text), bild höger.
+function drawBannerSplit(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const splitX = Math.round(W * 0.58);
+  // Bild höger.
+  ctx.save(); ctx.beginPath(); ctx.rect(splitX, 0, W - splitX, H); ctx.clip();
+  drawAdImageInto(ctx, splitX, 0, W - splitX, H); ctx.restore();
+  // Färgfält vänster (mörkt för läsbarhet).
+  ctx.fillStyle = '#241f1b';
+  ctx.fillRect(0, 0, splitX, H);
+  const pad = Math.round(H * 0.22);
+  const cta = bannerCta(ctx, copy, H);
+  // Text + knapp ryms inom vänsterfältet.
+  const innerW = splitX - pad * 2;
+  const textW = (cta ? innerW - cta.w - pad : innerW);
+  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
+  if (cta) {
+    const cx = splitX - cta.w - pad, cy = (H - cta.h)/2;
+    drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
+  }
+}
+
+// C · Färgblock – hel färg, text vänster, knapp höger.
+function drawBannerColorBlock(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const accentLight = adgenLum(p.accent) > 200;
+  const block = accentLight ? '#241f1b' : p.accent;
+  ctx.fillStyle = block; ctx.fillRect(0, 0, W, H);
+  const onBlock = adgenLum(block) > 150 ? '#1a1410' : '#ffffff';
+  const pad = Math.round(H * 0.22);
+  const cta = bannerCta(ctx, copy, H);
+  const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
+  bannerText(ctx, copy, pad, textW, H, onBlock, onBlock === '#ffffff' ? 'rgba(255,255,255,0.8)' : 'rgba(26,20,16,0.7)');
+  if (cta) {
+    const cx = W - cta.w - pad, cy = (H - cta.h)/2;
+    // Knapp kontrasterar mot blocket.
+    const blockLight = adgenLum(block) > 150;
+    ctx.fillStyle = blockLight ? '#1e1a17' : '#ffffff';
+    roundRect(ctx, cx, cy, cta.w, cta.h, cta.h * 0.5);
+    ctx.fillStyle = blockLight ? '#ffffff' : (accentLight ? '#1e1a17' : p.accent);
+    ctx.font = '700 ' + cta.sz + 'px -apple-system,Arial,sans-serif';
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta + ' →', cx + cta.w/2, cy + cta.h/2);
+    ctx.textAlign = 'left';
+  }
+}
+
+// D · Diagonal – bild och färgfält möts i diagonal, text höger.
+function drawBannerDiagonal(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  // Mörkt fält som skär in från höger via diagonal.
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(W * 0.40, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.30, H);
+  ctx.closePath(); ctx.fillStyle = '#241f1b'; ctx.globalAlpha = 0.96; ctx.fill();
+  ctx.restore();
+  const pad = Math.round(H * 0.22);
+  const cta = bannerCta(ctx, copy, H);
+  // Text i den mörka högra delen.
+  const tx = Math.round(W * 0.45);
+  const textW = (cta ? W - cta.w - pad*2.2 : W - pad) - tx;
+  bannerText(ctx, copy, tx, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
+  if (cta) {
+    const cx = W - cta.w - pad, cy = (H - cta.h)/2;
+    drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
+  }
+}
+
+// E · Premium – ljus, elegant, serif, kontur-knapp.
+function drawBannerPremium(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  ctx.fillStyle = '#efe9e0'; ctx.fillRect(0, 0, W, H);
+  const pad = Math.round(H * 0.26);
+  // Rubrik vänster (serif), knapp höger (kontur).
+  const hlSz = Math.round(H * 0.28);
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  let ctaW = 0, ctaH = 0, ctaSz = 0;
+  if (hasCta) {
+    ctaSz = Math.round(H * 0.2);
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctaW = ctx.measureText(copy.cta.toUpperCase()).width + ctaSz * 2.2;
+    ctaH = Math.round(H * 0.5);
+  }
+  const textW = (hasCta ? W - ctaW - pad*2.2 : W - pad*2) - pad;
+  ctx.font = '500 ' + hlSz + 'px Georgia,"Times New Roman",serif';
+  ctx.fillStyle = '#2C2520';
+  // En rad, trunkeras naturligt av utrymmet.
+  ctx.fillText(copy.headline || '', pad, H/2);
+  if (hasCta) {
+    const cx = W - ctaW - pad, cy = (H - ctaH)/2;
+    ctx.strokeStyle = '#2C2520'; ctx.lineWidth = Math.max(1.5, H*0.012);
+    ctx.strokeRect(cx, cy, ctaW, ctaH);
+    ctx.fillStyle = '#2C2520'; ctx.textAlign = 'center';
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillText(copy.cta.toUpperCase(), cx + ctaW/2, cy + ctaH/2);
+    ctx.textAlign = 'left';
+  }
+}
+
 function drawAdHorizontal(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
   drawAdImageInto(ctx, 0, 0, W, H);
