@@ -8409,31 +8409,38 @@ function drawAdAngleCut(p) {
   // Bild som bakgrund.
   drawAdImageInto(ctx, 0, 0, W, H);
 
-  // Färgvinkel som skär in från vänster (en kil).
+  // Om accenten är väldigt ljus blir kilen svår att läsa text mot – då mörk kil.
+  const accentLight = adgenLum(p.accent) > 200;
+  const wedgeColor = accentLight ? '#241f1b' : p.accent;
+
+  // Färgvinkel som skär in från vänster (bredare kil, mindre spetsig).
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(0, 0);
-  ctx.lineTo(W * 0.52, 0);
-  ctx.lineTo(W * 0.30, H);
+  ctx.lineTo(W * 0.66, 0);
+  ctx.lineTo(W * 0.50, H);
   ctx.lineTo(0, H);
   ctx.closePath();
-  ctx.fillStyle = p.accent;
-  ctx.globalAlpha = 0.96;
+  ctx.fillStyle = wedgeColor;
+  ctx.globalAlpha = 0.97;
   ctx.fill();
   ctx.restore();
 
   const pad = Math.round(W * 0.06);
-  const onColor = p.onAccent;
+  const onColor = adgenLum(wedgeColor) > 150 ? '#1a1410' : '#ffffff';
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const tw = W * 0.36;
+  // Textbredd följer kilens smalaste del (nedtill ~50%) minus lite luft.
+  const tw = W * 0.42;
 
-  const headlineSz = Math.round(W * 0.07);
-  const ctaSz = Math.round(W * 0.032);
+  const headlineSz = Math.round(W * 0.062);
+  const ctaSz = Math.round(W * 0.03);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
   ctx.fillStyle = onColor;
   const hlLines = estimateLines(ctx, copy.headline || '', tw);
-  let y = H * 0.5 - (hlLines * headlineSz * 1.1) / 2;
+  const ctaH = hasCta ? ctaSz * 2.2 : 0;
+  const block = hlLines * headlineSz * 1.1 + (hasCta ? Math.round(H * 0.03) + ctaH : 0);
+  let y = H * 0.5 - block / 2;
   wrapText(ctx, copy.headline || '', pad, y, tw, headlineSz * 1.1);
   y += hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
 
@@ -8441,11 +8448,10 @@ function drawAdAngleCut(p) {
     ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
     const cw = ctx.measureText(copy.cta).width + ctaSz * 1.8;
     const ch = ctaSz * 2.2;
-    // Knapp i kontrastfärg mot vinkeln.
-    const angleLight = adgenLum(p.accent) > 150;
-    ctx.fillStyle = angleLight ? '#1e1a17' : '#ffffff';
+    const wedgeLight = adgenLum(wedgeColor) > 150;
+    ctx.fillStyle = wedgeLight ? '#1e1a17' : '#ffffff';
     roundRect(ctx, pad, y, cw, ch, ch * 0.5);
-    ctx.fillStyle = angleLight ? '#ffffff' : p.accent;
+    ctx.fillStyle = wedgeLight ? '#ffffff' : wedgeColor;
     ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     ctx.fillText(copy.cta, pad + cw / 2, y + ch / 2);
     ctx.textAlign = 'left';
@@ -8466,12 +8472,13 @@ function drawAdCleanSplit(p) {
   const hasSub = !!(copy.subline && copy.subline.trim());
   const cx = W / 2;
 
-  // Avsändare/rubrik-etikett stort uppe (versaler, spärrat).
+  // Avsändaren (företagsnamnet) stort uppe – tydlig avsändare enligt studien.
+  const company = (document.getElementById('ac-company') || {}).value || '';
   const topSz = Math.round(W * 0.04);
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
   ctx.font = '800 ' + topSz + 'px -apple-system,Arial,sans-serif';
   ctx.fillStyle = '#ffffff';
-  if (copy.badge) ctx.fillText(copy.badge.toUpperCase(), cx, Math.round(H * 0.09));
+  if (company) ctx.fillText(company.toUpperCase(), cx, Math.round(H * 0.09));
 
   // Centrerad rubrik i mitten.
   const headlineSz = Math.round(W * 0.07);
@@ -8723,19 +8730,11 @@ function drawAdBoldField(p) {
   const ctaSz      = Math.round(W * 0.038);
   const labelSz    = Math.round(W * 0.036);
 
-  // Etikett som bryter över kanten (en kort "kampanj-flagga").
-  const label = (copy.badge || 'ERBJUDANDE').toUpperCase();
-  ctx.font = '800 ' + labelSz + 'px -apple-system,Arial,sans-serif';
-  const labelW = ctx.measureText(label).width + labelSz * 1.4;
+  // (Ingen kampanj-etikett – den togs bort på begäran.)
   const labelH = Math.round(labelSz * 1.9);
-  const labelY = fieldY - Math.round(labelH * 0.5); // bryter över kanten
-  ctx.fillStyle = p.accent;
-  ctx.fillRect(pad, labelY, labelW, labelH);
-  ctx.fillStyle = p.onAccent;
-  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-  ctx.fillText(label, pad + labelSz * 0.7, labelY + labelH / 2);
+  const labelY = fieldY - Math.round(labelH * 0.5);
 
-  // Mät text (rubrik + ev. subline) för att placera i fältet under etiketten.
+  // Mät text (rubrik + ev. subline) för att placera i fältet.
   ctx.textAlign = 'left'; ctx.textBaseline = 'top';
   ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
