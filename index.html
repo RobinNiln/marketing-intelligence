@@ -1205,6 +1205,23 @@ body.newsroom-mode{background:#FBFAF7}
 .lib-filter{background:#fff;border:1px solid #e0dcd3;color:#8a7d6d;font-size:13px;font-weight:600;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .lib-filter.active{background:#2C2520;color:#fff;border-color:#2C2520}
 .lib-card{background:#fff;border:1px solid #e8e4db;border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:12px;display:flex;align-items:center;gap:1rem}
+.lib-group-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#9c7d2e;margin:1.6rem 0 0.9rem}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:0.5rem}
+.lib-card2{background:#fff;border:1px solid #ece8df;border-radius:12px;overflow:hidden;transition:box-shadow .15s}
+.lib-card2:hover{box-shadow:0 4px 16px rgba(44,37,32,0.08)}
+.lib-thumb{width:100%;aspect-ratio:1;position:relative;background:#f4f1ea;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lib-thumb-canvas{width:100%;height:100%;object-fit:cover;display:block}
+.lib-thumb-text{flex-direction:column;padding:16px;text-align:left;align-items:flex-start;justify-content:flex-start}
+.lib-thumb-snippet{font-size:12px;line-height:1.5;color:#5a5348;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
+.lib-thumb-fmt{position:absolute;top:8px;left:8px;background:rgba(255,255,255,0.92);font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;color:#2C2520;letter-spacing:0.03em}
+.lib-meta2{padding:10px 12px 4px}
+.lib-name2{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:3px;color:#2C2520;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-date2{font-size:11px;color:#9A8570}
+.lib-actions2{display:flex;border-top:1px solid #f4f1ea;margin-top:6px}
+.lib-actions2 button{flex:1;border:none;background:none;padding:8px 4px;font-size:11px;color:#6b5d47;cursor:pointer;font-family:inherit;font-weight:600;border-right:1px solid #f4f1ea}
+.lib-actions2 button:last-child{border-right:none}
+.lib-actions2 button:hover{background:#faf8f4}
+.lib-actions2 .lib-del:hover{color:#A32D2D}
 .proj-new-btn{display:inline-flex;align-items:center;gap:8px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background 0.15s}
 .proj-new-btn:hover{background:#433a30}
 .proj-card{background:#fff;border:1px solid #e8e4db;border-radius:14px;margin-bottom:12px;display:flex;align-items:stretch;overflow:hidden;transition:box-shadow 0.15s}
@@ -1383,6 +1400,7 @@ body.brief-mode{background:#FBFAF7}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 <div id="active-project-modal">
@@ -5540,20 +5558,18 @@ function renderLibrary() {
   const search = (document.getElementById('library-search').value || '').toLowerCase();
   const list = document.getElementById('library-list');
   let items = _libraryItems;
-  // Om vi kom in via ett projekt, visa bara det projektets produktioner.
   if (_projectFilter) {
     items = items.filter(function(it){ return it.project_id === _projectFilter; });
     const proj = _projectsCache.find(function(p){ return p.id === _projectFilter; });
     const banner = document.getElementById('library-project-banner');
-    if (banner) {
-      banner.style.display = 'flex';
-      banner.querySelector('.lpb-name').textContent = proj ? proj.name : 'Projekt';
-    }
+    if (banner) { banner.style.display = 'flex'; banner.querySelector('.lpb-name').textContent = proj ? proj.name : 'Projekt'; }
   } else {
     const banner = document.getElementById('library-project-banner');
     if (banner) banner.style.display = 'none';
   }
-  if (_libraryFilter !== 'all') items = items.filter(function(it){ return it.tool === _libraryFilter; });
+  if (_libraryFilter === 'ads') items = items.filter(function(it){ return it.tool === 'adstudio'; });
+  else if (_libraryFilter === 'text') items = items.filter(function(it){ return it.tool !== 'adstudio'; });
+  else if (_libraryFilter !== 'all') items = items.filter(function(it){ return it.tool === _libraryFilter; });
   if (search) items = items.filter(function(it){ return (it.title || '').toLowerCase().indexOf(search) > -1; });
 
   if (items.length === 0) {
@@ -5561,22 +5577,102 @@ function renderLibrary() {
     return;
   }
 
-  list.innerHTML = items.map(function(it){
-    const date = new Date(it.created_at).toLocaleDateString('sv-SE', { year:'numeric', month:'short', day:'numeric' });
-    const label = TOOL_LABELS[it.tool] || it.tool;
-    return '<div class="lib-card">' +
-      '<div style="flex:1;min-width:0">' +
-        '<div class="lib-card-tool">' + label + '</div>' +
-        '<div class="lib-card-title">' + escapeHtmlLib(it.title) + '</div>' +
-        '<div class="lib-card-date">' + date + '</div>' +
-      '</div>' +
-      '<div class="lib-card-actions">' +
-        '<button onclick="libraryOpen(\'' + it.id + '\')" class="lib-btn lib-btn-open">Öppna</button>' +
-        '<button onclick="libraryRename(\'' + it.id + '\')" class="lib-btn">Byt namn</button>' +
-        '<button onclick="libraryDelete(\'' + it.id + '\')" class="lib-btn lib-btn-del">Radera</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  // Gruppera per projekt (annonser + text tillsammans).
+  const groups = {};
+  items.forEach(function(it){ const key = it.project_id || '__none'; (groups[key] = groups[key] || []).push(it); });
+  const order = Object.keys(groups).sort(function(a,b){ if (a === '__none') return 1; if (b === '__none') return -1; return 0; });
+
+  let html = '';
+  order.forEach(function(key){
+    const proj = _projectsCache.find(function(p){ return p.id === key; });
+    const groupName = key === '__none' ? 'Utan projekt' : (proj ? proj.name : 'Projekt');
+    const arr = groups[key];
+    html += '<div class="lib-group-label">' + escapeHtmlLib(groupName) + ' · ' + arr.length + ' st</div>';
+    html += '<div class="lib-grid">';
+    arr.forEach(function(it){
+      const date = new Date(it.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
+      const isAd = it.tool === 'adstudio';
+      let thumb;
+      if (isAd) {
+        thumb = '<div class="lib-thumb"><canvas class="lib-thumb-canvas" id="libthumb-' + it.id + '"></canvas>' +
+          '<span class="lib-thumb-fmt">' + adLibFormatLabel(it) + '</span></div>';
+      } else {
+        const label = TOOL_LABELS[it.tool] || it.tool;
+        const snippet = adLibTextSnippet(it);
+        const col = (typeof TOOL_COLORS !== 'undefined' && TOOL_COLORS[it.tool]) || '#8a7d6d';
+        thumb = '<div class="lib-thumb lib-thumb-text" style="background:' + col + '14">' +
+          '<div class="lib-thumb-snippet">' + escapeHtmlLib(snippet) + '</div>' +
+          '<span class="lib-thumb-fmt">' + escapeHtmlLib(label) + '</span></div>';
+      }
+      html += '<div class="lib-card2">' +
+        '<div onclick="libraryOpen(\'' + it.id + '\')" style="cursor:pointer">' + thumb + '</div>' +
+        '<div class="lib-meta2">' +
+          '<div class="lib-name2">' + escapeHtmlLib(it.title) + '</div>' +
+          '<div class="lib-date2">' + date + (isAd ? ' · ' + adLibStyleLabel(it) : '') + '</div>' +
+        '</div>' +
+        '<div class="lib-actions2">' +
+          '<button onclick="libraryOpen(\'' + it.id + '\')">Öppna</button>' +
+          '<button onclick="libraryRename(\'' + it.id + '\')">Byt namn</button>' +
+          '<button onclick="libraryDelete(\'' + it.id + '\')" class="lib-del">Radera</button>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
+
+  // Rita annons-miniatyrer via canvas (efter att DOM finns).
+  items.forEach(function(it){ if (it.tool === 'adstudio') drawLibraryThumb(it); });
+}
+
+// Kort etikett för annonsens format.
+function adLibFormatLabel(it) {
+  const cfg = it.content || {};
+  const fmts = cfg.formats || [];
+  if (fmts.length > 1) return fmts.length + ' FORMAT';
+  const f = fmts[0] && ADGEN_FORMATS[fmts[0]];
+  return f ? f.label.toUpperCase() : 'ANNONS';
+}
+function adLibStyleLabel(it) {
+  const cfg = it.content || {};
+  const s = (cfg.styles && cfg.styles[0]) || cfg.style || '';
+  const names = { 'template-diagonal':'Diagonal','template-colorblock':'Färgblock','template-premium':'Premium','template-boldtext':'Djärv text','template-angle':'Vinkel','template-split':'Split','template-light':'Ljus','template-dark':'Mörk','template-bold':'Djärv' };
+  return names[s] || 'Annons';
+}
+function adLibTextSnippet(it) {
+  const c = it.content;
+  let t = '';
+  if (typeof c === 'string') t = c;
+  else if (c && c.body) t = c.body;
+  else if (c && c.headline) t = c.headline;
+  else t = it.title || '';
+  return (t || '').replace(/[#*_>`]/g,'').slice(0, 110);
+}
+
+// Ritar en annons-miniatyr i biblioteket från sparat recept.
+function drawLibraryThumb(it) {
+  const canvas = document.getElementById('libthumb-' + it.id);
+  if (!canvas) return;
+  const cfg = it.content || {};
+  const fmtId = (cfg.formats && cfg.formats[0]) || 'meta-square';
+  const fmt = ADGEN_FORMATS[fmtId] || ADGEN_FORMATS['meta-square'];
+  const copy = (cfg.copyData && cfg.copyData[fmtId]) || {};
+  const style = (cfg.styles && cfg.styles[0]) || cfg.style || 'template-diagonal';
+  canvas.width = fmt.w; canvas.height = fmt.h;
+  canvas.style.aspectRatio = fmt.w + '/' + fmt.h;
+  const prevImg = _adgenImage, prevFont = _adgenFont, prevStyles = _adgenStyles;
+  if (cfg.font) _adgenFont = cfg.font;
+  _adgenStyles = [style];
+  function paint() {
+    drawAdOnCanvas(canvas, fmtId, fmt, copy, style, cfg.color);
+    _adgenImage = prevImg; _adgenFont = prevFont; _adgenStyles = prevStyles;
+  }
+  if (cfg.imageDataUrl) {
+    const img = new Image();
+    img.onload = function(){ _adgenImage = img; paint(); };
+    img.onerror = function(){ _adgenImage = null; paint(); };
+    img.src = cfg.imageDataUrl;
+  } else { _adgenImage = null; paint(); }
 }
 
 function libraryClearProject() {
@@ -8393,23 +8489,26 @@ function drawAd(formatId, fmt, copy, uid, style) {
   const canvasId = uid || formatId;
   const canvas = document.getElementById('canvas-' + canvasId);
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = fmt.w, H = fmt.h;
-
-  ctx.clearRect(0, 0, W, H);
-
   const brand = adgenBrandStyle();
   const useStyle = style || brand.style;
-  // Per-annons färg-override från redigering (nyckel = uid).
   const override = window._adgenColorOverrides && window._adgenColorOverrides[canvasId];
   const accent = override || brand.color;
+  drawAdOnCanvas(canvas, formatId, fmt, copy, useStyle, accent);
+}
+
+// Ritar en annons på en GIVEN canvas med explicit stil och färg. Används både
+// av den vanliga genereringen och av bibliotekets miniatyrer.
+function drawAdOnCanvas(canvas, formatId, fmt, copy, useStyle, accentColor) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = fmt.w, H = fmt.h;
+  ctx.clearRect(0, 0, W, H);
+  const accent = accentColor || (adgenBrandStyle().color);
   const variant = (useStyle === 'template-dark') ? 'dark' : 'light';
-  const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:accent, onAccent:adgenTextOn(accent), variant:variant };
+  const parts = { ctx:ctx, W:W, H:H, copy:copy || {}, accent:accent, onAccent:adgenTextOn(accent), variant:variant };
 
   const ratio = W / H;
   if (ratio >= 2.2) {
-    // Breda banners: välj variant efter stil (samma namn som kvadraten), så en
-    // kampanj håller ihop stilen över format. Fallback = ren bild-variant.
     const bannerTemplates = {
       'template-diagonal': drawBannerDiagonal,
       'template-colorblock': drawBannerColorBlock,
@@ -8421,15 +8520,11 @@ function drawAd(formatId, fmt, copy, uid, style) {
       'template-bold': drawBannerClean,
       'template-angle': drawBannerDiagonal
     };
-    const bfn = bannerTemplates[useStyle] || drawBannerClean;
-    bfn(parts);
+    (bannerTemplates[useStyle] || drawBannerClean)(parts);
   } else if (ratio <= 0.6) {
-    // Höga format. Stories (bred nog) får stilval; mycket smala (skyscraper)
-    // får en enda ren layout eftersom stilarna inte får plats.
-    const isNarrow = W < 260; // skyscraper 160px o.likn.
+    const isNarrow = W < 260;
     if (isNarrow) {
-      if (useStyle === 'template-colorblock') drawTallColorBlock(parts);
-      else drawTallClean(parts);
+      if (useStyle === 'template-colorblock') drawTallColorBlock(parts); else drawTallClean(parts);
     } else {
       const tall = {
         'template-diagonal': drawTallDiagonal,
@@ -8439,8 +8534,7 @@ function drawAd(formatId, fmt, copy, uid, style) {
         'template-split': drawTallClean,
         'template-angle': drawTallDiagonal
       };
-      const tfn = tall[useStyle] || drawTallClean;
-      tfn(parts);
+      (tall[useStyle] || drawTallClean)(parts);
     }
   } else {
     const templates = {
@@ -8454,10 +8548,8 @@ function drawAd(formatId, fmt, copy, uid, style) {
       'template-light': drawAdTemplate,
       'template-dark': drawAdTemplate
     };
-    const fn = templates[useStyle] || drawAdTemplate;
-    fn(parts);
+    (templates[useStyle] || drawAdTemplate)(parts);
   }
-
   drawAdLogo(ctx, W, H);
 }
 
