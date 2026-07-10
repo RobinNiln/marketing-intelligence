@@ -8278,15 +8278,20 @@ function drawAd(formatId, fmt, copy) {
 function drawAdColorBlock(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
 
-  // Hela bakgrunden i accentfärgen (en aning mörkare nertill för djup).
-  ctx.fillStyle = p.accent;
+  // Hela bakgrunden i accentfärgen. Om accenten är väldigt ljus (t.ex. vit)
+  // ser ett "färgblock" blekt ut – då använder vi en mörk bakgrund i stället,
+  // så mallen alltid har bärande kontrast.
+  const accentLight = adgenLum(p.accent) > 200;
+  const blockColor = accentLight ? '#241f1b' : p.accent;
+  ctx.fillStyle = blockColor;
   ctx.fillRect(0, 0, W, H);
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   grad.addColorStop(0, 'rgba(0,0,0,0)');
   grad.addColorStop(1, 'rgba(0,0,0,0.22)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
 
-  const onColor = p.onAccent;               // kontrastfärg mot färgblocket
+  // Textfärg som kontrasterar mot blocket.
+  const onColor = adgenLum(blockColor) > 150 ? '#1a1410' : '#ffffff';
   const pad = Math.round(W * 0.07);
   const textMaxW = W - pad * 2;
   const hasCta = !!(copy.cta && copy.cta.trim());
@@ -8323,16 +8328,23 @@ function drawAdColorBlock(p) {
     ctx.restore();
   }
 
-  // CTA-knapp nedtill (ljus pill med accentfärgad text).
+  // CTA-knapp nedtill. Knappen är en ljus pill; texten måste kontrastera mot
+  // VITT (inte accentfärgen – då blir en ljus accent osynlig). Vi väljer en
+  // mörk knappfärg om accenten är ljus, annars accentfärgad knapp med vit text.
   if (hasCta) {
     const ctaSz = Math.round(W * 0.036);
     ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
     const cw = ctx.measureText(copy.cta).width + ctaSz * 2;
     const ch = ctaSz * 2.3;
     const cy = H - pad - ch;
-    ctx.fillStyle = '#ffffff';
+    // Knappen ska kontrastera mot blocket. Ljust block → mörk knapp; mörkt
+    // block → ljus knapp. Texten kontrasterar alltid mot knappen.
+    const blockLight = adgenLum(blockColor) > 150;
+    const btnBg = blockLight ? '#1e1a17' : '#ffffff';
+    const btnText = blockLight ? '#ffffff' : (accentLight ? '#1e1a17' : p.accent);
+    ctx.fillStyle = btnBg;
     roundRect(ctx, pad, cy, cw, ch, ch * 0.5);
-    ctx.fillStyle = p.accent;
+    ctx.fillStyle = btnText;
     ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     ctx.fillText(copy.cta, pad + cw / 2, cy + ch / 2);
     ctx.textAlign = 'left';
