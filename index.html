@@ -8340,7 +8340,24 @@ function drawAd(formatId, fmt, copy, uid, style) {
     const bfn = bannerTemplates[useStyle] || drawBannerClean;
     bfn(parts);
   } else if (ratio <= 0.6) {
-    drawAdVertical(parts);
+    // Höga format. Stories (bred nog) får stilval; mycket smala (skyscraper)
+    // får en enda ren layout eftersom stilarna inte får plats.
+    const isNarrow = W < 260; // skyscraper 160px o.likn.
+    if (isNarrow) {
+      if (useStyle === 'template-colorblock') drawTallColorBlock(parts);
+      else drawTallClean(parts);
+    } else {
+      const tall = {
+        'template-diagonal': drawTallDiagonal,
+        'template-colorblock': drawTallColorBlock,
+        'template-premium': drawTallPremium,
+        'template-boldtext': drawTallBoldText,
+        'template-split': drawTallClean,
+        'template-angle': drawTallDiagonal
+      };
+      const tfn = tall[useStyle] || drawTallClean;
+      tfn(parts);
+    }
   } else {
     const templates = {
       'template-diagonal': drawAdDiagonal,
@@ -8628,15 +8645,16 @@ function drawAdColorBlock(p) {
     ctx.globalAlpha = 1;
   }
 
-  // Bild inbäddad, större och direkt efter texten (ingen tom luft).
+  // Bild inbäddad, når högre (närmare rubriken) och med RAKA hörn.
   // Om ingen bild finns hoppar vi över kortet – färgblocket bär annonsen självt.
   if (_adgenImage) {
-    const imgTop = y + Math.round(H * 0.03);           // strax under texten
+    const imgTop = y + Math.round(H * 0.015);          // tätare inpå texten
     const ctaSpace = hasCta ? Math.round(H * 0.15) : Math.round(H * 0.06);
-    const imgBottom = H - ctaSpace;                     // ner till strax ovanför CTA
+    const imgBottom = H - ctaSpace;
     const imgX = pad, imgW = W - pad * 2, imgH = imgBottom - imgTop;
     ctx.save();
-    roundRect(ctx, imgX, imgTop, imgW, imgH, Math.round(W * 0.03));
+    ctx.beginPath();
+    ctx.rect(imgX, imgTop, imgW, imgH);                // raka hörn
     ctx.clip();
     drawAdImageInto(ctx, imgX, imgTop, imgW, imgH);
     ctx.restore();
@@ -9133,6 +9151,209 @@ function drawAdHorizontal(p) {
 
 // LAYOUT: Vertikal – för kvadrat, medelrektangel och stående format.
 // Text staplad nedtill över bilden, med ordentlig luft och ingen överlappning.
+// ── HÖGA MALLAR (stories 1080×1920, skyscraper 160×600) ─────────────────────
+// Raka hörn genomgående. Text staplad i höjd. Skyscraper hålls extra enkel.
+
+// Ren – bild bakgrund + toning, text staplad nertill. Funkar även smalt.
+function drawTallClean(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0.3)');
+  grad.addColorStop(0.5, 'rgba(0,0,0,0.1)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.82)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  const pad = Math.round(W * 0.07);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hlSz = Math.round(W * 0.085);
+  ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
+  let by = H - pad;
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.05);
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
+    const cw = ctx.measureText(copy.cta + ' →').width + ctaSz * 1.7;
+    const ch = ctaSz * 2.2;
+    by -= ch;
+    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta + ' →', ctaSz);
+    by -= Math.round(H * 0.02);
+  }
+  ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
+  ctx.fillStyle = '#ffffff';
+  const lines = estimateLines(ctx, copy.headline || '', W - pad * 2);
+  ctx.textBaseline = 'bottom';
+  // Rita rubriken uppåt från by (flera rader).
+  const lineH = hlSz * 1.08;
+  wrapTextUp(ctx, copy.headline || '', pad, by, W - pad * 2, lineH);
+  // Avsändare uppe.
+  const company = (document.getElementById('ac-company') || {}).value || '';
+  if (company) {
+    ctx.font = '700 ' + Math.round(W * 0.04) + 'px ' + adgenFontFamily();
+    ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'top';
+    ctx.fillText(company.toUpperCase(), pad, pad);
+  }
+}
+
+// Hjälpare: rita radbruten text UPPÅT från en bottenpunkt (för nedre-justerad text).
+function wrapTextUp(ctx, text, x, bottomY, maxW, lineH) {
+  const words = (text || '').split(' ');
+  const lines = []; let line = '';
+  words.forEach(function(w){
+    const t = line + (line ? ' ' : '') + w;
+    if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; }
+    else line = t;
+  });
+  if (line) lines.push(line);
+  ctx.textBaseline = 'bottom';
+  for (let i = lines.length - 1, yy = bottomY; i >= 0; i--, yy -= lineH) {
+    ctx.fillText(lines[i], x, yy);
+  }
+}
+
+// Diagonal – bild och färgfält möts diagonalt, text nertill (raka ytor).
+function drawTallDiagonal(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(0, H * 0.52); ctx.lineTo(W, H * 0.42); ctx.lineTo(W, H); ctx.lineTo(0, H);
+  ctx.closePath(); ctx.fillStyle = '#241f1b'; ctx.globalAlpha = 0.97; ctx.fill();
+  ctx.restore();
+  const pad = Math.round(W * 0.07);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hlSz = Math.round(W * 0.08);
+  ctx.textAlign = 'left';
+  let by = H - pad;
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.048);
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
+    const cw = ctx.measureText(copy.cta + ' →').width + ctaSz * 1.7;
+    const ch = ctaSz * 2.2;
+    by -= ch;
+    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta + ' →', ctaSz);
+    by -= Math.round(H * 0.02);
+  }
+  ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
+  ctx.fillStyle = '#ffffff';
+  wrapTextUp(ctx, copy.headline || '', pad, by, W - pad * 2, hlSz * 1.08);
+  const company = (document.getElementById('ac-company') || {}).value || '';
+  if (company) {
+    ctx.font = '700 ' + Math.round(W * 0.04) + 'px ' + adgenFontFamily();
+    ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'top';
+    ctx.fillText(company.toUpperCase(), pad, pad);
+  }
+}
+
+// Färgblock – hel färg, rubrik upptill, bild HÖGT (nära rubriken), knapp nertill.
+function drawTallColorBlock(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const accentLight = adgenLum(p.accent) > 200;
+  const block = accentLight ? '#241f1b' : p.accent;
+  ctx.fillStyle = block; ctx.fillRect(0, 0, W, H);
+  const onBlock = adgenLum(block) > 150 ? '#1a1410' : '#ffffff';
+  const pad = Math.round(W * 0.07);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hlSz = Math.round(W * 0.09);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
+  ctx.fillStyle = onBlock;
+  let y = Math.round(H * 0.05);
+  const hlLines = estimateLines(ctx, copy.headline || '', W - pad * 2);
+  wrapText(ctx, copy.headline || '', pad, y, W - pad * 2, hlSz * 1.08);
+  y += hlLines * hlSz * 1.08 + Math.round(H * 0.012);   // bild direkt efter rubrik
+
+  // Bild högt uppe, nära rubriken, raka hörn.
+  if (_adgenImage) {
+    const imgTop = y;
+    const ctaSpace = hasCta ? Math.round(H * 0.11) : Math.round(H * 0.05);
+    const imgBottom = H - ctaSpace;
+    ctx.save(); ctx.beginPath();
+    ctx.rect(pad, imgTop, W - pad * 2, imgBottom - imgTop); ctx.clip();
+    drawAdImageInto(ctx, pad, imgTop, W - pad * 2, imgBottom - imgTop);
+    ctx.restore();
+  }
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.05);
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
+    const cw = ctx.measureText(copy.cta + ' →').width + ctaSz * 1.7;
+    const ch = ctaSz * 2.2;
+    const cyy = H - pad - ch;
+    const blockLight = adgenLum(block) > 150;
+    ctx.fillStyle = blockLight ? '#1e1a17' : '#ffffff';
+    roundRect(ctx, pad, cyy, cw, ch, ch * 0.5);   // knapp behåller rundning
+    ctx.fillStyle = blockLight ? '#ffffff' : (accentLight ? '#1e1a17' : p.accent);
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta + ' →', pad + cw / 2, cyy + ch / 2);
+    ctx.textAlign = 'left';
+  }
+}
+
+// Djärv text – enorm rubrik på foto.
+function drawTallBoldText(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0.55)');
+  grad.addColorStop(0.45, 'rgba(0,0,0,0.1)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.8)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  const pad = Math.round(W * 0.07);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hlSz = Math.round(W * 0.15);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 14;
+  wrapText(ctx, copy.headline || '', pad, Math.round(H * 0.06), W - pad * 2, hlSz * 0.98);
+  ctx.shadowBlur = 0;
+  let by = H - pad;
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.05);
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
+    const cw = ctx.measureText(copy.cta + ' →').width + ctaSz * 1.7;
+    const ch = ctaSz * 2.2;
+    by -= ch;
+    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta + ' →', ctaSz);
+    by -= Math.round(H * 0.02);
+  }
+  if (copy.subline && copy.subline.trim()) {
+    const sSz = Math.round(W * 0.05);
+    ctx.font = '500 ' + sSz + 'px ' + adgenFontFamily();
+    ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'bottom';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
+    ctx.fillText(copy.subline, pad, by);
+    ctx.shadowBlur = 0;
+  }
+}
+
+// Premium – ljus, elegant, bild upptill, centrerad serif nedtill (raka hörn).
+function drawTallPremium(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  ctx.fillStyle = '#efe9e0'; ctx.fillRect(0, 0, W, H);
+  const imgH = Math.round(H * 0.60);
+  drawAdImageInto(ctx, 0, 0, W, imgH);  // rak överkant, fyller bredden
+  const pad = Math.round(W * 0.08);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const cx = W / 2;
+  const hlSz = Math.round(W * 0.07);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.font = '500 ' + hlSz + 'px Georgia,"Times New Roman",serif';
+  ctx.fillStyle = '#2C2520';
+  const hlLines = estimateLines(ctx, copy.headline || '', W - pad * 2);
+  let y = imgH + (H - imgH) * 0.22;
+  wrapText(ctx, copy.headline || '', cx, y, W - pad * 2, hlSz * 1.2);
+  y += hlLines * hlSz * 1.2 + Math.round(H * 0.02);
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.032);
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
+    const cw = ctx.measureText(copy.cta.toUpperCase()).width + ctaSz * 2.4;
+    const ch = ctaSz * 2.6;
+    ctx.strokeStyle = '#2C2520'; ctx.lineWidth = Math.max(1.5, W * 0.004);
+    ctx.strokeRect(cx - cw / 2, y, cw, ch);   // rak kontur-knapp för premium
+    ctx.fillStyle = '#2C2520'; ctx.textBaseline = 'middle';
+    ctx.fillText(copy.cta.toUpperCase(), cx, y + ch / 2);
+  }
+  ctx.textAlign = 'left';
+}
+
 function drawAdVertical(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
   drawAdImageInto(ctx, 0, 0, W, H);
