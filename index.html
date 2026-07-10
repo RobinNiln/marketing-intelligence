@@ -2856,6 +2856,22 @@ body.brief-mode{background:#FBFAF7}
             <div class="adgen-style-thumb" style="position:relative;background:#C9A84C"><div style="position:absolute;top:3px;left:5px;right:5px;height:3px;background:rgba(255,255,255,0.9);border-radius:1px"></div><div style="position:absolute;top:12px;left:8px;right:8px;bottom:8px;background:linear-gradient(135deg,#8a7355,#5a4a38);border-radius:2px"></div></div>
             <div class="adgen-style-name">Färgblock</div>
           </div>
+          <div class="adgen-style-opt" data-style="template-premium" onclick="adgenSelectStyle('template-premium')">
+            <div class="adgen-style-thumb" style="background:#efe9e0"><div style="height:54%;background:linear-gradient(135deg,#a89f8e,#8a8578)"></div><div style="height:46%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px"><div style="width:22px;height:4px;background:#2C2520;border-radius:1px"></div><div style="width:14px;height:2px;background:#9c948a"></div></div></div>
+            <div class="adgen-style-name">Premium</div>
+          </div>
+          <div class="adgen-style-opt" data-style="template-boldtext" onclick="adgenSelectStyle('template-boldtext')">
+            <div class="adgen-style-thumb" style="position:relative;background:linear-gradient(135deg,#8a7355,#3a2f22)"><div style="position:absolute;top:4px;left:5px;right:14px;height:7px;background:#fff;border-radius:1px"></div><div style="position:absolute;top:13px;left:5px;width:14px;height:5px;background:#fff;border-radius:1px;opacity:0.7"></div><div style="position:absolute;bottom:4px;left:5px;width:16px;height:5px;background:#C9A84C;border-radius:2px"></div></div>
+            <div class="adgen-style-name">Djärv text</div>
+          </div>
+          <div class="adgen-style-opt" data-style="template-angle" onclick="adgenSelectStyle('template-angle')">
+            <div class="adgen-style-thumb" style="position:relative;background:linear-gradient(135deg,#8a7355,#5a4a38)"><div style="position:absolute;inset:0;clip-path:polygon(0 0,52% 0,30% 100%,0 100%);background:#C9A84C"></div><div style="position:absolute;top:14px;left:4px;width:12px;height:3px;background:#1a1410"></div></div>
+            <div class="adgen-style-name">Vinkel</div>
+          </div>
+          <div class="adgen-style-opt" data-style="template-split" onclick="adgenSelectStyle('template-split')">
+            <div class="adgen-style-thumb" style="position:relative;background:linear-gradient(135deg,#6a6152,#3a352c)"><div style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:14px;height:3px;background:#fff"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:4px;background:#fff;opacity:0.9;border-radius:1px"></div><div style="position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:18px;height:5px;border:1px solid #fff;border-radius:3px"></div></div>
+            <div class="adgen-style-name">Split</div>
+          </div>
           <div class="adgen-style-opt" data-style="template-light" onclick="adgenSelectStyle('template-light')">
             <div class="adgen-style-thumb"><div style="height:58%;background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="height:42%;background:#fff;position:relative"><div style="position:absolute;top:4px;left:5px;width:12px;height:2px;background:#C9A84C"></div><div style="position:absolute;top:9px;left:5px;right:5px;height:3px;background:#ccc;border-radius:1px"></div></div></div>
             <div class="adgen-style-name">Ljus</div>
@@ -8255,6 +8271,10 @@ function drawAd(formatId, fmt, copy) {
     const templates = {
       'template-diagonal': drawAdDiagonal,
       'template-colorblock': drawAdColorBlock,
+      'template-premium': drawAdPremium,
+      'template-boldtext': drawAdBoldText,
+      'template-angle': drawAdAngleCut,
+      'template-split': drawAdCleanSplit,
       'template-bold': drawAdBoldField,
       'template-light': drawAdTemplate,
       'template-dark': drawAdTemplate
@@ -8275,6 +8295,218 @@ function drawAd(formatId, fmt, copy) {
 // MALL 2: Färgblock – hela ytan är färg, rubrik stor upptill, bild inbäddad
 // nedtill (à la Telia/Tre). Här BÄR färgen annonsen; bilden är ett komplement,
 // inte bakgrund. Passar starka varumärkesfärger.
+// MALL 3: Premium – mycket luft, elegant, dämpat (à la Cohen/Wrede).
+// Ljus bakgrund, serif-känsla, centrerad text, tunn kontur-CTA. Lugnt/exklusivt.
+function drawAdPremium(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  // Ljus, varm bakgrund.
+  ctx.fillStyle = '#efe9e0';
+  ctx.fillRect(0, 0, W, H);
+
+  // Bild upptill (56%), lugn.
+  const imgH = Math.round(H * 0.54);
+  drawAdImageInto(ctx, 0, 0, W, imgH);
+
+  const pad = Math.round(W * 0.08);
+  const textMaxW = W - pad * 2;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+
+  // Centrerad, elegant typografi i nedre fältet.
+  const headlineSz = Math.round(W * 0.062);
+  const sublineSz  = Math.round(W * 0.03);
+  const ctaSz      = Math.round(W * 0.028);
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  // Georgia ger serif-känsla (finns brett). Fallback till serif.
+  ctx.font = '500 ' + headlineSz + 'px Georgia,"Times New Roman",serif';
+  ctx.fillStyle = '#2C2520';
+  const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
+  const hlBlock = hlLines * headlineSz * 1.2;
+  const slBlock = hasSub ? sublineSz * 1.4 : 0;
+  const ctaH = hasCta ? ctaSz * 2.6 : 0;
+  const gap1 = hasSub ? Math.round(H * 0.02) : 0;
+  const gap2 = hasCta ? Math.round(H * 0.03) : 0;
+  const totalBlock = hlBlock + gap1 + slBlock + gap2 + ctaH;
+  let y = imgH + (H - imgH - totalBlock) / 2;
+  const cx = W / 2;
+
+  wrapText(ctx, copy.headline || '', cx, y, textMaxW, headlineSz * 1.2);
+  y += hlBlock + gap1;
+
+  if (hasSub) {
+    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = '#6b655c';
+    // Versaler + luft för premium-känsla på sublinen.
+    wrapText(ctx, copy.subline.toUpperCase(), cx, y, textMaxW, sublineSz * 1.4);
+    y += slBlock;
+  }
+
+  if (hasCta) {
+    y += gap2;
+    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta.toUpperCase()).width + ctaSz * 2.4;
+    const ch = ctaSz * 2.6;
+    const cx2 = cx - cw / 2;
+    ctx.strokeStyle = '#2C2520'; ctx.lineWidth = Math.max(1.5, W * 0.0015);
+    ctx.strokeRect(cx2, y, cw, ch);
+    ctx.fillStyle = '#2C2520';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(copy.cta.toUpperCase(), cx, y + ch / 2);
+  }
+  ctx.textAlign = 'left';
+}
+
+// MALL 4: Djärv text – rubriken bär allt. Enorm, tight typografi på foto.
+function drawAdBoldText(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  drawAdImageInto(ctx, 0, 0, W, H);
+  // Toning uppifrån och ner för läsbarhet i båda ändar.
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0.55)');
+  grad.addColorStop(0.4, 'rgba(0,0,0,0.15)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.78)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  const pad = Math.round(W * 0.06);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+
+  // ENORM rubrik upptill – det bärande elementet.
+  const headlineSz = Math.round(W * 0.12);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12;
+  wrapText(ctx, copy.headline || '', pad, Math.round(H * 0.07), W - pad * 2, headlineSz * 0.98);
+  ctx.shadowBlur = 0;
+
+  // Subline + CTA nedtill.
+  let by = H - pad;
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.038);
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta).width + ctaSz * 1.9;
+    const ch = ctaSz * 2.2;
+    by -= ch;
+    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta, ctaSz);
+    by -= Math.round(H * 0.02);
+  }
+  if (hasSub) {
+    const sublineSz = Math.round(W * 0.038);
+    ctx.font = '500 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
+    ctx.fillText(copy.subline, pad, by);
+    ctx.shadowBlur = 0;
+  }
+}
+
+// MALL 5: Vinkelsnitt – en vass färgvinkel skär in från sidan (à la TV4).
+function drawAdAngleCut(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  // Bild som bakgrund.
+  drawAdImageInto(ctx, 0, 0, W, H);
+
+  // Färgvinkel som skär in från vänster (en kil).
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(W * 0.52, 0);
+  ctx.lineTo(W * 0.30, H);
+  ctx.lineTo(0, H);
+  ctx.closePath();
+  ctx.fillStyle = p.accent;
+  ctx.globalAlpha = 0.96;
+  ctx.fill();
+  ctx.restore();
+
+  const pad = Math.round(W * 0.06);
+  const onColor = p.onAccent;
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const tw = W * 0.36;
+
+  const headlineSz = Math.round(W * 0.07);
+  const ctaSz = Math.round(W * 0.032);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = onColor;
+  const hlLines = estimateLines(ctx, copy.headline || '', tw);
+  let y = H * 0.5 - (hlLines * headlineSz * 1.1) / 2;
+  wrapText(ctx, copy.headline || '', pad, y, tw, headlineSz * 1.1);
+  y += hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
+
+  if (hasCta) {
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta).width + ctaSz * 1.8;
+    const ch = ctaSz * 2.2;
+    // Knapp i kontrastfärg mot vinkeln.
+    const angleLight = adgenLum(p.accent) > 150;
+    ctx.fillStyle = angleLight ? '#1e1a17' : '#ffffff';
+    roundRect(ctx, pad, y, cw, ch, ch * 0.5);
+    ctx.fillStyle = angleLight ? '#ffffff' : p.accent;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta, pad + cw / 2, y + ch / 2);
+    ctx.textAlign = 'left';
+  }
+}
+
+// MALL 6: Split ren – tvådelning, centrerad text, avsändare stort uppe (SEB).
+function drawAdCleanSplit(p) {
+  const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  // Övre del bild, nedre del mörkt fält – eller tvärtom för variation.
+  drawAdImageInto(ctx, 0, 0, W, H);
+  // Mörk platta över hela med lätt toning – texten centreras rent.
+  ctx.fillStyle = 'rgba(20,17,14,0.55)';
+  ctx.fillRect(0, 0, W, H);
+
+  const pad = Math.round(W * 0.08);
+  const hasCta = !!(copy.cta && copy.cta.trim());
+  const hasSub = !!(copy.subline && copy.subline.trim());
+  const cx = W / 2;
+
+  // Avsändare/rubrik-etikett stort uppe (versaler, spärrat).
+  const topSz = Math.round(W * 0.04);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.font = '800 ' + topSz + 'px -apple-system,Arial,sans-serif';
+  ctx.fillStyle = '#ffffff';
+  if (copy.badge) ctx.fillText(copy.badge.toUpperCase(), cx, Math.round(H * 0.09));
+
+  // Centrerad rubrik i mitten.
+  const headlineSz = Math.round(W * 0.07);
+  ctx.font = '600 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  const hlLines = estimateLines(ctx, copy.headline || '', W - pad * 2);
+  let y = H / 2 - (hlLines * headlineSz * 1.15) / 2;
+  wrapText(ctx, copy.headline || '', cx, y, W - pad * 2, headlineSz * 1.15);
+
+  // CTA nedtill (kontur-pill).
+  if (hasCta) {
+    const ctaSz = Math.round(W * 0.032);
+    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    const cw = ctx.measureText(copy.cta + '  →').width + ctaSz * 2;
+    const ch = ctaSz * 2.4;
+    const cyy = H - pad - ch;
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = Math.max(1.5, W * 0.0015);
+    roundRect2(ctx, cx - cw / 2, cyy, cw, ch, ch * 0.5, true);
+    ctx.fillStyle = '#ffffff';
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(copy.cta + '  →', cx, cyy + ch / 2);
+  }
+  ctx.textAlign = 'left';
+}
+
+// roundRect-variant som kan stroka (kontur) i stället för att fylla.
+function roundRect2(ctx, x, y, w, h, r, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+  if (stroke) ctx.stroke(); else ctx.fill();
+}
+
 function drawAdColorBlock(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
 
