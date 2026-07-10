@@ -8880,7 +8880,10 @@ function drawAdLogo(ctx, W, H) {
 
 // Hjälpare: rita bakgrundsbilden beskuren till en yta (x,y,w,h på canvasen).
 function drawAdImageInto(ctx, x, y, w, h) {
-  if (!_adgenImage) {
+  // Rita platshållare om bilden saknas ELLER inte är färdigladdad/giltig.
+  // (En Image kan finnas men ännu inte vara klar – då kraschar drawImage.)
+  const imgReady = _adgenImage && _adgenImage.complete && _adgenImage.naturalWidth > 0;
+  if (!imgReady) {
     // Ingen bild uppladdad än – rita en diskret, neutral platshållare med en
     // liten bild-ikon, i stället för ett svart hål. Ser OK ut i förhandsvisning.
     ctx.save();
