@@ -8562,11 +8562,12 @@ function drawAdColorBlock(p) {
     ctx.globalAlpha = 1;
   }
 
-  // Bild inbäddad i nedre delen, som ett "kort" med rundade hörn.
+  // Bild inbäddad, större och direkt efter texten (ingen tom luft).
   // Om ingen bild finns hoppar vi över kortet – färgblocket bär annonsen självt.
   if (_adgenImage) {
-    const imgTop = Math.round(H * 0.40);
-    const imgBottom = hasCta ? Math.round(H * 0.82) : Math.round(H * 0.92);
+    const imgTop = y + Math.round(H * 0.03);           // strax under texten
+    const ctaSpace = hasCta ? Math.round(H * 0.15) : Math.round(H * 0.06);
+    const imgBottom = H - ctaSpace;                     // ner till strax ovanför CTA
     const imgX = pad, imgW = W - pad * 2, imgH = imgBottom - imgTop;
     ctx.save();
     roundRect(ctx, imgX, imgTop, imgW, imgH, Math.round(W * 0.03));
