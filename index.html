@@ -2846,7 +2846,7 @@ body.brief-mode{background:#FBFAF7}
       <div class="adgen-upload-zone" id="adgen-upload-zone"><input type="file" id="adgen-file-input" accept="image/*" onchange="adgenHandleFile(this.files[0])"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:8px"><rect x="2" y="6" width="28" height="20" rx="3"/><circle cx="11" cy="14" r="3"/><path d="M2 24l7-6 5 5 4-4 7 7"/></svg><div style="font-size:14px;font-weight:600;color:#2C2520;margin-bottom:4px">Klicka eller dra hit en bild</div><div style="font-size:12px;color:#9A8570">JPG, PNG eller WebP</div><img id="adgen-preview" class="adgen-preview-img"></div>
       <div class="adcopy-section-title">Logga <span style="font-weight:400;color:#b5b0a8;font-size:12px;text-transform:none;letter-spacing:0">valfritt</span></div>
       <div class="adgen-upload-zone" id="adgen-logo-zone" style="padding:1.25rem"><input type="file" id="adgen-logo-input" accept="image/png,image/svg+xml,image/webp" onchange="adgenHandleLogo(this.files[0])"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D4A857" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:6px"><rect x="4" y="4" width="24" height="24" rx="4"/><path d="M11 20l4-6 3 4 2-2 3 4"/></svg><div style="font-size:13px;font-weight:600;color:#2C2520;margin-bottom:3px">Ladda upp er logga</div><div style="font-size:11px;color:#9A8570">Helst PNG med transparent bakgrund</div><img id="adgen-logo-preview" class="adgen-preview-img" style="max-height:60px"></div>
-      <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Mall (annonsens stil)</label>
+      <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Mall (annonsens stil) <span style="font-weight:400;color:#9A8570">– välj en eller flera</span></label>
         <div id="adgen-style-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:6px">
           <div class="adgen-style-opt" data-style="template-diagonal" onclick="adgenSelectStyle('template-diagonal')">
             <div class="adgen-style-thumb" style="position:relative;background:#1c1a1e"><div style="position:absolute;inset:0;clip-path:polygon(0 0,100% 0,100% 46%,0 60%);background:linear-gradient(135deg,#8a7355,#5a4a38)"></div><div style="position:absolute;left:5px;bottom:4px;width:14px;height:3px;background:#C9A84C"></div></div>
@@ -6144,10 +6144,10 @@ async function applyBrandProfileToAdgen() {
   const p = _brandProfile || await fetchBrandProfile();
   if (!p) return;
   fillIfEmpty('ac-company', p.company);
-  // Förvälj sparad mall i AdStudio-galleriet.
-  _adgenStyle = p.ad_style || 'template-light';
+  // Förvälj sparad mall i galleriet (flerval; starta med profilens som enda vald).
+  _adgenStyles = [p.ad_style || 'template-diagonal'];
   document.querySelectorAll('#adgen-style-grid .adgen-style-opt').forEach(function(el){
-    el.classList.toggle('sel', el.getAttribute('data-style') === _adgenStyle);
+    el.classList.toggle('sel', _adgenStyles.indexOf(el.getAttribute('data-style')) > -1);
   });
   const colorField = document.getElementById('ac-color');
   if (colorField && p.ad_color) colorField.value = p.ad_color;
@@ -7835,23 +7835,31 @@ function adgenBrandStyle() {
   const pickerColor = picker ? picker.value : null;
   return {
     color: pickerColor || (p && p.ad_color) || '#C9A84C',
-    style: _adgenStyle || (p && p.ad_style) || 'template-light'
+    style: (_adgenStyles && _adgenStyles[0]) || (p && p.ad_style) || 'template-light'
   };
 }
 
 // Väljer mall i AdStudio: markerar valet, ritar om annonserna live, och sparar
 // valet till profilen så det minns till nästa gång.
+// Flerval av mallar: toggla en stil in/ur listan _adgenStyles.
+let _adgenStyles = ['template-diagonal']; // minst en vald
 function adgenSelectStyle(style) {
-  _adgenStyle = style;
+  const i = _adgenStyles.indexOf(style);
+  if (i > -1) {
+    if (_adgenStyles.length > 1) _adgenStyles.splice(i, 1); // låt inte tömma helt
+  } else {
+    _adgenStyles.push(style);
+  }
+  // Markera alla valda i galleriet.
   document.querySelectorAll('#adgen-style-grid .adgen-style-opt').forEach(function(el){
-    el.classList.toggle('sel', el.getAttribute('data-style') === style);
+    el.classList.toggle('sel', _adgenStyles.indexOf(el.getAttribute('data-style')) > -1);
   });
-  // Rita om alla genererade annonser med nya mallen.
+  // Rita om (om annonser redan genererats).
   if (_adgenCopyData) renderAdGenResult();
-  // Spara tyst till profilen (om inloggad) så valet blir kvar.
+  // Spara första valet som profilens default.
   if (_currentUser && _brandProfile) {
-    _brandProfile.ad_style = style;
-    sb().from('brand_profiles').update({ ad_style: style }).eq('user_id', _currentUser.id).then(function(){}, function(){});
+    _brandProfile.ad_style = _adgenStyles[0];
+    sb().from('brand_profiles').update({ ad_style: _adgenStyles[0] }).eq('user_id', _currentUser.id).then(function(){}, function(){});
   }
 }
 
@@ -8126,9 +8134,10 @@ async function generateAdGen() {
 // Live-redigering av en enskild annons: fäll ut/in redigeringsfältet.
 // "Klar": stänger redigeringsfältet. Ändringarna ligger redan i _adgenCopyData
 // (uppdaterade live), så vi ger bara en tydlig bekräftelse och fäller in fältet.
-function adgenSaveEdit(formatId) {
-  adgenEditField(formatId); // säkerställ att senaste värdena är sparade
-  const panel = document.getElementById('edit-panel-' + formatId);
+function adgenSaveEdit(uid) {
+  const formatId = uid.indexOf('__') > -1 ? uid.split('__')[0] : uid;
+  adgenEditField(uid, formatId); // säkerställ att senaste värdena är sparade
+  const panel = document.getElementById('edit-panel-' + uid);
   if (panel) panel.style.display = 'none';
   const btn = panel && panel.parentNode ? panel.parentNode.querySelector('.adgen-edit-btn') : null;
   if (btn) {
@@ -8144,81 +8153,86 @@ function adgenToggleEdit(formatId) {
 }
 
 // Läser textrutorna för EN annons, uppdaterar datan, ritar om just den annonsen.
-function adgenEditField(formatId) {
-  if (!_adgenCopyData[formatId]) _adgenCopyData[formatId] = {};
-  const hl = document.getElementById('edit-headline-' + formatId);
-  const sl = document.getElementById('edit-subline-' + formatId);
-  const cta = document.getElementById('edit-cta-' + formatId);
-  const col = document.getElementById('edit-color-' + formatId);
-  if (hl) _adgenCopyData[formatId].headline = hl.value;
-  if (sl) _adgenCopyData[formatId].subline = sl.value;
-  if (cta) _adgenCopyData[formatId].cta = cta.value;
-  // Per-annons färg sparas separat så den överlever omritning.
+function adgenEditField(uid, formatId) {
+  // Bakåtkompatibelt: om formatId saknas, anta att uid = formatId (gammalt läge).
+  formatId = formatId || uid;
+  // Redigerad copy lagras per uid (så varje stil-variant kan ha egen text).
+  if (!window._adgenEditCopy) window._adgenEditCopy = {};
+  const base = _adgenCopyData[formatId] || {};
+  const c = window._adgenEditCopy[uid] || Object.assign({}, base);
+  const hl = document.getElementById('edit-headline-' + uid);
+  const sl = document.getElementById('edit-subline-' + uid);
+  const cta = document.getElementById('edit-cta-' + uid);
+  const col = document.getElementById('edit-color-' + uid);
+  if (hl) c.headline = hl.value;
+  if (sl) c.subline = sl.value;
+  if (cta) c.cta = cta.value;
+  window._adgenEditCopy[uid] = c;
   if (col) {
     if (!window._adgenColorOverrides) window._adgenColorOverrides = {};
-    window._adgenColorOverrides[formatId] = col.value;
+    window._adgenColorOverrides[uid] = col.value;
   }
-  // Rita om BARA denna annons (inte hela listan).
-  drawAd(formatId, ADGEN_FORMATS[formatId], _adgenCopyData[formatId]);
+  // Härled stil ur uid (formatId__style) för korrekt omritning.
+  const style = uid.indexOf('__') > -1 ? uid.split('__')[1] : null;
+  drawAd(formatId, ADGEN_FORMATS[formatId], c, uid, style);
 }
 
 function renderAdGenResult() {
   const grid = document.getElementById('adgen-result-grid');
   grid.innerHTML = '';
+  // Vilka stilar gäller? Bara relevanta för kvadrat/rektangel. För breda/smala
+  // format finns bara en layout, så där ritar vi en gång (stil spelar ingen roll).
+  const styles = (_adgenStyles && _adgenStyles.length) ? _adgenStyles : ['template-diagonal'];
+  const styleNames = {
+    'template-diagonal':'Diagonal','template-colorblock':'Färgblock','template-premium':'Premium',
+    'template-boldtext':'Djärv text','template-angle':'Vinkel','template-split':'Split',
+    'template-bold':'Djärv','template-light':'Ljus','template-dark':'Mörk'
+  };
+
   _adgenFormats.forEach(function(formatId) {
     const fmt  = ADGEN_FORMATS[formatId];
     const copy = _adgenCopyData[formatId] || {};
-    // Skala så annonsen får plats i kortet (~300px brett) och behåller exakt
-    // proportion. Vi skalar på bredden; höjden följer med samma skala.
-    const maxDisp = 300;
-    const scale = Math.min(1, maxDisp / fmt.w);
-    const dispW = Math.round(fmt.w * scale);
-    const dispH = Math.round(fmt.h * scale);
-    const card = document.createElement('div');
-    card.className = 'adgen-result-card';
-    let html = '<div class="adgen-result-label">' + fmt.label + '</div>' +
-      '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px">' +
-        '<canvas id="canvas-' + formatId + '" width="' + fmt.w + '" height="' + fmt.h + '" style="width:' + dispW + 'px;aspect-ratio:' + fmt.w + '/' + fmt.h + ';height:auto"></canvas>' +
-      '</div>' +
-      '<button class="adgen-dl-btn" onclick="adgenDownload(\'' + formatId + '\')">' +
-        '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
-        'Ladda ner PNG (' + fmt.w + 'x' + fmt.h + ')' +
-      '</button>' +
-      '<button class="adgen-edit-btn" onclick="adgenToggleEdit(\'' + formatId + '\')">' +
-        '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l3 3-6.5 6.5H2v-3z"/></svg>' +
-        'Redigera' +
-      '</button>' +
-      '<div class="adgen-edit-panel" id="edit-panel-' + formatId + '" style="display:none">' +
-        '<label class="adgen-edit-label">Rubrik</label>' +
-        '<input class="adgen-edit-input" id="edit-headline-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.headline || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
-        '<label class="adgen-edit-label">Underrubrik</label>' +
-        '<input class="adgen-edit-input" id="edit-subline-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.subline || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
-        '<label class="adgen-edit-label">Knapptext (CTA)</label>' +
-        '<input class="adgen-edit-input" id="edit-cta-' + formatId + '" type="text" value="' + adgenEscapeHtml(copy.cta || '') + '" oninput="adgenEditField(\'' + formatId + '\')">' +
-        '<label class="adgen-edit-label">Accentfärg</label>' +
-        '<div style="display:flex;align-items:center;gap:10px"><input type="color" id="edit-color-' + formatId + '" value="' + (document.getElementById('ac-color') ? document.getElementById('ac-color').value : '#C9A84C') + '" oninput="adgenEditField(\'' + formatId + '\')" style="width:44px;height:36px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff"><span style="font-size:12px;color:#9A8570">gäller denna annons</span></div>' +
-        '<button class="adgen-edit-done" onclick="adgenSaveEdit(\'' + formatId + '\')">Klar</button>' +
-      '</div>';
-    if (fmt.html5) {
-      html +=
-      '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #F0EEE8">' +
-        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:8px">HTML5-banner · live</div>' +
-        '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px;overflow:hidden">' +
-          '<iframe id="iframe-' + formatId + '" style="width:' + fmt.w + 'px;height:' + fmt.h + 'px;border:0;transform:scale(' + scale + ');transform-origin:top left" scrolling="no"></iframe>' +
+    const ratio = fmt.w / fmt.h;
+    const isSquareish = ratio < 2.2 && ratio > 0.6; // stilarna gäller bara här
+    // För kvadrat/rektangel: en annons per vald stil. Annars: en enda.
+    const useStyles = isSquareish ? styles : [null];
+
+    useStyles.forEach(function(style) {
+      const uid = style ? (formatId + '__' + style) : formatId;
+      const maxDisp = 300;
+      const scale = Math.min(1, maxDisp / fmt.w);
+      const dispW = Math.round(fmt.w * scale);
+      const dispH = Math.round(fmt.h * scale);
+      const card = document.createElement('div');
+      card.className = 'adgen-result-card';
+      const styleTag = style ? ' · ' + (styleNames[style] || '') : '';
+      let html = '<div class="adgen-result-label">' + fmt.label + styleTag + '</div>' +
+        '<div class="adgen-canvas-wrap" style="height:' + dispH + 'px">' +
+          '<canvas id="canvas-' + uid + '" width="' + fmt.w + '" height="' + fmt.h + '" style="width:' + dispW + 'px;aspect-ratio:' + fmt.w + '/' + fmt.h + ';height:auto"></canvas>' +
         '</div>' +
-        '<button class="adgen-dl-btn" onclick="adgenDownloadHtml(\'' + formatId + '\')">' +
+        '<button class="adgen-dl-btn" onclick="adgenDownload(\'' + uid + '\')">' +
           '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1v8M3 6l3.5 3.5L10 6"/><path d="M1 11h11"/></svg>' +
-          'Ladda ner HTML (' + fmt.w + 'x' + fmt.h + ')' +
+          'Ladda ner PNG (' + fmt.w + 'x' + fmt.h + ')' +
         '</button>' +
-      '</div>';
-    }
-    card.innerHTML = html;
-    grid.appendChild(card);
-    drawAd(formatId, fmt, copy);
-    if (fmt.html5) {
-      const iframe = document.getElementById('iframe-' + formatId);
-      if (iframe) iframe.srcdoc = buildBannerHtml(fmt, copy);
-    }
+        '<button class="adgen-edit-btn" onclick="adgenToggleEdit(\'' + uid + '\')">' +
+          '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l3 3-6.5 6.5H2v-3z"/></svg>' +
+          'Redigera' +
+        '</button>' +
+        '<div class="adgen-edit-panel" id="edit-panel-' + uid + '" style="display:none">' +
+          '<label class="adgen-edit-label">Rubrik</label>' +
+          '<input class="adgen-edit-input" id="edit-headline-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.headline || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
+          '<label class="adgen-edit-label">Underrubrik</label>' +
+          '<input class="adgen-edit-input" id="edit-subline-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.subline || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
+          '<label class="adgen-edit-label">Knapptext (CTA)</label>' +
+          '<input class="adgen-edit-input" id="edit-cta-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.cta || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
+          '<label class="adgen-edit-label">Accentfärg</label>' +
+          '<div style="display:flex;align-items:center;gap:10px"><input type="color" id="edit-color-' + uid + '" value="' + (document.getElementById('ac-color') ? document.getElementById('ac-color').value : '#C9A84C') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')" style="width:44px;height:36px;border:1px solid #e0dcd3;border-radius:8px;cursor:pointer;padding:2px;background:#fff"><span style="font-size:12px;color:#9A8570">gäller denna annons</span></div>' +
+          '<button class="adgen-edit-done" onclick="adgenSaveEdit(\'' + uid + '\')">Klar</button>' +
+        '</div>';
+      card.innerHTML = html;
+      grid.appendChild(card);
+      drawAd(formatId, fmt, copy, uid, style);
+    });
   });
 }
 
@@ -8237,37 +8251,31 @@ function adgenDownloadHtml(formatId) {
   URL.revokeObjectURL(url);
 }
 
-function drawAd(formatId, fmt, copy) {
-  const canvas = document.getElementById('canvas-' + formatId);
+function drawAd(formatId, fmt, copy, uid, style) {
+  // uid = unikt canvas-id (stil × format). Faller tillbaka på formatId för
+  // bakåtkompatibilitet. style = explicit mall; annars kundens valda.
+  const canvasId = uid || formatId;
+  const canvas = document.getElementById('canvas-' + canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = fmt.w, H = fmt.h;
 
-  // Rensa canvasen först, annars kan en tidigare rendering ligga kvar under den
-  // nya (t.ex. vid omritning efter färgbyte) och annonsen ser "dubbel" ut.
   ctx.clearRect(0, 0, W, H);
 
-  // Läs kundens stil + färg (samma källa som HTML-bannern).
   const brand = adgenBrandStyle();
-  // Per-annons färg-override från redigering vinner om den finns.
-  const override = window._adgenColorOverrides && window._adgenColorOverrides[formatId];
+  const useStyle = style || brand.style;
+  // Per-annons färg-override från redigering (nyckel = uid).
+  const override = window._adgenColorOverrides && window._adgenColorOverrides[canvasId];
   const accent = override || brand.color;
-  // Variant för den nya mallen: 'light' (vitt textfält) eller 'dark' (mörkt fält).
-  const variant = (brand.style === 'template-dark') ? 'dark' : 'light';
+  const variant = (useStyle === 'template-dark') ? 'dark' : 'light';
   const parts = { ctx:ctx, W:W, H:H, copy:copy, accent:accent, onAccent:adgenTextOn(accent), variant:variant };
 
-  // FORM-medveten layout: proportionerna avgör upplägget, inte bara stilen.
-  // Detta är nyckeln till att en tunn banner och en kvadrat ser olika bra ut.
   const ratio = W / H;
   if (ratio >= 2.2) {
-    // Bred och låg (panorama, leaderboard, mobilbanner): text + knapp bredvid varandra.
     drawAdHorizontal(parts);
   } else if (ratio <= 0.6) {
-    // Smal och hög (skyscraper, stående): text staplad, gott om höjd.
     drawAdVertical(parts);
   } else {
-    // Kvadrat / medelrektangel: välj mall efter kundens stilval.
-    // Mappning stil → ritfunktion. Lätt att lägga till fler mallar.
     const templates = {
       'template-diagonal': drawAdDiagonal,
       'template-colorblock': drawAdColorBlock,
@@ -8279,7 +8287,7 @@ function drawAd(formatId, fmt, copy) {
       'template-light': drawAdTemplate,
       'template-dark': drawAdTemplate
     };
-    const fn = templates[brand.style] || drawAdTemplate;
+    const fn = templates[useStyle] || drawAdTemplate;
     fn(parts);
   }
 
@@ -9157,12 +9165,17 @@ function drawAdButton(ctx, x, y, w, h, accent, textColor, label, fontPx) {
   ctx.textAlign = 'left';
 }
 
-function adgenDownload(formatId) {
-  const canvas = document.getElementById('canvas-' + formatId);
+function adgenDownload(uid) {
+  const canvas = document.getElementById('canvas-' + uid);
   if (!canvas) return;
+  // uid kan vara "formatId__style" – plocka ut formatId för filnamnet.
+  const formatId = uid.indexOf('__') > -1 ? uid.split('__')[0] : uid;
+  const style = uid.indexOf('__') > -1 ? uid.split('__')[1] : '';
   const fmt = ADGEN_FORMATS[formatId];
+  if (!fmt) return;
+  const styleTag = style ? '-' + style.replace('template-','') : '';
   const link = document.createElement('a');
-  link.download = 'annons-' + fmt.label.toLowerCase().replace(/\s/g,'-') + '-' + fmt.w + 'x' + fmt.h + '.png';
+  link.download = 'annons-' + fmt.label.toLowerCase().replace(/\s/g,'-') + styleTag + '-' + fmt.w + 'x' + fmt.h + '.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
