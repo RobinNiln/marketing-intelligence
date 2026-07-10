@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mava – AI-verktyg för marknadsförare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Poppins:wght@400;500;600;800&family=Montserrat:wght@400;500;700;800&family=Archivo:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -2885,6 +2888,15 @@ body.brief-mode{background:#FBFAF7}
             <div class="adgen-style-name">Djärv</div>
           </div>
         </div>
+      </div>
+      <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Typsnitt</label>
+        <select class="adcopy-select" id="ac-font" onchange="adgenFontChanged()">
+          <option value="Inter">Inter – rent & modernt</option>
+          <option value="Poppins">Poppins – rund & vänlig</option>
+          <option value="Montserrat">Montserrat – bred & självsäker</option>
+          <option value="Archivo">Archivo – kompakt & kraftfull</option>
+          <option value="Plus Jakarta Sans">Plus Jakarta Sans – elegant</option>
+        </select>
       </div>
       <div class="adcopy-field" id="adgen-logo-pos-field" style="display:none;margin-top:0.75rem"><label style="font-size:13px">Loggans placering</label><select class="adcopy-select" id="ac-logo-pos"><option value="top-left">Uppe till vänster</option><option value="top-right">Uppe till höger</option><option value="bottom-left">Nere till vänster</option><option value="bottom-right" selected>Nere till höger</option></select></div>
       <div class="adcopy-field" style="margin-top:0.75rem"><label style="font-size:13px">Accentfärg (knapp och streck)</label>
@@ -7828,6 +7840,15 @@ function adgenEscapeHtml(s) {
 // Faller tillbaka på guld/overlay om ingen profil finns.
 let _adgenStyle = null; // vald mall i AdStudio (vinner över profilen)
 
+// Valt typsnitt för annonser. Byts via väljaren i AdStudio.
+let _adgenFont = 'Inter';
+function adgenFontFamily() {
+  // Returnerar font-stacken canvas ska använda, med säkra fallbacks.
+  const f = _adgenFont || 'Inter';
+  if (f === 'Georgia') return 'Georgia,"Times New Roman",serif';
+  return '"' + f + '",-apple-system,Arial,sans-serif';
+}
+
 function adgenBrandStyle() {
   const p = _brandProfile;
   // Verktygets egen färgväljare vinner om den finns; annars varumärkesprofilen.
@@ -7864,6 +7885,27 @@ function adgenSelectStyle(style) {
 }
 
 // Uppdaterar hex-etiketten och ritar om annonserna live när färgen ändras.
+// Byter typsnitt: väntar tills fonten är inladdad i webbläsaren innan omritning,
+// annars ritas annonsen med fel (fallback-)font första gången.
+function adgenFontChanged() {
+  const sel = document.getElementById('ac-font');
+  _adgenFont = sel ? sel.value : 'Inter';
+  // document.fonts.load ser till att fonten är redo innan vi ritar.
+  if (document.fonts && document.fonts.load) {
+    Promise.all([
+      document.fonts.load('800 40px "' + _adgenFont + '"'),
+      document.fonts.load('500 40px "' + _adgenFont + '"'),
+      document.fonts.load('700 40px "' + _adgenFont + '"')
+    ]).then(function(){
+      if (_adgenCopyData) renderAdGenResult();
+    }).catch(function(){
+      if (_adgenCopyData) renderAdGenResult();
+    });
+  } else if (_adgenCopyData) {
+    renderAdGenResult();
+  }
+}
+
 function adgenColorChanged() {
   const picker = document.getElementById('ac-color');
   const hex = document.getElementById('ac-color-hex');
@@ -8119,7 +8161,17 @@ async function generateAdGen() {
     document.getElementById('adcopy-loading').style.display = 'none';
     hideMavaLoading();
     document.getElementById('adcopy-result').style.display = 'block';
-    renderAdGenResult();
+    // Säkerställ att valt typsnitt är inladdat innan första ritningen.
+    const font = _adgenFont || 'Inter';
+    if (document.fonts && document.fonts.load) {
+      Promise.all([
+        document.fonts.load('800 40px "' + font + '"'),
+        document.fonts.load('500 40px "' + font + '"'),
+        document.fonts.load('700 40px "' + font + '"')
+      ]).then(function(){ renderAdGenResult(); }).catch(function(){ renderAdGenResult(); });
+    } else {
+      renderAdGenResult();
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch(e) {
@@ -8357,7 +8409,7 @@ function drawAdPremium(p) {
   y += hlBlock + gap1;
 
   if (hasSub) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = '#6b655c';
     // Versaler + luft för premium-känsla på sublinen.
     wrapText(ctx, copy.subline.toUpperCase(), cx, y, textMaxW, sublineSz * 1.4);
@@ -8366,7 +8418,7 @@ function drawAdPremium(p) {
 
   if (hasCta) {
     y += gap2;
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta.toUpperCase()).width + ctaSz * 2.4;
     const ch = ctaSz * 2.6;
     const cx2 = cx - cw / 2;
@@ -8397,7 +8449,7 @@ function drawAdBoldText(p) {
   // ENORM rubrik upptill – det bärande elementet.
   const headlineSz = Math.round(W * 0.12);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12;
   wrapText(ctx, copy.headline || '', pad, Math.round(H * 0.07), W - pad * 2, headlineSz * 0.98);
@@ -8407,7 +8459,7 @@ function drawAdBoldText(p) {
   let by = H - pad;
   if (hasCta) {
     const ctaSz = Math.round(W * 0.038);
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta).width + ctaSz * 1.9;
     const ch = ctaSz * 2.2;
     by -= ch;
@@ -8416,7 +8468,7 @@ function drawAdBoldText(p) {
   }
   if (hasSub) {
     const sublineSz = Math.round(W * 0.038);
-    ctx.font = '500 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '500 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = '#ffffff';
     ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
     ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
@@ -8457,7 +8509,7 @@ function drawAdAngleCut(p) {
   const headlineSz = Math.round(W * 0.062);
   const ctaSz = Math.round(W * 0.03);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = onColor;
   const hlLines = estimateLines(ctx, copy.headline || '', tw);
   const ctaH = hasCta ? ctaSz * 2.2 : 0;
@@ -8467,7 +8519,7 @@ function drawAdAngleCut(p) {
   y += hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
 
   if (hasCta) {
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta).width + ctaSz * 1.8;
     const ch = ctaSz * 2.2;
     const wedgeLight = adgenLum(wedgeColor) > 150;
@@ -8498,13 +8550,13 @@ function drawAdCleanSplit(p) {
   const company = (document.getElementById('ac-company') || {}).value || '';
   const topSz = Math.round(W * 0.04);
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  ctx.font = '800 ' + topSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + topSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
   if (company) ctx.fillText(company.toUpperCase(), cx, Math.round(H * 0.09));
 
   // Centrerad rubrik i mitten.
   const headlineSz = Math.round(W * 0.07);
-  ctx.font = '600 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '600 ' + headlineSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', W - pad * 2);
   let y = H / 2 - (hlLines * headlineSz * 1.15) / 2;
   wrapText(ctx, copy.headline || '', cx, y, W - pad * 2, headlineSz * 1.15);
@@ -8512,7 +8564,7 @@ function drawAdCleanSplit(p) {
   // CTA nedtill (kontur-pill).
   if (hasCta) {
     const ctaSz = Math.round(W * 0.032);
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta + '  →').width + ctaSz * 2;
     const ch = ctaSz * 2.4;
     const cyy = H - pad - ch;
@@ -8562,7 +8614,7 @@ function drawAdColorBlock(p) {
   const headlineSz = Math.round(W * 0.085);
   const sublineSz  = Math.round(W * 0.036);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = onColor;
   let y = Math.round(H * 0.09);
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
@@ -8570,7 +8622,7 @@ function drawAdColorBlock(p) {
   y += hlLines * headlineSz * 1.05 + Math.round(H * 0.015);
 
   if (hasSub) {
-    ctx.font = '500 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '500 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.globalAlpha = 0.9;
     wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.3);
     ctx.globalAlpha = 1;
@@ -8595,7 +8647,7 @@ function drawAdColorBlock(p) {
   // mörk knappfärg om accenten är ljus, annars accentfärgad knapp med vit text.
   if (hasCta) {
     const ctaSz = Math.round(W * 0.036);
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta).width + ctaSz * 2;
     const ch = ctaSz * 2.3;
     const cy = H - pad - ch;
@@ -8642,14 +8694,14 @@ function drawAdDiagonal(p) {
   const ctaSz = isWide ? Math.round(H * 0.05) : Math.round(W * 0.036);
 
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
   const hlLines = estimateLines(ctx, copy.headline || '', tw);
   wrapText(ctx, copy.headline || '', tx, ty, tw, headlineSz * 1.1);
   let y = ty + hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
 
   if (hasCta) {
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const cw = ctx.measureText(copy.cta).width + ctaSz * 1.8;
     const ch = ctaSz * 2.1;
     ctx.fillStyle = p.accent;
@@ -8685,10 +8737,10 @@ function drawAdTemplate(p) {
   const ctaSz      = Math.round(W * 0.034);
 
   // Mät textblocket så vi kan centrera det vertikalt i fältet.
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
   const hlBlock = hlLines * headlineSz * 1.15;
-  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
   const slLines = hasSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
   const slBlock = slLines * sublineSz * 1.4;
 
@@ -8708,14 +8760,14 @@ function drawAdTemplate(p) {
 
   // Rubrik.
   ctx.textBaseline = 'top';
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = dark ? '#ffffff' : '#1e1a17';
   wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.15);
   y += hlBlock + gapAfterHL;
 
   // Subline.
   if (hasSub) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = dark ? 'rgba(255,255,255,0.72)' : '#6b655c';
     wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.4);
     y += slBlock;
@@ -8724,7 +8776,7 @@ function drawAdTemplate(p) {
   // CTA-knapp.
   if (hasCta) {
     y += gapBeforeCta;
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.7;
     drawAdButton(ctx, pad, y, ctaW, ctaH, p.accent, p.onAccent, copy.cta, ctaSz);
   }
@@ -8759,10 +8811,10 @@ function drawAdBoldField(p) {
 
   // Mät text (rubrik + ev. subline) för att placera i fältet.
   ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
   const hlBlock = hlLines * headlineSz * 1.1;
-  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
   const slLines = hasSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
   const slBlock = slLines * sublineSz * 1.35;
 
@@ -8776,13 +8828,13 @@ function drawAdBoldField(p) {
   let y = contentTop + Math.max(0, (fieldY + fieldH - pad - contentTop - contentH) / 2);
 
   // Rubrik (stor, tight, djärv).
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
   wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.1);
   y += hlBlock + gapAfterHL;
 
   if (hasSub) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = 'rgba(255,255,255,0.72)';
     wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.35);
     y += slBlock;
@@ -8791,7 +8843,7 @@ function drawAdBoldField(p) {
   // CTA som text med pil (accentfärgad), inte knapp.
   if (hasCta) {
     y += gapBeforeCta;
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = p.accent;
     ctx.textBaseline = 'top';
     ctx.fillText(copy.cta + '  →', pad, y);
@@ -8869,7 +8921,7 @@ function drawAdImageInto(ctx, x, y, w, h) {
 function bannerCta(ctx, copy, H) {
   if (!(copy.cta && copy.cta.trim())) return null;
   const sz = Math.round(H * 0.26);
-  ctx.font = '700 ' + sz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + sz + 'px ' + adgenFontFamily();
   const w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
   const h = Math.round(H * 0.52);
   return { sz:sz, w:w, h:h };
@@ -8880,7 +8932,7 @@ function bannerText(ctx, copy, x, W_area, H, color, subColor) {
   const hlSz = Math.round(H * 0.30);
   const subSz = Math.round(H * 0.17);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  ctx.font = '800 ' + hlSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', W_area);
   const showSub = !!(copy.subline && copy.subline.trim()) && hlLines === 1 && H >= 110;
   const hlBlock = hlLines * hlSz * 1.04;
@@ -8890,7 +8942,7 @@ function bannerText(ctx, copy, x, W_area, H, color, subColor) {
   wrapText(ctx, copy.headline || '', x, y, W_area, hlSz * 1.04);
   if (showSub) {
     y += hlBlock + Math.round(H*0.03);
-    ctx.font = '500 ' + subSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '500 ' + subSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = subColor;
     ctx.fillText(copy.subline, x, y);
   }
@@ -8955,7 +9007,7 @@ function drawBannerColorBlock(p) {
     ctx.fillStyle = blockLight ? '#1e1a17' : '#ffffff';
     roundRect(ctx, cx, cy, cta.w, cta.h, cta.h * 0.5);
     ctx.fillStyle = blockLight ? '#ffffff' : (accentLight ? '#1e1a17' : p.accent);
-    ctx.font = '700 ' + cta.sz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + cta.sz + 'px ' + adgenFontFamily();
     ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     ctx.fillText(copy.cta + ' →', cx + cta.w/2, cy + cta.h/2);
     ctx.textAlign = 'left';
@@ -8995,7 +9047,7 @@ function drawBannerPremium(p) {
   let ctaW = 0, ctaH = 0, ctaSz = 0;
   if (hasCta) {
     ctaSz = Math.round(H * 0.2);
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     ctaW = ctx.measureText(copy.cta.toUpperCase()).width + ctaSz * 2.2;
     ctaH = Math.round(H * 0.5);
   }
@@ -9009,7 +9061,7 @@ function drawBannerPremium(p) {
     ctx.strokeStyle = '#2C2520'; ctx.lineWidth = Math.max(1.5, H*0.012);
     ctx.strokeRect(cx, cy, ctaW, ctaH);
     ctx.fillStyle = '#2C2520'; ctx.textAlign = 'center';
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     ctx.fillText(copy.cta.toUpperCase(), cx + ctaW/2, cy + ctaH/2);
     ctx.textAlign = 'left';
   }
@@ -9033,7 +9085,7 @@ function drawAdHorizontal(p) {
   let ctaW = 0, ctaH = 0, ctaSz = 0, ctaX = 0, ctaY = 0;
   if (hasCta) {
     ctaSz = Math.round(H * 0.26);
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.4;
     ctaH = Math.round(H * 0.5);
     ctaX = W - ctaW - pad;
@@ -9047,7 +9099,7 @@ function drawAdHorizontal(p) {
   // 3) Rubrik + subline, vertikalt centrerade i banderollen.
   const headlineSz = Math.round(H * 0.30);
   const sublineSz  = Math.round(H * 0.19);
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
   const showSub = !!(copy.subline && copy.subline.trim()) && H >= 90 && hlLines === 1;
 
@@ -9058,12 +9110,12 @@ function drawAdHorizontal(p) {
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   wrapText(ctx, copy.headline || '', textX, ty, textMaxW, headlineSz * 1.12);
 
   if (showSub) {
     ty += hlBlock + Math.round(H*0.04);
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.shadowBlur = 3;
     wrapText(ctx, copy.subline, textX, ty, textMaxW, sublineSz * 1.3);
@@ -9098,12 +9150,12 @@ function drawAdVertical(p) {
   const ctaSz      = Math.round(W * 0.04);
 
   // 1) Mät alla block FÖRST, så vi kan placera dem utan överlapp.
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   const hlLines = estimateLines(ctx, copy.headline || '', textMaxW);
   const hlBlock = hlLines * headlineSz * 1.15;
 
   const showSub = !!(copy.subline && copy.subline.trim());
-  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
   const slLines = showSub ? estimateLines(ctx, copy.subline, textMaxW) : 0;
   const slBlock = slLines * sublineSz * 1.35;
 
@@ -9123,7 +9175,7 @@ function drawAdVertical(p) {
 
   // 3) Rubrik.
   ctx.textBaseline = 'top';
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8;
   wrapText(ctx, copy.headline || '', pad, y, textMaxW, headlineSz * 1.15);
@@ -9131,7 +9183,7 @@ function drawAdVertical(p) {
 
   // 4) Subline.
   if (showSub) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = 'rgba(255,255,255,0.88)';
     ctx.shadowBlur = 4;
     wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.35);
@@ -9142,7 +9194,7 @@ function drawAdVertical(p) {
   if (hasCta) {
     y += gapBeforeCta;
     ctx.shadowBlur = 0;
-    ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
     drawAdButton(ctx, pad, y, ctaW, ctaH, p.accent, p.onAccent, copy.cta, ctaSz);
   }
@@ -9166,17 +9218,17 @@ function drawAdOverlay(p) {
   ctx.textBaseline = 'top';
   ctx.fillStyle = p.accent;
   ctx.fillRect(padding, baseY - Math.round(W * 0.022), Math.round(W * 0.08), Math.round(Math.max(3, H * 0.008)));
-  ctx.font = '700 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '700 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8;
   wrapText(ctx, copy.headline || '', padding, baseY, W - padding * 2, headlineSz * 1.2);
   const hlLines = estimateLines(ctx, copy.headline || '', W - padding * 2);
   const afterHL = baseY + hlLines * headlineSz * 1.2 + Math.round(W * 0.018);
-  ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.shadowBlur = 4;
   wrapText(ctx, copy.subline || '', padding, afterHL, W - padding * 2, sublineSz * 1.5);
   const slLines = estimateLines(ctx, copy.subline || '', W - padding * 2);
   const afterSL = afterHL + slLines * sublineSz * 1.5 + Math.round(W * 0.025);
-  ctx.font = '600 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '600 ' + ctaSz + 'px ' + adgenFontFamily();
   ctx.shadowBlur = 0;
   const ctaText = copy.cta || '';
   const ctaW = ctx.measureText(ctaText).width + ctaSz * 1.6;
@@ -9201,20 +9253,20 @@ function drawAdBand(p) {
   const ctaSz = Math.round(W * 0.032);
   let y = H - bandH + Math.round(bandH * 0.16);
   ctx.textBaseline = 'top';
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = p.onAccent; ctx.shadowBlur = 0;
   wrapText(ctx, copy.headline || '', pad, y, W - pad*2, headlineSz*1.15);
   const hlLines = estimateLines(ctx, copy.headline || '', W - pad*2);
   y += hlLines * headlineSz * 1.15 + Math.round(H*0.012);
   if (copy.subline) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.globalAlpha = 0.85;
     wrapText(ctx, copy.subline, pad, y, W - pad*2, sublineSz*1.35);
     ctx.globalAlpha = 1;
     y += estimateLines(ctx, copy.subline, W - pad*2) * sublineSz * 1.35 + Math.round(H*0.015);
   }
   if (copy.cta) {
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
     const ctaH = ctaSz * 1.9;
     const ctaY = Math.min(y, H - ctaH - pad*0.6);
@@ -9246,20 +9298,20 @@ function drawAdSplit(p) {
   const ctaSz = Math.round(areaW * 0.04);
   let y = areaY + Math.round(areaH * 0.2);
   ctx.textBaseline = 'top'; ctx.shadowBlur = 0;
-  ctx.font = '800 ' + headlineSz + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = p.onAccent;
   wrapText(ctx, copy.headline || '', areaX + pad, y, areaW - pad*2, headlineSz*1.15);
   const hlLines = estimateLines(ctx, copy.headline || '', areaW - pad*2);
   y += hlLines * headlineSz * 1.15 + Math.round(areaH*0.03);
   if (copy.subline) {
-    ctx.font = '400 ' + sublineSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '400 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.globalAlpha = 0.85;
     wrapText(ctx, copy.subline, areaX + pad, y, areaW - pad*2, sublineSz*1.35);
     ctx.globalAlpha = 1;
     y += estimateLines(ctx, copy.subline, areaW - pad*2) * sublineSz * 1.35 + Math.round(areaH*0.03);
   }
   if (copy.cta) {
-    ctx.font = '700 ' + ctaSz + 'px -apple-system,Arial,sans-serif';
+    ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
     const ctaW = ctx.measureText(copy.cta).width + ctaSz * 1.6;
     const ctaH = ctaSz * 1.9;
     ctx.fillStyle = p.onAccent;
@@ -9329,7 +9381,7 @@ function drawAdButton(ctx, x, y, w, h, accent, textColor, label, fontPx) {
   }
   ctx.fillStyle = textColor;
   ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
-  ctx.font = '600 ' + fontPx + 'px -apple-system,Arial,sans-serif';
+  ctx.font = '600 ' + fontPx + 'px ' + adgenFontFamily();
   ctx.fillText(label, x + w / 2, y + h / 2);
   ctx.textAlign = 'left';
 }
