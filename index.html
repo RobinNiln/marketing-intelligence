@@ -8311,14 +8311,17 @@ function drawAdColorBlock(p) {
   }
 
   // Bild inbäddad i nedre delen, som ett "kort" med rundade hörn.
-  const imgTop = Math.round(H * 0.40);
-  const imgBottom = hasCta ? Math.round(H * 0.82) : Math.round(H * 0.92);
-  const imgX = pad, imgW = W - pad * 2, imgH = imgBottom - imgTop;
-  ctx.save();
-  roundRect(ctx, imgX, imgTop, imgW, imgH, Math.round(W * 0.03));
-  ctx.clip();
-  drawAdImageInto(ctx, imgX, imgTop, imgW, imgH);
-  ctx.restore();
+  // Om ingen bild finns hoppar vi över kortet – färgblocket bär annonsen självt.
+  if (_adgenImage) {
+    const imgTop = Math.round(H * 0.40);
+    const imgBottom = hasCta ? Math.round(H * 0.82) : Math.round(H * 0.92);
+    const imgX = pad, imgW = W - pad * 2, imgH = imgBottom - imgTop;
+    ctx.save();
+    roundRect(ctx, imgX, imgTop, imgW, imgH, Math.round(W * 0.03));
+    ctx.clip();
+    drawAdImageInto(ctx, imgX, imgTop, imgW, imgH);
+    ctx.restore();
+  }
 
   // CTA-knapp nedtill (ljus pill med accentfärgad text).
   if (hasCta) {
@@ -8559,7 +8562,29 @@ function drawAdLogo(ctx, W, H) {
 
 // Hjälpare: rita bakgrundsbilden beskuren till en yta (x,y,w,h på canvasen).
 function drawAdImageInto(ctx, x, y, w, h) {
-  if (!_adgenImage) { ctx.fillStyle = '#1a1a2e'; ctx.fillRect(x, y, w, h); return; }
+  if (!_adgenImage) {
+    // Ingen bild uppladdad än – rita en diskret, neutral platshållare med en
+    // liten bild-ikon, i stället för ett svart hål. Ser OK ut i förhandsvisning.
+    ctx.save();
+    ctx.fillStyle = '#ece7de';
+    ctx.fillRect(x, y, w, h);
+    // Enkel bild-ikon i mitten (berg + sol), diskret grå.
+    const s = Math.min(w, h) * 0.16;
+    const cx = x + w / 2, cy = y + h / 2;
+    ctx.strokeStyle = '#c3bbab'; ctx.fillStyle = '#c3bbab';
+    ctx.lineWidth = Math.max(2, s * 0.06);
+    ctx.strokeRect(cx - s, cy - s * 0.75, s * 2, s * 1.5);
+    ctx.beginPath(); ctx.arc(cx - s * 0.45, cy - s * 0.3, s * 0.22, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx - s, cy + s * 0.75);
+    ctx.lineTo(cx - s * 0.2, cy - s * 0.1);
+    ctx.lineTo(cx + s * 0.35, cy + s * 0.4);
+    ctx.lineTo(cx + s, cy - s * 0.2);
+    ctx.lineTo(cx + s, cy + s * 0.75);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    return;
+  }
   const ia = _adgenImage.width / _adgenImage.height;
   const ca = w / h;
   let sx = 0, sy = 0, sw = _adgenImage.width, sh = _adgenImage.height;
