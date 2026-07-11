@@ -2176,8 +2176,13 @@ body.brief-mode{background:#FBFAF7}
     <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
   </nav>
   <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem;display:flex;flex-direction:column;min-height:calc(100vh - 60px)">
-    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Fråga Mava</h1>
-    <p style="font-size:14px;color:#8a7d6d;margin:0 0 1.5rem">Fråga om vad som helst inom marknadsföring – Mava känner ditt varumärke.</p>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+      <div>
+        <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Fråga Mava</h1>
+        <p style="font-size:14px;color:#8a7d6d;margin:0 0 1.5rem">Fråga om vad som helst inom marknadsföring – Mava känner ditt varumärke.</p>
+      </div>
+      <button onclick="fchatClear()" style="flex-shrink:0;background:none;border:1px solid rgba(180,155,110,0.4);border-radius:8px;padding:8px 14px;font-size:13px;color:#9c7d2e;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;margin-top:4px">Rensa chatt</button>
+    </div>
 
     <div id="fchat-messages" style="flex:1;display:flex;flex-direction:column;gap:14px;padding:4px 0 1rem"></div>
 
@@ -7766,6 +7771,32 @@ function faPanelHtml(tool, quickChips) {
    med i varje anrop (AI:n har inget eget minne mellan anrop).
    ══════════════════════════════════════════════════════════════════════════ */
 window._fchatHistory = window._fchatHistory || [];
+const FCHAT_KEY = 'mava-fchat';
+
+// Sparar hela konversationen till localStorage (överlever omladdning/nytt besök).
+function fchatSave() {
+  try {
+    localStorage.setItem(FCHAT_KEY, JSON.stringify(window._fchatHistory));
+  } catch (e) { /* localStorage kan vara avstängt – strunta tyst */ }
+}
+
+// Läser tillbaka sparad konversation. Anropas när sidan öppnas.
+function fchatLoad() {
+  try {
+    const raw = localStorage.getItem(FCHAT_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) window._fchatHistory = parsed;
+    }
+  } catch (e) { /* trasig eller saknad data – börja tomt */ }
+}
+
+// Rensar konversationen (både i minnet och i localStorage).
+function fchatClear() {
+  window._fchatHistory = [];
+  try { localStorage.removeItem(FCHAT_KEY); } catch (e) {}
+  fchatRender();
+}
 
 function goToFraga() {
   if (!_currentUser) { goToAuth(); return; }
@@ -7773,6 +7804,8 @@ function goToFraga() {
   document.getElementById('fraga-page').style.display = 'block';
   setActivePanelLink('fraga-page');
   window.scrollTo(0, 0);
+  fchatLoad();
+  fchatRender();
   const input = document.getElementById('fchat-input');
   if (input) input.focus();
 }
@@ -7821,6 +7854,7 @@ async function fchatSend() {
   window._fchatHistory.push({ role: 'user', content: fraga });
   input.value = '';
   fchatRender();
+  fchatSave();
 
   // Visa "Mava tänker…" som en tillfällig bubbla.
   const box = document.getElementById('fchat-messages');
@@ -7841,6 +7875,7 @@ async function fchatSend() {
     });
     window._fchatHistory.push({ role: 'assistant', content: svar });
     fchatRender();
+    fchatSave();
   } catch (e) {
     // Ta bort frågan ur historiken så användaren kan försöka igen rent.
     if (typing.parentNode) typing.parentNode.removeChild(typing);
