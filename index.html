@@ -1207,7 +1207,9 @@ body.newsroom-mode{background:#FBFAF7}
 .lib-card{background:#fff;border:1px solid #e8e4db;border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:12px;display:flex;align-items:center;gap:1rem}
 .lib-group-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#9c7d2e;margin:1.6rem 0 0.9rem}
 .lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:0.5rem}
-.lib-card2{background:#fff;border:1px solid #ece8df;border-radius:12px;overflow:hidden;transition:box-shadow .15s}
+.lib-card2{background:#fff;border:1px solid #ece8df;border-radius:12px;overflow:hidden;transition:box-shadow .15s;position:relative}
+.lib-check{position:absolute;top:8px;right:8px;z-index:2;background:rgba(255,255,255,0.92);border-radius:6px;padding:3px 4px 1px;cursor:pointer;line-height:0}
+.lib-check input{width:17px;height:17px;cursor:pointer;accent-color:#C9A84C}
 .lib-card2:hover{box-shadow:0 4px 16px rgba(44,37,32,0.08)}
 .lib-thumb{width:100%;aspect-ratio:1;position:relative;background:#f4f1ea;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .lib-thumb-canvas{width:100%;height:100%;object-fit:cover;display:block}
@@ -2087,6 +2089,12 @@ body.brief-mode{background:#FBFAF7}
       <button class="lib-filter" data-filter="market-pulse" onclick="libraryFilter('market-pulse')">Market Pulse</button>
       <button class="lib-filter" data-filter="native" onclick="libraryFilter('native')">Native Auto Reach</button>
       <button class="lib-filter" data-filter="adstudio" onclick="libraryFilter('adstudio')">AdStudio</button>
+    </div>
+    <div id="library-selbar" style="display:none;align-items:center;gap:14px;background:#2C2520;color:#fff;border-radius:12px;padding:12px 18px;margin-bottom:1.25rem">
+      <span id="library-selcount" style="font-size:14px;font-weight:600">0 valda</span>
+      <div style="flex:1"></div>
+      <button id="library-zip-btn" onclick="libraryDownloadSelectedZip()" style="background:#C9A84C;color:#1a1410;border:none;border-radius:100px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Ladda ner valda (zip)</button>
+      <button onclick="libraryClearSelection()" style="background:none;color:rgba(255,255,255,0.8);border:none;padding:9px 8px;font-size:13px;cursor:pointer;font-family:inherit">Avmarkera</button>
     </div>
     <div id="library-list"></div>
   </div>
@@ -5554,6 +5562,114 @@ function librarySearch() {
   renderLibrary();
 }
 
+// ── Urval & batch-export i biblioteket ──────────────────────────────────────
+let _librarySelected = {};
+
+function libraryToggleSelect(id) {
+  if (_librarySelected[id]) delete _librarySelected[id];
+  else _librarySelected[id] = true;
+  updateLibrarySelectionBar();
+}
+
+function librarySelectedIds() { return Object.keys(_librarySelected); }
+
+function libraryClearSelection() {
+  _librarySelected = {};
+  document.querySelectorAll('#library-list input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
+  updateLibrarySelectionBar();
+}
+
+// Visar/döljer åtgärdsraden beroende på hur många som är valda.
+function updateLibrarySelectionBar() {
+  const bar = document.getElementById('library-selbar');
+  if (!bar) return;
+  const n = librarySelectedIds().length;
+  if (n === 0) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const count = document.getElementById('library-selcount');
+  if (count) count.textContent = n + (n === 1 ? ' vald' : ' valda');
+}
+
+// Laddar ner EN annons som PNG från biblioteket (ritar från receptet).
+async function libraryDownloadOne(id) {
+  const it = (_libraryItems || []).find(function(x){ return x.id === id; });
+  if (!it || it.tool !== 'adstudio') return;
+  const blob = await libraryRenderAdBlob(it);
+  if (!blob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = librarySafeName(it.title) + '.png';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+
+// Ritar en annons från dess recept till en PNG-blob (för nedladdning/zip).
+function libraryRenderAdBlob(it) {
+  return new Promise(function(resolve){
+    const cfg = it.content || {};
+    const fmtId = (cfg.formats && cfg.formats[0]) || 'meta-square';
+    const fmt = ADGEN_FORMATS[fmtId] || ADGEN_FORMATS['meta-square'];
+    const copy = (cfg.copyData && cfg.copyData[fmtId]) || {};
+    const style = (cfg.styles && cfg.styles[0]) || cfg.style || 'template-diagonal';
+    const canvas = document.createElement('canvas');
+    canvas.width = fmt.w; canvas.height = fmt.h;
+    const prevImg = _adgenImage, prevFont = _adgenFont, prevStyles = _adgenStyles;
+    if (cfg.font) _adgenFont = cfg.font;
+    _adgenStyles = [style];
+    function paintAndResolve() {
+      drawAdOnCanvas(canvas, fmtId, fmt, copy, style, cfg.color);
+      _adgenImage = prevImg; _adgenFont = prevFont; _adgenStyles = prevStyles;
+      canvas.toBlob(function(b){ resolve(b); }, 'image/png');
+    }
+    if (cfg.imageDataUrl) {
+      const img = new Image();
+      img.onload = function(){ _adgenImage = img; paintAndResolve(); };
+      img.onerror = function(){ _adgenImage = null; paintAndResolve(); };
+      img.src = cfg.imageDataUrl;
+    } else { _adgenImage = null; paintAndResolve(); }
+  });
+}
+
+function librarySafeName(s) {
+  return (s || 'annons').toLowerCase().replace(/[^a-z0-9åäö\-_ ]/gi,'').replace(/\s+/g,'-').slice(0, 60) || 'annons';
+}
+
+// Laddar ner alla valda som en zip-fil. Annonser blir PNG; text blir .txt/.md.
+async function libraryDownloadSelectedZip() {
+  const ids = librarySelectedIds();
+  if (!ids.length) return;
+  if (typeof JSZip === 'undefined') { alert('Zip-verktyget kunde inte laddas. Försök ladda om sidan.'); return; }
+  const btn = document.getElementById('library-zip-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Paketerar...'; }
+  const zip = new JSZip();
+  const used = {};
+  for (const id of ids) {
+    const it = (_libraryItems || []).find(function(x){ return x.id === id; });
+    if (!it) continue;
+    let name = librarySafeName(it.title);
+    if (used[name]) { used[name]++; name = name + '-' + used[name]; } else used[name] = 1;
+    if (it.tool === 'adstudio') {
+      const blob = await libraryRenderAdBlob(it);
+      if (blob) zip.file(name + '.png', blob);
+    } else {
+      const c = it.content;
+      let text = typeof c === 'string' ? c : (c && (c.body || c.headline)) ? (c.body || c.headline) : JSON.stringify(c, null, 2);
+      zip.file(name + '.md', text || '');
+    }
+  }
+  try {
+    const content = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(content);
+    a.download = 'mava-bibliotek-' + new Date().toISOString().slice(0,10) + '.zip';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+  } catch (e) {
+    alert('Kunde inte skapa zip-filen: ' + (e.message || e));
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Ladda ner valda (zip)'; }
+}
+
 function renderLibrary() {
   const search = (document.getElementById('library-search').value || '').toLowerCase();
   const list = document.getElementById('library-list');
@@ -5604,7 +5720,8 @@ function renderLibrary() {
           '<div class="lib-thumb-snippet">' + escapeHtmlLib(snippet) + '</div>' +
           '<span class="lib-thumb-fmt">' + escapeHtmlLib(label) + '</span></div>';
       }
-      html += '<div class="lib-card2">' +
+      html += '<div class="lib-card2" id="libcard-' + it.id + '">' +
+        '<label class="lib-check" onclick="event.stopPropagation()"><input type="checkbox" ' + (_librarySelected[it.id] ? 'checked' : '') + ' onchange="libraryToggleSelect(\'' + it.id + '\')"></label>' +
         '<div onclick="libraryOpen(\'' + it.id + '\')" style="cursor:pointer">' + thumb + '</div>' +
         '<div class="lib-meta2">' +
           '<div class="lib-name2">' + escapeHtmlLib(it.title) + '</div>' +
@@ -5612,6 +5729,7 @@ function renderLibrary() {
         '</div>' +
         '<div class="lib-actions2">' +
           '<button onclick="libraryOpen(\'' + it.id + '\')">Öppna</button>' +
+          (isAd ? '<button onclick="libraryDownloadOne(\'' + it.id + '\')">Ladda ner</button>' : '') +
           '<button onclick="libraryRename(\'' + it.id + '\')">Byt namn</button>' +
           '<button onclick="libraryDelete(\'' + it.id + '\')" class="lib-del">Radera</button>' +
         '</div>' +
@@ -5623,6 +5741,7 @@ function renderLibrary() {
 
   // Rita annons-miniatyrer via canvas (efter att DOM finns).
   items.forEach(function(it){ if (it.tool === 'adstudio') drawLibraryThumb(it); });
+  updateLibrarySelectionBar();
 }
 
 // Kort etikett för annonsens format.
