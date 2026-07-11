@@ -1400,6 +1400,50 @@ body.brief-mode{background:#FBFAF7}
 @media(max-width:640px){
   .brief-goal-grid{grid-template-columns:1fr 1fr}
 }
+/* ── Fråga Mava (kontextbunden panel) ─────────────────────────────────── */
+.fa-open-btn{display:inline-flex;align-items:center;gap:7px;background:#C9A84C;color:#2C2520;
+  border:none;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:background .15s}
+.fa-open-btn:hover{background:#9c7d2e;color:#fff}
+.fa-panel{background:#fff;border:1px solid rgba(180,155,110,0.3);padding:20px 22px;margin-top:12px}
+.fa-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.fa-panel-title{font-size:14px;font-weight:700;color:#2C2520}
+.fa-panel-close{background:none;border:none;font-size:20px;color:#8a8073;cursor:pointer;line-height:1;padding:0 4px}
+.fa-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.fa-chip{background:#F5F3EE;border:1px solid rgba(180,155,110,0.3);border-radius:20px;padding:6px 13px;
+  font-size:12.5px;cursor:pointer;font-family:inherit;color:#3a332c;transition:all .12s}
+.fa-chip:hover{border-color:#C9A84C;background:#fff}
+.fa-prompt-row{display:flex;gap:10px}
+.fa-input{flex:1;font-family:inherit;font-size:14px;padding:11px 14px;border:1px solid rgba(180,155,110,0.3);
+  border-radius:8px;background:#F5F3EE;color:#2C2520;resize:vertical;min-height:44px;line-height:1.4}
+.fa-input:focus{outline:none;border-color:#C9A84C;background:#fff}
+.fa-send{background:#C9A84C;color:#2C2520;border:none;border-radius:8px;padding:0 20px;font-size:13.5px;
+  font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.fa-send:hover{background:#9c7d2e;color:#fff}
+.fa-error{margin-top:12px;padding:10px 14px;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;
+  color:#991B1B;font-size:13px}
+.fa-thinking{align-items:center;gap:10px;padding:16px 0;font-size:13.5px;color:#8a8073}
+.fa-dot{width:7px;height:7px;border-radius:50%;background:#C9A84C;display:inline-block;animation:faPulse 1s infinite}
+.fa-dot:nth-child(2){animation-delay:.2s}.fa-dot:nth-child(3){animation-delay:.4s}
+@keyframes faPulse{0%,100%{opacity:.3}50%{opacity:1}}
+.fa-compare{margin-top:18px}
+.fa-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:640px){.fa-compare-grid{grid-template-columns:1fr}}
+.fa-col{border:1px solid rgba(180,155,110,0.3);background:#F5F3EE}
+.fa-col-sug{border-color:#C9A84C;background:#fffdf7}
+.fa-col-head{font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;
+  padding:9px 14px;border-bottom:1px solid rgba(180,155,110,0.3)}
+.fa-col-orig{color:#8a8073}
+.fa-col-sug-head{color:#9c7d2e;background:rgba(201,168,76,0.08)}
+.fa-col-text{padding:16px 14px;font-size:13.5px;line-height:1.6;color:#3a332c;white-space:pre-wrap}
+.fa-actions{display:flex;gap:10px;flex-wrap:wrap}
+.fa-accept{background:#C9A84C;color:#2C2520;border:none;border-radius:8px;padding:9px 18px;
+  font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.fa-accept:hover{background:#9c7d2e;color:#fff}
+.fa-ghost{background:#fff;color:#3a332c;border:1px solid rgba(180,155,110,0.3);border-radius:8px;
+  padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.fa-ghost:hover{border-color:#C9A84C}
+.fa-applied{font-size:12.5px;color:#9c7d2e;font-weight:700;margin-top:10px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Exportbibliotek: skapar Word/PDF/PowerPoint direkt i webbläsaren -->
@@ -2534,6 +2578,7 @@ body.brief-mode{background:#FBFAF7}
 
       <div id="nr-result-extras"></div>
 
+      <div id="newsroom-faska-slot"></div>
 
       <button class="newsroom-new-btn" onclick="newsroomReset()">← Skapa ny pressrelease</button>
     </div>
@@ -7316,6 +7361,188 @@ function chartFrame(title, unit, W, H, inner){
   return '<div class="nr-chart">'+cap+'<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg></div>';
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   FRÅGA MAVA – MOTORN (aiAssist)
+   En delad funktion som allt AI-stöd anropar. Både kontextbundet läge
+   (förbättra ett material) och fristående chatt använder denna. Skillnaden
+   är bara vad som matas in. Återanvänder safeFetch + brandGuidance.
+   ══════════════════════════════════════════════════════════════════════════ */
+async function aiAssist(material, onskemal, historik, options) {
+  historik = historik || [];
+  options  = options  || {};
+
+  const system =
+    'Du är Mava – en skarp, erfaren medhjälpare inom marknadsföring, ' +
+    'PR och kommunikation. Du hjälper användaren att förbättra och bearbeta ' +
+    'material, eller svarar på frågor om marknadsföring. Skriv på svenska. ' +
+    'Var konkret och rakt på sak – inga floskler, ingen uppblåst ton. ' +
+    'När du förbättrar en text: behåll det som fungerar, ändra bara det som ' +
+    'behövs, och förklara inte vad du gjort om användaren inte ber om det – ' +
+    'leverera det förbättrade materialet direkt.' +
+    (options.kontext ? '\n\nKONTEXT: ' + options.kontext : '') +
+    brandGuidance();
+
+  const messages = [{ role: 'user', content: system }];
+
+  for (const rad of historik) {
+    messages.push({ role: rad.role, content: rad.content });
+  }
+
+  let aktuellt;
+  if (material && material.trim()) {
+    aktuellt =
+      'Här är materialet du ska arbeta med:\n\n"""\n' + material.trim() + '\n"""\n\n' +
+      'Önskemål: ' + onskemal.trim();
+  } else {
+    aktuellt = onskemal.trim();
+  }
+  messages.push({ role: 'user', content: aktuellt });
+
+  const data = await safeFetch(messages, 80000, options.toolId || 'newsroom');
+
+  const svar = (data.content || [])
+    .filter(function (b) { return b.type === 'text'; })
+    .map(function (b) { return b.text; })
+    .join('')
+    .trim();
+
+  return svar;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FRÅGA MAVA – KONTEXTBUNDET LÄGE (panel vid ett resultat)
+   Öppnas via "Fråga Mava"-knappen. Skickar materialet + önskemålet till
+   aiAssist, visar förslaget bredvid originalet, låter användaren välja.
+   State per verktyg så flera verktyg kan ha varsin panel utan att krocka.
+   ══════════════════════════════════════════════════════════════════════════ */
+window._faOpen = window._faOpen || {};        // vilken panel som är öppen
+window._faSuggestion = window._faSuggestion || {}; // senaste förslaget per verktyg
+
+// Öppnar/stänger panelen för ett givet verktyg (t.ex. 'newsroom').
+function faTogglePanel(tool) {
+  const panel = document.getElementById('fa-panel-' + tool);
+  if (!panel) return;
+  const open = panel.style.display !== 'block';
+  panel.style.display = open ? 'block' : 'none';
+  window._faOpen[tool] = open;
+  if (open) {
+    const input = document.getElementById('fa-input-' + tool);
+    if (input) input.focus();
+  }
+}
+
+// Fyller önskemålsfältet från ett snabbval och kör direkt.
+function faQuick(tool, text) {
+  const input = document.getElementById('fa-input-' + tool);
+  if (input) input.value = text;
+  faRun(tool);
+}
+
+// Kör själva förbättringen: hämtar material + önskemål, anropar motorn.
+async function faRun(tool) {
+  const input = document.getElementById('fa-input-' + tool);
+  const onskemal = input ? input.value.trim() : '';
+  if (!onskemal) return;
+
+  const material = faGetMaterial(tool);
+
+  const thinking = document.getElementById('fa-thinking-' + tool);
+  const compare  = document.getElementById('fa-compare-' + tool);
+  const errEl    = document.getElementById('fa-error-' + tool);
+  if (errEl) errEl.style.display = 'none';
+  if (compare) compare.style.display = 'none';
+  if (thinking) thinking.style.display = 'flex';
+
+  try {
+    const svar = await aiAssist(material, onskemal, [], {
+      kontext: 'Användaren förbättrar ett resultat i verktyget ' + tool + '.',
+      toolId: tool
+    });
+    window._faSuggestion[tool] = svar;
+
+    const origEl = document.getElementById('fa-original-' + tool);
+    const sugEl  = document.getElementById('fa-suggestion-' + tool);
+    if (origEl) origEl.textContent = material;
+    if (sugEl)  sugEl.textContent = svar;
+    if (thinking) thinking.style.display = 'none';
+    if (compare)  compare.style.display = 'block';
+  } catch (e) {
+    if (thinking) thinking.style.display = 'none';
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+  }
+}
+
+// Hämtar det material som ska förbättras. Per verktyg, eftersom resultaten
+// ser olika ut. För Newsroom förbättrar vi brödtexten (body).
+function faGetMaterial(tool) {
+  if (tool === 'newsroom') {
+    const el = document.getElementById('nr-result-body');
+    return el ? el.innerText.trim() : '';
+  }
+  return '';
+}
+
+// Skriver in förslaget i resultatet. "Lägg till, bryt inte": originalet
+// ändras bara här, när användaren aktivt valt att använda förslaget.
+function faAccept(tool) {
+  const svar = window._faSuggestion[tool];
+  if (!svar) return;
+  if (tool === 'newsroom') {
+    const el = document.getElementById('nr-result-body');
+    if (el) el.innerHTML = mdToHtml(svar);
+    if (window._newsroomResult) window._newsroomResult.body = svar;
+  }
+  const applied = document.getElementById('fa-applied-' + tool);
+  if (applied) applied.style.display = 'block';
+}
+
+// Bygger panelens HTML för ett verktyg. Anropas en gång när resultatet visas.
+function faPanelHtml(tool, quickChips) {
+  const chips = (quickChips || []).map(function (c) {
+    return '<button class="fa-chip" onclick="faQuick(\'' + tool + '\',\'' +
+           c.replace(/'/g, "\\'") + '\')">' + c + '</button>';
+  }).join('');
+  return '' +
+    '<div style="margin-top:12px">' +
+      '<button class="fa-open-btn" onclick="faTogglePanel(\'' + tool + '\')">' +
+        '<span style="font-size:15px">✦</span> Fråga Mava</button>' +
+    '</div>' +
+    '<div class="fa-panel" id="fa-panel-' + tool + '" style="display:none">' +
+      '<div class="fa-panel-head">' +
+        '<div class="fa-panel-title"><span style="color:#9c7d2e">✦</span> Fråga Mava om det här</div>' +
+        '<button class="fa-panel-close" onclick="faTogglePanel(\'' + tool + '\')">×</button>' +
+      '</div>' +
+      '<div class="fa-chips">' + chips + '</div>' +
+      '<div class="fa-prompt-row">' +
+        '<textarea class="fa-input" id="fa-input-' + tool + '" rows="1" ' +
+          'placeholder="Skriv vad du vill förbättra…"></textarea>' +
+        '<button class="fa-send" onclick="faRun(\'' + tool + '\')">Fråga</button>' +
+      '</div>' +
+      '<div class="fa-error" id="fa-error-' + tool + '" style="display:none"></div>' +
+      '<div class="fa-thinking" id="fa-thinking-' + tool + '" style="display:none">' +
+        '<span class="fa-dot"></span><span class="fa-dot"></span><span class="fa-dot"></span> Mava tänker…' +
+      '</div>' +
+      '<div class="fa-compare" id="fa-compare-' + tool + '" style="display:none">' +
+        '<div class="fa-compare-grid">' +
+          '<div class="fa-col">' +
+            '<div class="fa-col-head fa-col-orig">Original</div>' +
+            '<div class="fa-col-text" id="fa-original-' + tool + '"></div>' +
+          '</div>' +
+          '<div class="fa-col fa-col-sug">' +
+            '<div class="fa-col-head fa-col-sug-head">✦ Mavas förslag</div>' +
+            '<div class="fa-col-text" id="fa-suggestion-' + tool + '"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="fa-actions">' +
+          '<button class="fa-accept" onclick="faAccept(\'' + tool + '\')">Använd förslaget</button>' +
+          '<button class="fa-ghost" onclick="faRun(\'' + tool + '\')">Ge mig ett annat</button>' +
+          '<button class="fa-ghost" onclick="faTogglePanel(\'' + tool + '\')">Behåll originalet</button>' +
+        '</div>' +
+        '<div class="fa-applied" id="fa-applied-' + tool + '" style="display:none">✓ Förslaget har ersatt originalet.</div>' +
+      '</div>' +
+    '</div>';
+}
+
 function renderNewsroomResult(result, typeLabel) {
   document.getElementById('nr-result-type').textContent = typeLabel || '';
   window._newsroomLabel = typeLabel || '';
@@ -7354,6 +7581,11 @@ function renderNewsroomResult(result, typeLabel) {
   window._newsroomResult = result;
   const nrExp = document.getElementById('newsroom-export-slot');
   if (nrExp) nrExp.innerHTML = exportMenuHtml('newsroom', 'newsroom-action-btn');
+
+  const faSlot = document.getElementById('newsroom-faska-slot');
+  if (faSlot) faSlot.innerHTML = faPanelHtml('newsroom', [
+    'Korta ner', 'Skärp språket', 'Gör mer säljande', 'Mjuka upp tonen'
+  ]);
 }
 
 function newsroomToggleEdit(){
