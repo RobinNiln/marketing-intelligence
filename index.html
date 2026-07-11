@@ -1444,6 +1444,13 @@ body.brief-mode{background:#FBFAF7}
   padding:9px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
 .fa-ghost:hover{border-color:#C9A84C}
 .fa-applied{font-size:12.5px;color:#9c7d2e;font-weight:700;margin-top:10px}
+/* ── Fråga Mava (fristående chatt) ────────────────────────────────────── */
+.fchat-user{align-self:flex-end;max-width:80%;background:rgba(201,168,76,0.15);color:#2C2520;
+  padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.fchat-mava{align-self:flex-start;max-width:85%;background:#fff;border:1px solid rgba(180,155,110,0.3);
+  color:#2C2520;padding:11px 15px;border-radius:14px;font-size:14px;line-height:1.6;white-space:pre-wrap}
+.fchat-typing{align-self:flex-start;display:flex;align-items:center;gap:8px;padding:11px 15px;
+  font-size:13.5px;color:#8a8073}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Exportbibliotek: skapar Word/PDF/PowerPoint direkt i webbläsaren -->
@@ -1533,6 +1540,10 @@ body.brief-mode{background:#FBFAF7}
     <button class="sp-link" data-page="tools-page" onclick="goToTools()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg>
       <span class="sp-link-body"><span class="sp-link-text">Verktyg</span><span class="sp-link-desc">Alla sex AI-verktyg</span></span>
+    </button>
+    <button class="sp-link" data-page="fraga-page" onclick="goToFraga()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l1.8 4.4L17 9l-4.2 1.6L11 15l-1.8-4.4L5 9l4.2-1.6z"/><path d="M5.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8L3 18l1.8-.7z"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Fråga Mava</span><span class="sp-link-desc">Din AI-medhjälpare</span></span>
     </button>
     <button class="sp-link" data-page="library-page" onclick="goToLibraryAll()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v14M8 4v14M4 4h4v14H4z"/><path d="M11 5l4-1 3 13-4 1z"/></svg>
@@ -2145,6 +2156,31 @@ body.brief-mode{background:#FBFAF7}
       <button onclick="libraryClearSelection()" style="background:none;color:rgba(255,255,255,0.8);border:none;padding:9px 8px;font-size:13px;cursor:pointer;font-family:inherit">Avmarkera</button>
     </div>
     <div id="library-list"></div>
+  </div>
+</div>
+
+<div id="fraga-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <nav class="tools-nav">
+    <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+  </nav>
+  <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem;display:flex;flex-direction:column;min-height:calc(100vh - 60px)">
+    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Fråga Mava</h1>
+    <p style="font-size:14px;color:#8a7d6d;margin:0 0 1.5rem">Fråga om vad som helst inom marknadsföring – Mava känner ditt varumärke.</p>
+
+    <div id="fchat-messages" style="flex:1;display:flex;flex-direction:column;gap:14px;padding:4px 0 1rem"></div>
+
+    <div id="fchat-starters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem">
+      <button class="fa-chip" onclick="fchatStarter('Skriv tre rubrikförslag för en kampanj om lokaljournalistik')">Rubrikförslag</button>
+      <button class="fa-chip" onclick="fchatStarter('Vilken kampanjstruktur passar en lokaltidning?')">Kampanjstruktur</button>
+      <button class="fa-chip" onclick="fchatStarter('Ge mig fem vinklar på en pressrelease om en nyanställning')">Vinklar på en nyhet</button>
+    </div>
+
+    <div id="fchat-error" style="display:none;margin-bottom:12px;padding:10px 14px;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;color:#991B1B;font-size:13px"></div>
+
+    <div style="display:flex;gap:10px;position:sticky;bottom:1rem;background:#F5F3EE;padding-top:8px">
+      <textarea id="fchat-input" rows="1" placeholder="Fråga Mava något…" onkeydown="fchatKey(event)" style="flex:1;font-family:inherit;font-size:14.5px;padding:12px 15px;border:1px solid rgba(180,155,110,0.3);border-radius:10px;background:#fff;color:#2C2520;resize:vertical;min-height:48px;line-height:1.4;box-sizing:border-box"></textarea>
+      <button id="fchat-send" class="fa-send" onclick="fchatSend()" style="border-radius:10px;padding:0 22px">Skicka</button>
+    </div>
   </div>
 </div>
 
@@ -4271,7 +4307,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page','fraga-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -6093,7 +6129,7 @@ function applyPanelState() {
 }
 
 // Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
-const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page'];
+const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','fraga-page'];
 
 // Visar panelen bara när man är inloggad OCH på en inre app-sida.
 function updateSidePanel(currentPage) {
@@ -7541,6 +7577,99 @@ function faPanelHtml(tool, quickChips) {
         '<div class="fa-applied" id="fa-applied-' + tool + '" style="display:none">✓ Förslaget har ersatt originalet.</div>' +
       '</div>' +
     '</div>';
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FRÅGA MAVA – FRISTÅENDE LÄGE (egen sida, flervägs-chatt)
+   Använder samma aiAssist-motor, men utan material och MED historik – så
+   Mava minns samtalet. Historiken byggs upp i _fchatHistory och skickas
+   med i varje anrop (AI:n har inget eget minne mellan anrop).
+   ══════════════════════════════════════════════════════════════════════════ */
+window._fchatHistory = window._fchatHistory || [];
+
+function goToFraga() {
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('fraga-page').style.display = 'block';
+  setActivePanelLink('fraga-page');
+  window.scrollTo(0, 0);
+  const input = document.getElementById('fchat-input');
+  if (input) input.focus();
+}
+
+// Ritar om hela chatt-tråden från historiken.
+function fchatRender() {
+  const box = document.getElementById('fchat-messages');
+  if (!box) return;
+  box.innerHTML = '';
+  for (const m of window._fchatHistory) {
+    const div = document.createElement('div');
+    div.className = m.role === 'user' ? 'fchat-user' : 'fchat-mava';
+    div.textContent = m.content;
+    box.appendChild(div);
+  }
+  // Dölj snabbstart-knapparna så fort samtalet börjat.
+  const starters = document.getElementById('fchat-starters');
+  if (starters) starters.style.display = window._fchatHistory.length ? 'none' : 'flex';
+}
+
+// Ett snabbstart-förslag: fyller fältet och skickar.
+function fchatStarter(text) {
+  const input = document.getElementById('fchat-input');
+  if (input) input.value = text;
+  fchatSend();
+}
+
+// Enter skickar, Shift+Enter ger ny rad.
+function fchatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    fchatSend();
+  }
+}
+
+// Skickar en ny fråga och lägger svaret i tråden.
+async function fchatSend() {
+  const input = document.getElementById('fchat-input');
+  const fraga = input ? input.value.trim() : '';
+  if (!fraga) return;
+
+  const errEl = document.getElementById('fchat-error');
+  if (errEl) errEl.style.display = 'none';
+
+  // Lägg användarens fråga i historiken och rita om.
+  window._fchatHistory.push({ role: 'user', content: fraga });
+  input.value = '';
+  fchatRender();
+
+  // Visa "Mava tänker…" som en tillfällig bubbla.
+  const box = document.getElementById('fchat-messages');
+  const typing = document.createElement('div');
+  typing.className = 'fchat-typing';
+  typing.innerHTML = '<span class="fa-dot"></span><span class="fa-dot"></span><span class="fa-dot"></span> Mava tänker…';
+  if (box) box.appendChild(typing);
+
+  const sendBtn = document.getElementById('fchat-send');
+  if (sendBtn) sendBtn.disabled = true;
+
+  try {
+    // Historik = allt UTOM det sista meddelandet (det skickas som önskemål).
+    const historik = window._fchatHistory.slice(0, -1);
+    const svar = await aiAssist('', fraga, historik, {
+      kontext: 'Fristående läge – öppen fråga, inget specifikt material.',
+      toolId: 'newsroom'
+    });
+    window._fchatHistory.push({ role: 'assistant', content: svar });
+    fchatRender();
+  } catch (e) {
+    // Ta bort frågan ur historiken så användaren kan försöka igen rent.
+    if (typing.parentNode) typing.parentNode.removeChild(typing);
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    const scrollBox = document.getElementById('fchat-messages');
+    if (scrollBox) scrollBox.scrollTop = scrollBox.scrollHeight;
+  }
 }
 
 function renderNewsroomResult(result, typeLabel) {
