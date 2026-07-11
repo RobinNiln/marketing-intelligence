@@ -2440,6 +2440,8 @@ body.brief-mode{background:#FBFAF7}
         <div id="native-budget-rows"></div>
       </div>
 
+      <div id="native-faska-slot"></div>
+
       <button class="native-new-btn" onclick="nativeReset()">Skapa en ny artikel</button>
     </div>
 
@@ -2834,6 +2836,8 @@ body.brief-mode{background:#FBFAF7}
           Spara i bibliotek
         </button>
       </div>
+
+      <div id="brief-faska-slot"></div>
 
       <button class="brief-new-btn" onclick="briefReset()">← Skapa ny brief</button>
     </div>
@@ -4249,6 +4253,11 @@ function renderNativeArticle(article, label) {
   if (naEditText) naEditText.textContent = 'Redigera';
   const naExp = document.getElementById('native-export-slot');
   if (naExp) naExp.innerHTML = exportMenuHtml('native', 'native-action-btn');
+
+  const naFa = document.getElementById('native-faska-slot');
+  if (naFa) naFa.innerHTML = faPanelHtml('native', [
+    'Korta ner', 'Skärp språket', 'Gör mer engagerande', 'Mjuka upp tonen'
+  ]);
 }
 
 function nativeToggleEdit(){
@@ -7509,10 +7518,19 @@ async function faRun(tool) {
 }
 
 // Hämtar det material som ska förbättras. Per verktyg, eftersom resultaten
-// ser olika ut. För Newsroom förbättrar vi brödtexten (body).
+// ser olika ut. För Newsroom/Native förbättrar vi brödtexten; för Brief
+// förbättrar vi budskapet (message) – det mest textmässiga fältet.
 function faGetMaterial(tool) {
   if (tool === 'newsroom') {
     const el = document.getElementById('nr-result-body');
+    return el ? el.innerText.trim() : '';
+  }
+  if (tool === 'native') {
+    const el = document.getElementById('native-result-body');
+    return el ? el.innerText.trim() : '';
+  }
+  if (tool === 'brief') {
+    const el = document.getElementById('br-result-message');
     return el ? el.innerText.trim() : '';
   }
   return '';
@@ -7527,6 +7545,14 @@ function faAccept(tool) {
     const el = document.getElementById('nr-result-body');
     if (el) el.innerHTML = mdToHtml(svar);
     if (window._newsroomResult) window._newsroomResult.body = svar;
+  } else if (tool === 'native') {
+    const el = document.getElementById('native-result-body');
+    if (el) el.innerHTML = mdToHtml(svar);
+    if (window._nativeArticle) window._nativeArticle.body = svar;
+  } else if (tool === 'brief') {
+    const el = document.getElementById('br-result-message');
+    if (el) el.innerHTML = mdToHtml(svar);
+    if (window._briefResult) window._briefResult.message = svar;
   }
   const applied = document.getElementById('fa-applied-' + tool);
   if (applied) applied.style.display = 'block';
@@ -8329,6 +8355,11 @@ function renderBriefResult(r, label, company) {
     // Fyll export-knappen.
     const brExp = document.getElementById('brief-export-slot');
     if (brExp) brExp.innerHTML = exportMenuHtml('brief');
+
+    const brFa = document.getElementById('brief-faska-slot');
+    if (brFa) brFa.innerHTML = faPanelHtml('brief', [
+      'Skärp budskapet', 'Gör tydligare', 'Mer övertygande', 'Korta ner'
+    ]);
 }
 
 function briefCopy() {
