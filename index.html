@@ -1481,6 +1481,8 @@ body.brief-mode{background:#FBFAF7}
   padding:3px 6px;border-radius:6px;font-family:inherit}
 .fm-panel-icon:hover{background:#F5F3EE;color:#2C2520}
 .fm-panel-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.fm-panel-context{padding:8px 16px;background:rgba(201,168,76,0.1);border-bottom:1px solid rgba(180,155,110,0.2);
+  font-size:11.5px;font-weight:700;color:#9c7d2e;letter-spacing:.02em;flex-shrink:0}
 .fm-panel-starters{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;flex-shrink:0}
 .fm-panel-error{margin:0 16px 10px;padding:9px 12px;background:#FEF2F2;border:1px solid #FCA5A5;
   border-radius:8px;color:#991B1B;font-size:12.5px;flex-shrink:0}
@@ -1635,6 +1637,8 @@ body.brief-mode{background:#FBFAF7}
       <button class="fm-panel-icon" onclick="fmPanelToggle()" title="Stäng">×</button>
     </div>
   </div>
+
+  <div class="fm-panel-context" id="fm-panel-context" style="display:none"></div>
 
   <div class="fm-panel-body" id="fm-panel-messages"></div>
 
@@ -6250,6 +6254,7 @@ function updateSidePanel(currentPage) {
 
 // Markerar den aktiva länken i panelen utifrån vilken sida som visas.
 function setActivePanelLink(pageId) {
+  window._currentPage = pageId;
   document.querySelectorAll('#side-panel .sp-link[data-page]').forEach(function(el){
     el.classList.toggle('active', el.getAttribute('data-page') === pageId);
   });
@@ -7985,6 +7990,7 @@ function fmPanelToggle() {
   if (window._fmPanelOpen) {
     fchatLoad();
     fmPanelRender();
+    fmPanelContextBadge();
     const input = document.getElementById('fm-panel-input');
     if (input) input.focus();
   }
@@ -8023,6 +8029,110 @@ function fmPanelKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fmPanelSend(); }
 }
 
+/* ── Kontextmedvetenhet ───────────────────────────────────────────────────
+   Panelen plockar upp vad användaren har framför sig, så Mava kan svara på
+   "vad tycker du om den här rubriken?" och faktiskt VETA vilken rubrik.
+   Returnerar { material, etikett } – etiketten visas i panelen så användaren
+   ser vad Mava tittar på. Tomt material = allmän chatt, som förut.
+   ───────────────────────────────────────────────────────────────────────── */
+function fmGetContext() {
+  const page = window._currentPage || '';
+
+  // AdStudio: samla copy för de annonser som genererats.
+  if (page === 'adcopy-page' && window._adgenCopyData) {
+    const rader = [];
+    const formats = window._adgenFormats || [];
+    for (const fid of formats) {
+      const c = _adgenCopyData[fid];
+      if (!c) continue;
+      const fmt = (typeof ADGEN_FORMATS !== 'undefined' && ADGEN_FORMATS[fid]) || {};
+      rader.push('Format: ' + (fmt.label || fid) +
+        '\n- Rubrik: ' + (c.headline || '') +
+        '\n- Underrubrik: ' + (c.subline || '') +
+        '\n- Knapptext: ' + (c.cta || ''));
+    }
+    if (rader.length) {
+      return {
+        material: 'Användaren arbetar med annonser i AdStudio:\n\n' + rader.join('\n\n'),
+        etikett: 'Ser dina annonser i AdStudio'
+      };
+    }
+  }
+
+  // Newsroom: pressreleasen.
+  if (page === 'newsroom-page' && window._newsroomResult) {
+    const r = window._newsroomResult;
+    return {
+      material: 'Pressrelease i Newsroom:\n\nRubrik: ' + (r.headline || '') +
+                '\n\nIngress: ' + (r.ingress || '') +
+                '\n\nBrödtext: ' + (r.body || ''),
+      etikett: 'Ser din pressrelease'
+    };
+  }
+
+  // The Brief.
+  if (page === 'brief-page' && window._briefResult) {
+    const r = window._briefResult;
+    return {
+      material: 'Brief:\n\nBakgrund: ' + (r.background || '') +
+                '\n\nMål: ' + (r.goals || '') +
+                '\n\nMålgrupp: ' + (r.audience || '') +
+                '\n\nBudskap: ' + (r.message || ''),
+      etikett: 'Ser din brief'
+    };
+  }
+
+  // Native Auto Reach: artikeln.
+  if (page === 'native-page' && window._nativeArticle) {
+    const a = window._nativeArticle;
+    return {
+      material: 'Native-artikel:\n\nRubrik: ' + (a.headline || '') +
+                '\n\nBrödtext: ' + (a.body || ''),
+      etikett: 'Ser din artikel'
+    };
+  }
+
+  return { material: '', etikett: '' };
+}
+
+// Visar en liten rad i panelen om vad Mava ser just nu, och anpassar
+// snabbstarterna efter sammanhanget.
+function fmPanelContextBadge() {
+  const el = document.getElementById('fm-panel-context');
+  const ctx = fmGetContext();
+  if (el) {
+    if (ctx.etikett) {
+      el.textContent = '✦ ' + ctx.etikett;
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  // Snabbstarter som passar det användaren faktiskt tittar på.
+  const page = window._currentPage || '';
+  let starters;
+  if (ctx.material && page === 'adcopy-page') {
+    starters = ['Vad tycker du om copyn?', 'Ge mig vassare rubriker', 'Vilken annons är starkast?'];
+  } else if (ctx.material && page === 'newsroom-page') {
+    starters = ['Vad kan bli bättre?', 'Skriv en LinkedIn-post av detta', 'Är rubriken tillräckligt vass?'];
+  } else if (ctx.material && page === 'brief-page') {
+    starters = ['Vad saknas i briefen?', 'Är budskapet tydligt?'];
+  } else if (ctx.material && page === 'native-page') {
+    starters = ['Vad kan bli bättre?', 'Är ingressen fängslande?'];
+  } else {
+    starters = ['Ge mig tre rubrikförslag', 'Vilken kampanjstruktur passar en lokaltidning?'];
+  }
+
+  const box = document.getElementById('fm-panel-starters');
+  if (box) {
+    box.innerHTML = starters.map(function (s) {
+      return '<button class="fa-chip" onclick="fmPanelStarter(\'' +
+             s.replace(/'/g, "\\'") + '\')">' + s + '</button>';
+    }).join('');
+  }
+}
+
 async function fmPanelSend() {
   const input = document.getElementById('fm-panel-input');
   const fraga = input ? input.value.trim() : '';
@@ -8044,8 +8154,16 @@ async function fmPanelSend() {
 
   try {
     const historik = window._fchatHistory.slice(0, -1);
-    const svar = await aiAssist('', fraga, historik, {
-      kontext: 'Fristående läge – öppen fråga, inget specifikt material.',
+    // Hämta materialet användaren har framför sig. Vi skickar det bara när
+    // samtalet är nytt – därefter bär historiken sammanhanget vidare, och
+    // att upprepa hela materialet varje tur vore onödigt tungt.
+    const ctx = fmGetContext();
+    const material = historik.length ? '' : ctx.material;
+    const svar = await aiAssist(material, fraga, historik, {
+      kontext: ctx.etikett
+        ? 'Användaren är i ' + (window._currentPage || '') + '. ' + ctx.etikett + '. ' +
+          'Svara kort och konkret, som en kollega som tittar på samma skärm.'
+        : 'Fristående läge – öppen fråga, inget specifikt material.',
       toolId: 'newsroom'
     });
     window._fchatHistory.push({ role: 'assistant', content: svar });
