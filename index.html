@@ -7766,6 +7766,16 @@ function adFaApply(uid, formatId) {
   if (applied) applied.style.display = 'block';
 }
 
+// Läser användarens egna önskemål ur fältet och kör. Egen funktion i stället
+// för ett JS-uttryck inne i onclick-attributet – nästlade citattecken i HTML
+// bryter attributet och gör resten av panelen (inkl. Klar-knappen) trasig.
+function adFaRunCustom(uid, formatId) {
+  const el = document.getElementById('adfa-input-' + uid);
+  const onskemal = el ? el.value.trim() : '';
+  if (!onskemal) return;
+  adFaRun(uid, formatId, onskemal);
+}
+
 // Bygger Fråga Mava-blocket som läggs inuti varje annons redigeringspanel.
 function adFaBlockHtml(uid, formatId) {
   const quick = ['Skärp copyn', 'Gör mer säljande', 'Korta ner', 'Tydligare CTA'];
@@ -7781,7 +7791,7 @@ function adFaBlockHtml(uid, formatId) {
         '<input class="adgen-edit-input" id="adfa-input-' + uid + '" type="text" ' +
           'placeholder="…eller skriv eget önskemål" style="margin:0">' +
         '<button class="fa-send" style="padding:0 14px" ' +
-          'onclick="adFaRun(\'' + uid + '\',\'' + formatId + '\',document.getElementById(\'adfa-input-' + uid + '\').value)">Fråga</button>' +
+          'onclick="adFaRunCustom(\'' + uid + '\',\'' + formatId + '\')">Fråga</button>' +
       '</div>' +
       '<div class="fa-error" id="adfa-error-' + uid + '" style="display:none"></div>' +
       '<div class="fa-thinking" id="adfa-thinking-' + uid + '" style="display:none">' +
@@ -10052,7 +10062,11 @@ function drawAdBoldField(p) {
 // viktigaste. Därför: större logga + en subtil läsbarhetsplatta bakom, så den
 // syns mot vilken bakgrund som helst.
 function drawAdLogo(ctx, W, H) {
-  if (!_adgenLogo) return;
+  // Loggan måste vara både satt OCH färdigladdad. En Image kan finnas men
+  // ännu inte vara klar (eller vara trasig) – då kastar drawImage, vilket
+  // stoppar hela omritningen. Samma skydd som drawAdImageInto har.
+  const logoReady = _adgenLogo && _adgenLogo.complete && _adgenLogo.naturalWidth > 0;
+  if (!logoReady) return;
   ctx.save();
   const pos = (document.getElementById('ac-logo-pos') || {}).value || 'bottom-right';
   // Loggan ska vara SYNLIG men diskret (enligt displayramverket) – inte dominera.
