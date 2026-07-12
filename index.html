@@ -9350,7 +9350,6 @@ function drawAdBoldText(p) {
 
   const pad = Math.round(W * 0.06);
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const hasSub = !!(copy.subline && copy.subline.trim());
 
   // ENORM rubrik upptill – det bärande elementet.
   const headlineSz = Math.round(W * 0.12);
@@ -9361,7 +9360,10 @@ function drawAdBoldText(p) {
   wrapText(ctx, copy.headline || '', pad, Math.round(H * 0.07), W - pad * 2, headlineSz * 0.98);
   ctx.shadowBlur = 0;
 
-  // Subline + CTA nedtill.
+  // CTA nedtill. Djärv text bärs av den ENORMA rubriken på fotot – därför
+  // ritas ingen underrubrik här. Den skulle konkurrera med rubriken och
+  // späda ut mallens poäng (kort exponering, en uppgift per annons).
+  // Behöver man brödtext finns den i övriga stilar.
   let by = H - pad;
   if (hasCta) {
     const ctaSz = Math.round(W * 0.038);
@@ -9370,16 +9372,6 @@ function drawAdBoldText(p) {
     const ch = ctaSz * 2.2;
     by -= ch;
     drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta, ctaSz);
-    by -= Math.round(H * 0.02);
-  }
-  if (hasSub) {
-    const sublineSz = Math.round(W * 0.038);
-    ctx.font = '500 ' + sublineSz + 'px ' + adgenFontFamily();
-    ctx.fillStyle = '#ffffff';
-    ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 6;
-    ctx.fillText(copy.subline, pad, by);
-    ctx.shadowBlur = 0;
   }
 }
 
@@ -9828,28 +9820,69 @@ function drawAdImageInto(ctx, x, y, w, h) {
 // Höjden är liten, så allt ligger sida vid sida (aldrig staplat).
 
 // Hjälpare: mät CTA-knappen för en banner och returnera dess mått.
-function bannerCta(ctx, copy, H) {
+function bannerCta(ctx, copy, H, W) {
   if (!(copy.cta && copy.cta.trim())) return null;
-  const sz = Math.round(H * 0.26);
+  let sz = Math.round(H * 0.26);
   ctx.font = '700 ' + sz + 'px ' + adgenFontFamily();
-  const w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
+  let w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
+  // Knappen skalas efter höjden, men på höga eller smala banners kan den då
+  // bli så bred att texten inte får plats. Tak: knappen får aldrig ta mer än
+  // 40% av bannerns bredd. Krymp texten i knappen tills den ryms.
+  if (W) {
+    const maxW = W * 0.40;
+    while (w > maxW && sz > 10) {
+      sz -= 1;
+      ctx.font = '700 ' + sz + 'px ' + adgenFontFamily();
+      w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
+    }
+  }
   const h = Math.round(H * 0.52);
   return { sz:sz, w:w, h:h };
 }
 
 // Ritar text (rubrik + ev. subline) i ett vänsterfält med given maxbredd.
+// Autokrympning: rubriken minskas i steg tills hela textblocket ryms inom
+// bannerns höjd. Det garanterar att texten aldrig skärs av, oavsett hur
+// lång rubriken är eller hur smalt fältet blir.
 function bannerText(ctx, copy, x, W_area, H, color, subColor) {
-  const hlSz = Math.round(H * 0.30);
+  const maxH = H - Math.round(H * 0.18); // lämna luft upp/ner
+  let hlSz = Math.round(H * 0.30);
   const subSz = Math.round(H * 0.17);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+
+  // Krymp tills rubriken ryms (golv 40% av ursprunglig storlek).
+  let hlLines, hlBlock;
+  const minSz = Math.max(12, Math.round(hlSz * 0.4));
+  let hl = copy.headline || '';
+  for (let i = 0; i < 30; i++) {
+    ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
+    hlLines = estimateLines(ctx, hl, W_area);
+    hlBlock = hlLines * hlSz * 1.04;
+    if (hlBlock <= maxH || hlSz <= minSz) break;
+    hlSz -= 1;
+  }
+
+  // Skyddsnät: om rubriken INTE ryms ens vid minsta läsbara storlek (mycket
+  // lång text i ett litet fält), kapa den med ellips i stället för att låta
+  // den skäras av. Hellre en kort läsbar rubrik än en avhuggen.
   ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
-  const hlLines = estimateLines(ctx, copy.headline || '', W_area);
+  if (hlBlock > maxH) {
+    const maxLines = Math.max(1, Math.floor(maxH / (hlSz * 1.04)));
+    while (hl.length > 4) {
+      hl = hl.slice(0, -1).replace(/\s+$/, '');
+      if (estimateLines(ctx, hl + '…', W_area) <= maxLines) break;
+    }
+    hl = hl + '…';
+    hlLines = estimateLines(ctx, hl, W_area);
+    hlBlock = hlLines * hlSz * 1.04;
+  }
+
   const showSub = !!(copy.subline && copy.subline.trim()) && hlLines === 1 && H >= 110;
-  const hlBlock = hlLines * hlSz * 1.04;
   const subBlock = showSub ? subSz * 1.3 + Math.round(H*0.03) : 0;
   let y = (H - (hlBlock + subBlock)) / 2;
+  if (y < 0) y = 0;
   ctx.fillStyle = color;
-  wrapText(ctx, copy.headline || '', x, y, W_area, hlSz * 1.04);
+  wrapText(ctx, hl, x, y, W_area, hlSz * 1.04);
   if (showSub) {
     y += hlBlock + Math.round(H*0.03);
     ctx.font = '500 ' + subSz + 'px ' + adgenFontFamily();
@@ -9868,7 +9901,7 @@ function drawBannerClean(p) {
   grad.addColorStop(1, 'rgba(0,0,0,0.12)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
   const pad = Math.round(H * 0.22);
-  const cta = bannerCta(ctx, copy, H);
+  const cta = bannerCta(ctx, copy, H, W);
   const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
   bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.85)');
   if (cta) {
@@ -9888,7 +9921,7 @@ function drawBannerSplit(p) {
   ctx.fillStyle = '#241f1b';
   ctx.fillRect(0, 0, splitX, H);
   const pad = Math.round(H * 0.22);
-  const cta = bannerCta(ctx, copy, H);
+  const cta = bannerCta(ctx, copy, H, W);
   // Text + knapp ryms inom vänsterfältet.
   const innerW = splitX - pad * 2;
   const textW = (cta ? innerW - cta.w - pad : innerW);
@@ -9907,7 +9940,7 @@ function drawBannerColorBlock(p) {
   ctx.fillStyle = block; ctx.fillRect(0, 0, W, H);
   const onBlock = adgenLum(block) > 150 ? '#1a1410' : '#ffffff';
   const pad = Math.round(H * 0.22);
-  const cta = bannerCta(ctx, copy, H);
+  const cta = bannerCta(ctx, copy, H, W);
   const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
   bannerText(ctx, copy, pad, textW, H, onBlock, onBlock === '#ffffff' ? 'rgba(255,255,255,0.8)' : 'rgba(26,20,16,0.7)');
   if (cta) {
@@ -9928,16 +9961,18 @@ function drawBannerColorBlock(p) {
 function drawBannerDiagonal(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
   drawAdImageInto(ctx, 0, 0, W, H);
-  // Mörkt fält som skär in från höger via diagonal.
+  // Mörkt fält som skär in från höger via diagonal. Kilen börjar tidigare
+  // så att texten (som startar vid 0.36) hamnar helt inom den mörka ytan.
   ctx.save(); ctx.beginPath();
-  ctx.moveTo(W * 0.40, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.30, H);
+  ctx.moveTo(W * 0.33, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.23, H);
   ctx.closePath(); ctx.fillStyle = '#241f1b'; ctx.globalAlpha = 0.96; ctx.fill();
   ctx.restore();
   const pad = Math.round(H * 0.22);
-  const cta = bannerCta(ctx, copy, H);
-  // Text i den mörka högra delen.
-  const tx = Math.round(W * 0.45);
-  const textW = (cta ? W - cta.w - pad*2.2 : W - pad) - tx;
+  const cta = bannerCta(ctx, copy, H, W);
+  // Text i den mörka högra delen. Startar tidigare (0.36) och tar mindre
+  // luft mot knappen, så rubriken får rimlig bredd även på låga banners.
+  const tx = Math.round(W * 0.36);
+  const textW = (cta ? W - cta.w - pad*1.3 : W - pad) - tx;
   bannerText(ctx, copy, tx, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
   if (cta) {
     const cx = W - cta.w - pad, cy = (H - cta.h)/2;
@@ -9964,8 +9999,16 @@ function drawBannerPremium(p) {
   const textW = (hasCta ? W - ctaW - pad*2.2 : W - pad*2) - pad;
   ctx.font = '500 ' + hlSz + 'px Georgia,"Times New Roman",serif';
   ctx.fillStyle = '#2C2520';
-  // En rad, trunkeras naturligt av utrymmet.
-  ctx.fillText(copy.headline || '', pad, H/2);
+  // En rad. Kapa med ellips om rubriken är för lång, så den aldrig
+  // flödar in under knappen.
+  let phl = copy.headline || '';
+  if (ctx.measureText(phl).width > textW && textW > 0) {
+    while (phl.length > 1 && ctx.measureText(phl + '…').width > textW) {
+      phl = phl.slice(0, -1);
+    }
+    phl = phl.replace(/\s+$/, '') + '…';
+  }
+  ctx.fillText(phl, pad, H/2);
   if (hasCta) {
     const cx = W - ctaW - pad, cy = (H - ctaH)/2;
     ctx.strokeStyle = '#2C2520'; ctx.lineWidth = Math.max(1.5, H*0.012);
