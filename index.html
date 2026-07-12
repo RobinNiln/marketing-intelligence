@@ -1463,6 +1463,37 @@ body.brief-mode{background:#FBFAF7}
 .adfa-field{font-size:13px;color:#3a332c;line-height:1.5;padding:7px 10px;background:#fff;
   border:1px solid rgba(180,155,110,0.25);border-radius:6px;margin-bottom:6px}
 .adfa-flabel{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#a89c8a;font-weight:700;margin-bottom:2px}
+/* ── Fråga Mava: flytande knapp + panel (alla sidor) ──────────────────── */
+#fm-fab{position:fixed;right:24px;bottom:24px;z-index:900;display:none;align-items:center;gap:8px;
+  background:#C9A84C;color:#2C2520;border:none;border-radius:26px;padding:13px 20px;font-size:14px;
+  font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(44,37,32,0.18);
+  transition:background .15s,transform .12s}
+#fm-fab:hover{background:#9c7d2e;color:#fff;transform:translateY(-1px)}
+#fm-fab.on{display:flex}
+#fm-panel{position:fixed;right:24px;bottom:24px;z-index:901;width:370px;max-width:calc(100vw - 32px);
+  height:min(560px,calc(100vh - 48px));background:#fff;border:1px solid rgba(180,155,110,0.35);
+  border-radius:14px;box-shadow:0 8px 32px rgba(44,37,32,0.2);display:none;flex-direction:column;overflow:hidden}
+#fm-panel.on{display:flex}
+.fm-panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+  border-bottom:1px solid rgba(180,155,110,0.25);flex-shrink:0}
+.fm-panel-title{font-size:14px;font-weight:700;color:#2C2520;display:flex;align-items:center;gap:7px}
+.fm-panel-icon{background:none;border:none;font-size:17px;color:#8a8073;cursor:pointer;line-height:1;
+  padding:3px 6px;border-radius:6px;font-family:inherit}
+.fm-panel-icon:hover{background:#F5F3EE;color:#2C2520}
+.fm-panel-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.fm-panel-starters{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;flex-shrink:0}
+.fm-panel-error{margin:0 16px 10px;padding:9px 12px;background:#FEF2F2;border:1px solid #FCA5A5;
+  border-radius:8px;color:#991B1B;font-size:12.5px;flex-shrink:0}
+.fm-panel-foot{display:flex;gap:7px;padding:12px 16px;border-top:1px solid rgba(180,155,110,0.25);flex-shrink:0}
+.fm-panel-foot textarea{flex:1;font-family:inherit;font-size:13.5px;padding:10px 12px;
+  border:1px solid rgba(180,155,110,0.3);border-radius:9px;background:#F5F3EE;color:#2C2520;
+  resize:none;line-height:1.4;box-sizing:border-box;max-height:90px}
+.fm-panel-foot textarea:focus{outline:none;border-color:#C9A84C;background:#fff}
+@media(max-width:640px){
+  #fm-panel{right:8px;left:8px;bottom:8px;width:auto;height:min(70vh,520px)}
+  #fm-fab{right:16px;bottom:16px;padding:12px 16px}
+  #fm-fab .fm-fab-text{display:none}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Exportbibliotek: skapar Word/PDF/PowerPoint direkt i webbläsaren -->
@@ -1590,6 +1621,35 @@ body.brief-mode{background:#FBFAF7}
     </button>
   </div>
 </aside>
+
+<!-- ── Fråga Mava: flytande knapp + utfällbar panel (finns på alla sidor) ── -->
+<button id="fm-fab" onclick="fmPanelToggle()" title="Fråga Mava">
+  <span style="font-size:16px">✦</span><span class="fm-fab-text">Fråga Mava</span>
+</button>
+
+<div id="fm-panel">
+  <div class="fm-panel-head">
+    <div class="fm-panel-title"><span style="color:#9c7d2e">✦</span> Fråga Mava</div>
+    <div style="display:flex;align-items:center;gap:4px">
+      <button class="fm-panel-icon" onclick="fmPanelExpand()" title="Öppna i helskärm">⤢</button>
+      <button class="fm-panel-icon" onclick="fmPanelToggle()" title="Stäng">×</button>
+    </div>
+  </div>
+
+  <div class="fm-panel-body" id="fm-panel-messages"></div>
+
+  <div id="fm-panel-starters" class="fm-panel-starters">
+    <button class="fa-chip" onclick="fmPanelStarter('Ge mig tre rubrikförslag')">Rubrikförslag</button>
+    <button class="fa-chip" onclick="fmPanelStarter('Vilken kampanjstruktur passar en lokaltidning?')">Kampanjstruktur</button>
+  </div>
+
+  <div class="fm-panel-error" id="fm-panel-error" style="display:none"></div>
+
+  <div class="fm-panel-foot">
+    <textarea id="fm-panel-input" rows="1" placeholder="Fråga Mava något…" onkeydown="fmPanelKey(event)"></textarea>
+    <button class="fa-send" onclick="fmPanelSend()" style="padding:0 14px">↑</button>
+  </div>
+</div>
 <div id="landing">
 
   <!-- NAV -->
@@ -6196,6 +6256,8 @@ function setActivePanelLink(pageId) {
   // Registrera i historiken – men inte när vi själva navigerar bakåt.
   if (!_navigatingBack) pushNav(pageId);
   updateSidePanel(pageId);
+  // Visa/dölj den flytande Fråga Mava-knappen för denna sida.
+  fmFabUpdate(pageId);
 }
 
 function goToPlan() {
@@ -7791,15 +7853,23 @@ function fchatLoad() {
   } catch (e) { /* trasig eller saknad data – börja tomt */ }
 }
 
-// Rensar konversationen (både i minnet och i localStorage).
+// Rensar konversationen (både i minnet och i localStorage). Uppdaterar både
+// sidan och panelen, eftersom de visar samma historik.
 function fchatClear() {
   window._fchatHistory = [];
   try { localStorage.removeItem(FCHAT_KEY); } catch (e) {}
   fchatRender();
+  if (typeof fmPanelRender === 'function') fmPanelRender();
 }
 
 function goToFraga() {
   if (!_currentUser) { goToAuth(); return; }
+  // Panelen och sidan visar samma chatt – ha inte båda öppna samtidigt.
+  if (window._fmPanelOpen) {
+    window._fmPanelOpen = false;
+    const p = document.getElementById('fm-panel');
+    if (p) p.classList.remove('on');
+  }
   hideAll();
   document.getElementById('fraga-page').style.display = 'block';
   setActivePanelLink('fraga-page');
@@ -7884,6 +7954,106 @@ async function fchatSend() {
     if (sendBtn) sendBtn.disabled = false;
     const scrollBox = document.getElementById('fchat-messages');
     if (scrollBox) scrollBox.scrollTop = scrollBox.scrollHeight;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FRÅGA MAVA – PANELEN (flytande knapp, finns på alla sidor)
+   Delar historik och localStorage med den egna sidan (_fchatHistory), så
+   ett samtal kan börjas i panelen och fortsätta på sidan – och tvärtom.
+   Samma aiAssist-motor som allt annat.
+   ══════════════════════════════════════════════════════════════════════════ */
+window._fmPanelOpen = false;
+
+// Visar/döljer den flytande knappen. Göms på landningssida, inloggning och
+// på själva Fråga Mava-sidan (där chatten redan är framme).
+function fmFabUpdate(pageId) {
+  const fab = document.getElementById('fm-fab');
+  if (!fab) return;
+  const hideOn = ['landing', 'auth-page', 'fraga-page'];
+  const show = !!_currentUser && hideOn.indexOf(pageId) === -1;
+  fab.classList.toggle('on', show && !window._fmPanelOpen);
+}
+
+function fmPanelToggle() {
+  const panel = document.getElementById('fm-panel');
+  const fab = document.getElementById('fm-fab');
+  if (!panel) return;
+  window._fmPanelOpen = !window._fmPanelOpen;
+  panel.classList.toggle('on', window._fmPanelOpen);
+  if (fab) fab.classList.toggle('on', !window._fmPanelOpen);
+  if (window._fmPanelOpen) {
+    fchatLoad();
+    fmPanelRender();
+    const input = document.getElementById('fm-panel-input');
+    if (input) input.focus();
+  }
+}
+
+// "Öppna i helskärm": stäng panelen och gå till den egna sidan. Samtalet
+// följer med eftersom historiken är gemensam.
+function fmPanelExpand() {
+  if (window._fmPanelOpen) fmPanelToggle();
+  goToFraga();
+}
+
+// Ritar om panelens tråd från den gemensamma historiken.
+function fmPanelRender() {
+  const box = document.getElementById('fm-panel-messages');
+  if (!box) return;
+  box.innerHTML = '';
+  for (const m of window._fchatHistory) {
+    const div = document.createElement('div');
+    div.className = m.role === 'user' ? 'fchat-user' : 'fchat-mava';
+    div.textContent = m.content;
+    box.appendChild(div);
+  }
+  const starters = document.getElementById('fm-panel-starters');
+  if (starters) starters.style.display = window._fchatHistory.length ? 'none' : 'flex';
+  box.scrollTop = box.scrollHeight;
+}
+
+function fmPanelStarter(text) {
+  const input = document.getElementById('fm-panel-input');
+  if (input) input.value = text;
+  fmPanelSend();
+}
+
+function fmPanelKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fmPanelSend(); }
+}
+
+async function fmPanelSend() {
+  const input = document.getElementById('fm-panel-input');
+  const fraga = input ? input.value.trim() : '';
+  if (!fraga) return;
+
+  const errEl = document.getElementById('fm-panel-error');
+  if (errEl) errEl.style.display = 'none';
+
+  window._fchatHistory.push({ role: 'user', content: fraga });
+  input.value = '';
+  fmPanelRender();
+  fchatSave();
+
+  const box = document.getElementById('fm-panel-messages');
+  const typing = document.createElement('div');
+  typing.className = 'fchat-typing';
+  typing.innerHTML = '<span class="fa-dot"></span><span class="fa-dot"></span><span class="fa-dot"></span> Mava tänker…';
+  if (box) { box.appendChild(typing); box.scrollTop = box.scrollHeight; }
+
+  try {
+    const historik = window._fchatHistory.slice(0, -1);
+    const svar = await aiAssist('', fraga, historik, {
+      kontext: 'Fristående läge – öppen fråga, inget specifikt material.',
+      toolId: 'newsroom'
+    });
+    window._fchatHistory.push({ role: 'assistant', content: svar });
+    fmPanelRender();
+    fchatSave();
+  } catch (e) {
+    if (typing.parentNode) typing.parentNode.removeChild(typing);
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
   }
 }
 
