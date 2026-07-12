@@ -6058,11 +6058,37 @@ function restoreAdStudioFromSaved(cfg) {
     setVal('ac-logo-pos', cfg.logoPos);
     if (cfg.color) { setVal('ac-color', cfg.color); const h = document.getElementById('ac-color-hex'); if (h) h.textContent = cfg.color.toUpperCase(); }
 
-    // 2) Bild och logga tillbaka från base64
+    // 2) Bild och logga tillbaka från base64.
+    // Canvas kan bara rita riktiga Image-objekt – tidigare sattes dessa till
+    // `true`, vilket gjorde att bilden aldrig kunde ritas (platshållare visades
+    // i stället). Vi skapar riktiga Image, laddar dem, och ritar om när de är
+    // klara. Laddningen är asynkron, därför omritningen i onload.
     _adgenImageDataUrl = cfg.imageDataUrl || null;
-    _adgenImage = cfg.imageDataUrl ? true : null;
-    _adgenLogoDataUrl = cfg.logoDataUrl || null;
-    _adgenLogo = cfg.logoDataUrl ? true : null;
+    _adgenLogoDataUrl  = cfg.logoDataUrl  || null;
+    _adgenImage = null;
+    _adgenLogo  = null;
+
+    let pending = 0;
+    const doneOne = function(){
+      pending--;
+      // Rita om först när alla bilder laddats klart.
+      if (pending <= 0 && _adgenCopyData) renderAdGenResult();
+    };
+    if (cfg.imageDataUrl) {
+      pending++;
+      const img = new Image();
+      img.onload  = function(){ _adgenImage = img;  doneOne(); };
+      img.onerror = function(){ _adgenImage = null; doneOne(); };
+      img.src = cfg.imageDataUrl;
+    }
+    if (cfg.logoDataUrl) {
+      pending++;
+      const lg = new Image();
+      lg.onload  = function(){ _adgenLogo = lg;   doneOne(); };
+      lg.onerror = function(){ _adgenLogo = null; doneOne(); };
+      lg.src = cfg.logoDataUrl;
+    }
+
     const prev = document.getElementById('adgen-preview');
     if (prev && cfg.imageDataUrl) { prev.src = cfg.imageDataUrl; prev.style.display = 'block'; }
     const logoPrev = document.getElementById('adgen-logo-preview');
