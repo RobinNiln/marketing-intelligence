@@ -1464,15 +1464,22 @@ body.brief-mode{background:#FBFAF7}
   border:1px solid rgba(180,155,110,0.25);border-radius:6px;margin-bottom:6px}
 .adfa-flabel{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#a89c8a;font-weight:700;margin-bottom:2px}
 /* ── Fråga Mava: flytande knapp + panel (alla sidor) ──────────────────── */
-#fm-fab{position:fixed;right:24px;bottom:24px;z-index:900;display:none;align-items:center;gap:8px;
+/* Sidopanelen sitter fast till höger (60px, 230px utfälld). Knappen och
+   panelen läggs till VÄNSTER om den och följer med när den fälls ut, så de
+   aldrig hamnar ovanpå menyns länkar. body.panel-open sätts redan av
+   applyPanelState – vi hakar bara på samma klass. */
+#fm-fab{position:fixed;right:84px;bottom:24px;z-index:900;display:none;align-items:center;gap:8px;
   background:#C9A84C;color:#2C2520;border:none;border-radius:26px;padding:13px 20px;font-size:14px;
   font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(44,37,32,0.18);
-  transition:background .15s,transform .12s}
+  transition:background .15s,transform .12s,right .2s ease}
+body.panel-open #fm-fab{right:254px}
 #fm-fab:hover{background:#9c7d2e;color:#fff;transform:translateY(-1px)}
 #fm-fab.on{display:flex}
-#fm-panel{position:fixed;right:24px;bottom:24px;z-index:901;width:370px;max-width:calc(100vw - 32px);
+#fm-panel{position:fixed;right:84px;bottom:24px;z-index:901;width:370px;max-width:calc(100vw - 108px);
   height:min(560px,calc(100vh - 48px));background:#fff;border:1px solid rgba(180,155,110,0.35);
-  border-radius:14px;box-shadow:0 8px 32px rgba(44,37,32,0.2);display:none;flex-direction:column;overflow:hidden}
+  border-radius:14px;box-shadow:0 8px 32px rgba(44,37,32,0.2);display:none;flex-direction:column;
+  overflow:hidden;transition:right .2s ease}
+body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 #fm-panel.on{display:flex}
 .fm-panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
   border-bottom:1px solid rgba(180,155,110,0.25);flex-shrink:0}
@@ -1492,9 +1499,13 @@ body.brief-mode{background:#FBFAF7}
   resize:none;line-height:1.4;box-sizing:border-box;max-height:90px}
 .fm-panel-foot textarea:focus{outline:none;border-color:#C9A84C;background:#fff}
 @media(max-width:640px){
-  #fm-panel{right:8px;left:8px;bottom:8px;width:auto;height:min(70vh,520px)}
+  /* På mobil är sidopanelen 0px infälld och 200px utfälld (se regeln ovan),
+     så knappen kan ligga längst ut i kanten när menyn är stängd. */
+  #fm-panel{right:8px;left:8px;bottom:8px;width:auto;max-width:none;height:min(70vh,520px)}
   #fm-fab{right:16px;bottom:16px;padding:12px 16px}
   #fm-fab .fm-fab-text{display:none}
+  body.panel-open #fm-fab{right:216px}
+  body.panel-open #fm-panel{right:216px;left:8px}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
