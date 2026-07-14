@@ -984,6 +984,15 @@ body.adcopy-mode{background:#FBFAF7}
 .adcopy-field label span{font-weight:400;color:#b5b0a8;font-size:12px;margin-left:4px}
 /* Hjälptext under ett fält: förklarar vad som ger bra resultat. */
 .field-hint{display:block;font-size:12.5px;color:#9A8570;line-height:1.5;margin:-4px 0 8px}
+/* "Visa exempel"-knapp ovanför ett formulär. */
+.example-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 16px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);
+  border-radius:12px;margin-bottom:1.75rem}
+.example-bar-text{font-size:13px;color:#7d7266;line-height:1.5}
+.example-btn{flex-shrink:0;background:#fff;color:#9c7d2e;border:1px solid rgba(201,168,76,0.5);
+  border-radius:8px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  white-space:nowrap;transition:all .15s}
+.example-btn:hover{background:#C9A84C;color:#2C2520;border-color:#C9A84C}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:14px 16px;border:1.5px solid #F0EEE8;border-radius:14px;font-size:14.5px;font-family:inherit;color:#1a1a1a;background:#FDFCFA;outline:none;transition:border-color 0.15s}
 .adcopy-input::placeholder,.adcopy-textarea::placeholder{color:#b5b0a8}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#D4A857;background:#fff}
@@ -2421,6 +2430,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så skapar AI:n en redaktionellt skriven nativeartikel redo för publicering i svenska medier.</p>
       </div>
 
+      <div class="example-bar">
+        <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+        <button class="example-btn" onclick="fillExample('native')">Visa exempel</button>
+      </div>
+
       <div class="native-section-title">Om företaget</div>
 
       <div class="native-field">
@@ -2606,6 +2620,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         </div>
       </div>
 
+      <div class="example-bar">
+        <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+        <button class="example-btn" onclick="fillExample('newsroom')">Visa exempel</button>
+      </div>
+
       <div class="newsroom-section-title">Om företaget</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
@@ -2782,6 +2801,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
           <div class="brief-goal-name">Employer brand</div>
           <div class="brief-goal-desc">Attrahera rätt talang</div>
         </div>
+      </div>
+
+      <div class="example-bar">
+        <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+        <button class="example-btn" onclick="fillExample('brief')">Visa exempel</button>
       </div>
 
       <div class="brief-section-title">Om företaget och kampanjen</div>
@@ -3153,6 +3177,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         </div>
       </div>
       <div class="adcopy-section-title">Om kampanjen</div>
+      <div class="example-bar">
+        <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+        <button class="example-btn" onclick="fillExample('adstudio')">Visa exempel</button>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Företag / Varumärke <span>*</span></label><span class="field-hint">Namnet som ska synas som avsändare i annonsen.</span><input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping"></div><div class="adcopy-field"><label>Produkt / Kampanj <span>*</span></label><span class="field-hint">Vad annonsen handlar om – en produkt, ett erbjudande eller en kampanj.</span><input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj"></div></div>
       <div class="adcopy-field"><label>Huvudbudskap <span>*</span></label><span class="field-hint">Det viktigaste läsaren ska ta med sig. En annons läses på under 2,5 sekunder – håll dig till <strong>en</strong> sak. Konkreta erbjudanden ("20% rabatt i juni") slår vaga löften ("bra priser").</span><textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera?"></textarea></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Call to action <span>*</span></label><span class="field-hint">Vad läsaren ska göra. Börja med ett verb.</span><input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka provkörning, Läs mer"></div><div class="adcopy-field"><label>Ton</label><span class="field-hint">Styr språket i copyn.</span><select class="adcopy-select" id="ac-tone"><option value="">Välj ton...</option><option>Professionell och förtroendegivande</option><option>Varm och personlig</option><option>Energisk och drivande</option><option>Mjuk och informativ</option></select></div></div>
@@ -6486,6 +6514,70 @@ function fillIfEmpty(id, value) {
    in i vilken AI-prompt som helst. Detta är "prompt-injektion": informationen
    når AI:n även om det inte finns något synligt formulärfält för den.
    Returnerar tom sträng om profilen saknas eller är tom – då påverkas inget. */
+/* ══════════════════════════════════════════════════════════════════════════
+   EXEMPEL-IFYLLNING
+   Fyller ett formulär med ett realistiskt case, så användaren ser vad
+   verktyget kan innan de skriver något själva. Ett genomtänkt exempel säger
+   mer än en instruktion. Samma fiktiva bolag genom alla verktyg, så det
+   känns som ett sammanhängande case.
+   ══════════════════════════════════════════════════════════════════════════ */
+const EXAMPLES = {
+  adstudio: {
+    'ac-company': 'Bilbörsen Linköping',
+    'ac-product': 'Sommarkampanj – begagnade elbilar',
+    'ac-message': '12 månaders garanti på alla begagnade elbilar under juni. Fri hemleverans inom 15 mil.',
+    'ac-cta': 'Boka provkörning',
+    'ac-tone': 'Varm och personlig',
+    'ac-reference': ''
+  },
+  newsroom: {
+    'nr-company': 'Bilbörsen Linköping',
+    'nr-industry': 'Bilhandel',
+    'nr-company-desc': 'Bilbörsen är Östergötlands största handlare av begagnade bilar, grundad 1998, med 40 anställda och 1 200 sålda bilar per år.',
+    'nr-news': 'Bilbörsen lanserar Sveriges första helt digitala köpprocess för begagnade elbilar. Kunden kan välja bil, få finansiering godkänd och få bilen hemlevererad utan att besöka anläggningen. Lanseringen sker 15 augusti 2026. Under pilotperioden har 78% av testkunderna genomfört hela köpet digitalt, och den genomsnittliga köptiden minskade från 9 dagar till 2.',
+    'nr-quote': '"Bilköp har varit sig likt i femtio år. Vi tror att nästa generation bilköpare förväntar sig samma smidighet som när de handlar allt annat." – Anna Lindqvist, VD Bilbörsen',
+    'nr-data': 'Digitalt genomförda köp under pilot: 78%. Genomsnittlig köptid: från 9 dagar till 2 dagar. Antal elbilar i lager: 340.'
+  },
+  brief: {
+    'br-company': 'Bilbörsen Linköping',
+    'br-message': 'Vi lanserar en helt digital köpprocess för begagnade elbilar – välj bil, få finansiering klar och bilen hemlevererad utan att besöka anläggningen. Vi är först i Sverige med detta.',
+    'br-audience': 'Förstagångsköpare av elbil, 30–50 år, i Östergötland. Tekniskt bekväma, tidspressade småbarnsföräldrar som tycker att traditionella bilhandlare känns omoderna och säljiga.'
+  },
+  native: {
+    'n-company': 'Bilbörsen Linköping',
+    'n-industry': 'Bilhandel',
+    'n-campaign': 'Många är nyfikna på elbil men vågar inte köpa begagnat – de är osäkra på batteriets skick och vad som händer när garantin går ut. Vi vill förklara hur man faktiskt bedömer en begagnad elbils hälsa, vilka mätvärden som spelar roll, och vad man ska fråga säljaren om.',
+    'n-purpose': 'Bygga förtroende och positionera Bilbörsen som den kunniga aktören inom begagnade elbilar.',
+    'n-audience': 'Villaägare 35–60 år i Mälardalen som funderar på sin första elbil'
+  }
+};
+
+// Fyller formuläret med exempeldata. Rör bara TOMMA fält som standard – om
+// användaren redan börjat skriva vill vi inte skriva över deras text.
+function fillExample(tool, force) {
+  const data = EXAMPLES[tool];
+  if (!data) return;
+
+  // Har användaren redan skrivit något?
+  let hasContent = false;
+  for (const id in data) {
+    const el = document.getElementById(id);
+    if (el && el.value && el.value.trim()) { hasContent = true; break; }
+  }
+  if (hasContent && !force) {
+    if (!confirm('Formuläret innehåller redan text. Vill du ersätta den med exemplet?')) return;
+  }
+
+  for (const id in data) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.value = data[id];
+    // Trigga eventuella lyssnare (t.ex. teckenräknare).
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+
 function brandGuidance() {
   const p = _brandProfile;
   if (!p) return '';
