@@ -3141,6 +3141,8 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <div id="pl-result-phases"></div>
       <div id="pl-result-budget" style="margin-top:1.5rem"></div>
 
+      <div id="planner-nextstep-slot"></div>
+
       <button class="brief-new-btn" onclick="plannerReset()">← Skapa ny plan</button>
     </div>
   </div>
@@ -6805,6 +6807,14 @@ const NEXT_STEPS = {
       { label: 'Gör en kampanjplan', fn: 'goToPlanner()' },
       { label: 'Öppna biblioteket', fn: 'goToLibraryAll()' }
     ]
+  },
+  planner: {
+    text: 'Planen är klar. Nu kan du börja producera materialet den pekar ut.',
+    steps: [
+      { label: 'Skapa annonser', fn: 'goToAdCopy()' },
+      { label: 'Skriv en pressrelease', fn: 'goToNewsroom()' },
+      { label: 'Skriv en nativeartikel', fn: 'goToNative()' }
+    ]
   }
 };
 
@@ -7436,6 +7446,9 @@ function plannerToggleEdit(){
     },
     rerender: function(data){ renderPlanResult(data, window._plannerLabel); }
   });
+
+  const plNs = document.getElementById('planner-nextstep-slot');
+  if (plNs) plNs.innerHTML = nextStepsHtml('planner');
 }
 
 async function plannerSave(){
