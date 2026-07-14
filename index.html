@@ -1003,6 +1003,18 @@ body.adcopy-mode{background:#FBFAF7}
   border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;
   font-family:inherit;transition:all .15s}
 .nextstep-btn:hover{background:#C9A84C;border-color:#C9A84C}
+/* "Så funkar det" på verktygskorten. */
+.tinfo-btn{background:none;border:none;padding:0;margin-bottom:14px;font-size:13px;font-weight:700;
+  color:#9c7d2e;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:3px}
+.tinfo-btn:hover{color:#C9A84C}
+.tinfo-box{margin-bottom:16px;padding:14px 16px;background:#FAF8F3;border:1px solid rgba(180,155,110,0.25);
+  border-radius:10px}
+.tinfo-row{display:grid;grid-template-columns:88px 1fr;gap:10px;margin-bottom:9px;align-items:start}
+.tinfo-row:last-child{margin-bottom:0}
+.tinfo-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:#a89c8a;padding-top:2px}
+.tinfo-val{font-size:13px;color:#3a332c;line-height:1.55}
+@media(max-width:640px){.tinfo-row{grid-template-columns:1fr;gap:2px}}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:14px 16px;border:1.5px solid #F0EEE8;border-radius:14px;font-size:14.5px;font-family:inherit;color:#1a1a1a;background:#FDFCFA;outline:none;transition:border-color 0.15s}
 .adcopy-input::placeholder,.adcopy-textarea::placeholder{color:#b5b0a8}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#D4A857;background:#fff}
@@ -4551,6 +4563,7 @@ function goToTools(){
   setActivePanelLink('tools-page');
   window.scrollTo(0,0);
   applyRoleToolOrder();
+  renderToolInfo();
 }
 
 /* ── Rollbaserad verktygsordning ────────────────────────────────────────────
@@ -6651,6 +6664,90 @@ function nextStepsHtml(tool) {
       '<div class="nextstep-text">' + ns.text + '</div>' +
       '<div class="nextstep-btns">' + knappar + '</div>' +
     '</div>';
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   VERKTYGSINFO (Verktyg-sidan)
+   Utfällbar "Så funkar det" per verktyg. Svarar på det användaren faktiskt
+   undrar innan de börjar: vad behöver jag ha redo, hur lång tid tar det,
+   och när passar verktyget (och när passar det INTE)?
+   ══════════════════════════════════════════════════════════════════════════ */
+const TOOL_INFO = {
+  app: {
+    tid: '2–3 minuter',
+    behov: 'Företagsnamn, bransch och en känsla för era största utmaningar. Inga siffror krävs.',
+    passar: 'När du vill ha ett utifrånperspektiv på var ni står och vad ni borde prioritera.',
+    passar_inte: 'Om du redan vet exakt vad du vill göra – hoppa då direkt till The Brief.'
+  },
+  brief: {
+    tid: '3–5 minuter',
+    behov: 'Vad kampanjen ska kommunicera, vilken målgrupp ni siktar på och ungefärlig budget.',
+    passar: 'När något ska produceras – internt eller av byrå – och alla behöver samma bild av uppdraget.',
+    passar_inte: 'Om du bara behöver en enskild text. Gå då direkt till Newsroom eller AdStudio.'
+  },
+  newsroom: {
+    tid: '3–4 minuter',
+    behov: 'En konkret nyhet med datum och gärna siffror. Ett citat från en nyckelperson höjer kvaliteten rejält.',
+    passar: 'När ni har något som faktiskt är nyhetsvärt för någon utanför företaget.',
+    passar_inte: 'Om nyheten bara är intressant internt – då blir det ingen publicering, oavsett hur välskriven releasen är.'
+  },
+  native: {
+    tid: '3–4 minuter',
+    behov: 'Ett ämne där ni kan lära ut något, och en tydlig målgrupp.',
+    passar: 'När ni vill bygga förtroende över tid och positionera er som kunniga.',
+    passar_inte: 'Om målet är snabb konvertering – välj annonser i stället.'
+  },
+  adcopy: {
+    tid: '2–3 minuter',
+    behov: 'Huvudbudskap, en call to action och gärna en bild. Logga om ni har en.',
+    passar: 'När du behöver färdiga annonser i rätt format – för sociala medier, display eller print.',
+    passar_inte: 'Om budskapet inte är spikat än. Gör en brief först.'
+  },
+  planner: {
+    tid: '3–5 minuter',
+    behov: 'Kampanjmål, budget och tidsram.',
+    passar: 'När du behöver veta vilka kanaler som ska användas, när, och för hur mycket.',
+    passar_inte: 'Om kampanjen bara har en kanal – då är planen överkurs.'
+  }
+};
+
+// Fäller ut/in "Så funkar det" för ett verktygskort.
+function toolInfoToggle(tool) {
+  const box = document.getElementById('tinfo-' + tool);
+  const btn = document.getElementById('tinfo-btn-' + tool);
+  if (!box) return;
+  const open = box.style.display !== 'block';
+  box.style.display = open ? 'block' : 'none';
+  if (btn) btn.textContent = open ? 'Dölj info' : 'Så funkar det';
+}
+
+// Bygger info-blocket för ett verktygskort.
+function toolInfoHtml(tool) {
+  const i = TOOL_INFO[tool];
+  if (!i) return '';
+  return '' +
+    '<button class="tinfo-btn" id="tinfo-btn-' + tool + '" onclick="toolInfoToggle(\'' + tool + '\')">Så funkar det</button>' +
+    '<div class="tinfo-box" id="tinfo-' + tool + '" style="display:none">' +
+      '<div class="tinfo-row"><span class="tinfo-label">Tar</span><span class="tinfo-val">' + i.tid + '</span></div>' +
+      '<div class="tinfo-row"><span class="tinfo-label">Du behöver</span><span class="tinfo-val">' + i.behov + '</span></div>' +
+      '<div class="tinfo-row"><span class="tinfo-label">Passar när</span><span class="tinfo-val">' + i.passar + '</span></div>' +
+      '<div class="tinfo-row"><span class="tinfo-label">Passar inte</span><span class="tinfo-val">' + i.passar_inte + '</span></div>' +
+    '</div>';
+}
+
+// Fyller alla verktygskort med sina info-block när Verktyg-sidan öppnas.
+function renderToolInfo() {
+  document.querySelectorAll('.tsell-card[data-tool]').forEach(function (card) {
+    const tool = card.getAttribute('data-tool');
+    const body = card.querySelector('.tsell-body');
+    if (!body || !TOOL_INFO[tool]) return;
+    if (body.querySelector('.tinfo-btn')) return; // redan ifyllt
+    const slot = document.createElement('div');
+    slot.innerHTML = toolInfoHtml(tool);
+    // Lägg info-blocket före "Testa nu"-knappen.
+    const btn = body.querySelector('.tsell-btn');
+    if (btn) body.insertBefore(slot, btn); else body.appendChild(slot);
+  });
 }
 
 function brandGuidance() {
