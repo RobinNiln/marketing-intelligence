@@ -1015,6 +1015,25 @@ body.adcopy-mode{background:#FBFAF7}
   color:#a89c8a;padding-top:2px}
 .tinfo-val{font-size:13px;color:#3a332c;line-height:1.55}
 @media(max-width:640px){.tinfo-row{grid-template-columns:1fr;gap:2px}}
+/* ── Toasts (ersätter alert) ──────────────────────────────────────────── */
+#toast-box{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1200;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
+  width:min(440px,calc(100vw - 32px))}
+.toast{display:flex;align-items:flex-start;gap:10px;width:100%;pointer-events:auto;
+  background:#2C2520;color:#fff;border-radius:10px;padding:13px 14px;
+  box-shadow:0 6px 24px rgba(44,37,32,0.25);font-size:13.5px;line-height:1.5;
+  animation:toastIn .2s ease}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.toast.toast-out{opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s}
+.toast-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.toast-ok .toast-icon{background:#4CAF7D;color:#fff}
+.toast-error .toast-icon{background:#E06B5B;color:#fff}
+.toast-info .toast-icon{background:#C9A84C;color:#2C2520}
+.toast-msg{flex:1;word-break:break-word;white-space:pre-wrap}
+.toast-x{flex-shrink:0;background:none;border:none;color:rgba(255,255,255,0.5);
+  font-size:17px;line-height:1;cursor:pointer;padding:0 2px;font-family:inherit}
+.toast-x:hover{color:#fff}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:14px 16px;border:1.5px solid #F0EEE8;border-radius:14px;font-size:14.5px;font-family:inherit;color:#1a1a1a;background:#FDFCFA;outline:none;transition:border-color 0.15s}
 .adcopy-input::placeholder,.adcopy-textarea::placeholder{color:#b5b0a8}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#D4A857;background:#fff}
@@ -4023,7 +4042,7 @@ function closeEmailModal(){
 }
 function sendEmail(){
   const email=document.getElementById('email-input').value.trim();
-  if(!email||!email.includes('@')){alert('Ange en giltig e-postadress.');return;}
+  if(!email||!email.includes('@')){toast('Ange en giltig e-postadress.', 'info');return;}
   // Mejlfunktionalitet ej implementerad – visas som placeholdersida
   document.getElementById('email-modal').classList.remove('open');
   const box=document.createElement('div');
@@ -4444,7 +4463,7 @@ function nativeCopy(){
   const a = window._nativeArticle;
   if(!a) return;
   const text = a.headline+'\n\n'+a.ingress+'\n\n'+a.body;
-  navigator.clipboard.writeText(text).then(()=>alert('Artikeln kopierad!'));
+  navigator.clipboard.writeText(text).then(()=>toast('Artikeln kopierad!', 'ok'));
 }
 
 function nativeDownload(){
@@ -5152,7 +5171,8 @@ async function saveProduction(tool, title, content, projectId) {
     // Om vi skickade ett projekt men databasen INTE sparade det, saknas troligen
     // kolumnen project_id – dvs SQL:en har inte körts i Supabase.
     if (projectId && data && !data.project_id) {
-      alert('OBS: Produktionen sparades men kunde inte kopplas till projektet.\n\nTrolig orsak: databas-uppdateringen (SQL:en) har inte körts i Supabase än. Kör supabase_projekt.sql i Supabase SQL Editor och försök igen.');
+      toast('Produktionen sparades, men kunde inte kopplas till projektet. Du hittar den i biblioteket under "Utan projekt".', 'error');
+      console.warn('[Mava] Projektkoppling misslyckades - kontrollera att supabase_projekt.sql har korts.');
     }
   }
   return { data, error };
@@ -5242,7 +5262,7 @@ async function saveModalNewProject() {
   const name = prompt('Namnge ditt nya projekt:');
   if (name === null || !name.trim()) return;
   const { data, error } = await createProject(name.trim());
-  if (error) { alert('Kunde inte skapa projektet.'); return; }
+  if (error) { toast('Kunde inte skapa projektet.', 'error'); return; }
   // Lägg till det nya projektet i dropdownen och välj det.
   const select = document.getElementById('save-modal-project-select');
   const opt = document.createElement('option');
@@ -5285,7 +5305,7 @@ async function pickProject() {
     const trimmed = (name || '').trim();
     if (!trimmed) return null; // spara utan projekt
     const { data, error } = await createProject(trimmed);
-    if (error) { alert('Kunde inte skapa projektet, sparar utan projekt.'); return null; }
+    if (error) { toast('Kunde inte skapa projektet, sparar utan projekt.', 'error'); return null; }
     return data.id;
   }
   // Det finns projekt – lista dem numrerade och låt användaren välja.
@@ -5333,7 +5353,7 @@ async function briefSave() {
   if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
   const { error } = await saveProduction('brief', choice.title || suggested, r, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
-  if (error) alert('Kunde inte spara: ' + (error.message || error));
+  if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
 }
 
 /* ── Redigera brief-resultat ────────────────────────────────────────────────
@@ -5480,7 +5500,7 @@ async function briefImprove() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (e) {
     if (btn) { btn.disabled = false; btn.textContent = btn.dataset.orig || 'Gör skarpare med AI'; }
-    alert('Kunde inte förbättra briefen just nu. Försök igen.');
+    toast('Kunde inte förbättra briefen just nu. Försök igen.', 'error');
   }
 }
 
@@ -5502,7 +5522,7 @@ async function saveToolResult(tool, result, defaultTitle, btnId) {
     const orig = btn.dataset.orig || 'Spara i bibliotek';
     setTimeout(function(){ btn.textContent = orig; }, 2000);
   }
-  if (error) alert('Kunde inte spara: ' + (error.message || error));
+  if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
 }
 
 function marketSave() {
@@ -5628,7 +5648,7 @@ async function activeProjectModalNew() {
   const name = prompt('Namnge ditt nya projekt:');
   if (name === null || !name.trim()) return;
   const { data, error } = await createProject(name.trim());
-  if (error) { alert('Kunde inte skapa projektet.'); return; }
+  if (error) { toast('Kunde inte skapa projektet.', 'error'); return; }
   setActiveProject({ id: data.id, name: data.name });
   activeProjectModalClose();
 }
@@ -5691,14 +5711,14 @@ async function projectCreatePrompt() {
   const trimmed = name.trim();
   if (!trimmed) return;
   const { error } = await createProject(trimmed);
-  if (error) { alert('Kunde inte skapa projektet: ' + (error.message || error)); return; }
+  if (error) { toast('Kunde inte skapa projektet: ' + (error.message || error), 'error'); return; }
   goToProjects(); // ladda om listan
 }
 
 async function projectDeleteConfirm(projectId, name) {
   if (!confirm('Radera projektet "' + name + '"?\n\nProduktionerna raderas INTE – de blir bara projektlösa och finns kvar i biblioteket.')) return;
   const { error } = await deleteProject(projectId);
-  if (error) { alert('Kunde inte radera: ' + (error.message || error)); return; }
+  if (error) { toast('Kunde inte radera: ' + (error.message || error), 'error'); return; }
   goToProjects();
 }
 
@@ -5798,9 +5818,9 @@ async function pdSaveEdit() {
   const p = window._pdProject;
   const name = document.getElementById('pd-name-input').value.trim();
   const desc = document.getElementById('pd-desc-input').value.trim();
-  if (!name) { alert('Projektet måste ha ett namn.'); return; }
+  if (!name) { toast('Projektet måste ha ett namn.', 'info'); return; }
   const { data, error } = await updateProject(p.id, { name: name, description: desc });
-  if (error) { alert('Kunde inte spara: ' + (error.message || error)); return; }
+  if (error) { toast('Kunde inte spara: ' + (error.message || error), 'error'); return; }
   window._pdProject = data || Object.assign({}, p, { name: name, description: desc });
   // Om det var det aktiva projektet, uppdatera namnet där också.
   if (_activeProject && _activeProject.id === p.id) {
@@ -5899,7 +5919,7 @@ function librarySafeName(s) {
 async function libraryDownloadSelectedZip() {
   const ids = librarySelectedIds();
   if (!ids.length) return;
-  if (typeof JSZip === 'undefined') { alert('Zip-verktyget kunde inte laddas. Försök ladda om sidan.'); return; }
+  if (typeof JSZip === 'undefined') { toast('Zip-verktyget kunde inte laddas. Försök ladda om sidan.', 'error'); return; }
   const btn = document.getElementById('library-zip-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Paketerar...'; }
   const zip = new JSZip();
@@ -5926,7 +5946,7 @@ async function libraryDownloadSelectedZip() {
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
   } catch (e) {
-    alert('Kunde inte skapa zip-filen: ' + (e.message || e));
+    toast('Kunde inte skapa zip-filen: ' + (e.message || e), 'error');
   }
   if (btn) { btn.disabled = false; btn.textContent = 'Ladda ner valda (zip)'; }
 }
@@ -6111,7 +6131,7 @@ function libraryOpen(id) {
     restoreAdStudioFromSaved(item.content);
 
   } else {
-    alert('Öppning för det här verktyget är inte inkopplat än.');
+    toast('Öppning för det här verktyget är inte inkopplat än.', 'info');
   }
 }
 
@@ -6195,7 +6215,7 @@ async function libraryRename(id) {
   const newTitle = prompt('Nytt namn:', item.title);
   if (newTitle === null || !newTitle.trim()) return;
   const { error } = await renameProduction(id, newTitle.trim());
-  if (error) { alert('Kunde inte byta namn.'); return; }
+  if (error) { toast('Kunde inte byta namn.', 'error'); return; }
   item.title = newTitle.trim();
   renderLibrary();
 }
@@ -6203,7 +6223,7 @@ async function libraryRename(id) {
 async function libraryDelete(id) {
   if (!confirm('Radera den här produktionen? Det går inte att ångra.')) return;
   const { error } = await deleteProduction(id);
-  if (error) { alert('Kunde inte radera.'); return; }
+  if (error) { toast('Kunde inte radera.', 'error'); return; }
   _libraryItems = _libraryItems.filter(function(it){ return it.id !== id; });
   renderLibrary();
 }
@@ -6772,13 +6792,43 @@ function copyAgencyBrief() {
   const txt = window._agencyBriefText || '';
   if (!txt) return;
   navigator.clipboard.writeText(txt).then(function () {
-    const b = document.createElement('div');
-    b.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0a0a0a;color:#fff;' +
-      'padding:14px 20px;border-radius:8px;font-size:13px;z-index:9999';
-    b.textContent = '✓ Kopierat!';
-    document.body.appendChild(b);
-    setTimeout(function () { b.remove(); }, 3000);
+    toast('Byråbriefen kopierad', 'ok');
   });
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOASTS
+   Ersätter webbläsarens toast(, 'info'). En alert blockerar hela sidan, ser ut som
+   1998 och kräver ett klick även för positiva besked ("Kopierat!"). En toast
+   glider in, syns i några sekunder och försvinner själv.
+   ══════════════════════════════════════════════════════════════════════════ */
+function toast(message, type, ms) {
+  type = type || 'info';           // 'ok' | 'error' | 'info'
+  ms = ms || (type === 'error' ? 6000 : 3500);
+
+  let box = document.getElementById('toast-box');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'toast-box';
+    document.body.appendChild(box);
+  }
+
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  const ikon = type === 'ok' ? '✓' : (type === 'error' ? '!' : 'i');
+  t.innerHTML =
+    '<span class="toast-icon">' + ikon + '</span>' +
+    '<span class="toast-msg"></span>' +
+    '<button class="toast-x" aria-label="Stäng">×</button>';
+  t.querySelector('.toast-msg').textContent = message;
+  box.appendChild(t);
+
+  const stang = function () {
+    t.classList.add('toast-out');
+    setTimeout(function () { if (t.parentNode) t.remove(); }, 200);
+  };
+  t.querySelector('.toast-x').onclick = stang;
+  setTimeout(stang, ms);
 }
 
 function brandGuidance() {
@@ -7023,10 +7073,10 @@ async function generatePlan(){
   const period = document.getElementById('pl-period').value.trim();
 
   if (!company || !what || !budget) {
-    alert('Fyll i minst företag, vad som ska marknadsföras och budget.');
+    toast('Fyll i minst företag, vad som ska marknadsföras och budget.', 'info');
     return;
   }
-  if (_plannerChannels.length === 0) { alert('Välj minst en kanal.'); return; }
+  if (_plannerChannels.length === 0) { toast('Välj minst en kanal.', 'info'); return; }
 
   const btn = document.getElementById('planner-generate-btn');
   btn.disabled = true; btn.textContent = 'Bygger din plan...';
@@ -7106,7 +7156,7 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
     renderPlanResult(plan, goalsStr);
     window._plannerResult = plan;
   } catch (e) {
-    alert('Kunde inte skapa planen: ' + (e.message || e) + '. Försök igen.');
+    toast('Kunde inte skapa planen: ' + (e.message || e) + '. Försök igen.', 'error');
   } finally {
     hideMavaLoading();
     btn.disabled = false; btn.textContent = 'Skapa kampanjplan';
@@ -7183,7 +7233,7 @@ async function plannerSave(){
   if (btn) { btn.disabled = true; btn.textContent = 'Sparar...'; }
   const { error } = await saveProduction('planner', choice.title || suggested, plan, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
-  if (error) alert('Kunde inte spara: ' + (error.message || error));
+  if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
 }
 
 function plannerReset(){
@@ -7333,7 +7383,7 @@ function distCopy(){
   let text = 'DISTRIBUTIONSPLAN\n\n'+p.summary+'\n\nKANALMIX:\n';
   (p.channels||[]).forEach(ch=>{ text += ch.name+': '+ch.budget_pct+'% – '+ch.rationale+'\n\nTaktik: '+ch.tactics+'\n\n'; });
   if(p.overall_recommendations) text += 'ÖVERGRIPANDE RÅD:\n'+p.overall_recommendations;
-  navigator.clipboard.writeText(text).then(()=>alert('Planen kopierad!'));
+  navigator.clipboard.writeText(text).then(()=>toast('Planen kopierad!', 'ok'));
 }
 
 function distSend(){
@@ -7520,7 +7570,7 @@ function adcopyCopy(){
     });
     text += '\n';
   });
-  navigator.clipboard.writeText(text).then(()=>alert('Copy kopierad!'));
+  navigator.clipboard.writeText(text).then(()=>toast('Copy kopierad!', 'ok'));
 }
 
 function adcopySend(){
@@ -8656,7 +8706,7 @@ function newsroomCopy() {
   if (r.quote && r.quote.trim()) text += r.quote + '\n\n';
   text += (r.boilerplate || '') + '\n\n';
   if (r.contact && r.contact.trim()) text += 'Kontakt för media:\n' + r.contact + '\n';
-  navigator.clipboard.writeText(text).then(() => alert('Pressreleasen kopierad!'));
+  navigator.clipboard.writeText(text).then(() => toast('Pressreleasen kopierad!', 'ok'));
 }
 
 function newsroomEmail() {
@@ -8857,7 +8907,7 @@ function exportSafeName(s){
 
 // ── WORD (.docx) ──
 async function exportToWord(doc){
-  if (!window.docx) { alert('Word-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  if (!window.docx) { toast('Word-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.', 'error'); return; }
   const { Document, Packer, Paragraph, TextRun, HeadingLevel } = window.docx;
   const children = [];
 
@@ -8881,7 +8931,7 @@ async function exportToWord(doc){
 // ── PDF (.pdf) ──
 function exportToPdf(doc){
   const jsPDFctor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-  if (!jsPDFctor) { alert('PDF-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  if (!jsPDFctor) { toast('PDF-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.', 'error'); return; }
   const pdf = new jsPDFctor({ unit:'pt', format:'a4' });
   const margin = 56, pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
   const maxW = pageW - margin*2;
@@ -8919,7 +8969,7 @@ function exportToPdf(doc){
 // ── POWERPOINT (.pptx) ──
 function exportToPptx(doc){
   const PptxGen = window.PptxGenJS;
-  if (!PptxGen) { alert('PowerPoint-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.'); return; }
+  if (!PptxGen) { toast('PowerPoint-biblioteket kunde inte laddas. Kontrollera din internetanslutning och ladda om sidan.', 'error'); return; }
   const pptx = new PptxGen();
   pptx.defineLayout({ name:'MAVA', width:10, height:5.63 });
   pptx.layout = 'MAVA';
@@ -9038,7 +9088,7 @@ function runExport(tool, format){
     else if (tool === 'market')   { if (!window._marketResult) return; doc = marketToDoc(window._marketResult); }
     else if (tool === 'planner')  { if (!window._plannerResult) return; doc = plannerToDoc(window._plannerResult); }
     else return;
-  } catch (e) { alert('Kunde inte förbereda exporten: ' + e.message); return; }
+  } catch (e) { toast('Kunde inte förbereda exporten: ' + e.message, 'error'); return; }
 
   if (format === 'word')  exportToWord(doc);
   else if (format === 'pdf')   exportToPdf(doc);
@@ -9213,7 +9263,7 @@ function briefCopy() {
   t += `TIDSLINJE\n${(r.timeline||[]).map(p=>`${p.phase} (${p.period}): ${p.activities}`).join('\n')}\n\n`;
   t += `KPI:ER\n${(r.kpis||[]).map(k=>`${k.name}: ${k.target}`).join('\n')}\n`;
   if (r.constraints && r.constraints.trim()) t += `\nKRAV OCH BEGRÄNSNINGAR\n${r.constraints}\n`;
-  navigator.clipboard.writeText(t).then(() => alert('Brief kopierad!'));
+  navigator.clipboard.writeText(t).then(() => toast('Brief kopierad!', 'ok'));
 }
 
 function briefEmail() {
@@ -11255,7 +11305,7 @@ function generateAdCopy(){ generateAdGen(); }
 ──────────────────────────────────────────────────────────────────────────── */
 async function adgenSave() {
   const cfg = window._adgenLastConfig;
-  if (!cfg) { alert('Inget att spara – generera annonser först.'); return; }
+  if (!cfg) { toast('Inget att spara – generera annonser först.', 'info'); return; }
   if (!_currentUser) { goToAuth(); return; }
   const btn = document.getElementById('adgen-save-btn');
   const suggested = (cfg.product || cfg.company || 'Annons');
@@ -11269,7 +11319,7 @@ async function adgenSave() {
     btn.innerHTML = '✓ Sparad';
     setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000);
   }
-  if (error) alert('Kunde inte spara: ' + (error.message || error));
+  if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
 }
 function adcopyReset(){ adgenReset(); }
 function renderAdCopyFormats(){}
