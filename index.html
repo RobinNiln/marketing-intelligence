@@ -982,6 +982,8 @@ body.adcopy-mode{background:#FBFAF7}
 .adcopy-field{margin-bottom:1.6rem}
 .adcopy-field label{display:block;font-size:15px;font-weight:500;color:#2a2520;margin-bottom:8px;line-height:1.4}
 .adcopy-field label span{font-weight:400;color:#b5b0a8;font-size:12px;margin-left:4px}
+/* Hjälptext under ett fält: förklarar vad som ger bra resultat. */
+.field-hint{display:block;font-size:12.5px;color:#9A8570;line-height:1.5;margin:-4px 0 8px}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:14px 16px;border:1.5px solid #F0EEE8;border-radius:14px;font-size:14.5px;font-family:inherit;color:#1a1a1a;background:#FDFCFA;outline:none;transition:border-color 0.15s}
 .adcopy-input::placeholder,.adcopy-textarea::placeholder{color:#b5b0a8}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#D4A857;background:#fff}
@@ -2452,6 +2454,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
       <div class="native-field">
         <label>Beskriv kampanjen <span>*</span></label>
+        <span class="field-hint">Native fungerar bäst när artikeln ger läsaren <strong>något av värde</strong> – kunskap, insikt, en berättelse – och varumärket kommer in naturligt. Tänk "vad kan vi lära ut?" snarare än "vad vill vi sälja?".</span>
         <textarea class="native-textarea" id="n-campaign" placeholder="Vad handlar kampanjen om? Vad vill ni berätta? Lyft gärna era viktigaste budskap och vad som gör er unika."></textarea>
       </div>
       <div class="native-field">
@@ -2624,6 +2627,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
       <div class="newsroom-field">
         <label>Beskriv nyheten <span>*</span></label>
+        <span class="field-hint">Det viktigaste fältet – ju mer konkret, desto bättre pressrelease. Ta med <strong>datum, siffror och varför nyheten spelar roll för någon utanför företaget</strong>. En journalist frågar sig alltid "varför ska våra läsare bry sig?".</span>
         <textarea class="newsroom-textarea" id="nr-news" placeholder="Vad har hänt? Beskriv nyheten så detaljerat som möjligt – datum, siffror, bakgrund och varför det är viktigt."></textarea>
       </div>
       <div class="newsroom-field">
@@ -2795,11 +2799,13 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
       <div class="brief-field">
         <label>Vad ska kampanjen kommunicera? <span>*</span></label>
+        <span class="field-hint">Fokusera på vad som är <strong>unikt</strong> – det AI:n inte kan gissa sig till. Vad kan ni som ingen annan kan?</span>
         <textarea class="brief-textarea" id="br-message" placeholder="Beskriv produkten, tjänsten eller budskapet som ska ut. Vad är det unika? Vad skiljer er från konkurrenterna?"></textarea>
       </div>
 
       <div class="brief-field">
         <label>Målgrupp <span>*</span></label>
+        <span class="field-hint">Ju smalare desto bättre. "Alla" ger en urvattnad brief – "småföretagare som gör bokföringen själva" ger en vass.</span>
         <textarea class="brief-textarea" id="br-audience" style="min-height:72px" placeholder="Ex. Beslutsfattare på medelstora B2B-företag i Sverige, 35–55 år, inom IT och finans."></textarea>
       </div>
 
@@ -3147,10 +3153,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         </div>
       </div>
       <div class="adcopy-section-title">Om kampanjen</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Företag / Varumärke <span>*</span></label><input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping"></div><div class="adcopy-field"><label>Produkt / Kampanj <span>*</span></label><input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj"></div></div>
-      <div class="adcopy-field"><label>Huvudbudskap <span>*</span></label><textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera?"></textarea></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Call to action <span>*</span></label><input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka provkörning, Läs mer"></div><div class="adcopy-field"><label>Ton</label><select class="adcopy-select" id="ac-tone"><option value="">Välj ton...</option><option>Professionell och förtroendegivande</option><option>Varm och personlig</option><option>Energisk och drivande</option><option>Mjuk och informativ</option></select></div></div>
-      <div class="adcopy-field"><label>Referens / stilriktning <span>valfritt</span></label><textarea class="adcopy-textarea" id="ac-reference" style="min-height:72px" placeholder="Klistra in text från en annons du gillar, eller beskriv tonen/stilen du vill efterlikna. Ex: 'Kort och peppig som Nikes annonser' eller klistra in befintlig annonstext."></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Företag / Varumärke <span>*</span></label><span class="field-hint">Namnet som ska synas som avsändare i annonsen.</span><input class="adcopy-input" id="ac-company" type="text" placeholder="Ex. Bilbörsen Linköping"></div><div class="adcopy-field"><label>Produkt / Kampanj <span>*</span></label><span class="field-hint">Vad annonsen handlar om – en produkt, ett erbjudande eller en kampanj.</span><input class="adcopy-input" id="ac-product" type="text" placeholder="Ex. Kia PV5, Sommarkampanj"></div></div>
+      <div class="adcopy-field"><label>Huvudbudskap <span>*</span></label><span class="field-hint">Det viktigaste läsaren ska ta med sig. En annons läses på under 2,5 sekunder – håll dig till <strong>en</strong> sak. Konkreta erbjudanden ("20% rabatt i juni") slår vaga löften ("bra priser").</span><textarea class="adcopy-textarea" id="ac-message" style="min-height:72px" placeholder="Vad ska annonsen kommunicera?"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div class="adcopy-field"><label>Call to action <span>*</span></label><span class="field-hint">Vad läsaren ska göra. Börja med ett verb.</span><input class="adcopy-input" id="ac-cta" type="text" placeholder="Ex. Boka provkörning, Läs mer"></div><div class="adcopy-field"><label>Ton</label><span class="field-hint">Styr språket i copyn.</span><select class="adcopy-select" id="ac-tone"><option value="">Välj ton...</option><option>Professionell och förtroendegivande</option><option>Varm och personlig</option><option>Energisk och drivande</option><option>Mjuk och informativ</option></select></div></div>
+      <div class="adcopy-field"><label>Referens / stilriktning <span>valfritt</span></label><span class="field-hint">Ju mer konkret desto bättre – klistra hellre in en riktig annonstext än att beskriva stilen i ord.</span><textarea class="adcopy-textarea" id="ac-reference" style="min-height:72px" placeholder="Klistra in text från en annons du gillar, eller beskriv tonen/stilen du vill efterlikna. Ex: 'Kort och peppig som Nikes annonser' eller klistra in befintlig annonstext."></textarea></div>
       <div class="adcopy-section-title">Välj annonsformat</div>
       <div style="font-size:12px;font-weight:600;color:#9A8570;margin-bottom:8px">Svenska format (IAB-standard)</div>
       <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-panorama-120')"><div class="adgen-fmt-name">Panorama</div><div class="adgen-fmt-size">980 × 120 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-panorama-240')"><div class="adgen-fmt-name">Panorama</div><div class="adgen-fmt-size">980 × 240 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-panorama-360')"><div class="adgen-fmt-name">Panorama</div><div class="adgen-fmt-size">980 × 360 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-widescreen-120')"><div class="adgen-fmt-name">Widescreen</div><div class="adgen-fmt-size">250 × 120 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-widescreen-240')"><div class="adgen-fmt-name">Widescreen</div><div class="adgen-fmt-size">250 × 240 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-widescreen-280')"><div class="adgen-fmt-name">Widescreen</div><div class="adgen-fmt-size">250 × 280 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-widescreen-360')"><div class="adgen-fmt-name">Widescreen</div><div class="adgen-fmt-size">250 × 360 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-widescreen-480')"><div class="adgen-fmt-name">Widescreen</div><div class="adgen-fmt-size">250 × 480 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-modul-120')"><div class="adgen-fmt-name">Modul</div><div class="adgen-fmt-size">468 × 120 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-modul-240')"><div class="adgen-fmt-name">Modul</div><div class="adgen-fmt-size">468 × 240 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-modul-360')"><div class="adgen-fmt-name">Modul</div><div class="adgen-fmt-size">468 × 360 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'se-modul-480')"><div class="adgen-fmt-name">Modul</div><div class="adgen-fmt-size">468 × 480 px</div></div></div>
