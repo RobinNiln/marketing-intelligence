@@ -993,6 +993,16 @@ body.adcopy-mode{background:#FBFAF7}
   border-radius:8px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
   white-space:nowrap;transition:all .15s}
 .example-btn:hover{background:#C9A84C;color:#2C2520;border-color:#C9A84C}
+/* "Nästa steg"-ruta efter ett resultat. */
+.nextstep-box{margin-top:2rem;padding:20px 22px;background:#fff;border:1px solid rgba(180,155,110,0.3)}
+.nextstep-label{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:#C9A84C;margin-bottom:8px}
+.nextstep-text{font-size:14.5px;color:#3a332c;line-height:1.6;margin-bottom:14px}
+.nextstep-btns{display:flex;gap:10px;flex-wrap:wrap}
+.nextstep-btn{background:#F5F3EE;color:#2C2520;border:1px solid rgba(180,155,110,0.35);
+  border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:all .15s}
+.nextstep-btn:hover{background:#C9A84C;border-color:#C9A84C}
 .adcopy-input,.adcopy-textarea,.adcopy-select{width:100%;padding:14px 16px;border:1.5px solid #F0EEE8;border-radius:14px;font-size:14.5px;font-family:inherit;color:#1a1a1a;background:#FDFCFA;outline:none;transition:border-color 0.15s}
 .adcopy-input::placeholder,.adcopy-textarea::placeholder{color:#b5b0a8}
 .adcopy-input:focus,.adcopy-textarea:focus,.adcopy-select:focus{border-color:#D4A857;background:#fff}
@@ -3196,7 +3206,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
     <div class="adcopy-loading" id="adcopy-loading" style="display:none;text-align:center;padding:3rem 1rem"><div style="font-size:15px;color:#5F5E5A;margin-top:1rem">Genererar annonser...</div></div>
-    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><button class="adgen-dl-all-btn" onclick="adgenDownloadAll()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v9M3.5 6.5L7 10l3.5-3.5"/><path d="M1 12h12"/></svg> Ladda ner alla som bilder</button><button class="adgen-save-btn auth-when-in" style="display:none" id="adgen-save-btn" onclick="adgenSave()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg> Spara i bibliotek</button><div id="adgen-result-grid" class="adgen-result-grid"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
+    <div class="adcopy-result" id="adcopy-result" style="display:none;margin-top:1.5rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C9A84C;margin-bottom:0.5rem">Genererade annonser</div><button class="adgen-dl-all-btn" onclick="adgenDownloadAll()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v9M3.5 6.5L7 10l3.5-3.5"/><path d="M1 12h12"/></svg> Ladda ner alla som bilder</button><button class="adgen-save-btn auth-when-in" style="display:none" id="adgen-save-btn" onclick="adgenSave()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg> Spara i bibliotek</button><div id="adgen-result-grid" class="adgen-result-grid"></div><div id="adgen-nextstep-slot"></div><button class="adcopy-new-btn" onclick="adgenReset()">← Skapa nya annonser</button></div>
   </div>
 </div>
 
@@ -3640,6 +3650,8 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       </div>
     </div>
 
+    <div id="market-nextstep-slot"></div>
+
     <div style="text-align:center;padding-bottom:2rem">
       <button class="reset-btn" onclick="resetForm()">← Gör en ny analys</button>
     </div>
@@ -3956,6 +3968,9 @@ function marketToggleEdit(){
     },
     rerender: function(data){ renderResult(data); }
   });
+
+  const mpNs = document.getElementById('market-nextstep-slot');
+  if (mpNs) mpNs.innerHTML = nextStepsHtml('app');
 }
 
 function loadSaved(){
@@ -4383,7 +4398,7 @@ function renderNativeArticle(article, label) {
   const naFa = document.getElementById('native-faska-slot');
   if (naFa) naFa.innerHTML = faPanelHtml('native', [
     'Korta ner', 'Skärp språket', 'Gör mer engagerande', 'Mjuka upp tonen'
-  ]);
+  ]) + nextStepsHtml('native');
 }
 
 function nativeToggleEdit(){
@@ -6578,6 +6593,66 @@ function fillExample(tool, force) {
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   NÄSTA STEG
+   Efter ett resultat: föreslå det naturliga nästa steget i flödet, så
+   användaren aldrig står och undrar "vad gör jag nu?".
+   ══════════════════════════════════════════════════════════════════════════ */
+const NEXT_STEPS = {
+  app: {          // Market Pulse
+    text: 'Du har en marknadsanalys. Nästa naturliga steg är att omsätta den i en kampanjbrief.',
+    steps: [
+      { label: 'Skapa en brief', fn: 'goToBrief()' },
+      { label: 'Gör en kampanjplan', fn: 'goToPlanner()' }
+    ]
+  },
+  brief: {
+    text: 'Briefen är klar. Nu kan du producera materialet – eller lägga en plan för hur det ska ut.',
+    steps: [
+      { label: 'Gör en kampanjplan', fn: 'goToPlanner()' },
+      { label: 'Skapa annonser', fn: 'goToAdCopy()' },
+      { label: 'Skriv en pressrelease', fn: 'goToNewsroom()' }
+    ]
+  },
+  newsroom: {
+    text: 'Pressreleasen är klar. Vill du sprida budskapet i fler kanaler?',
+    steps: [
+      { label: 'Skapa annonser', fn: 'goToAdCopy()' },
+      { label: 'Skriv en nativeartikel', fn: 'goToNative()' }
+    ]
+  },
+  native: {
+    text: 'Artikeln är klar. Nästa steg är att driva trafik till den.',
+    steps: [
+      { label: 'Skapa annonser', fn: 'goToAdCopy()' },
+      { label: 'Gör en kampanjplan', fn: 'goToPlanner()' }
+    ]
+  },
+  adstudio: {
+    text: 'Annonserna är klara. Glöm inte att spara dem i biblioteket.',
+    steps: [
+      { label: 'Gör en kampanjplan', fn: 'goToPlanner()' },
+      { label: 'Öppna biblioteket', fn: 'goToLibraryAll()' }
+    ]
+  }
+};
+
+// Bygger HTML för nästa steg-rutan. Anropas när ett resultat renderas.
+function nextStepsHtml(tool) {
+  const ns = NEXT_STEPS[tool];
+  if (!ns) return '';
+  const knappar = ns.steps.map(function (s) {
+    return '<button class="nextstep-btn" onclick="' + s.fn + '">' + s.label +
+           ' <span style="opacity:.6">→</span></button>';
+  }).join('');
+  return '' +
+    '<div class="nextstep-box">' +
+      '<div class="nextstep-label">Nästa steg</div>' +
+      '<div class="nextstep-text">' + ns.text + '</div>' +
+      '<div class="nextstep-btns">' + knappar + '</div>' +
+    '</div>';
+}
+
 function brandGuidance() {
   const p = _brandProfile;
   if (!p) return '';
@@ -8362,7 +8437,7 @@ function renderNewsroomResult(result, typeLabel) {
   const faSlot = document.getElementById('newsroom-faska-slot');
   if (faSlot) faSlot.innerHTML = faPanelHtml('newsroom', [
     'Korta ner', 'Skärp språket', 'Gör mer säljande', 'Mjuka upp tonen'
-  ]);
+  ]) + nextStepsHtml('newsroom');
 }
 
 function newsroomToggleEdit(){
@@ -8981,7 +9056,7 @@ function renderBriefResult(r, label, company) {
     const brFa = document.getElementById('brief-faska-slot');
     if (brFa) brFa.innerHTML = faPanelHtml('brief', [
       'Skärp budskapet', 'Gör tydligare', 'Mer övertygande', 'Korta ner'
-    ]);
+    ]) + nextStepsHtml('brief');
 }
 
 function briefCopy() {
@@ -9612,6 +9687,9 @@ function renderAdGenResult() {
       drawAd(formatId, fmt, copy, uid, style);
     });
   });
+
+  const nsSlot = document.getElementById('adgen-nextstep-slot');
+  if (nsSlot) nsSlot.innerHTML = nextStepsHtml('adstudio');
 }
 
 function adgenDownloadHtml(formatId) {
