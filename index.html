@@ -791,6 +791,15 @@ body.native-mode{background:#FBFAF7}
 /* ── Inloggad startsida ── */
 .home-wrap{max-width:1080px;margin:0 auto;padding:2.5rem 2rem 4rem}
 .home-greeting{margin-bottom:2rem}
+/* Företagets logga bredvid hälsningen. Vit platta bakom, eftersom många
+   loggor är gjorda för vit bakgrund och skulle drunkna mot den varma tonen. */
+.home-hello-row{display:flex;align-items:center;gap:20px}
+.home-logo{flex-shrink:0;width:64px;height:64px;object-fit:contain;background:#fff;
+  border:1px solid rgba(180,155,110,0.25);border-radius:12px;padding:8px}
+@media(max-width:640px){
+  .home-hello-row{gap:14px}
+  .home-logo{width:48px;height:48px;padding:6px}
+}
 .home-eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;margin-bottom:1rem}
 .home-eyebrow span{display:block;width:24px;height:1px;background:#C9A84C}
 .home-greeting h1{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#2C2520;margin:0 0 0.5rem}
@@ -1904,8 +1913,13 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     <!-- Hälsning -->
     <div class="home-greeting">
       <div class="home-eyebrow"><span></span>Din översikt</div>
-      <h1 id="home-hello">Välkommen tillbaka</h1>
-      <p id="home-subtitle">Här är en överblick över ditt arbete i Mava.</p>
+      <div class="home-hello-row">
+        <img id="home-logo" class="home-logo" alt="" style="display:none">
+        <div>
+          <h1 id="home-hello">Välkommen tillbaka</h1>
+          <p id="home-subtitle">Här är en överblick över ditt arbete i Mava.</p>
+        </div>
+      </div>
     </div>
 
     <!-- Onboarding-checklista (visas bara för nya kunder) -->
@@ -4758,6 +4772,19 @@ async function goToHome(){
   const hello = document.getElementById('home-hello');
   if (p && p.company) hello.textContent = 'Välkommen tillbaka, ' + p.company;
   else hello.textContent = 'Välkommen tillbaka';
+
+  // Företagets logga, om den laddats upp i varumärkesprofilen. Samma bild som
+  // används i annonserna – den finns redan, den har bara inte visats här.
+  const logo = document.getElementById('home-logo');
+  if (logo) {
+    if (p && p.ad_logo) {
+      logo.src = p.ad_logo;
+      logo.alt = (p.company || 'Företagets') + ' logga';
+      logo.style.display = 'block';
+    } else {
+      logo.style.display = 'none';
+    }
+  }
 
   // Profil-tips: visa bara om profilen saknas eller är i stort sett tom.
   const tip = document.getElementById('home-profile-tip');
