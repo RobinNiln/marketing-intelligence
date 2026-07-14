@@ -6461,6 +6461,11 @@ function updateSidePanel(currentPage) {
     });
     page = visible || 'landing';
   }
+  // Alla sidbyten passerar hit (vissa sidor anropar updateSidePanel direkt,
+  // andra går via setActivePanelLink). Därför sätts _currentPage här – det är
+  // den enda punkt som garanterat träffas, och Fråga Mava behöver den för att
+  // veta vilket material användaren tittar på.
+  window._currentPage = page;
   const show = _currentUser && PANEL_PAGES.indexOf(page) > -1;
   if (show) {
     panel.style.display = 'flex';
@@ -6477,6 +6482,9 @@ function updateSidePanel(currentPage) {
     panel.style.display = 'none';
     document.body.classList.remove('has-panel');
   }
+  // Visa/dölj den flytande Fråga Mava-knappen. Här, så att även sidor som
+  // bara anropar updateSidePanel (t.ex. Campaign Planner) får rätt läge.
+  if (typeof fmFabUpdate === 'function') fmFabUpdate(page);
 }
 
 // Markerar den aktiva länken i panelen utifrån vilken sida som visas.
@@ -8446,6 +8454,7 @@ function fchatLoad() {
 // sidan och panelen, eftersom de visar samma historik.
 function fchatClear() {
   window._fchatHistory = [];
+  window._fmLastMaterial = '';
   try { localStorage.removeItem(FCHAT_KEY); } catch (e) {}
   fchatRender();
   if (typeof fmPanelRender === 'function') fmPanelRender();
@@ -8563,6 +8572,11 @@ function fmFabUpdate(pageId) {
   const hideOn = ['landing', 'auth-page', 'fraga-page'];
   const show = !!_currentUser && hideOn.indexOf(pageId) === -1;
   fab.classList.toggle('on', show && !window._fmPanelOpen);
+  // Är panelen öppen när användaren byter sida ska den visa rätt kontext –
+  // annars säger den fortfarande "Ser din pressrelease" i AdStudio.
+  if (window._fmPanelOpen && typeof fmPanelContextBadge === 'function') {
+    setTimeout(fmPanelContextBadge, 50);
+  }
 }
 
 function fmPanelToggle() {
@@ -8634,6 +8648,42 @@ function fmPanelKey(e) {
    ───────────────────────────────────────────────────────────────────────── */
 function fmGetContext() {
   const page = window._currentPage || '';
+
+  // Market Pulse: marknadsanalysen.
+  if (page === 'app' && window._marketResult) {
+    const r = window._marketResult;
+    const kanaler = (r.prioritized_channels || []).map(function (c) {
+      return '- ' + c.name + ' (' + c.priority + '): ' + c.reason;
+    }).join('\n');
+    const rek = (r.recommendations || []).map(function (x) {
+      return '- ' + x.title + ': ' + x.description;
+    }).join('\n');
+    const quick = (r.quick_wins || []).map(function (w) { return '- ' + w; }).join('\n');
+    return {
+      material: 'Marknadsanalys från Market Pulse:\n\n' +
+        (r.summary ? 'Sammanfattning: ' + r.summary + '\n\n' : '') +
+        (kanaler ? 'Prioriterade kanaler:\n' + kanaler + '\n\n' : '') +
+        (rek ? 'Rekommendationer:\n' + rek + '\n\n' : '') +
+        (quick ? 'Snabba vinster:\n' + quick + '\n\n' : '') +
+        (r.agency_brief ? 'Byråbrief:\n' + r.agency_brief : ''),
+      etikett: 'Ser din marknadsanalys'
+    };
+  }
+
+  // Campaign Planner: kampanjplanen.
+  if (page === 'planner-page' && window._plannerResult) {
+    const p = window._plannerResult;
+    let txt = 'Kampanjplan:\n\n';
+    if (p.summary) txt += p.summary + '\n\n';
+    if (p.channels && p.channels.length) {
+      txt += 'Kanaler:\n' + p.channels.map(function (c) {
+        return '- ' + (c.name || c.channel || '') +
+               (c.budget ? ' – budget: ' + c.budget : '') +
+               (c.rationale ? ' – ' + c.rationale : '');
+      }).join('\n');
+    }
+    return { material: txt, etikett: 'Ser din kampanjplan' };
+  }
 
   // AdStudio: samla copy för de annonser som genererats.
   if (page === 'adcopy-page' && window._adgenCopyData) {
@@ -8709,7 +8759,11 @@ function fmPanelContextBadge() {
   // Snabbstarter som passar det användaren faktiskt tittar på.
   const page = window._currentPage || '';
   let starters;
-  if (ctx.material && page === 'adcopy-page') {
+  if (ctx.material && page === 'app') {
+    starters = ['Vad är viktigast att göra först?', 'Håller du med om kanalvalen?', 'Vad missade analysen?'];
+  } else if (ctx.material && page === 'planner-page') {
+    starters = ['Vad saknas i planen?', 'Är budgetfördelningen rimlig?'];
+  } else if (ctx.material && page === 'adcopy-page') {
     starters = ['Vad tycker du om copyn?', 'Ge mig vassare rubriker', 'Vilken annons är starkast?'];
   } else if (ctx.material && page === 'newsroom-page') {
     starters = ['Vad kan bli bättre?', 'Skriv en LinkedIn-post av detta', 'Är rubriken tillräckligt vass?'];
@@ -8751,11 +8805,15 @@ async function fmPanelSend() {
 
   try {
     const historik = window._fchatHistory.slice(0, -1);
-    // Hämta materialet användaren har framför sig. Vi skickar det bara när
-    // samtalet är nytt – därefter bär historiken sammanhanget vidare, och
-    // att upprepa hela materialet varje tur vore onödigt tungt.
+    // Hämta materialet användaren har framför sig. Vi skickar det när det är
+    // NYTT – alltså första gången, eller när användaren bytt sida/material
+    // mitt i ett samtal. Annars bär historiken sammanhanget vidare, och att
+    // upprepa samma material varje tur vore onödigt tungt.
     const ctx = fmGetContext();
-    const material = historik.length ? '' : ctx.material;
+    const nyttMaterial = ctx.material && ctx.material !== window._fmLastMaterial;
+    const material = nyttMaterial ? ctx.material : '';
+    if (nyttMaterial) window._fmLastMaterial = ctx.material;
+
     const svar = await aiAssist(material, fraga, historik, {
       kontext: ctx.etikett
         ? 'Användaren är i ' + (window._currentPage || '') + '. ' + ctx.etikett + '. ' +
