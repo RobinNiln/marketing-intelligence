@@ -3074,6 +3074,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <p style="font-size:14px;color:#9A8570;line-height:1.6">Fyll i informationen nedan så bygger AI:n en strukturerad kampanjplan – med faser, kanaler, budgetfördelning och vilket innehåll varje fas behöver.</p>
       </div>
 
+      <div class="example-bar">
+        <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+        <button class="example-btn" onclick="fillExample('planner')">Visa exempel</button>
+      </div>
+
       <div class="brief-section-title">Tidshorisont</div>
       <p style="font-size:13px;color:#9A8570;margin-bottom:1rem;line-height:1.6">Ska planen vara en kort insats eller en långsiktig satsning?</p>
       <div class="native-type-grid" id="planner-horizon-grid">
@@ -3417,6 +3422,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     </div>
 
     <!-- PROGRESS BAR -->
+    <div class="example-bar" style="margin-bottom:1.5rem">
+      <span class="example-bar-text">Osäker på hur du fyller i? Se ett färdigt exempel.</span>
+      <button class="example-btn" onclick="fillExample('app')">Visa exempel</button>
+    </div>
     <div class="form-progress">
       <div class="fp-dot active" id="dot1"></div>
       <div class="fp-dot pending" id="dot2"></div>
@@ -3978,7 +3987,7 @@ async function analyzeMarketing(){
   const btn=document.getElementById('analyze-btn');
   const errEl=document.getElementById('error-msg');
   errEl.style.display='none';
-  if(!v('description')){errEl.textContent='Fyll i åtminstone en beskrivning av vad ni gör.';errEl.style.display='block';return;}
+  if (!validateFields([{ id: 'description', namn: 'Beskrivning av vad ni gör' }])) return;
   btn.disabled=true;
   document.getElementById('form-section').style.display='none';
   document.getElementById('loading-state').style.display='block';
@@ -6713,6 +6722,19 @@ const EXAMPLES = {
     'n-campaign': 'Många är nyfikna på elbil men vågar inte köpa begagnat – de är osäkra på batteriets skick och vad som händer när garantin går ut. Vi vill förklara hur man faktiskt bedömer en begagnad elbils hälsa, vilka mätvärden som spelar roll, och vad man ska fråga säljaren om.',
     'n-purpose': 'Bygga förtroende och positionera Nordvik Bil som den kunniga aktören inom begagnade elbilar.',
     'n-audience': 'Villaägare 35–60 år i Mälardalen som funderar på sin första elbil'
+  },
+  app: {
+    'company': 'Nordvik Bil',
+    'industry': 'Bilhandel – begagnade elbilar',
+    'challenge': 'Vi märks dåligt lokalt jämfört med de stora kedjorna, och många vet inte att vi ger 12 månaders garanti på begagnade bilar. Vill nå fler köpstarka kunder i regionen utan att spränga budgeten.'
+  },
+  planner: {
+    'pl-company': 'Nordvik Bil',
+    'pl-industry': 'Bilhandel – begagnade elbilar',
+    'pl-what': 'Sommarkampanj för begagnade elbilar med 12 månaders garanti. Vill driva provkörningar och butiksbesök.',
+    'pl-audience': 'Tekniskt nyfikna småbarnsföräldrar 30–50 år i Östergötland',
+    'pl-budget': '150000',
+    'pl-period': 'Juni–augusti 2026'
   }
 };
 
