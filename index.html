@@ -1481,7 +1481,16 @@ body.brief-mode{background:#FBFAF7}
 .fchat-user{align-self:flex-end;max-width:80%;background:rgba(201,168,76,0.15);color:#2C2520;
   padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap}
 .fchat-mava{align-self:flex-start;max-width:85%;background:#fff;border:1px solid rgba(180,155,110,0.3);
-  color:#2C2520;padding:11px 15px;border-radius:14px;font-size:14px;line-height:1.6;white-space:pre-wrap}
+  color:#2C2520;padding:11px 15px;border-radius:14px;font-size:14px;line-height:1.6}
+.fchat-mava > *:first-child{margin-top:0}
+.fchat-mava > *:last-child{margin-bottom:0}
+.fchat-mava p{margin:0 0 10px}
+.fchat-mava h1,.fchat-mava h2,.fchat-mava h3{font-size:14.5px;font-weight:700;margin:14px 0 7px;color:#2C2520}
+.fchat-mava ul,.fchat-mava ol{margin:0 0 10px;padding-left:20px}
+.fchat-mava li{margin-bottom:4px}
+.fchat-mava strong{font-weight:700}
+.fchat-mava hr{border:none;border-top:1px solid rgba(180,155,110,0.3);margin:12px 0}
+.fchat-mava code{background:#F5F3EE;padding:1px 5px;border-radius:4px;font-size:12.5px}
 .fchat-typing{align-self:flex-start;display:flex;align-items:center;gap:8px;padding:11px 15px;
   font-size:13.5px;color:#8a8073}
 /* ── Fråga Mava per annons (AdStudio) ─────────────────────────────────── */
@@ -1677,6 +1686,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
   <div class="fm-panel-head">
     <div class="fm-panel-title"><span style="color:#9c7d2e">✦</span> Fråga Mava</div>
     <div style="display:flex;align-items:center;gap:4px">
+      <button class="fm-panel-icon" onclick="fmPanelClear()" title="Rensa chatt">⟲</button>
       <button class="fm-panel-icon" onclick="fmPanelExpand()" title="Öppna i helskärm">⤢</button>
       <button class="fm-panel-icon" onclick="fmPanelToggle()" title="Stäng">×</button>
     </div>
@@ -8231,7 +8241,8 @@ function fchatRender() {
   for (const m of window._fchatHistory) {
     const div = document.createElement('div');
     div.className = m.role === 'user' ? 'fchat-user' : 'fchat-mava';
-    div.textContent = m.content;
+    if (m.role === 'user') div.textContent = m.content;
+    else div.innerHTML = mdToHtml(m.content);
     box.appendChild(div);
   }
   // Dölj snabbstart-knapparna så fort samtalet börjat.
@@ -8349,12 +8360,24 @@ function fmPanelRender() {
   for (const m of window._fchatHistory) {
     const div = document.createElement('div');
     div.className = m.role === 'user' ? 'fchat-user' : 'fchat-mava';
-    div.textContent = m.content;
+    // Användarens egen text visas rakt av; Mavas svar innehåller markdown
+    // (rubriker, fetstil, listor) och renderas som HTML.
+    if (m.role === 'user') div.textContent = m.content;
+    else div.innerHTML = mdToHtml(m.content);
     box.appendChild(div);
   }
   const starters = document.getElementById('fm-panel-starters');
   if (starters) starters.style.display = window._fchatHistory.length ? 'none' : 'flex';
   box.scrollTop = box.scrollHeight;
+}
+
+// Rensar samtalet från panelen. Bekräftar först – historiken delas med
+// Fråga Mava-sidan, så en rensning tar bort samtalet på båda ställena.
+function fmPanelClear() {
+  if (!window._fchatHistory.length) return;
+  if (!confirm('Rensa hela samtalet? Det tas bort även från Fråga Mava-sidan.')) return;
+  fchatClear();
+  fmPanelContextBadge();
 }
 
 function fmPanelStarter(text) {
