@@ -3954,6 +3954,9 @@ function renderResult(r){
   const ch=(r.prioritized_channels||[]).map(c=>`<div class="chcard"><div class="chn">${c.name}</div><div class="prio ${pc(c.priority)}">${c.priority}</div><div style="font-size:12px;color:#5F5E5A;margin-top:6px;line-height:1.5">${c.reason}</div></div>`).join('');
   const re=(r.recommendations||[]).map((rec,i)=>`<div style="padding:1rem 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ic[i%ic.length]}</span><span style="color:#2C2520">${rec.title}</span></div><div class="mp-md" style="font-size:14px;line-height:1.7;color:#4A3F35">${mdToHtml(rec.description)}</div></div>`).join('');
   const qw=(r.quick_wins||[]).map(w=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.07)"><div style="width:20px;height:20px;background:var(--t50);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:14px;line-height:1.6;color:#2C2520">${w}</span></div>`).join('');
+  // Spara byråbriefen så kopieringsknappen kan nå den utan att texten bakas
+  // in i ett onclick-attribut (vilket bröt attributet och spillde ut kod).
+  window._agencyBriefText = r.agency_brief || '';
   document.getElementById('result-content').innerHTML=`
     <div class="rc"><div class="rh"><div class="ri te">📋</div><div><h2>Er marknadsföringsstrategi</h2><p>Anpassad och handlingsbar</p></div></div><div id="mp-result-summary" class="mp-md" style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #C9A84C;color:#2C2520">${mdToHtml(r.summary)}</div></div>
     <div class="rc"><div class="rh"><div class="ri te">📡</div><div><h2>Prioriterade kanaler</h2><p>Var ska ni fokusera era resurser?</p></div></div><div class="chgrid">${ch}</div></div>
@@ -3961,7 +3964,7 @@ function renderResult(r){
     <div class="rc"><div class="rh"><div class="ri te">⚡</div><div><h2>Quick wins – gör nu</h2><p>Tre saker ni kan agera på direkt</p></div></div><div>${qw}</div></div>
 
     ${r.next_step?`<div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start"><div style="width:32px;height:32px;background:#2C2520;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:4px">Nästa steg denna vecka</div><div style="font-size:14px;line-height:1.6;color:#2C2520;font-weight:500">${r.next_step}</div></div></div>`:''}
-    ${r.agency_brief?`<div class="rc"><div class="rh"><div class="ri am">📨</div><div><h2>Redo att skicka till en byrå</h2><p>Kopiera och klistra in i ett mejl</p></div></div><div style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #2C2520;color:#2C2520;margin-bottom:0.75rem">${r.agency_brief}</div><button onclick="navigator.clipboard.writeText(${JSON.stringify(r.agency_brief)}).then(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;bottom:24px;right:24px;background:#0a0a0a;color:#fff;padding:14px 20px;border-radius:8px;font-size:13px;z-index:9999';b.textContent='✓ Kopierat!';document.body.appendChild(b);setTimeout(()=>b.remove(),3000);})" style="background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>Kopiera till byrå</button></div>`:''}`;
+    ${r.agency_brief?`<div class="rc"><div class="rh"><div class="ri am">📨</div><div><h2>Redo att skicka till en byrå</h2><p>Kopiera och klistra in i ett mejl</p></div></div><div style="font-size:14px;line-height:1.75;background:#F9F8F6;border-radius:var(--rs);padding:1rem 1.25rem;border-left:3px solid #2C2520;color:#2C2520;margin-bottom:0.75rem">${r.agency_brief}</div><button onclick="copyAgencyBrief()" style="background:none;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg>Kopiera till byrå</button></div>`:''}`;
   document.getElementById('result-section').style.display='block';
   document.getElementById('result-section').scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('clear-btn').style.display='block';
@@ -6747,6 +6750,24 @@ function renderToolInfo() {
     // Lägg info-blocket före "Testa nu"-knappen.
     const btn = body.querySelector('.tsell-btn');
     if (btn) body.insertBefore(slot, btn); else body.appendChild(slot);
+  });
+}
+
+/* Kopierar byråbriefen. Texten läggs i en variabel i stället för att bakas in
+   i onclick-attributet – JSON.stringify producerar dubbla citattecken, vilket
+   bryter attributet och spiller ut koden som text på sidan. */
+window._agencyBriefText = '';
+
+function copyAgencyBrief() {
+  const txt = window._agencyBriefText || '';
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(function () {
+    const b = document.createElement('div');
+    b.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0a0a0a;color:#fff;' +
+      'padding:14px 20px;border-radius:8px;font-size:13px;z-index:9999';
+    b.textContent = '✓ Kopierat!';
+    document.body.appendChild(b);
+    setTimeout(function () { b.remove(); }, 3000);
   });
 }
 
