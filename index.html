@@ -1051,6 +1051,53 @@ body.adcopy-mode{background:#FBFAF7}
   border-radius:6px;padding:4px 11px;font-size:12.5px;font-weight:700;cursor:pointer;
   font-family:inherit;transition:all .15s}
 .toast-undo:hover{background:#C9A84C;color:#2C2520;border-color:#C9A84C}
+/* ── Prisplaner ───────────────────────────────────────────────────────── */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:1.5rem}
+@media(max-width:800px){.plan-grid{grid-template-columns:1fr}}
+.plan-card{background:#fff;border:1px solid #e8e4db;border-radius:16px;padding:26px 24px;
+  display:flex;flex-direction:column;position:relative}
+.plan-card-featured{border-color:#C9A84C;border-width:2px;box-shadow:0 8px 28px rgba(201,168,76,0.15)}
+.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#C9A84C;
+  color:#2C2520;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:4px 13px;border-radius:20px}
+.plan-name{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9c7d2e;margin-bottom:10px}
+.plan-price{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+.plan-amount{font-size:34px;font-weight:700;color:#2C2520;letter-spacing:-0.02em}
+.plan-per{font-size:14px;color:#9A8570}
+.plan-tagline{font-size:13.5px;color:#7d7266;line-height:1.5;margin-bottom:18px;min-height:40px}
+.plan-feats{list-style:none;padding:0;margin:0 0 22px;flex:1}
+.plan-feats li{font-size:13.5px;color:#3a332c;line-height:1.5;padding:7px 0 7px 26px;position:relative}
+.plan-feats li::before{content:'✓';position:absolute;left:0;color:#C9A84C;font-weight:700}
+.plan-btn{width:100%;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:inherit;border:1px solid transparent;transition:all .15s}
+.plan-btn-primary{background:#C9A84C;color:#2C2520}
+.plan-btn-primary:hover{background:#9c7d2e;color:#fff}
+.plan-btn-dark{background:#2C2520;color:#fff}
+.plan-btn-dark:hover{background:#000}
+.plan-btn-current{background:#F5F3EE;color:#9A8570;border-color:#e0dcd3;cursor:default}
+/* ── Fejkad betalningsruta ────────────────────────────────────────────── */
+.pay-overlay{position:fixed;inset:0;background:rgba(44,37,32,0.55);z-index:1300;
+  display:flex;align-items:center;justify-content:center;padding:20px;animation:toastIn .2s ease}
+.pay-box{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:420px;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.pay-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:24px;
+  color:#9A8570;cursor:pointer;line-height:1;font-family:inherit}
+.pay-demo-flag{display:inline-block;background:#FBF6E9;border:1px solid #EAD9A8;color:#9c7d2e;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:16px}
+.pay-title{font-size:19px;font-weight:700;color:#2C2520;margin-bottom:4px}
+.pay-amount{font-size:28px;font-weight:700;color:#2C2520;margin-bottom:22px}
+.pay-per{font-size:15px;color:#9A8570;font-weight:400}
+.pay-field{margin-bottom:14px;flex:1}
+.pay-field label{display:block;font-size:12px;font-weight:600;color:#7d7266;margin-bottom:6px}
+.pay-field input{width:100%;padding:12px 14px;border:1px solid #e0dcd3;border-radius:10px;
+  font-size:14.5px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#FDFCFA}
+.pay-field input:focus{outline:none;border-color:#C9A84C;background:#fff}
+.pay-row{display:flex;gap:12px}
+.pay-submit{width:100%;background:#C9A84C;color:#2C2520;border:none;border-radius:10px;padding:14px;
+  font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:all .15s}
+.pay-submit:hover{background:#9c7d2e;color:#fff}
+.pay-submit:disabled{opacity:.6;cursor:default}
+.pay-secure{text-align:center;font-size:11.5px;color:#9A8570;margin-top:14px}
 /* Fält som saknas vid validering. */
 .field-error{border-color:#E06B5B !important;background:#FEF6F5 !important;
   animation:fieldShake .3s ease}
@@ -2284,9 +2331,60 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 </div>
 
 <div id="billing-page" style="display:none;min-height:100vh;background:#F5F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <div style="max-width:640px;margin:0 auto;padding:3rem 1.5rem">
-    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Betalning</h1>
-    <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Betalmetod och fakturahistorik.</p>
+  <div style="max-width:960px;margin:0 auto;padding:3rem 1.5rem">
+    <h1 style="font-size:28px;font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin:0 0 0.5rem">Plan &amp; betalning</h1>
+    <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Välj den plan som passar er – uppgradera eller byt när ni vill.</p>
+
+    <div class="plan-grid">
+      <!-- GRATIS -->
+      <div class="plan-card" id="plan-card-gratis">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price"><span class="plan-amount">0</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-tagline">För att komma igång och testa Mava.</div>
+        <ul class="plan-feats">
+          <li>Alla sex verktyg</li>
+          <li>5 produktioner per månad</li>
+          <li>1 varumärkesprofil</li>
+          <li>Bibliotek med sparade produktioner</li>
+        </ul>
+        <button class="plan-btn plan-btn-current" id="plan-btn-gratis" onclick="planChoose('Gratis', 0)">Nuvarande plan</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card plan-card-featured" id="plan-card-pro">
+        <div class="plan-badge">Populärast</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><span class="plan-amount">1 900</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-tagline">För dig som producerar på riktigt, varje vecka.</div>
+        <ul class="plan-feats">
+          <li>Allt i Gratis</li>
+          <li>Obegränsat antal produktioner</li>
+          <li>Fråga Mava – obegränsat</li>
+          <li>Export till Word, PDF &amp; PowerPoint</li>
+          <li>3 varumärkesprofiler</li>
+        </ul>
+        <button class="plan-btn plan-btn-primary" onclick="planChoose('Pro', 1900)">Uppgradera till Pro</button>
+      </div>
+
+      <!-- BYRÅ -->
+      <div class="plan-card" id="plan-card-byra">
+        <div class="plan-name">Byrå</div>
+        <div class="plan-price"><span class="plan-amount">4 900</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-tagline">För byråer och team med flera kunder.</div>
+        <ul class="plan-feats">
+          <li>Allt i Pro</li>
+          <li>Obegränsat antal varumärkesprofiler</li>
+          <li>Dela projekt inom teamet</li>
+          <li>Roller: publicist, annonsör, byrå</li>
+          <li>Prioriterad support</li>
+        </ul>
+        <button class="plan-btn plan-btn-dark" onclick="planChoose('Byrå', 4900)">Uppgradera till Byrå</button>
+      </div>
+    </div>
+
+    <div style="background:#FBF6E9;border:1px solid #EAD9A8;border-radius:12px;padding:14px 18px;font-size:12px;color:#9c7d2e;text-align:center;margin-bottom:2.5rem">Demovy – ingen riktig betalning sker. Stripe kopplas in senare.</div>
+
+    <h2 style="font-size:20px;font-weight:700;color:#2C2520;margin:0 0 1.25rem">Betalning &amp; fakturor</h2>
     <div style="background:#fff;border:1px solid #e8e4db;border-radius:18px;padding:1.75rem;margin-bottom:1.5rem">
       <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#C9A84C;margin-bottom:1rem">Betalmetod</div>
       <div style="display:flex;align-items:center;gap:14px">
@@ -2304,6 +2402,29 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       </div>
     </div>
     <div style="background:#FBF6E9;border:1px solid #EAD9A8;border-radius:12px;padding:14px 18px;font-size:12px;color:#9c7d2e;text-align:center">Demovy – kortuppgifter och fakturor är exempel. Riktig betalning (Stripe) kopplas in senare.</div>
+  </div>
+</div>
+
+<!-- Fejkad betalningsruta (attrapp – ingen riktig betalning) -->
+<div id="pay-modal" class="pay-overlay" style="display:none">
+  <div class="pay-box">
+    <button class="pay-close" onclick="payClose()">×</button>
+    <div class="pay-demo-flag">Demo – ingen riktig betalning</div>
+    <div class="pay-title">Uppgradera till <span id="pay-plan-name">Pro</span></div>
+    <div class="pay-amount"><span id="pay-plan-price">1 900</span> kr<span class="pay-per">/mån</span></div>
+
+    <div class="pay-field">
+      <label>Kortnummer</label>
+      <input id="pay-card" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242" oninput="payFormatCard(this)">
+    </div>
+    <div class="pay-row">
+      <div class="pay-field"><label>Giltigt t.o.m.</label><input id="pay-exp" type="text" placeholder="MM/ÅÅ" maxlength="5" oninput="payFormatExp(this)"></div>
+      <div class="pay-field"><label>CVC</label><input id="pay-cvc" type="text" inputmode="numeric" placeholder="123" maxlength="4"></div>
+    </div>
+    <div class="pay-field"><label>Namn på kortet</label><input id="pay-name" type="text" placeholder="Robin Nilsson"></div>
+
+    <button class="pay-submit" id="pay-submit" onclick="paySubmit()">Betala <span id="pay-submit-amount">1 900</span> kr</button>
+    <div class="pay-secure">🔒 Detta är en demo. Inga kortuppgifter skickas eller sparas.</div>
   </div>
 </div>
 
@@ -6525,6 +6646,73 @@ function goToBilling() {
   document.getElementById('billing-page').style.display = 'block';
   setActivePanelLink('billing-page');
   window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BETALNINGSATTRAPP
+   En kuliss: prissidan öppnar en betalningsruta som ser äkta ut men inte tar
+   betalt. Ingen Stripe, inga nycklar, ingenting skickas. Syftet är att visa
+   hur betalflödet skulle kännas – för pitch eller användartest – innan den
+   riktiga Stripe-kopplingen byggs.
+   ══════════════════════════════════════════════════════════════════════════ */
+window._payPlan = null;
+
+// Klick på en plan. Gratis gör inget (redan aktiv i demon); Pro/Byrå öppnar rutan.
+function planChoose(name, price) {
+  if (price === 0) return;
+  window._payPlan = { name: name, price: price };
+  document.getElementById('pay-plan-name').textContent = name;
+  const prisText = price.toLocaleString('sv-SE');
+  document.getElementById('pay-plan-price').textContent = prisText;
+  document.getElementById('pay-submit-amount').textContent = prisText;
+  document.getElementById('pay-modal').style.display = 'flex';
+}
+
+function payClose() {
+  document.getElementById('pay-modal').style.display = 'none';
+}
+
+// Formaterar kortnumret med mellanslag var fjärde siffra medan man skriver.
+function payFormatCard(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 16);
+  el.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+
+// Formaterar utgångsdatum som MM/ÅÅ.
+function payFormatExp(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+  el.value = v;
+}
+
+// "Betalar". Kollar bara att fälten är ifyllda – sedan en fejkad bekräftelse.
+function paySubmit() {
+  const card = document.getElementById('pay-card').value.replace(/\s/g, '');
+  const exp  = document.getElementById('pay-exp').value;
+  const cvc  = document.getElementById('pay-cvc').value;
+  const namn = document.getElementById('pay-name').value.trim();
+
+  if (card.length < 13 || !exp || cvc.length < 3 || !namn) {
+    toast('Fyll i alla kortuppgifter (det är en demo – valfria siffror funkar).', 'info');
+    return;
+  }
+
+  const btn = document.getElementById('pay-submit');
+  btn.disabled = true;
+  btn.textContent = 'Behandlar…';
+
+  // Fejkad fördröjning så det känns som en riktig betalning.
+  setTimeout(function () {
+    btn.disabled = false;
+    btn.innerHTML = 'Betala <span id="pay-submit-amount"></span> kr';
+    payClose();
+    const plan = window._payPlan ? window._payPlan.name : '';
+    toast('Du är nu på ' + plan + '-planen. (Demo – ingen betalning skedde.)', 'ok', 5000);
+    // Rensa fälten.
+    ['pay-card','pay-exp','pay-cvc','pay-name'].forEach(function (id) {
+      const e = document.getElementById(id); if (e) e.value = '';
+    });
+  }, 1400);
 }
 
 // Loggan i varumärkesprofilen (base64). Återanvänds automatiskt i AdStudio.
