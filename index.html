@@ -2248,6 +2248,21 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Önskad ton</label>
         <input id="brand-tone" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Professionell och förtroendegivande">
       </div>
+      <div style="margin-bottom:1.75rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Tonexempel <span style="font-weight:400;color:#9A8570;font-size:12px">– en text i er faktiska röst</span></label>
+        <div style="font-size:12.5px;color:#9A8570;line-height:1.5;margin-bottom:8px">Klistra in ett stycke ni är nöjda med – från en annons, ett mejl eller en text. Mava härmar ett exempel bättre än en beskrivning.</div>
+        <textarea id="brand-tone-example" style="width:100%;min-height:80px;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box;resize:vertical" placeholder="Ex. Hos oss får du en trygg affär från start till mål. Vi går igenom bilen tillsammans, svarar på allt du undrar, och du kör hem med 12 månaders garanti i handen."></textarea>
+      </div>
+      <div style="margin-bottom:1.75rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Det ni <em>inte</em> är <span style="font-weight:400;color:#9A8570;font-size:12px">– valfritt</span></label>
+        <div style="font-size:12.5px;color:#9A8570;line-height:1.5;margin-bottom:8px">Motpoler skärper tonen. Vad vill ni undvika att låta som?</div>
+        <input id="brand-not" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. inte skrikiga som lågpriskedjorna, inte stela och byråkratiska">
+      </div>
+      <div style="margin-bottom:1.75rem">
+        <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Återkommande fraser <span style="font-weight:400;color:#9A8570;font-size:12px">– valfritt</span></label>
+        <div style="font-size:12.5px;color:#9A8570;line-height:1.5;margin-bottom:8px">Slogans eller uttryck ni ofta använder, som Mava kan väva in.</div>
+        <input id="brand-phrases" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. Trygghet hela vägen, Din lokala bilhandlare sedan 1998">
+      </div>
       <div style="margin-bottom:1.25rem">
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Hemsida</label>
         <input id="brand-website" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. www.foretaget.se">
@@ -6545,6 +6560,9 @@ async function goToBrandProfile() {
   document.getElementById('brand-industry').value    = (p && p.industry) || '';
   document.getElementById('brand-description').value = (p && p.description) || '';
   document.getElementById('brand-tone').value        = (p && p.tone) || '';
+  document.getElementById('brand-tone-example').value = (p && p.tone_example) || '';
+  document.getElementById('brand-not').value          = (p && p.not_brand) || '';
+  document.getElementById('brand-phrases').value      = (p && p.signature_phrases) || '';
   document.getElementById('brand-website').value       = (p && p.website) || '';
   document.getElementById('brand-contact-email').value = (p && p.contact_email) || '';
   document.getElementById('brand-contact-phone').value = (p && p.contact_phone) || '';
@@ -6893,6 +6911,9 @@ async function saveBrandProfile() {
     industry: document.getElementById('brand-industry').value.trim(),
     description: document.getElementById('brand-description').value.trim(),
     tone: document.getElementById('brand-tone').value.trim(),
+    tone_example: document.getElementById('brand-tone-example').value.trim(),
+    not_brand: document.getElementById('brand-not').value.trim(),
+    signature_phrases: document.getElementById('brand-phrases').value.trim(),
     website: document.getElementById('brand-website').value.trim(),
     contact_email: document.getElementById('brand-contact-email').value.trim(),
     contact_phone: document.getElementById('brand-contact-phone').value.trim(),
@@ -7315,6 +7336,9 @@ function brandGuidance() {
   if (p.industry)          lines.push('- Bransch: ' + p.industry);
   if (p.role)              lines.push('- Företagets roll: ' + p.role);
   if (p.tone)              lines.push('- Ton och röst: ' + p.tone);
+  if (p.tone_example)      lines.push('- Exempel på texter i vår röst (härma denna stil): "' + p.tone_example + '"');
+  if (p.not_brand)         lines.push('- Detta ska vi INTE låta som: ' + p.not_brand);
+  if (p.signature_phrases) lines.push('- Återkommande fraser vi gärna använder: ' + p.signature_phrases);
   if (p.default_audience)  lines.push('- Primär målgrupp: ' + p.default_audience);
   if (p.key_messages)      lines.push('- Nyckelbudskap som helst ska genomsyra texten: ' + p.key_messages);
   if (p.products_services) lines.push('- Produkter/tjänster företaget erbjuder: ' + p.products_services);
