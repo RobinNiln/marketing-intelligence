@@ -1085,6 +1085,11 @@ body.adcopy-mode{background:#FBFAF7}
 .plan-feats{list-style:none;padding:0;margin:0 0 22px;flex:1}
 .plan-feats li{font-size:13.5px;color:#3a332c;line-height:1.5;padding:7px 0 7px 26px;position:relative}
 .plan-feats li::before{content:'✓';position:absolute;left:0;color:#C9A84C;font-weight:700}
+/* Verktygsraden (först i listan) framhävs – det är den bärande skillnaden. */
+.plan-feats li:first-child{padding:10px 12px;margin-bottom:6px;background:rgba(201,168,76,0.1);
+  border-radius:8px}
+.plan-feats li:first-child::before{content:'✦';color:#9c7d2e}
+.plan-feats li:first-child strong{color:#9c7d2e}
 .plan-btn{width:100%;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;
   font-family:inherit;border:1px solid transparent;transition:all .15s}
 .plan-btn-primary{background:#C9A84C;color:#2C2520}
@@ -2383,7 +2388,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <div class="plan-price"><span class="plan-amount">2 999</span><span class="plan-per">kr/mån</span></div>
         <div class="plan-tagline">För dig som kommer igång och producerar löpande.</div>
         <ul class="plan-feats">
-          <li>Alla sex verktyg</li>
+          <li><strong>Välj 2 verktyg</strong></li>
           <li>Obegränsat antal produktioner</li>
           <li>Fråga Mava</li>
           <li>1 varumärkesprofil</li>
@@ -2399,6 +2404,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <div class="plan-price"><span class="plan-amount">3 999</span><span class="plan-per">kr/mån</span></div>
         <div class="plan-tagline">För dig som producerar på riktigt, varje vecka.</div>
         <ul class="plan-feats">
+          <li><strong>Välj 4 verktyg</strong></li>
           <li>Allt i Bas</li>
           <li>Export till Word, PDF &amp; PowerPoint</li>
           <li>3 varumärkesprofiler</li>
@@ -2413,6 +2419,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <div class="plan-price"><span class="plan-amount">4 999</span><span class="plan-per">kr/mån</span></div>
         <div class="plan-tagline">För byråer och team med flera kunder.</div>
         <ul class="plan-feats">
+          <li><strong>Alla sex verktyg</strong></li>
           <li>Allt i Medium</li>
           <li>Obegränsat antal varumärkesprofiler</li>
           <li>Dela projekt inom teamet</li>
