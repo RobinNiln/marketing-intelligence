@@ -2377,49 +2377,49 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     <p style="font-size:14px;color:#8a7d6d;margin:0 0 2rem">Välj den plan som passar er – uppgradera eller byt när ni vill.</p>
 
     <div class="plan-grid">
-      <!-- GRATIS -->
-      <div class="plan-card" id="plan-card-gratis">
-        <div class="plan-name">Gratis</div>
-        <div class="plan-price"><span class="plan-amount">0</span><span class="plan-per">kr/mån</span></div>
-        <div class="plan-tagline">För att komma igång och testa Mava.</div>
+      <!-- BAS -->
+      <div class="plan-card" id="plan-card-bas">
+        <div class="plan-name">Bas</div>
+        <div class="plan-price"><span class="plan-amount">2 999</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-tagline">För dig som kommer igång och producerar löpande.</div>
         <ul class="plan-feats">
           <li>Alla sex verktyg</li>
-          <li>5 produktioner per månad</li>
+          <li>Obegränsat antal produktioner</li>
+          <li>Fråga Mava</li>
           <li>1 varumärkesprofil</li>
           <li>Bibliotek med sparade produktioner</li>
         </ul>
-        <button class="plan-btn plan-btn-current" id="plan-btn-gratis" onclick="planChoose('Gratis', 0)">Nuvarande plan</button>
+        <button class="plan-btn plan-btn-dark" onclick="planChoose('Bas', 2999)">Välj Bas</button>
+      </div>
+
+      <!-- MEDIUM -->
+      <div class="plan-card plan-card-featured" id="plan-card-medium">
+        <div class="plan-badge">Populärast</div>
+        <div class="plan-name">Medium</div>
+        <div class="plan-price"><span class="plan-amount">3 999</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-tagline">För dig som producerar på riktigt, varje vecka.</div>
+        <ul class="plan-feats">
+          <li>Allt i Bas</li>
+          <li>Export till Word, PDF &amp; PowerPoint</li>
+          <li>3 varumärkesprofiler</li>
+          <li>Projekt – samla arbete per kampanj</li>
+        </ul>
+        <button class="plan-btn plan-btn-primary" onclick="planChoose('Medium', 3999)">Välj Medium</button>
       </div>
 
       <!-- PRO -->
-      <div class="plan-card plan-card-featured" id="plan-card-pro">
-        <div class="plan-badge">Populärast</div>
+      <div class="plan-card" id="plan-card-pro">
         <div class="plan-name">Pro</div>
-        <div class="plan-price"><span class="plan-amount">1 900</span><span class="plan-per">kr/mån</span></div>
-        <div class="plan-tagline">För dig som producerar på riktigt, varje vecka.</div>
-        <ul class="plan-feats">
-          <li>Allt i Gratis</li>
-          <li>Obegränsat antal produktioner</li>
-          <li>Fråga Mava – obegränsat</li>
-          <li>Export till Word, PDF &amp; PowerPoint</li>
-          <li>3 varumärkesprofiler</li>
-        </ul>
-        <button class="plan-btn plan-btn-primary" onclick="planChoose('Pro', 1900)">Uppgradera till Pro</button>
-      </div>
-
-      <!-- BYRÅ -->
-      <div class="plan-card" id="plan-card-byra">
-        <div class="plan-name">Byrå</div>
-        <div class="plan-price"><span class="plan-amount">4 900</span><span class="plan-per">kr/mån</span></div>
+        <div class="plan-price"><span class="plan-amount">4 999</span><span class="plan-per">kr/mån</span></div>
         <div class="plan-tagline">För byråer och team med flera kunder.</div>
         <ul class="plan-feats">
-          <li>Allt i Pro</li>
+          <li>Allt i Medium</li>
           <li>Obegränsat antal varumärkesprofiler</li>
           <li>Dela projekt inom teamet</li>
           <li>Roller: publicist, annonsör, byrå</li>
           <li>Prioriterad support</li>
         </ul>
-        <button class="plan-btn plan-btn-dark" onclick="planChoose('Byrå', 4900)">Uppgradera till Byrå</button>
+        <button class="plan-btn plan-btn-dark" onclick="planChoose('Pro', 4999)">Välj Pro</button>
       </div>
     </div>
 
@@ -2451,8 +2451,8 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
   <div class="pay-box">
     <button class="pay-close" onclick="payClose()">×</button>
     <div class="pay-demo-flag">Demo – ingen riktig betalning</div>
-    <div class="pay-title">Uppgradera till <span id="pay-plan-name">Pro</span></div>
-    <div class="pay-amount"><span id="pay-plan-price">1 900</span> kr<span class="pay-per">/mån</span></div>
+    <div class="pay-title">Uppgradera till <span id="pay-plan-name">Medium</span></div>
+    <div class="pay-amount"><span id="pay-plan-price">3 999</span> kr<span class="pay-per">/mån</span></div>
 
     <div class="pay-field">
       <label>Kortnummer</label>
@@ -2464,7 +2464,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     </div>
     <div class="pay-field"><label>Namn på kortet</label><input id="pay-name" type="text" placeholder="Robin Nilsson"></div>
 
-    <button class="pay-submit" id="pay-submit" onclick="paySubmit()">Betala <span id="pay-submit-amount">1 900</span> kr</button>
+    <button class="pay-submit" id="pay-submit" onclick="paySubmit()">Betala <span id="pay-submit-amount">3 999</span> kr</button>
     <div class="pay-secure">🔒 Detta är en demo. Inga kortuppgifter skickas eller sparas.</div>
   </div>
 </div>
