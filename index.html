@@ -7304,13 +7304,17 @@ function brandGuidance() {
   const p = _brandProfile;
   if (!p) return '';
   const lines = [];
+  if (p.company)           lines.push('- Företagets namn: ' + p.company);
+  if (p.industry)          lines.push('- Bransch: ' + p.industry);
+  if (p.role)              lines.push('- Företagets roll: ' + p.role);
   if (p.tone)              lines.push('- Ton och röst: ' + p.tone);
+  if (p.default_audience)  lines.push('- Primär målgrupp: ' + p.default_audience);
   if (p.key_messages)      lines.push('- Nyckelbudskap som helst ska genomsyra texten: ' + p.key_messages);
   if (p.products_services) lines.push('- Produkter/tjänster företaget erbjuder: ' + p.products_services);
   if (p.geo_area)          lines.push('- Geografiskt område företaget verkar i: ' + p.geo_area);
   if (p.avoid_words)       lines.push('- FÖRBJUDNA ord och uttryck – använd ALDRIG dessa: ' + p.avoid_words);
   if (lines.length === 0) return '';
-  return '\n\nVARUMÄRKESRIKTLINJER (följ dessa noga):\n' + lines.join('\n');
+  return '\n\nVARUMÄRKESPROFIL (företaget du hjälper – följ riktlinjerna noga):\n' + lines.join('\n');
 }
 
 // Auto-fyller The Briefs formulär från den sparade profilen.
@@ -8361,6 +8365,13 @@ async function aiAssist(material, onskemal, historik, options) {
   historik = historik || [];
   options  = options  || {};
 
+  // Se till att varumärkesprofilen är laddad – annars vet Mava inte ens
+  // företagets namn. Den kan vara null om användaren gått direkt till Fråga
+  // Mava utan att besöka en sida som hämtar profilen.
+  if (!_brandProfile && _currentUser && typeof fetchBrandProfile === 'function') {
+    try { await fetchBrandProfile(); } catch (e) { /* fortsätt ändå */ }
+  }
+
   const system =
     'Du är Mava – en skarp, erfaren medhjälpare inom marknadsföring, ' +
     'PR och kommunikation. Du hjälper användaren att förbättra och bearbeta ' +
@@ -8817,8 +8828,17 @@ async function fchatSend() {
   try {
     // Historik = allt UTOM det sista meddelandet (det skickas som önskemål).
     const historik = window._fchatHistory.slice(0, -1);
-    const svar = await aiAssist('', fraga, historik, {
-      kontext: 'Fristående läge – öppen fråga, inget specifikt material.',
+    // Samma kontextlogik som panelen: skicka materialet användaren har framför
+    // sig, men bara när det är nytt (annars bär historiken det vidare).
+    const ctx = (typeof fmGetContext === 'function') ? fmGetContext() : { material: '', etikett: '' };
+    const nyttMaterial = ctx.material && ctx.material !== window._fmLastMaterial;
+    const material = nyttMaterial ? ctx.material : '';
+    if (nyttMaterial) window._fmLastMaterial = ctx.material;
+
+    const svar = await aiAssist(material, fraga, historik, {
+      kontext: ctx.etikett
+        ? 'Användaren är i ' + (window._currentPage || '') + '. ' + ctx.etikett + '.'
+        : 'Fristående läge – öppen fråga, inget specifikt material.',
       toolId: 'newsroom'
     });
     window._fchatHistory.push({ role: 'assistant', content: svar });
