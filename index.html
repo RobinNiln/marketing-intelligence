@@ -6204,6 +6204,7 @@ function libraryRenderAdBlob(it) {
     }
     if (cfg.imageDataUrl) {
       const img = new Image();
+      if (cfg.imageDataUrl.indexOf('data:') !== 0) img.crossOrigin = 'anonymous';
       img.onload = function(){ _adgenImage = img; paintAndResolve(); };
       img.onerror = function(){ _adgenImage = null; paintAndResolve(); };
       img.src = cfg.imageDataUrl;
@@ -6377,6 +6378,7 @@ function drawLibraryThumb(it) {
   }
   if (cfg.imageDataUrl) {
     const img = new Image();
+    if (cfg.imageDataUrl.indexOf('data:') !== 0) img.crossOrigin = 'anonymous';
     img.onload = function(){ _adgenImage = img; paint(); };
     img.onerror = function(){ _adgenImage = null; paint(); };
     img.src = cfg.imageDataUrl;
@@ -12020,6 +12022,11 @@ async function adgenSave() {
   if (cfg.imageDataUrl && cfg.imageDataUrl.indexOf('data:') === 0) {
     const url = await uploadAdImage(cfg.imageDataUrl);
     if (url) cfgToSave.imageDataUrl = url;
+  }
+  // Även loggan, om den finns som base64.
+  if (cfg.logoDataUrl && cfg.logoDataUrl.indexOf('data:') === 0) {
+    const logoUrl = await uploadAdImage(cfg.logoDataUrl);
+    if (logoUrl) cfgToSave.logoDataUrl = logoUrl;
   }
 
   // Vi sparar med verktygsnamnet 'adstudio' så biblioteket vet hur det ska visas.
