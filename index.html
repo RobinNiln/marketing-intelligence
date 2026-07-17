@@ -882,7 +882,10 @@ body.native-mode{background:#FBFAF7}
 .faq-contact{margin-top:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.09),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:14px;padding:1.8rem 2rem;text-align:center}
 .faq-contact-title{font-size:16px;font-weight:700;color:#2C2520;margin-bottom:6px}
 .faq-contact-text{font-size:13.5px;color:#8a7d6d;line-height:1.6;margin-bottom:1.2rem}
-.faq-contact-btn{display:inline-block;background:#2C2520;color:#fff;text-decoration:none;border-radius:100px;padding:11px 24px;font-size:14px;font-weight:600}
+.faq-contact-btn{display:inline-block;background:#C9A84C;color:#2C2520;text-decoration:none;border-radius:100px;padding:11px 24px;font-size:14px;font-weight:700;transition:all .15s}
+.faq-contact-btn:hover{background:#9c7d2e;color:#fff}
+.faq-contact-btn-ghost{background:#fff;color:#2C2520;border:1px solid #d8d2c6}
+.faq-contact-btn-ghost:hover{background:#2C2520;color:#fff;border-color:#2C2520}
 
 /* Onboarding-checklista */
 .home-onboard{background:#fff;border:1px solid #ece8df;border-radius:16px;padding:1.5rem 1.6rem;margin-bottom:2rem}
@@ -2096,8 +2099,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
     <div class="faq-contact">
       <div class="faq-contact-title">Hittade du inte svaret?</div>
-      <div class="faq-contact-text">Hör av dig så hjälper vi dig. Vi svarar normalt inom en arbetsdag.</div>
-      <a class="faq-contact-btn" href="mailto:support@mava.se">Kontakta support</a>
+      <div class="faq-contact-text">Fråga Mava direkt – vår AI svarar på stört. Eller hör av dig till support så återkommer vi normalt inom en arbetsdag.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="faq-contact-btn" onclick="faqAskMava()" style="border:none;cursor:pointer;font-family:inherit">✦ Fråga Mava</button>
+        <a class="faq-contact-btn faq-contact-btn-ghost" href="mailto:support@mava.se">Kontakta support</a>
+      </div>
     </div>
   </div>
 </div>
@@ -4960,6 +4966,16 @@ function renderFaq(){
 function toggleFaq(i){
   const item = document.getElementById('faq-item-' + i);
   if (item) item.classList.toggle('open');
+}
+
+// Öppnar Fråga Mava-panelen från FAQ-sidan. Om panelen redan är öppen gör
+// den inget (undviker att stänga den av misstag).
+function faqAskMava() {
+  if (!window._fmPanelOpen && typeof fmPanelToggle === 'function') {
+    fmPanelToggle();
+  }
+  const input = document.getElementById('fm-panel-input');
+  if (input) setTimeout(function () { input.focus(); }, 100);
 }
 
 function goToFaq(){
