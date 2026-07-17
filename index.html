@@ -7344,6 +7344,37 @@ function toastUndo(message, onCommit, onUndo, ms) {
   };
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   MAVA-KUNSKAP
+   Ger Fråga Mava kunskap om själva produkten Mava (verktyg, priser, hur det
+   funkar), så den kan svara på "hur exporterar jag?" eller "vad kostar Pro?".
+   Byggs från FAQ_ITEMS och prisplanerna som redan finns i appen, så den
+   aldrig säger emot det som står på sidorna.
+   ══════════════════════════════════════════════════════════════════════════ */
+function mavaKnowledge() {
+  let txt = '\n\nOM PRODUKTEN MAVA (använd detta om användaren frågar om själva ' +
+    'verktyget Mava – hur det fungerar, priser, funktioner):\n';
+
+  // Vanliga frågor och svar.
+  if (typeof FAQ_ITEMS !== 'undefined' && FAQ_ITEMS.length) {
+    txt += '\nVanliga frågor:\n';
+    FAQ_ITEMS.forEach(function (item) {
+      txt += 'F: ' + item.q + '\nS: ' + item.a + '\n';
+    });
+  }
+
+  // Prisplaner (hålls i synk med prissidan).
+  txt += '\nPrisplaner (per månad, exkl. moms):\n' +
+    '- Bas, 2 999 kr: välj 2 av verktygen, obegränsat antal produktioner, Fråga Mava, 1 varumärkesprofil.\n' +
+    '- Medium, 3 999 kr: välj 4 verktyg, allt i Bas, export till Word/PDF/PowerPoint, 3 varumärkesprofiler, projekt.\n' +
+    '- Pro, 4 999 kr: alla sex verktyg, allt i Medium, obegränsat antal varumärkesprofiler, dela projekt i teamet, roller, prioriterad support.\n';
+
+  txt += '\nOm du inte vet svaret på en produktfråga: hänvisa vänligt till ' +
+    'support@mava.se i stället för att gissa.';
+
+  return txt;
+}
+
 function brandGuidance() {
   const p = _brandProfile;
   if (!p) return '';
@@ -8422,13 +8453,16 @@ async function aiAssist(material, onskemal, historik, options) {
   const system =
     'Du är Mava – en skarp, erfaren medhjälpare inom marknadsföring, ' +
     'PR och kommunikation. Du hjälper användaren att förbättra och bearbeta ' +
-    'material, eller svarar på frågor om marknadsföring. Skriv på svenska. ' +
+    'material, svarar på frågor om marknadsföring, OCH svarar på frågor om ' +
+    'själva produkten Mava (verktyg, priser, hur det fungerar) med hjälp av ' +
+    'produktinformationen längre ner. Skriv på svenska. ' +
     'Var konkret och rakt på sak – inga floskler, ingen uppblåst ton. ' +
     'När du förbättrar en text: behåll det som fungerar, ändra bara det som ' +
     'behövs, och förklara inte vad du gjort om användaren inte ber om det – ' +
     'leverera det förbättrade materialet direkt.' +
     (options.kontext ? '\n\nKONTEXT: ' + options.kontext : '') +
-    brandGuidance();
+    brandGuidance() +
+    mavaKnowledge();
 
   const messages = [{ role: 'user', content: system }];
 
