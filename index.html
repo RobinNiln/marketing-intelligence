@@ -10929,10 +10929,31 @@ function drawAdDiagonal(p) {
 
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
-  ctx.fillStyle = '#ffffff';
   const hlLines = estimateLines(ctx, copy.headline || '', tw);
+
+  // Mät hela textblockets höjd (rubrik + ev. knapp) och centrera det i det
+  // tillgängliga fältet, i stället för att börja på en fast punkt och riskera
+  // att texten trycks ut under kanten.
+  const hlBlock = hlLines * headlineSz * 1.1;
+  const gap = Math.round(H * 0.03);
+  const chH = hasCta ? ctaSz * 2.1 : 0;
+  const blockH = hlBlock + (hasCta ? gap + chH : 0);
+
+  if (isWide) {
+    // Bred variant: text i högra fältet, centrerad kring ty.
+    ty = Math.max(pad, (H - blockH) / 2);
+  } else {
+    // Smal/stående: text i nedre fältet under diagonalen. Fältet börjar runt
+    // 0.6·H; centrera blocket i utrymmet därunder, med marginal till kanten.
+    const fieldTop = H * 0.58;
+    ty = Math.max(fieldTop, fieldTop + (H - fieldTop - blockH) / 2);
+    // Säkerställ att blocket aldrig går under nederkanten.
+    if (ty + blockH > H - pad) ty = H - pad - blockH;
+  }
+
+  ctx.fillStyle = '#ffffff';
   wrapText(ctx, copy.headline || '', tx, ty, tw, headlineSz * 1.1);
-  let y = ty + hlLines * headlineSz * 1.1 + Math.round(H * 0.03);
+  let y = ty + hlBlock + gap;
 
   if (hasCta) {
     ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
@@ -11308,10 +11329,11 @@ function drawBannerDiagonal(p) {
   ctx.restore();
   const pad = Math.round(H * 0.22);
   const cta = bannerCta(ctx, copy, H, W);
-  // Text i den mörka högra delen. Startar tidigare (0.36) och tar mindre
-  // luft mot knappen, så rubriken får rimlig bredd även på låga banners.
-  const tx = Math.round(W * 0.36);
-  const textW = (cta ? W - cta.w - pad*1.3 : W - pad) - tx;
+  // Text i den mörka högra delen. Startar en bit in från diagonalkanten
+  // (0.40 i stället för 0.36) så texten inte klistrar mot den sneda kanten,
+  // och tar upp utrymmet fram till knappen jämnt.
+  const tx = Math.round(W * 0.40);
+  const textW = (cta ? W - cta.w - pad*1.6 : W - pad) - tx;
   bannerText(ctx, copy, tx, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
   if (cta) {
     const cx = W - cta.w - pad, cy = (H - cta.h)/2;
