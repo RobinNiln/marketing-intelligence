@@ -6472,6 +6472,10 @@ function restoreAdStudioFromSaved(cfg) {
     if (cfg.imageDataUrl) {
       pending++;
       const img = new Image();
+      // Bilder från Storage ligger på annan domän. crossOrigin krävs för att
+      // canvas-export (nedladdning) inte ska blockeras av CORS. Base64 behöver
+      // det inte, men det skadar inte.
+      if (cfg.imageDataUrl.indexOf('data:') !== 0) img.crossOrigin = 'anonymous';
       img.onload  = function(){ _adgenImage = img;  doneOne(); };
       img.onerror = function(){ _adgenImage = null; doneOne(); };
       img.src = cfg.imageDataUrl;
@@ -6479,6 +6483,7 @@ function restoreAdStudioFromSaved(cfg) {
     if (cfg.logoDataUrl) {
       pending++;
       const lg = new Image();
+      if (cfg.logoDataUrl.indexOf('data:') !== 0) lg.crossOrigin = 'anonymous';
       lg.onload  = function(){ _adgenLogo = lg;   doneOne(); };
       lg.onerror = function(){ _adgenLogo = null; doneOne(); };
       lg.src = cfg.logoDataUrl;
@@ -11931,6 +11936,51 @@ function generateAdCopy(){ generateAdGen(); }
    Sparar "receptet" (text, inställningar, bild som base64) så annonsen kan
    återskapas senare. Använder den snygga spar-dialogen så projektval fungerar.
 ──────────────────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   BILDLAGRING – uppladdning
+   Gör om en base64-bild till en riktig fil i Supabase Storage och returnerar
+   den publika URL:en. Ersätter den tunga base64-datan i databasen med en
+   lätt länk. Returnerar null om något går fel (då faller vi tillbaka på
+   base64, så inget går sönder).
+   ══════════════════════════════════════════════════════════════════════════ */
+async function uploadAdImage(dataUrl) {
+  // Redan en URL (inte base64)? Då är den redan uppladdad – returnera som den är.
+  if (!dataUrl || dataUrl.indexOf('data:') !== 0) return dataUrl || null;
+  if (!_currentUser) return null;
+
+  try {
+    // Dela upp "data:image/png;base64,XXXX" i typ och data.
+    const match = dataUrl.match(/^data:(image\/\w+);base64,(.*)$/);
+    if (!match) return null;
+    const mime = match[1];
+    const ext = mime.split('/')[1] || 'png';
+    const b64 = match[2];
+
+    // Base64 → binär → Blob.
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const blob = new Blob([bytes], { type: mime });
+
+    // Filnamn: <user-id>/<tid>-<slump>.<ext>. Mappen = user-id (krävs av RLS).
+    const filnamn = _currentUser.id + '/' +
+      Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+
+    const { error } = await sb().storage.from('ad-images').upload(filnamn, blob, {
+      contentType: mime,
+      upsert: false
+    });
+    if (error) { console.warn('[Mava] Bilduppladdning misslyckades:', error.message); return null; }
+
+    // Hämta den publika URL:en.
+    const { data } = sb().storage.from('ad-images').getPublicUrl(filnamn);
+    return (data && data.publicUrl) || null;
+  } catch (e) {
+    console.warn('[Mava] Bilduppladdning fel:', e);
+    return null;
+  }
+}
+
 async function adgenSave() {
   const cfg = window._adgenLastConfig;
   if (!cfg) { toast('Inget att spara – generera annonser först.', 'info'); return; }
@@ -11940,8 +11990,18 @@ async function adgenSave() {
   const choice = await openSaveModal(suggested);
   if (!choice) return;
   if (btn) { btn.disabled = true; btn.dataset.orig = btn.innerHTML; btn.textContent = 'Sparar...'; }
+
+  // Ladda upp grundbilden till Storage och spara URL:en i stället för base64.
+  // Detta håller databasen liten. Misslyckas uppladdningen faller vi tillbaka
+  // på base64 (cfg oförändrad), så sparningen fungerar ändå.
+  const cfgToSave = Object.assign({}, cfg);
+  if (cfg.imageDataUrl && cfg.imageDataUrl.indexOf('data:') === 0) {
+    const url = await uploadAdImage(cfg.imageDataUrl);
+    if (url) cfgToSave.imageDataUrl = url;
+  }
+
   // Vi sparar med verktygsnamnet 'adstudio' så biblioteket vet hur det ska visas.
-  const { error } = await saveProduction('adstudio', choice.title || suggested, cfg, choice.projectId);
+  const { error } = await saveProduction('adstudio', choice.title || suggested, cfgToSave, choice.projectId);
   if (btn) {
     btn.disabled = false;
     btn.innerHTML = '✓ Sparad';
