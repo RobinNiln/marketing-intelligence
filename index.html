@@ -10688,8 +10688,11 @@ function drawAdBoldText(p) {
   const pad = Math.round(W * 0.06);
   const hasCta = !!(copy.cta && copy.cta.trim());
 
-  // ENORM rubrik upptill – det bärande elementet.
-  const headlineSz = Math.round(W * 0.12);
+  // ENORM rubrik upptill – det bärande elementet. Krymp den tills även det
+  // längsta ordet ryms på en rad, annars rinner långa ord (t.ex.
+  // "motorkalibrering") ut ur bilden – wrapText kan inte bryta mitt i ord.
+  let headlineSz = Math.round(W * 0.12);
+  headlineSz = fitFontToWidth(ctx, copy.headline || '', W - pad * 2, headlineSz, '800', Math.round(W * 0.055));
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
@@ -10710,6 +10713,28 @@ function drawAdBoldText(p) {
     by -= ch;
     drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta, ctaSz);
   }
+}
+
+// Krymper fontstorleken tills det bredaste ordet ryms inom maxW. Skyddar mot
+// att långa enskilda ord rinner ut ur bilden (wrapText bryter bara på
+// mellanslag, aldrig mitt i ett ord). Returnerar en fontstorlek mellan minSz
+// och startSz.
+function fitFontToWidth(ctx, text, maxW, startSz, weight, minSz) {
+  weight = weight || '700';
+  minSz = minSz || 12;
+  if (!text) return startSz;
+  const words = text.split(/\s+/);
+  let sz = startSz;
+  while (sz > minSz) {
+    ctx.font = weight + ' ' + sz + 'px ' + adgenFontFamily();
+    let passar = true;
+    for (const w of words) {
+      if (ctx.measureText(w).width > maxW) { passar = false; break; }
+    }
+    if (passar) break;
+    sz -= 2;
+  }
+  return sz;
 }
 
 // MALL 5: Vinkelsnitt – en vass färgvinkel skär in från sidan (à la TV4).
@@ -10845,9 +10870,10 @@ function drawAdColorBlock(p) {
   const hasCta = !!(copy.cta && copy.cta.trim());
   const hasSub = !!(copy.subline && copy.subline.trim());
 
-  // Rubrik stor upptill.
-  const headlineSz = Math.round(W * 0.085);
+  // Rubrik stor upptill. Krymp så långa ord inte rinner ut ur kanten.
+  let headlineSz = Math.round(W * 0.085);
   const sublineSz  = Math.round(W * 0.036);
+  headlineSz = fitFontToWidth(ctx, copy.headline || '', textMaxW, headlineSz, '800', Math.round(W * 0.05));
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = onColor;
@@ -10859,8 +10885,11 @@ function drawAdColorBlock(p) {
   if (hasSub) {
     ctx.font = '500 ' + sublineSz + 'px ' + adgenFontFamily();
     ctx.globalAlpha = 0.9;
+    const slLines = estimateLines(ctx, copy.subline, textMaxW);
     wrapText(ctx, copy.subline, pad, y, textMaxW, sublineSz * 1.3);
     ctx.globalAlpha = 1;
+    // Flytta ner y FÖRBI underrubriken – annars ritas bilden ovanpå den.
+    y += slLines * sublineSz * 1.3 + Math.round(H * 0.02);
   }
 
   // Bild inbäddad, når högre (närmare rubriken) och med RAKA hörn.
@@ -11184,21 +11213,25 @@ function drawAdImageInto(ctx, x, y, w, h) {
 // Hjälpare: mät CTA-knappen för en banner och returnera dess mått.
 function bannerCta(ctx, copy, H, W) {
   if (!(copy.cta && copy.cta.trim())) return null;
-  let sz = Math.round(H * 0.26);
+  // Knappstorleken skalas efter höjden MEN med ett tak, annars blir knappen
+  // enorm på höga banners (t.ex. billboard 970×250 där H*0.26 = 65px text).
+  // Vi kopplar den också till bredden så låga/breda banners får proportionerlig
+  // knapp. Taket 30px håller texten läsbar utan att dominera.
+  let sz = Math.round(Math.min(H * 0.24, W * 0.045, 28));
+  sz = Math.max(sz, 12); // aldrig oläsligt liten
   ctx.font = '700 ' + sz + 'px ' + adgenFontFamily();
   let w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
-  // Knappen skalas efter höjden, men på höga eller smala banners kan den då
-  // bli så bred att texten inte får plats. Tak: knappen får aldrig ta mer än
-  // 40% av bannerns bredd. Krymp texten i knappen tills den ryms.
+  // Extra skydd: knappen får aldrig ta mer än 38% av bannerns bredd.
   if (W) {
-    const maxW = W * 0.40;
+    const maxW = W * 0.38;
     while (w > maxW && sz > 10) {
       sz -= 1;
       ctx.font = '700 ' + sz + 'px ' + adgenFontFamily();
       w = ctx.measureText(copy.cta + ' →').width + sz * 1.6;
     }
   }
-  const h = Math.round(H * 0.52);
+  // Knapphöjd: proportionell mot texten, men aldrig mer än 62% av bannerhöjden.
+  const h = Math.min(Math.round(sz * 2.4), Math.round(H * 0.62));
   return { sz:sz, w:w, h:h };
 }
 
