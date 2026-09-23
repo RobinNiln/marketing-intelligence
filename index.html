@@ -7937,33 +7937,39 @@ async function runAiRadar(){
 
 // Bygger AI-prompten. Ber uttryckligen om STRIKT JSON så vi kan rendera säkert.
 function buildAiRadarPrompt(url, content){
-  return 'Du är expert på hur företag syns i AI-driven sök (ChatGPT, Perplexity, Google AI Overviews, Gemini) – det som kallas GEO (Generative Engine Optimization). ' +
-    'Din uppgift är att bedöma hur väl en hemsida är rustad för att bli hittad, förstådd och CITERAD av språkmodeller när användare ställer frågor.\n\n' +
-    'Bedöm sidan utifrån vad som faktiskt får AI-modeller att välja och citera en källa:\n' +
-    '- Direkta svar på frågor: svarar sidan rakt på konkreta "hur/vad/varför"-frågor, eller bara beskriver den?\n' +
-    '- Struktur och rubriker: är rubrikerna tydliga och frågeliknande, lätta för en modell att tolka?\n' +
-    '- Trovärdighet och expertis: framgår vilka de är, erfarenhet, lokal förankring, konkreta verifierbara fakta?\n' +
-    '- Tydlig avsändare: framgår företagsnamn, ort, kontakt och vad de erbjuder tydligt?\n\n' +
+  return 'Du är en av Sveriges vassaste experter på GEO (Generative Engine Optimization) – hur företag syns, förstås och CITERAS av AI-driven sök som ChatGPT, Perplexity, Google AI Overviews och Gemini. ' +
+    'Du gör en grundlig, sträng och konkret analys. Du hittar på ingenting – varje observation ska gå att härleda ur den faktiska texten nedan.\n\n' +
+    'Analysera hur väl sidan är rustad att bli vald och citerad av språkmodeller. Bedöm dessa SEX delområden, var för sig:\n' +
+    '1. Direkta svar på frågor – svarar sidan rakt på konkreta "hur/vad/varför/vad kostar"-frågor, eller bara beskriver och säljer?\n' +
+    '2. Struktur & rubriker – är rubriker tydliga, frågeliknande och lätta för en modell att tolka och plocka ur?\n' +
+    '3. Trovärdighet & expertis (E-E-A-T) – framgår vilka de är, erfarenhet, lokal förankring, konkreta verifierbara fakta (år, antal, namn)?\n' +
+    '4. Tydlig avsändare – framgår företagsnamn, ort, bransch, kontakt och exakt vad de erbjuder?\n' +
+    '5. Konkret & specifikt språk – använder de siffror, exempel och detaljer, eller vaga floskler ("marknadsledande", "hög kvalitet")?\n' +
+    '6. Fångar sökintention – matchar innehållet de frågor en riktig kund faktiskt skulle ställa till en AI om den här branschen?\n\n' +
+    'Var sträng: en genomsnittlig svensk företagssajt ligger runt 40–60. Sätt höga poäng bara när sidan verkligen förtjänar det. Motivera varje delområde med något SPECIFIKT du såg (eller saknade) i texten.\n\n' +
     'Analysera denna sida.\n' +
     'URL: ' + (url || '(ej angiven)') + '\n' +
-    'Innehåll:\n"""\n' + content.slice(0, 12000) + '\n"""\n\n' +
+    'Innehåll:\n"""\n' + content.slice(0, 16000) + '\n"""\n\n' +
     'Svara med ENBART giltig JSON (ingen text före eller efter, inga kodblock) enligt exakt detta schema:\n' +
     '{\n' +
-    '  "score": <heltal 0-100>,\n' +
-    '  "verdict_title": "<kort rubrik, max 6 ord, på svenska>",\n' +
-    '  "verdict_text": "<2-3 meningar som sammanfattar läget, på svenska>",\n' +
+    '  "score": <heltal 0-100, vägt helhetsbetyg>,\n' +
+    '  "verdict_title": "<kort rubrik, max 6 ord, svenska>",\n' +
+    '  "verdict_text": "<2-3 meningar som sammanfattar läget konkret, svenska>",\n' +
     '  "subscores": [\n' +
-    '    {"name":"Direkta svar på frågor","grade":"low|mid|good","value":<0-100>,"desc":"<en mening svenska>"},\n' +
+    '    {"name":"Direkta svar på frågor","grade":"low|mid|good","value":<0-100>,"desc":"<en mening med något specifikt från sidan>"},\n' +
     '    {"name":"Struktur & rubriker","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
     '    {"name":"Trovärdighet & expertis","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
-    '    {"name":"Tydlig avsändare","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"}\n' +
+    '    {"name":"Tydlig avsändare","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
+    '    {"name":"Konkret & specifikt språk","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
+    '    {"name":"Fångar sökintention","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"}\n' +
     '  ],\n' +
     '  "findings": [\n' +
-    '    {"type":"fix|ok","title":"<kort rubrik svenska>","text":"<1-2 meningar>","how":"<konkret åtgärd som börjar med en pil, eller tom sträng om type=ok>"}\n' +
+    '    {"type":"fix|ok","title":"<kort rubrik svenska>","text":"<1-2 meningar som refererar konkret till sidan>","how":"<konkret åtgärd som börjar med en pil →, gärna med ett exempel de kan använda rakt av; tom sträng om type=ok>"}\n' +
     '  ],\n' +
-    '  "questions": ["<realistisk AI-sökfråga där de borde synas>", "...", "..."]\n' +
+    '  "questions": ["<realistisk AI-sökfråga en kund skulle ställa där de borde synas>", "...", "...", "...", "..."]\n' +
     '}\n' +
-    'Ge 3-5 findings (blanda fix och ok), och 3 questions. Var konkret och specifik för just denna sida – inga generiska råd. All text på svenska.';
+    'Ge 5-7 findings (minst 3 med type=fix, minst 1 med type=ok), och 5 questions. ' +
+    'Åtgärderna ska vara så konkreta att kunden kan agera direkt – med exempel hämtade ur eller anpassade till just deras verksamhet, aldrig generiska råd. All text på svenska.';
 }
 
 function airEsc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
