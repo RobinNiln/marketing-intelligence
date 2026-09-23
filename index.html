@@ -2469,6 +2469,11 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <div style="margin-bottom:1.25rem">
         <label style="display:block;font-size:13px;font-weight:600;color:#2C2520;margin-bottom:6px">Hemsida</label>
         <input id="brand-website" type="text" style="width:100%;padding:11px 14px;border:1px solid #e0dcd3;border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box" placeholder="Ex. www.foretaget.se">
+        <button onclick="airadarFromProfile()" style="display:inline-flex;align-items:center;gap:7px;margin-top:9px;background:none;border:1px solid #e0dcd3;border-radius:100px;padding:8px 15px;font-size:13px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M9.5 9.5l3 3"/></svg>
+          Analysera i AI Radar
+        </button>
+        <div style="font-size:12px;color:#9A8570;margin-top:6px">Se hur väl er sida syns i AI-sök (ChatGPT, Perplexity m.fl.).</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem">
         <div>
@@ -7831,6 +7836,14 @@ function goToAiRadar(){
 function airadarReset(){
   document.getElementById('airadar-result').style.display='none';
   document.getElementById('airadar-form-section').style.display='block';
+}
+
+// Öppnar AI Radar från varumärkesprofilen med hemsidan förifylld.
+function airadarFromProfile(){
+  const site = (document.getElementById('brand-website') || {}).value || '';
+  goToAiRadar();
+  const urlField = document.getElementById('airadar-url');
+  if (urlField && site) urlField.value = site;
 }
 
 // Hämtar sidans text via proxyn och fyller i textrutan. Om det misslyckas
