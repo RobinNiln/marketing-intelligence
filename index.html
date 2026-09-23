@@ -2267,14 +2267,22 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <label>Hemsidans adress</label>
         <div style="display:flex;gap:10px">
           <input type="text" id="airadar-url" placeholder="https://exempel.se" class="airadar-input" style="flex:1">
-          <button id="airadar-fetch-btn" onclick="airadarFetchPage()" style="background:#C9A84C;color:#1a1410;border:none;border-radius:100px;padding:0 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Hämta text</button>
+          <button id="airadar-fetch-btn" onclick="airadarFetchSite()" style="background:#C9A84C;color:#1a1410;border:none;border-radius:100px;padding:0 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Hämta sajt</button>
         </div>
         <div id="airadar-fetch-status" style="font-size:12.5px;color:#8a7d6d;margin-top:7px;display:none"></div>
+        <div style="font-size:12px;color:#9A8570;margin-top:7px">Vi hämtar startsidan och upp till 6 av de viktigaste undersidorna (om oss, tjänster, kontakt m.fl.) och analyserar dem tillsammans. <a href="#" onclick="airadarToggleMulti(event)" style="color:#9c7d2e;font-weight:600">Ange sidorna själv i stället</a></div>
+      </div>
+
+      <!-- Fallback: flera URL:er, en per rad -->
+      <div class="airadar-field" id="airadar-multi-field" style="display:none">
+        <label>Egna sidor att analysera <span style="font-weight:400;color:#b5aa98">(en adress per rad, max 6)</span></label>
+        <textarea id="airadar-multi-urls" class="airadar-textarea" rows="4" placeholder="https://exempel.se&#10;https://exempel.se/om-oss&#10;https://exempel.se/tjanster"></textarea>
+        <button id="airadar-multi-btn" onclick="airadarFetchMulti()" style="margin-top:8px;background:#C9A84C;color:#1a1410;border:none;border-radius:100px;padding:9px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">Hämta dessa sidor</button>
       </div>
 
       <div class="airadar-field">
         <label>Sidans innehåll <span style="font-weight:400;color:#b5aa98">(hämtas automatiskt, eller klistra in)</span></label>
-        <textarea id="airadar-content" class="airadar-textarea" rows="9" placeholder="Tryck &quot;Hämta text&quot; ovan för att fylla i automatiskt – eller klistra in rubriker och brödtext från hemsidan här."></textarea>
+        <textarea id="airadar-content" class="airadar-textarea" rows="9" placeholder="Tryck &quot;Hämta sajt&quot; ovan för att fylla i automatiskt – eller klistra in rubriker och brödtext från hemsidan här."></textarea>
         <div style="font-size:12px;color:#b5aa98;margin-top:6px">Gick hämtningen inte? Markera allt på sidan (Ctrl/Cmd+A), kopiera och klistra in här i stället.</div>
       </div>
 
