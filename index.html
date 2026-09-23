@@ -1569,6 +1569,50 @@ body.brief-mode{background:#FBFAF7}
 .brief-header-sub{font-size:12px;color:#9A8570}
 .brief-container{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem}
 .brief-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9A8570;margin-bottom:0.9rem;margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid rgba(0,0,0,0.07)}
+/* AI Radar */
+.airadar-field{margin-bottom:1.4rem}
+.airadar-field label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#9c7d2e;margin-bottom:9px}
+.airadar-input{width:100%;border:1.5px solid #e6e1d6;border-radius:100px;padding:13px 20px;font-size:14px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff}
+.airadar-input:focus{outline:none;border-color:#C9A84C}
+.airadar-textarea{width:100%;border:1.5px solid #e6e1d6;border-radius:14px;padding:14px 18px;font-size:14px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff;line-height:1.6;resize:vertical}
+.airadar-textarea:focus{outline:none;border-color:#C9A84C}
+.airadar-analyze-btn{display:inline-flex;align-items:center;gap:9px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.airadar-analyze-btn:hover{background:#1a1510}
+.airadar-analyze-btn:disabled{opacity:0.6;cursor:default}
+/* AI Radar resultat */
+.air-hero{background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:2rem;display:flex;align-items:center;gap:2rem;margin-bottom:1.25rem}
+@media(max-width:520px){.air-hero{flex-direction:column;text-align:center}}
+.air-ring{position:relative;flex-shrink:0;width:120px;height:120px}
+.air-ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.air-ring .num b{font-size:34px;font-weight:800;line-height:1;color:#2C2520}
+.air-ring .num span{font-size:11px;color:#9A8570;margin-top:2px}
+.air-verdict h3{font-size:19px;font-weight:700;margin:0 0 6px}
+.air-verdict p{font-size:14px;color:#5F5E5A;line-height:1.6;margin:0}
+.air-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9c7d2e;margin:2rem 0 1rem}
+.air-subs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0.5rem}
+@media(max-width:560px){.air-subs{grid-template-columns:1fr}}
+.air-sub{background:#fff;border:1.5px solid #F0EEE8;border-radius:14px;padding:1.1rem 1.25rem}
+.air-sub-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.air-sub-name{font-size:13.5px;font-weight:600}
+.air-grade{font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap}
+.air-g-good{background:#E1F5EE;color:#0F6E56}
+.air-g-mid{background:#FAEEDA;color:#854F0B}
+.air-g-low{background:#FCEBEB;color:#A32D2D}
+.air-bar{height:6px;background:#f0ede6;border-radius:3px;overflow:hidden;margin-bottom:8px}
+.air-bar span{display:block;height:100%;border-radius:3px}
+.air-sub-desc{font-size:12.5px;color:#8a7d6d;line-height:1.5}
+.air-find{background:#fff;border:1.5px solid #F0EEE8;border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:10px;display:flex;gap:13px}
+.air-find-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-top:1px}
+.air-fi-ok{background:#E1F5EE;color:#0F6E56}
+.air-fi-fix{background:#FAEEDA;color:#854F0B}
+.air-find-body h4{font-size:14px;font-weight:600;margin:0 0 3px}
+.air-find-body p{font-size:13px;color:#5F5E5A;line-height:1.6;margin:0}
+.air-find-body .how{font-size:12.5px;color:#9c7d2e;margin-top:7px;font-weight:500}
+.air-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:14px;padding:1.3rem 1.4rem;margin-bottom:1.25rem}
+.air-q{font-size:13.5px;color:#2C2520;line-height:1.6;padding:9px 0;border-bottom:1px solid #f2efe8;display:flex;gap:9px}
+.air-q:last-child{border-bottom:none}
+.air-q b{color:#9c7d2e;font-weight:700}
+.air-note{background:#FBF6E9;border:1px solid #EAD9A8;border-radius:12px;padding:13px 17px;font-size:12.5px;color:#9c7d2e;line-height:1.6;margin-top:1.5rem}
 .brief-section-title:first-of-type{border-top:none;margin-top:0;padding-top:0}
 .brief-field{margin-bottom:1.6rem}
 .brief-field label{display:block;font-size:15px;font-weight:500;color:#2a2520;margin-bottom:8px;line-height:1.4}
@@ -2192,6 +2236,61 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
   </div>
 </div>
 
+<!-- ══ AI RADAR – analyserar hur väl en sajt syns i AI-sök ══ -->
+<div id="airadar-page" style="display:none;min-height:100vh;background:#F5F3EE">
+
+  <div style="position:relative;height:38vh;min-height:280px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 2rem;background:linear-gradient(135deg,#2C2520,#4a3f34)">
+    <div style="position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem">
+      <button class="mava-logo on-dark" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:26px;width:26px"><span class="mava-word" style="font-size:17px">Mava</span></button>
+      <button onclick="goToTools()" style="font-size:13px;color:rgba(255,255,255,0.75);background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 7H3M6 3l-4 4 4 4"/></svg>
+        Tillbaka
+      </button>
+    </div>
+    <div style="position:relative;z-index:1;max-width:600px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.6rem">Verktyg · AI Radar</div>
+      <h1 style="font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.8rem">AI Radar</h1>
+      <p style="font-size:clamp(14px,1.6vw,17px);color:rgba(255,255,255,0.7);line-height:1.6;max-width:480px;margin:0 auto">Se hur väl en hemsida syns när kunder frågar ChatGPT, Perplexity och Googles AI-svar.</p>
+    </div>
+  </div>
+
+  <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem">
+
+    <!-- FORMULÄR -->
+    <div id="airadar-form-section">
+      <div style="margin-bottom:1.8rem">
+        <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:#2C2520;letter-spacing:-0.02em;margin-bottom:0.5rem">Analysera en hemsida</h2>
+        <p style="font-size:14px;color:#9A8570;line-height:1.6">Klistra in sidans adress och innehåll nedan. AI Radar bedömer hur väl sidan är rustad för att synas och citeras i AI-sök.</p>
+      </div>
+
+      <div class="airadar-field">
+        <label>Hemsidans adress</label>
+        <input type="text" id="airadar-url" placeholder="https://exempel.se" class="airadar-input">
+      </div>
+
+      <div class="airadar-field">
+        <label>Sidans innehåll <span style="font-weight:400;color:#b5aa98">(klistra in texten från sidan)</span></label>
+        <textarea id="airadar-content" class="airadar-textarea" rows="9" placeholder="Klistra in rubriker och brödtext från hemsidan här. Ju mer, desto bättre analys – gärna hela startsidan eller en viktig undersida."></textarea>
+        <div style="font-size:12px;color:#b5aa98;margin-top:6px">Tips: markera allt på sidan (Ctrl/Cmd+A), kopiera och klistra in här.</div>
+      </div>
+
+      <div id="airadar-err" style="display:none;background:#FCEBEB;border:1px solid #E9C4C4;color:#A32D2D;border-radius:10px;padding:12px 16px;font-size:13.5px;margin-bottom:1rem"></div>
+
+      <button id="airadar-btn" class="airadar-analyze-btn" onclick="runAiRadar()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+        Analysera sidan
+      </button>
+    </div>
+
+    <!-- LADDNING -->
+    <div id="airadar-loading" style="display:none;text-align:center;padding:3rem 0;color:#9A8570;font-size:14px">Analyserar...</div>
+
+    <!-- RESULTAT -->
+    <div id="airadar-result" style="display:none"></div>
+
+  </div>
+</div>
+
 <div id="tools-page">
   <nav class="tools-nav">
     <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
@@ -2221,6 +2320,16 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
               <div class="tsell-gets-label">Du får:</div>
               <div class="tsell-tags"><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Kanalstrategi</span><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Budgetförslag</span><span class="tsell-tag" style="color:#0F6E56;background:rgba(29,158,117,0.1)">Quick wins</span></div>
               <button class="tsell-btn" onclick="goToToolLogin('app')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
+            </div>
+          </div>
+      <div class="tsell-card" data-tool="airadar">
+            <div class="tsell-img" style="background-image:linear-gradient(135deg,rgba(44,37,32,0.88),rgba(74,63,52,0.55)),url('images/stock.jpg')"><span class="tsell-img-badge" style="color:#fff">NYTT · AI-SÖK</span></div>
+            <div class="tsell-body">
+              <div class="tsell-title">AI Radar</div>
+              <div class="tsell-desc">Se hur väl en hemsida syns när kunder frågar ChatGPT, Perplexity och Googles AI-svar – med betyg och konkreta åtgärder för att bli den källa AI:n citerar.</div>
+              <div class="tsell-gets-label">Du får:</div>
+              <div class="tsell-tags"><span class="tsell-tag" style="color:#2C2520;background:rgba(44,37,32,0.08)">AI-synlighetsbetyg</span><span class="tsell-tag" style="color:#2C2520;background:rgba(44,37,32,0.08)">Konkreta åtgärder</span><span class="tsell-tag" style="color:#2C2520;background:rgba(44,37,32,0.08)">Sökfrågor</span></div>
+              <button class="tsell-btn" onclick="goToToolLogin('airadar')">Testa nu <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></button>
             </div>
           </div>
     </div>
@@ -4835,7 +4944,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page','fraga-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page','fraga-page','airadar-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -4986,7 +5095,7 @@ function applyRoleToolOrder(){
 }
 
 // Färger per verktyg – återanvänds i graf och "senaste"-prickar.
-const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD' };
+const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD', airadar:'#2C2520', planner:'#9c7d2e' };
 
 /* Ger SVG-ikonen för ett verktyg – samma ikoner som snabbknapparna, så
    verktygen ser likadana ut överallt. Grå streckfärg; färgen bärs av kanten. */
@@ -5952,7 +6061,7 @@ function goToLibraryAll() {
   goToLibrary();
 }
 
-const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio', planner:'Campaign Planner' };
+const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio', planner:'Campaign Planner', airadar:'AI Radar' };
 
 /* ── Projektsidan (Lager 1) ─────────────────────────────────────────────── */
 let _projectsCache = [];
@@ -6515,6 +6624,14 @@ function libraryOpen(id) {
 
   } else if (item.tool === 'adstudio') {
     restoreAdStudioFromSaved(item.content);
+
+  } else if (item.tool === 'airadar') {
+    goToAiRadar();
+    const c = item.content || {};
+    window._aiRadarResult = c.result || c;
+    window._aiRadarUrl = c.url || '';
+    document.getElementById('airadar-form-section').style.display = 'none';
+    renderAiRadar(window._aiRadarResult);
 
   } else {
     toast('Öppning för det här verktyget är inte inkopplat än.', 'info');
@@ -7554,6 +7671,7 @@ function goToToolLogin(dest){
   else if(dest==='newsroom') goToNewsroom();
   else if(dest==='brief') goToBrief();
   else if(dest==='planner') goToPlanner();
+  else if(dest==='airadar') goToAiRadar();
   else showApp();
 }
 
@@ -7693,6 +7811,165 @@ function goToPlanner(){
   updateSidePanel('planner-page');
   window.scrollTo(0,0);
   applyBrandProfileToPlanner();
+}
+
+// ══ AI RADAR ══════════════════════════════════════════════════════════════
+function goToAiRadar(){
+  hideAll();
+  document.getElementById('airadar-page').style.display='block';
+  updateSidePanel('airadar-page');
+  window.scrollTo(0,0);
+  // Förifyll URL från profilen om den finns (bekvämt, men fritt att ändra).
+  const p = _brandProfile;
+  if (p && p.website) fillIfEmpty('airadar-url', p.website);
+}
+
+function airadarReset(){
+  document.getElementById('airadar-result').style.display='none';
+  document.getElementById('airadar-form-section').style.display='block';
+}
+
+async function runAiRadar(){
+  const url = document.getElementById('airadar-url').value.trim();
+  const content = document.getElementById('airadar-content').value.trim();
+  const errEl = document.getElementById('airadar-err');
+  const btn = document.getElementById('airadar-btn');
+  errEl.style.display = 'none';
+
+  if (content.length < 80) {
+    errEl.textContent = 'Klistra in lite mer av sidans innehåll (minst några stycken) så analysen blir meningsfull.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  document.getElementById('airadar-form-section').style.display = 'none';
+  document.getElementById('airadar-loading').style.display = 'block';
+  showMavaLoading(['Läser sidan...','Bedömer AI-synlighet...','Letar efter direkta svar...','Tar fram åtgärder...']);
+
+  const prompt = buildAiRadarPrompt(url, content);
+  try {
+    const data = await safeFetch([{ role:'user', content: prompt }], 80000, 'ai-radar');
+    const raw = data.content.map(i => i.text || '').join('');
+    const cleaned = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(cleaned);
+    window._aiRadarResult = result;
+    window._aiRadarUrl = url;
+    document.getElementById('airadar-loading').style.display = 'none';
+    hideMavaLoading();
+    renderAiRadar(result);
+  } catch (err) {
+    console.error('AI Radar error:', err);
+    document.getElementById('airadar-loading').style.display = 'none';
+    hideMavaLoading();
+    document.getElementById('airadar-form-section').style.display = 'block';
+    errEl.textContent = 'Kunde inte göra analysen just nu. Försök igen om en liten stund.';
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+}
+
+// Bygger AI-prompten. Ber uttryckligen om STRIKT JSON så vi kan rendera säkert.
+function buildAiRadarPrompt(url, content){
+  return 'Du är expert på hur företag syns i AI-driven sök (ChatGPT, Perplexity, Google AI Overviews, Gemini) – det som kallas GEO (Generative Engine Optimization). ' +
+    'Din uppgift är att bedöma hur väl en hemsida är rustad för att bli hittad, förstådd och CITERAD av språkmodeller när användare ställer frågor.\n\n' +
+    'Bedöm sidan utifrån vad som faktiskt får AI-modeller att välja och citera en källa:\n' +
+    '- Direkta svar på frågor: svarar sidan rakt på konkreta "hur/vad/varför"-frågor, eller bara beskriver den?\n' +
+    '- Struktur och rubriker: är rubrikerna tydliga och frågeliknande, lätta för en modell att tolka?\n' +
+    '- Trovärdighet och expertis: framgår vilka de är, erfarenhet, lokal förankring, konkreta verifierbara fakta?\n' +
+    '- Tydlig avsändare: framgår företagsnamn, ort, kontakt och vad de erbjuder tydligt?\n\n' +
+    'Analysera denna sida.\n' +
+    'URL: ' + (url || '(ej angiven)') + '\n' +
+    'Innehåll:\n"""\n' + content.slice(0, 12000) + '\n"""\n\n' +
+    'Svara med ENBART giltig JSON (ingen text före eller efter, inga kodblock) enligt exakt detta schema:\n' +
+    '{\n' +
+    '  "score": <heltal 0-100>,\n' +
+    '  "verdict_title": "<kort rubrik, max 6 ord, på svenska>",\n' +
+    '  "verdict_text": "<2-3 meningar som sammanfattar läget, på svenska>",\n' +
+    '  "subscores": [\n' +
+    '    {"name":"Direkta svar på frågor","grade":"low|mid|good","value":<0-100>,"desc":"<en mening svenska>"},\n' +
+    '    {"name":"Struktur & rubriker","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
+    '    {"name":"Trovärdighet & expertis","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"},\n' +
+    '    {"name":"Tydlig avsändare","grade":"low|mid|good","value":<0-100>,"desc":"<en mening>"}\n' +
+    '  ],\n' +
+    '  "findings": [\n' +
+    '    {"type":"fix|ok","title":"<kort rubrik svenska>","text":"<1-2 meningar>","how":"<konkret åtgärd som börjar med en pil, eller tom sträng om type=ok>"}\n' +
+    '  ],\n' +
+    '  "questions": ["<realistisk AI-sökfråga där de borde synas>", "...", "..."]\n' +
+    '}\n' +
+    'Ge 3-5 findings (blanda fix och ok), och 3 questions. Var konkret och specifik för just denna sida – inga generiska råd. All text på svenska.';
+}
+
+function airEsc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderAiRadar(r){
+  const gradeClass = { low:'air-g-low', mid:'air-g-mid', good:'air-g-good' };
+  const gradeLabel = { low:'Svag', mid:'Okej', good:'Stark' };
+  const barColor = { low:'#D97757', mid:'#C9A84C', good:'#1D9E75' };
+  const score = Math.max(0, Math.min(100, parseInt(r.score, 10) || 0));
+  // Ringen: omkrets 2πr ≈ 326 för r=52. offset = omkrets * (1 - score/100).
+  const circ = 326;
+  const offset = Math.round(circ * (1 - score / 100));
+
+  let subs = '';
+  (r.subscores || []).forEach(function(s){
+    const g = gradeClass[s.grade] || 'air-g-mid';
+    const val = Math.max(0, Math.min(100, parseInt(s.value, 10) || 0));
+    subs += '<div class="air-sub">' +
+      '<div class="air-sub-top"><span class="air-sub-name">' + airEsc(s.name) + '</span>' +
+      '<span class="air-grade ' + g + '">' + (gradeLabel[s.grade] || 'Okej') + '</span></div>' +
+      '<div class="air-bar"><span style="width:' + val + '%;background:' + (barColor[s.grade] || '#C9A84C') + '"></span></div>' +
+      '<div class="air-sub-desc">' + airEsc(s.desc) + '</div></div>';
+  });
+
+  let finds = '';
+  (r.findings || []).forEach(function(f){
+    const ok = f.type === 'ok';
+    finds += '<div class="air-find">' +
+      '<div class="air-find-icon ' + (ok ? 'air-fi-ok' : 'air-fi-fix') + '">' + (ok ? '✓' : '!') + '</div>' +
+      '<div class="air-find-body"><h4>' + airEsc(f.title) + '</h4><p>' + airEsc(f.text) + '</p>' +
+      (f.how ? '<div class="how">' + airEsc(f.how) + '</div>' : '') + '</div></div>';
+  });
+
+  let qs = '';
+  (r.questions || []).forEach(function(q){
+    qs += '<div class="air-q"><b>?</b>' + airEsc(q) + '</div>';
+  });
+
+  const el = document.getElementById('airadar-result');
+  el.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">' +
+      '<button onclick="airadarReset()" style="font-size:13px;color:#8a7d6d;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 6.5H3M6 3L2.5 6.5 6 10"/></svg>Analysera en annan sida</button>' +
+      '<button onclick="saveAiRadar()" id="airadar-save-btn" class="action-bar-btn">Spara i bibliotek</button>' +
+    '</div>' +
+    '<div class="air-label">Helhetsbetyg</div>' +
+    '<div class="air-hero">' +
+      '<div class="air-ring"><svg width="120" height="120" viewBox="0 0 120 120">' +
+        '<circle cx="60" cy="60" r="52" fill="none" stroke="#f0ede6" stroke-width="12"/>' +
+        '<circle cx="60" cy="60" r="52" fill="none" stroke="#C9A84C" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + offset + '" transform="rotate(-90 60 60)"/>' +
+      '</svg><div class="num"><b>' + score + '</b><span>av 100</span></div></div>' +
+      '<div class="air-verdict"><h3>' + airEsc(r.verdict_title) + '</h3><p>' + airEsc(r.verdict_text) + '</p></div>' +
+    '</div>' +
+    '<div class="air-label">Delområden</div><div class="air-subs">' + subs + '</div>' +
+    '<div class="air-label">Vad du bör åtgärda</div>' + finds +
+    (qs ? '<div class="air-label">Frågor där ni skulle kunna synas</div><div class="air-card">' + qs + '</div>' : '') +
+    '<div class="air-note">Obs: AI-sök är ett nytt och rörligt område. Analysen bygger på hur språkmodeller väljer och citerar källor idag – inga garantier, men konkreta råd i rätt riktning.</div>';
+  el.style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+async function saveAiRadar(){
+  if (!window._aiRadarResult) return;
+  if (!_currentUser) { goToAuth(); return; }
+  const btn = document.getElementById('airadar-save-btn');
+  const title = (window._aiRadarUrl || 'AI Radar-analys').replace(/^https?:\/\//,'').replace(/\/$/,'');
+  const choice = await openSaveModal('AI Radar – ' + title);
+  if (!choice) return;
+  if (btn) { btn.disabled = true; btn.dataset.orig = btn.innerHTML; btn.textContent = 'Sparar...'; }
+  const payload = { url: window._aiRadarUrl, result: window._aiRadarResult };
+  const { error } = await saveProduction('airadar', choice.title || ('AI Radar – ' + title), payload, choice.projectId);
+  if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000); }
+  if (error) alert('Kunde inte spara: ' + (error.message || error));
 }
 
 // Auto-ifyll från varumärkesprofilen, som de andra verktygen.
