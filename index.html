@@ -2265,13 +2265,17 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
       <div class="airadar-field">
         <label>Hemsidans adress</label>
-        <input type="text" id="airadar-url" placeholder="https://exempel.se" class="airadar-input">
+        <div style="display:flex;gap:10px">
+          <input type="text" id="airadar-url" placeholder="https://exempel.se" class="airadar-input" style="flex:1">
+          <button id="airadar-fetch-btn" onclick="airadarFetchPage()" style="background:#C9A84C;color:#1a1410;border:none;border-radius:100px;padding:0 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Hämta text</button>
+        </div>
+        <div id="airadar-fetch-status" style="font-size:12.5px;color:#8a7d6d;margin-top:7px;display:none"></div>
       </div>
 
       <div class="airadar-field">
-        <label>Sidans innehåll <span style="font-weight:400;color:#b5aa98">(klistra in texten från sidan)</span></label>
-        <textarea id="airadar-content" class="airadar-textarea" rows="9" placeholder="Klistra in rubriker och brödtext från hemsidan här. Ju mer, desto bättre analys – gärna hela startsidan eller en viktig undersida."></textarea>
-        <div style="font-size:12px;color:#b5aa98;margin-top:6px">Tips: markera allt på sidan (Ctrl/Cmd+A), kopiera och klistra in här.</div>
+        <label>Sidans innehåll <span style="font-weight:400;color:#b5aa98">(hämtas automatiskt, eller klistra in)</span></label>
+        <textarea id="airadar-content" class="airadar-textarea" rows="9" placeholder="Tryck &quot;Hämta text&quot; ovan för att fylla i automatiskt – eller klistra in rubriker och brödtext från hemsidan här."></textarea>
+        <div style="font-size:12px;color:#b5aa98;margin-top:6px">Gick hämtningen inte? Markera allt på sidan (Ctrl/Cmd+A), kopiera och klistra in här i stället.</div>
       </div>
 
       <div id="airadar-err" style="display:none;background:#FCEBEB;border:1px solid #E9C4C4;color:#A32D2D;border-radius:10px;padding:12px 16px;font-size:13.5px;margin-bottom:1rem"></div>
@@ -7827,6 +7831,55 @@ function goToAiRadar(){
 function airadarReset(){
   document.getElementById('airadar-result').style.display='none';
   document.getElementById('airadar-form-section').style.display='block';
+}
+
+// Hämtar sidans text via proxyn och fyller i textrutan. Om det misslyckas
+// får användaren klistra in manuellt – textrutan finns alltid kvar.
+async function airadarFetchPage(){
+  const url = document.getElementById('airadar-url').value.trim();
+  const statusEl = document.getElementById('airadar-fetch-status');
+  const btn = document.getElementById('airadar-fetch-btn');
+  if (!url) {
+    statusEl.style.display = 'block';
+    statusEl.style.color = '#A32D2D';
+    statusEl.textContent = 'Skriv in en adress först.';
+    return;
+  }
+  const fullUrl = /^https?:\/\//i.test(url) ? url : ('https://' + url);
+  btn.disabled = true; btn.textContent = 'Hämtar...';
+  statusEl.style.display = 'block';
+  statusEl.style.color = '#8a7d6d';
+  statusEl.textContent = 'Hämtar sidan...';
+  // Bas-URL:en är samma som proxyn, men med /api/fetch-page.
+  const fetchUrl = PROXY_URL.replace('/api/analyze', '/api/fetch-page');
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(function(){ controller.abort(); }, 20000);
+    const resp = await fetch(fetchUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Access-Password': ACCESS_PASSWORD },
+      body: JSON.stringify({ url: fullUrl }),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    const data = await resp.json();
+    if (!resp.ok || data.error) {
+      statusEl.style.color = '#A32D2D';
+      statusEl.textContent = (data.error || 'Kunde inte hämta sidan') + '. Klistra in texten manuellt i stället.';
+    } else if (!data.text || data.text.trim().length < 80) {
+      statusEl.style.color = '#854F0B';
+      statusEl.textContent = 'Sidan gav väldigt lite text (den kan vara byggd med JavaScript). Klistra in manuellt i stället.';
+    } else {
+      document.getElementById('airadar-content').value = data.text;
+      if (data.url) document.getElementById('airadar-url').value = data.url;
+      statusEl.style.color = '#0F6E56';
+      statusEl.textContent = '✓ Hämtade ' + data.text.length.toLocaleString('sv-SE') + ' tecken. Granska gärna och tryck Analysera.';
+    }
+  } catch (err) {
+    statusEl.style.color = '#A32D2D';
+    statusEl.textContent = (err.name === 'AbortError' ? 'Hämtningen tog för lång tid.' : 'Kunde inte nå servern.') + ' Klistra in texten manuellt i stället.';
+  }
+  btn.disabled = false; btn.textContent = 'Hämta text';
 }
 
 async function runAiRadar(){
