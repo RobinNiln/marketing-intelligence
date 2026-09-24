@@ -7903,6 +7903,103 @@ async function airadarFetchPage(){
   btn.disabled = false; btn.textContent = 'Hämta text';
 }
 
+// Visar/döljer fältet för att ange flera egna URL:er.
+function airadarToggleMulti(e){
+  if (e) e.preventDefault();
+  const f = document.getElementById('airadar-multi-field');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+// Hämtar hela sajten (startsida + upp till 6 undersidor) via proxyn.
+async function airadarFetchSite(){
+  const url = document.getElementById('airadar-url').value.trim();
+  const statusEl = document.getElementById('airadar-fetch-status');
+  const btn = document.getElementById('airadar-fetch-btn');
+  if (!url) {
+    statusEl.style.display = 'block'; statusEl.style.color = '#A32D2D';
+    statusEl.textContent = 'Skriv in en adress först.'; return;
+  }
+  const fullUrl = /^https?:\/\//i.test(url) ? url : ('https://' + url);
+  btn.disabled = true; btn.textContent = 'Hämtar...';
+  statusEl.style.display = 'block'; statusEl.style.color = '#8a7d6d';
+  statusEl.textContent = 'Hämtar startsidan och undersidor... (kan ta 10–20 sekunder)';
+  const fetchUrl = PROXY_URL.replace('/api/analyze', '/api/fetch-site');
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(function(){ controller.abort(); }, 60000);
+    const resp = await fetch(fetchUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Access-Password': ACCESS_PASSWORD },
+      body: JSON.stringify({ url: fullUrl, max: 6 }),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    const data = await resp.json();
+    if (!resp.ok || data.error) {
+      statusEl.style.color = '#A32D2D';
+      statusEl.textContent = (data.error || 'Kunde inte hämta sajten') + '. Ange sidorna själv eller klistra in text nedan.';
+    } else if (!data.text || data.text.trim().length < 80) {
+      statusEl.style.color = '#854F0B';
+      statusEl.textContent = 'Sajten gav väldigt lite text (den kan vara byggd med JavaScript). Klistra in manuellt i stället.';
+    } else {
+      document.getElementById('airadar-content').value = data.text;
+      if (data.url) document.getElementById('airadar-url').value = data.url;
+      const n = (data.pages || []).length;
+      statusEl.style.color = '#0F6E56';
+      statusEl.innerHTML = '✓ Hämtade ' + n + ' ' + (n === 1 ? 'sida' : 'sidor') + ' (' + data.text.length.toLocaleString('sv-SE') + ' tecken): ' +
+        (data.pages || []).map(function(p){ return '<span style="color:#8a7d6d">' + airEsc(p.replace(/^https?:\/\//,'')) + '</span>'; }).join(', ') +
+        '. Granska gärna och tryck Analysera.';
+    }
+  } catch (err) {
+    statusEl.style.color = '#A32D2D';
+    statusEl.textContent = (err.name === 'AbortError' ? 'Hämtningen tog för lång tid.' : 'Kunde inte nå servern.') + ' Ange sidorna själv eller klistra in text nedan.';
+  }
+  btn.disabled = false; btn.textContent = 'Hämta sajt';
+}
+
+// Hämtar flera egna URL:er (en per rad) och slår ihop texten.
+async function airadarFetchMulti(){
+  const raw = document.getElementById('airadar-multi-urls').value.trim();
+  const statusEl = document.getElementById('airadar-fetch-status');
+  const btn = document.getElementById('airadar-multi-btn');
+  const urls = raw.split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 6)
+    .map(function(u){ return /^https?:\/\//i.test(u) ? u : ('https://' + u); });
+  if (!urls.length) {
+    statusEl.style.display = 'block'; statusEl.style.color = '#A32D2D';
+    statusEl.textContent = 'Skriv in minst en adress (en per rad).'; return;
+  }
+  btn.disabled = true; btn.textContent = 'Hämtar...';
+  statusEl.style.display = 'block'; statusEl.style.color = '#8a7d6d';
+  statusEl.textContent = 'Hämtar ' + urls.length + ' sidor...';
+  const fetchUrl = PROXY_URL.replace('/api/analyze', '/api/fetch-page');
+  const parts = []; const ok = [];
+  for (const u of urls) {
+    try {
+      const resp = await fetch(fetchUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Access-Password': ACCESS_PASSWORD },
+        body: JSON.stringify({ url: u })
+      });
+      const data = await resp.json();
+      if (resp.ok && data.text && data.text.trim().length > 40) {
+        parts.push('\n\n===== SIDA: ' + (data.url || u) + ' =====\n' + data.text);
+        ok.push(data.url || u);
+      }
+    } catch (e) { /* hoppa över sidor som strular */ }
+  }
+  if (!parts.length) {
+    statusEl.style.color = '#A32D2D';
+    statusEl.textContent = 'Kunde inte hämta någon av sidorna. Klistra in text manuellt i stället.';
+  } else {
+    let combined = parts.join('').trim();
+    if (combined.length > 20000) combined = combined.slice(0, 20000);
+    document.getElementById('airadar-content').value = combined;
+    statusEl.style.color = '#0F6E56';
+    statusEl.innerHTML = '✓ Hämtade ' + ok.length + ' av ' + urls.length + ' sidor. Granska gärna och tryck Analysera.';
+  }
+  btn.disabled = false; btn.textContent = 'Hämta dessa sidor';
+}
+
 async function runAiRadar(){
   const url = document.getElementById('airadar-url').value.trim();
   const content = document.getElementById('airadar-content').value.trim();
