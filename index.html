@@ -1250,6 +1250,7 @@ body.adcopy-mode{background:#FBFAF7}
 .adgen-edit-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#9A8570;margin:10px 0 5px}
 .adgen-edit-label:first-child{margin-top:0}
 .adgen-edit-input{width:100%;border:1.5px solid #e6e1d6;border-radius:8px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:#2C2520;box-sizing:border-box;background:#fff}
+.adgen-edit-multiline{resize:vertical;line-height:1.4;min-height:38px}
 .adgen-edit-input:focus{outline:none;border-color:#C9A84C}
 .adgen-edit-done{width:100%;margin-top:14px;background:#2C2520;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
 .adgen-edit-done:hover{background:#433a30}
@@ -11138,10 +11139,10 @@ function renderAdGenResult() {
           'Redigera' +
         '</button>' +
         '<div class="adgen-edit-panel" id="edit-panel-' + uid + '" style="display:none">' +
-          '<label class="adgen-edit-label">Rubrik</label>' +
-          '<input class="adgen-edit-input" id="edit-headline-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.headline || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
-          '<label class="adgen-edit-label">Underrubrik</label>' +
-          '<input class="adgen-edit-input" id="edit-subline-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.subline || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
+          '<label class="adgen-edit-label">Rubrik <span style="font-weight:400;color:#b5aa98">– tryck Enter för radbrytning</span></label>' +
+          '<textarea class="adgen-edit-input adgen-edit-multiline" id="edit-headline-' + uid + '" rows="2" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' + adgenEscapeHtml(copy.headline || '') + '</textarea>' +
+          '<label class="adgen-edit-label">Underrubrik <span style="font-weight:400;color:#b5aa98">– Enter för radbrytning</span></label>' +
+          '<textarea class="adgen-edit-input adgen-edit-multiline" id="edit-subline-' + uid + '" rows="2" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' + adgenEscapeHtml(copy.subline || '') + '</textarea>' +
           '<label class="adgen-edit-label">Knapptext (CTA)</label>' +
           '<input class="adgen-edit-input" id="edit-cta-' + uid + '" type="text" value="' + adgenEscapeHtml(copy.cta || '') + '" oninput="adgenEditField(\'' + uid + '\',\'' + formatId + '\')">' +
           '<label class="adgen-edit-label">Accentfärg</label>' +
