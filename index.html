@@ -1009,6 +1009,9 @@ body.native-mode{background:#FBFAF7}
 .analys-drop-t{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--c-text)}
 .analys-drop-s{font-size:12.5px;color:var(--c-text-dim)}
 .analys-cerr{background:#FCEBEB;border:1px solid #F1C9C9;border-radius:12px;padding:12px 16px;font-size:13px;color:#A32D2D;line-height:1.55;margin-top:1rem}
+.analys-kpi-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:1.8rem 0 0.9rem;flex-wrap:wrap}
+.analys-save-btn{background:var(--c-text);color:#fff;border:none;border-radius:100px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.analys-save-btn:disabled{opacity:0.6;cursor:default}
 .analys-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .analys-kpi{background:var(--c-surface);border:1px solid var(--c-line);border-radius:11px;padding:13px 15px}
 .analys-kpi b{display:block;font-size:19px;font-weight:800;letter-spacing:-0.02em;color:var(--c-text)}
@@ -2411,7 +2414,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 
       <!-- Resultat -->
       <div id="analys-campaign-result" style="display:none">
-        <div class="analys-label" id="analys-kpi-label">Nyckeltal</div>
+        <div class="analys-kpi-head">
+          <div class="analys-label" id="analys-kpi-label" style="margin:0">Nyckeltal</div>
+          <button class="analys-save-btn" id="analys-save-btn" onclick="saveCampaignAnalysis()">Spara analys i bibliotek</button>
+        </div>
         <div class="analys-kpis" id="analys-kpis"></div>
 
         <div class="analys-ai-card" id="analys-ai-card">
@@ -2941,6 +2947,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <button class="lib-filter" data-filter="adstudio" onclick="libraryFilter('adstudio')">AdStudio</button>
       <button class="lib-filter" data-filter="planner" onclick="libraryFilter('planner')">Campaign Planner</button>
       <button class="lib-filter" data-filter="airadar" onclick="libraryFilter('airadar')">AI Radar</button>
+      <button class="lib-filter" data-filter="campaign" onclick="libraryFilter('campaign')">Kampanjanalys</button>
     </div>
     <div id="library-selbar" style="display:none;align-items:center;gap:14px;background:#2C2520;color:#fff;border-radius:12px;padding:12px 18px;margin-bottom:1.25rem">
       <span id="library-selcount" style="font-size:14px;font-weight:600">0 valda</span>
@@ -5316,7 +5323,7 @@ function applyRoleToolOrder(){
 }
 
 // Färger per verktyg – återanvänds i graf och "senaste"-prickar.
-const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD', airadar:'#2C2520', planner:'#9c7d2e' };
+const TOOL_COLORS = { 'market-pulse':'#1D9E75', brief:'#C9A84C', newsroom:'#378ADD', native:'#D85A30', adstudio:'#7F77DD', airadar:'#2C2520', planner:'#9c7d2e', campaign:'#5B8DEF' };
 
 /* Ger SVG-ikonen för ett verktyg – samma ikoner som snabbknapparna, så
    verktygen ser likadana ut överallt. Grå streckfärg; färgen bärs av kanten. */
@@ -5328,7 +5335,8 @@ function toolIconSvg(tool){
     native: '<path d="M3 3h10v10H3z"/><path d="M6 7h4M6 10h4"/>',
     adstudio: '<rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/>',
     planner: '<rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6h12M5 2v3M11 2v3M5 9h3M5 11h5"/>',
-    airadar: '<circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>'
+    airadar: '<circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>',
+    campaign: '<path d="M2 13V4"/><path d="M2 13h12"/><path d="M5 11V7M8.5 11V5M12 11V8"/>'
   };
   return '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (p[tool] || p.brief) + '</svg>';
 }
@@ -5936,6 +5944,14 @@ function renderCampaignKpis(m, filename){
   const title = m.campaignName ? ('Nyckeltal – ' + m.campaignName) : ('Nyckeltal – ' + filename);
   document.getElementById('analys-kpi-label').textContent = title;
 
+  // Spara läget så att "Spara analys i bibliotek" och återöppning kan använda det.
+  window._campaignMetrics = m;
+  window._campaignFilename = filename;
+  window._campaignChannel = _analysChannel;
+  window._campaignAi = null; // fylls när AI-tolkningen kommer
+  const saveBtn = document.getElementById('analys-save-btn');
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Spara analys i bibliotek'; }
+
   const kr = function(n){ return Math.round(n).toLocaleString('sv-SE') + ' kr'; };
   const int = function(n){ return Math.round(n).toLocaleString('sv-SE'); };
   const cards = [];
@@ -5992,6 +6008,7 @@ async function runCampaignAi(m, filename){
     const raw = (data.content || []).map(function(i){ return i.text || ''; }).join('');
     const cleaned = raw.replace(/```json|```/g, '').trim();
     const res = JSON.parse(cleaned);
+    window._campaignAi = res;
     renderCampaignAi(res);
   } catch (err) {
     body.innerHTML = '<div class="analys-cerr" style="margin-top:0">' +
@@ -6013,6 +6030,52 @@ function renderCampaignAi(res){
       '</div>';
     }).join('') +
     '<div class="analys-disc">Obs: analysen bygger på den data du laddat upp. Kontrollera alltid siffrorna mot din annonsplattform innan större beslut.</div>';
+}
+
+/* Sparar den aktuella kampanjanalysen som en produktion (verktyg "campaign"),
+   så den dyker upp i biblioteket, i "Senaste produktioner" och kan öppnas igen. */
+async function saveCampaignAnalysis(){
+  if (!window._campaignMetrics) { toast('Ladda upp en rapport först.', 'info'); return; }
+  if (!_currentUser) { goToAuth(); return; }
+  const m = window._campaignMetrics;
+  const defaultName = 'Kampanjanalys – ' + (m.campaignName || window._campaignFilename || 'rapport');
+  const choice = await openSaveModal(defaultName);
+  if (!choice) return;
+
+  const btn = document.getElementById('analys-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sparar…'; }
+
+  const payload = {
+    channel: window._campaignChannel || _analysChannel,
+    filename: window._campaignFilename || '',
+    metrics: m,
+    ai: window._campaignAi || null
+  };
+  const { error } = await saveProduction('campaign', choice.title || defaultName, payload, choice.projectId);
+
+  if (btn) {
+    if (error) { btn.disabled = false; btn.textContent = 'Spara analys i bibliotek'; }
+    else { btn.textContent = '✓ Sparad'; setTimeout(function(){ btn.disabled = false; btn.textContent = 'Spara analys i bibliotek'; }, 2200); }
+  }
+  if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+}
+
+/* Öppnar en sparad kampanjanalys igen från biblioteket. */
+function openSavedCampaign(content){
+  const c = content || {};
+  goToAnalys();
+  // Vänta så sidan hinner ritas.
+  setTimeout(function(){
+    analysTab(2);
+    _analysChannel = c.channel || 'meta';
+    analysSetChannel(_analysChannel);
+    if (c.metrics) {
+      renderCampaignKpis(c.metrics, c.filename || 'sparad rapport');
+      if (c.ai) { window._campaignAi = c.ai; renderCampaignAi(c.ai); }
+      else { document.getElementById('analys-ai-body').innerHTML = '<div class="analys-ai-loading">Ingen AI-tolkning sparades för den här analysen.</div>'; }
+    }
+    window.scrollTo(0,0);
+  }, 60);
 }
 
 /* Onboarding: tre steg baserade på ärlig data.
@@ -6766,7 +6829,7 @@ function goToLibraryAll() {
   goToLibrary();
 }
 
-const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio', planner:'Campaign Planner', airadar:'AI Radar' };
+const TOOL_LABELS = { brief:'The Brief', newsroom:'Newsroom', 'market-pulse':'Market Pulse', native:'Native Auto Reach', adstudio:'AdStudio', planner:'Campaign Planner', airadar:'AI Radar', campaign:'Kampanjanalys' };
 
 /* ── Projektsidan (Lager 1) ─────────────────────────────────────────────── */
 let _projectsCache = [];
@@ -7337,6 +7400,9 @@ function libraryOpen(id) {
     window._aiRadarUrl = c.url || '';
     document.getElementById('airadar-form-section').style.display = 'none';
     renderAiRadar(window._aiRadarResult);
+
+  } else if (item.tool === 'campaign') {
+    openSavedCampaign(item.content);
 
   } else {
     toast('Öppning för det här verktyget är inte inkopplat än.', 'info');
