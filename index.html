@@ -1608,6 +1608,16 @@ body.brief-mode{background:#FBFAF7}
 .air-find-body h4{font-size:14px;font-weight:600;margin:0 0 3px}
 .air-find-body p{font-size:13px;color:#5F5E5A;line-height:1.6;margin:0}
 .air-find-body .how{font-size:12.5px;color:#9c7d2e;margin-top:7px;font-weight:500}
+.air-fix-btn{margin-top:11px;display:inline-flex;align-items:center;gap:7px;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.air-fix-btn:hover{background:#1a1510}
+.air-fix-btn:disabled{opacity:0.55;cursor:default}
+.air-fix-out{margin-top:12px;border-top:1px dashed #e6e1d6;padding-top:14px}
+.air-fix-out h5{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#9c7d2e;margin:0 0 8px}
+.air-fix-text{background:#faf8f4;border:1px solid #efe9e0;border-radius:10px;padding:14px 16px;font-size:13.5px;color:#2C2520;line-height:1.65;white-space:pre-wrap}
+.air-fix-why{font-size:12.5px;color:#6b655c;line-height:1.6;margin-top:10px;padding-left:13px;border-left:2px solid #C9A84C}
+.air-fix-actions{margin-top:11px;display:flex;gap:8px}
+.air-fix-actions button{background:none;border:1px solid #e0dcd3;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit}
+.air-fix-actions button:hover{background:#faf8f4}
 .air-card{background:#fff;border:1.5px solid #F0EEE8;border-radius:14px;padding:1.3rem 1.4rem;margin-bottom:1.25rem}
 .air-q{font-size:13.5px;color:#2C2520;line-height:1.6;padding:9px 0;border-bottom:1px solid #f2efe8;display:flex;gap:9px}
 .air-q:last-child{border-bottom:none}
@@ -7936,11 +7946,11 @@ async function airadarFetchSite(){
     clearTimeout(timer);
     const data = await resp.json();
     if (!resp.ok || data.error) {
-      statusEl.style.color = '#A32D2D';
-      statusEl.textContent = (data.error || 'Kunde inte hämta sajten') + '. Ange sidorna själv eller klistra in text nedan.';
+      statusEl.style.display = 'none';
+      airadarShowUnreadable(fullUrl, data.error || '');
     } else if (!data.text || data.text.trim().length < 80) {
-      statusEl.style.color = '#854F0B';
-      statusEl.textContent = 'Sajten gav väldigt lite text (den kan vara byggd med JavaScript). Klistra in manuellt i stället.';
+      statusEl.style.display = 'none';
+      airadarShowUnreadable(fullUrl, 'Sidan gav väldigt lite text – den kan vara byggd med JavaScript.');
     } else {
       document.getElementById('airadar-content').value = data.text;
       if (data.url) document.getElementById('airadar-url').value = data.url;
@@ -7951,10 +7961,37 @@ async function airadarFetchSite(){
         '. Granska gärna och tryck Analysera.';
     }
   } catch (err) {
-    statusEl.style.color = '#A32D2D';
-    statusEl.textContent = (err.name === 'AbortError' ? 'Hämtningen tog för lång tid.' : 'Kunde inte nå servern.') + ' Ange sidorna själv eller klistra in text nedan.';
+    statusEl.style.display = 'none';
+    airadarShowUnreadable(fullUrl, err.name === 'AbortError' ? 'Hämtningen tog för lång tid.' : 'Kunde inte nå servern.');
   }
   btn.disabled = false; btn.textContent = 'Hämta sajt';
+}
+
+// Visar en tydlig ruta när en sida inte går att läsa av automatiskt (t.ex.
+// Hemnet som blockerar bottar). Förklarar varför och pekar på alternativen.
+function airadarShowUnreadable(url, reason){
+  const host = (url || '').replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+  document.getElementById('airadar-form-section').style.display = 'none';
+  const el = document.getElementById('airadar-result');
+  el.innerHTML =
+    '<div style="display:flex;justify-content:flex-start;margin-bottom:1.2rem">' +
+      '<button onclick="airadarReset()" style="font-size:13px;color:#8a7d6d;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 6.5H3M6 3L2.5 6.5 6 10"/></svg>Tillbaka</button>' +
+    '</div>' +
+    '<div style="background:#fff;border:1.5px solid #F0EEE8;border-radius:18px;padding:2.2rem;text-align:center">' +
+      '<div style="width:56px;height:56px;border-radius:50%;background:#FAEEDA;color:#854F0B;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:26px">🔒</div>' +
+      '<h3 style="font-size:20px;font-weight:700;color:#2C2520;margin:0 0 0.6rem">Den här sidan går inte att läsa av</h3>' +
+      '<p style="font-size:14px;color:#5F5E5A;line-height:1.7;max-width:440px;margin:0 auto 0.4rem">' +
+        airEsc(host || 'Sidan') + ' blockerar automatisk hämtning' + (reason ? ' (' + airEsc(reason) + ')' : '') + '. ' +
+        'Det är vanligt för större plattformar som skyddar sitt innehåll – det är inget fel på verktyget.' +
+      '</p>' +
+      '<p style="font-size:13.5px;color:#8a7d6d;line-height:1.7;max-width:440px;margin:1rem auto 1.6rem">Du kan fortfarande analysera sidan så här:</p>' +
+      '<div style="display:flex;flex-direction:column;gap:10px;max-width:360px;margin:0 auto">' +
+        '<button onclick="airadarReset()" style="background:#2C2520;color:#fff;border:none;border-radius:100px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Klistra in sidans text själv</button>' +
+        '<button onclick="airadarReset();setTimeout(function(){airadarToggleMulti();},50)" style="background:none;color:#2C2520;border:1.5px solid #e0dcd3;border-radius:100px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Ange enskilda undersidor</button>' +
+      '</div>' +
+    '</div>';
+  el.style.display = 'block';
+  window.scrollTo(0, 0);
 }
 
 // Hämtar flera egna URL:er (en per rad) och slår ihop texten.
@@ -8026,6 +8063,7 @@ async function runAiRadar(){
     const result = JSON.parse(cleaned);
     window._aiRadarResult = result;
     window._aiRadarUrl = url;
+    window._aiRadarContent = content; // spara sajttexten som kontext för Fixa detta
     document.getElementById('airadar-loading').style.display = 'none';
     hideMavaLoading();
     renderAiRadar(result);
@@ -8100,12 +8138,16 @@ function renderAiRadar(r){
   });
 
   let finds = '';
-  (r.findings || []).forEach(function(f){
+  (r.findings || []).forEach(function(f, idx){
     const ok = f.type === 'ok';
     finds += '<div class="air-find">' +
       '<div class="air-find-icon ' + (ok ? 'air-fi-ok' : 'air-fi-fix') + '">' + (ok ? '✓' : '!') + '</div>' +
-      '<div class="air-find-body"><h4>' + airEsc(f.title) + '</h4><p>' + airEsc(f.text) + '</p>' +
-      (f.how ? '<div class="how">' + airEsc(f.how) + '</div>' : '') + '</div></div>';
+      '<div class="air-find-body" style="flex:1"><h4>' + airEsc(f.title) + '</h4><p>' + airEsc(f.text) + '</p>' +
+      (f.how ? '<div class="how">' + airEsc(f.how) + '</div>' : '') +
+      // "Fixa detta"-knapp bara på åtgärder (fix), inte på det som redan är bra (ok).
+      (ok ? '' : '<button class="air-fix-btn" onclick="airadarFixThis(' + idx + ')">✍ Skapa innehållet åt mig</button>') +
+      '<div class="air-fix-out" id="air-fix-out-' + idx + '" style="display:none"></div>' +
+      '</div></div>';
   });
 
   let qs = '';
@@ -8147,6 +8189,63 @@ async function saveAiRadar(){
   const { error } = await saveProduction('airadar', choice.title || ('AI Radar – ' + title), payload, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000); }
   if (error) alert('Kunde inte spara: ' + (error.message || error));
+}
+
+// ── Fixa detta: generera AI-sök-optimerat innehåll för en enskild åtgärd ──────
+async function airadarFixThis(idx){
+  const r = window._aiRadarResult;
+  if (!r || !r.findings || !r.findings[idx]) return;
+  const finding = r.findings[idx];
+  const out = document.getElementById('air-fix-out-' + idx);
+  const btn = out.parentNode.querySelector('.air-fix-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Skapar...'; }
+  out.style.display = 'block';
+  out.innerHTML = '<div style="color:#9A8570;font-size:13px;padding:6px 0">AI:n skriver innehållet...</div>';
+
+  const company = (window._aiRadarUrl || '').replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+  const context = (window._aiRadarContent || '').slice(0, 6000);
+  const prompt =
+    'Du är expert på content och GEO (Generative Engine Optimization) – att skriva webbinnehåll som syns och citeras i AI-sök (ChatGPT, Perplexity, Google AI Overviews).\n\n' +
+    'En analys av företagets hemsida (' + (company || 'okänd') + ') gav denna åtgärd att fixa:\n' +
+    'ÅTGÄRD: ' + finding.title + '\n' +
+    'BESKRIVNING: ' + finding.text + (finding.how ? '\nFÖRSLAG: ' + finding.how : '') + '\n\n' +
+    'Här är text från deras nuvarande hemsida (kontext – använd deras verksamhet, ton och fakta, hitta inte på nytt):\n"""\n' + context + '\n"""\n\n' +
+    'Skapa färdigt innehåll som åtgärdar detta, optimerat för AI-sök: direkta svar, tydliga frågeliknande rubriker, konkreta fakta, inga floskler. ' +
+    'Skriv på svenska, i deras ton, redo att klistra in på sajten.\n\n' +
+    'Svara med ENBART giltig JSON (ingen text runt, inga kodblock):\n' +
+    '{\n' +
+    '  "content": "<det färdiga innehållet, redo att använda. Använd radbrytningar (\\n) för struktur>",\n' +
+    '  "why": "<1-2 meningar: varför det här funkar bättre för AI-sök>"\n' +
+    '}';
+
+  try {
+    const data = await safeFetch([{ role:'user', content: prompt }], 80000, 'ai-radar');
+    const raw = data.content.map(i => i.text || '').join('');
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    if (!window._aiRadarFixes) window._aiRadarFixes = {};
+    window._aiRadarFixes[idx] = parsed.content || '';
+    out.innerHTML =
+      '<h5>Förslag på innehåll</h5>' +
+      '<div class="air-fix-text" id="air-fix-body-' + idx + '">' + airEsc(parsed.content || '') + '</div>' +
+      (parsed.why ? '<div class="air-fix-why">' + airEsc(parsed.why) + '</div>' : '') +
+      '<div class="air-fix-actions">' +
+        '<button onclick="airadarCopyFix(' + idx + ')">Kopiera text</button>' +
+        '<button onclick="airadarFixThis(' + idx + ')">Skriv om</button>' +
+      '</div>';
+  } catch (err) {
+    console.error('Fixa detta-fel:', err);
+    out.innerHTML = '<div style="color:#A32D2D;font-size:13px">Kunde inte skapa innehållet just nu. Försök igen om en stund.</div>';
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '✍ Skapa innehållet åt mig'; }
+}
+
+function airadarCopyFix(idx){
+  const txt = (window._aiRadarFixes && window._aiRadarFixes[idx]) || '';
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(function(){
+    const actions = document.querySelector('#air-fix-out-' + idx + ' .air-fix-actions button');
+    if (actions) { const o = actions.textContent; actions.textContent = '✓ Kopierat'; setTimeout(function(){ actions.textContent = o; }, 1500); }
+  }, function(){ alert('Kunde inte kopiera automatiskt – markera texten och kopiera manuellt.'); });
 }
 
 // Auto-ifyll från varumärkesprofilen, som de andra verktygen.
