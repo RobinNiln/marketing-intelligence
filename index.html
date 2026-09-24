@@ -11362,11 +11362,18 @@ function drawAdBoldText(p) {
     } // 'top' → behåll standard uppe
     hlTop = Math.max(Math.round(H * 0.05), hlTop); // aldrig ovanför kanten
   }
-  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  // Sidoställning: om motivet är till vänster, högerställ texten (och tvärtom).
+  const side = zonesInfo ? zonesInfo.bestSide : 'left';
+  const alignRight = side === 'right';
+  ctx.textBaseline = 'top';
+  ctx.textAlign = alignRight ? 'right' : 'left';
+  const tx = alignRight ? (W - pad) : pad;
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 14;
-  wrapText(ctx, copy.headline || '', pad, hlTop, W - pad * 2, headlineSz * 0.98);
+  wrapText(ctx, copy.headline || '', tx, hlTop, W - pad * 2, headlineSz * 0.98);
   ctx.shadowBlur = 0;
+  // CTA följer samma sida som rubriken.
+  window._adgenBoldSide = side;
 
   // CTA nedtill. Djärv text bärs av den ENORMA rubriken på fotot – därför
   // ritas ingen underrubrik här. Den skulle konkurrera med rubriken och
@@ -11379,7 +11386,9 @@ function drawAdBoldText(p) {
     const cw = ctx.measureText(copy.cta).width + ctaSz * 1.9;
     const ch = ctaSz * 2.2;
     by -= ch;
-    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta, ctaSz);
+    // Knappen följer samma sida som rubriken.
+    const bx = (side === 'right') ? (W - pad - cw) : pad;
+    drawAdButton(ctx, bx, by, cw, ch, p.accent, p.onAccent, copy.cta, ctaSz);
   }
 }
 
@@ -11882,9 +11891,28 @@ function analyzeImageZones() {
   zones.sort(function(a,b){ return b.score - a.score; });
   const best = zones[0];
 
+  // Vänster vs höger halva: mät stökighet för att lägga text på lugnare sidan.
+  function sideBusy(x0, x1) {
+    let sum = 0, sumSq = 0, n = 0;
+    for (let py = 0; py < N; py++) {
+      for (let px = x0; px < x1; px++) {
+        const i = (py * N + px) * 4;
+        const lum = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+        sum += lum; sumSq += lum*lum; n++;
+      }
+    }
+    const mean = sum / n;
+    return Math.sqrt(Math.max(0, sumSq / n - mean * mean));
+  }
+  const leftBusy = sideBusy(0, Math.floor(N/2));
+  const rightBusy = sideBusy(Math.floor(N/2), N);
+  // Lugnare sida vinner. Kräv en tydlig skillnad, annars behåll vänster (standard).
+  const bestSide = (rightBusy < leftBusy - 6) ? 'right' : 'left';
+
   const result = {
     zones: zones,
     bestZone: best.name,                       // 'top' | 'middle' | 'bottom'
+    bestSide: bestSide,                         // 'left' | 'right'
     textOnLight: best.lum > 140,               // ljus zon → mörk text
     allBusy: zones.every(function(z){ return z.busy > 55; }) // hela bilden stökig
   };
