@@ -9301,8 +9301,18 @@ async function adFaRun(uid, formatId, onskemal) {
     'Annonser läses på under 2,5 sekunder – håll det kort, tydligt och med EN ' +
     'uppgift. Rubriken ska fånga, underrubriken förklara, CTA:n uppmana till ' +
     'handling. Behåll ungefär samma längd som originalet så det får plats.\n\n' +
+    'Du kan även föreslå en annan MALL och ACCENTFÄRG om önskemålet handlar om ' +
+    'uttryck/stil (t.ex. "mer premium", "djärvare", "renare"). Tillgängliga mallar:\n' +
+    '- cleanphoto (ren bild, rubrik+knapp på foto)\n' +
+    '- cleanframe (elegant, tunn ram, för premium)\n' +
+    '- diagonal (bild + färgfält i diagonal)\n' +
+    '- colorblock (hel färg, bild inbäddad – varumärkesstark)\n' +
+    '- premium (ljus, luftig, serif – exklusiv)\n' +
+    '- boldtext (enorm rubrik på foto – kraftfull)\n' +
+    'Lämna style/color tomma om önskemålet bara gäller texten.\n\n' +
     'Svara ENBART med ett giltigt JSON-objekt, inget annat:\n' +
-    '{"headline":"...","subline":"...","cta":"..."}';
+    '{"headline":"...","subline":"...","cta":"...","style":"","color":""}\n' +
+    'color som hex (#RRGGBB) eller tom sträng. style som ett av namnen ovan eller tom sträng.';
 
   try {
     const svar = await aiAssist(material, instruktion, [], {
@@ -9314,7 +9324,9 @@ async function adFaRun(uid, formatId, onskemal) {
     window._adFaSuggestion[uid] = {
       headline: parsed.headline || copy.headline,
       subline:  parsed.subline  || copy.subline,
-      cta:      parsed.cta      || copy.cta
+      cta:      parsed.cta      || copy.cta,
+      style:    (parsed.style || '').trim(),
+      color:    (parsed.color || '').trim()
     };
     adFaRenderSuggestion(uid);
     if (thinking) thinking.style.display = 'none';
@@ -9336,11 +9348,14 @@ function adFaRenderSuggestion(uid) {
   const s = window._adFaSuggestion[uid];
   if (!s) return;
   function esc(t){ return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  const styleNames = { cleanphoto:'Ren bild', cleanframe:'Ren bild – ram', diagonal:'Diagonal', colorblock:'Färgblock', premium:'Premium', boldtext:'Djärv text' };
   const el = document.getElementById('adfa-fields-' + uid);
   if (el) el.innerHTML =
     '<div class="adfa-field"><span class="adfa-flabel">Rubrik</span>' + esc(s.headline) + '</div>' +
     '<div class="adfa-field"><span class="adfa-flabel">Underrubrik</span>' + esc(s.subline) + '</div>' +
-    '<div class="adfa-field"><span class="adfa-flabel">CTA</span>' + esc(s.cta) + '</div>';
+    '<div class="adfa-field"><span class="adfa-flabel">CTA</span>' + esc(s.cta) + '</div>' +
+    (s.style && styleNames[s.style] ? '<div class="adfa-field"><span class="adfa-flabel">Föreslagen mall</span>' + esc(styleNames[s.style]) + '</div>' : '') +
+    (/^#[0-9a-fA-F]{6}$/.test(s.color) ? '<div class="adfa-field"><span class="adfa-flabel">Föreslagen färg</span><span style="display:inline-block;width:13px;height:13px;border-radius:3px;background:' + s.color + ';vertical-align:middle;margin-right:6px;border:1px solid #0002"></span>' + esc(s.color) + '</div>' : '');
 }
 
 // Applicerar förslaget: fyller redigeringsfälten och ritar om annonsen.
@@ -9354,8 +9369,25 @@ function adFaApply(uid, formatId) {
   if (hl)  hl.value  = s.headline;
   if (sl)  sl.value  = s.subline;
   if (cta) cta.value = s.cta;
-  // Återanvänd befintlig redigeringslogik: den sparar och ritar om.
+  // Om AI föreslog en accentfärg – sätt den i färgväljaren för denna annons.
+  const validColor = /^#[0-9a-fA-F]{6}$/.test(s.color);
+  if (validColor) {
+    const col = document.getElementById('edit-color-' + uid);
+    if (col) col.value = s.color;
+  }
+  // Återanvänd befintlig redigeringslogik: sparar text + färg och ritar om.
   adgenEditField(uid, formatId);
+  // Om AI föreslog en annan mall – rita om annonsen med den nya stilen.
+  const validStyles = ['cleanphoto','cleanframe','diagonal','colorblock','premium','boldtext'];
+  if (s.style && validStyles.indexOf(s.style) > -1) {
+    const newStyle = 'template-' + s.style;
+    const copy = (window._adgenEditCopy && window._adgenEditCopy[uid]) || (_adgenCopyData[formatId] || {});
+    const color = validColor ? s.color : (document.getElementById('edit-color-' + uid) || {}).value;
+    drawAdOnCanvas(document.getElementById('canvas-' + uid), formatId, ADGEN_FORMATS[formatId], copy, newStyle, color);
+    // Kom ihåg den nya stilen för denna annons (för nedladdning/spar).
+    if (!window._adFaStyleOverride) window._adFaStyleOverride = {};
+    window._adFaStyleOverride[uid] = newStyle;
+  }
   const applied = document.getElementById('adfa-applied-' + uid);
   if (applied) applied.style.display = 'block';
 }
@@ -9378,7 +9410,7 @@ function adFaBlockHtml(uid, formatId) {
            '\',\'' + q.replace(/'/g,"\\'") + '\')">' + q + '</button>';
   }).join('');
   return '' +
-    '<button class="adfa-open" onclick="adFaToggle(\'' + uid + '\')">✦ Förbättra copy med Mava</button>' +
+    '<button class="adfa-open" onclick="adFaToggle(\'' + uid + '\')">✦ Förbättra med Mava</button>' +
     '<div class="adfa-box" id="adfa-box-' + uid + '" style="display:none">' +
       '<div class="fa-chips" style="margin-bottom:10px">' + chips + '</div>' +
       '<div class="adfa-prompt-row">' +
@@ -11394,13 +11426,13 @@ function drawAdCleanFrame(p) {
     ctx.font = '800 ' + nameSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = '#ffffff';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(company.toUpperCase(), cx, H - Math.round(H * 0.10));
+    ctx.fillText(company.toUpperCase(), cx, H - Math.round(H * 0.135));
   }
   if (copy.subline && copy.subline.trim()) {
     const subSz = Math.round(W * 0.026);
     ctx.font = '500 ' + subSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillText(copy.subline.toUpperCase(), cx, H - Math.round(H * 0.06));
+    ctx.fillText(copy.subline.toUpperCase(), cx, H - Math.round(H * 0.065));
   }
   ctx.textAlign = 'left';
 }
@@ -11706,7 +11738,10 @@ function drawAdDiagonal(p) {
 
   const pad = Math.round(Math.min(W, H) * 0.07);
   let tx, tw, ty;
-  if (isWide) { tx = Math.round(W * 0.50); tw = W - tx - pad; ty = H * 0.42; }
+  // Bred: starta texten en bit in i det mörka fältet (0.54, kilen börjar 0.52
+  // uppe / 0.40 nere) så texten garanterat ligger på mörkt, och lämna en tydlig
+  // marginal till högerkanten så den inte trycks mot kanten.
+  if (isWide) { tx = Math.round(W * 0.54); tw = W - tx - Math.round(W * 0.05); ty = H * 0.42; }
   else { tx = pad; tw = W - pad * 2; ty = H * 0.66; }
 
   const hasCta = !!(copy.cta && copy.cta.trim());
