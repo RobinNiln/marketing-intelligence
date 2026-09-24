@@ -11454,16 +11454,24 @@ function drawAdCleanPhotoNoCta(p) { drawCleanPhoto(p, false); }
 
 function drawCleanPhoto(p, withCta) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   drawAdImageInto(ctx, 0, 0, W, H);
   // Mörk toning nedtill så text/knapp alltid är läsbara.
   const grad = ctx.createLinearGradient(0, H * 0.45, 0, H);
   grad.addColorStop(0, 'rgba(0,0,0,0)');
   grad.addColorStop(1, 'rgba(0,0,0,0.82)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  if (adj.overlay > 0) { ctx.fillStyle = 'rgba(0,0,0,' + (adj.overlay * 0.45).toFixed(2) + ')'; ctx.fillRect(0, 0, W, H); }
 
   const pad = Math.round(W * 0.06);
   const hasCta = withCta && !!(copy.cta && copy.cta.trim());
-  let by = H - pad;
+  // yOffset flyttar hela textblocket upp/ner (negativt = upp).
+  let by = H - pad - Math.round(adj.yOffset * H * 0.35);
+  by = Math.max(Math.round(H * 0.25), Math.min(by, H - pad)); // håll inom nedre halvan
+  // Sida för text/knapp.
+  const side = (adj.side && adj.side !== 'auto') ? adj.side : 'left';
+  const alignCenter = side === 'center', alignRight = side === 'right';
+  const tx = alignCenter ? W/2 : (alignRight ? W - pad : pad);
 
   if (hasCta) {
     const ctaSz = Math.round(W * 0.036);
@@ -11471,20 +11479,22 @@ function drawCleanPhoto(p, withCta) {
     const cw = ctx.measureText(copy.cta + ' →').width + ctaSz * 1.9;
     const ch = ctaSz * 2.2;
     by -= ch;
-    drawAdButton(ctx, pad, by, cw, ch, p.accent, p.onAccent, copy.cta + ' →', ctaSz);
+    const bx = alignCenter ? (W/2 - cw/2) : (alignRight ? (W - pad - cw) : pad);
+    drawAdButton(ctx, bx, by, cw, ch, p.accent, p.onAccent, copy.cta + ' →', ctaSz);
     by -= Math.round(H * 0.03);
   }
 
-  // Rubrik ovanför knappen (eller nederst om ingen knapp).
+  // Rubrik ovanför knappen (eller nederst om ingen knapp). Storlek via "size".
   if (copy.headline && copy.headline.trim()) {
-    let hlSz = Math.round(W * 0.066);
+    let hlSz = Math.round(W * 0.066 * adj.size);
     hlSz = fitFontToWidth(ctx, copy.headline, W - pad * 2, hlSz, '800', Math.round(W * 0.04));
     ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
     ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'left';
+    ctx.textAlign = alignCenter ? 'center' : (alignRight ? 'right' : 'left');
     ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10;
-    wrapTextUp(ctx, copy.headline, pad, by, W - pad * 2, hlSz * 1.08);
+    wrapTextUp(ctx, copy.headline, tx, by, W - pad * 2, hlSz * 1.08);
     ctx.shadowBlur = 0;
+    ctx.textAlign = 'left';
   }
 }
 
