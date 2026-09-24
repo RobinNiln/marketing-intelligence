@@ -9284,6 +9284,31 @@ function adFaToggle(uid) {
 }
 
 // Ber Mava förbättra copyn. Använder aiAssist men begär JSON tillbaka.
+// Berättar för AI:n vilka layout-rattar som finns för DENNA annons, så den
+// bara föreslår justeringar som faktiskt fungerar för mallen/formatet.
+function adFaAdjustHint(uid, formatId) {
+  const style = uid.indexOf('__') > -1 ? uid.split('__')[1] : '';
+  const caps = {
+    'template-boldtext':{size:1,y:1,side:1,overlay:1},'template-cleanphoto':{size:1,y:1,side:1,overlay:1},
+    'template-cleanphoto-noc':{size:1,y:1,side:1,overlay:1},'template-diagonal':{size:1,y:1},
+    'template-colorblock':{size:1},'template-premium':{size:1},'template-split':{size:1,y:1},
+    'template-light':{size:1},'template-dark':{size:1}
+  };
+  let cap = caps[style];
+  if (!cap) return '';
+  const fmt = ADGEN_FORMATS[formatId];
+  if (fmt && (fmt.w / fmt.h) >= 2.2) cap = { size:1 }; // bred banner: bara storlek
+  const parts = [];
+  if (cap.y) parts.push('"yOffset" (-1 = högst upp, 0 = standard, 1 = längst ner)');
+  if (cap.size) parts.push('"size" (0.7 = mindre, 1 = standard, 1.3 = större rubrik)');
+  if (cap.side) parts.push('"side" ("auto"/"left"/"center"/"right" – textens sida)');
+  if (cap.overlay) parts.push('"overlay" (0 = ingen, 1 = kraftig mörk platta bakom texten)');
+  if (!parts.length) return '';
+  return 'Om önskemålet gäller PLACERING/layout, fyll "adjust" med några av dessa (bara de som behövs):\n' +
+    parts.map(function(p){ return '- ' + p; }).join('\n') + '\n' +
+    'Exempel: "flytta texten ner och gör den mindre" → "adjust":{"yOffset":0.5,"size":0.85}\n\n';
+}
+
 async function adFaRun(uid, formatId, onskemal) {
   const fmt = ADGEN_FORMATS[formatId] || {};
   const copy = adFaCurrentCopy(uid, formatId);
@@ -9319,9 +9344,11 @@ async function adFaRun(uid, formatId, onskemal) {
     '- premium (ljus, luftig, serif – exklusiv)\n' +
     '- boldtext (enorm rubrik på foto – kraftfull)\n' +
     'Lämna style/color tomma om önskemålet bara gäller texten.\n\n' +
+    adFaAdjustHint(uid, formatId) +
     'Svara ENBART med ett giltigt JSON-objekt, inget annat:\n' +
-    '{"headline":"...","subline":"...","cta":"...","style":"","color":""}\n' +
-    'color som hex (#RRGGBB) eller tom sträng. style som ett av namnen ovan eller tom sträng.';
+    '{"headline":"...","subline":"...","cta":"...","style":"","color":"","adjust":{}}\n' +
+    'color som hex (#RRGGBB) eller tom sträng. style som ett av namnen ovan eller tom sträng. ' +
+    'adjust som tomt objekt {} om önskemålet inte gäller placering.';
 
   try {
     const svar = await aiAssist(material, instruktion, [], {
@@ -9335,11 +9362,14 @@ async function adFaRun(uid, formatId, onskemal) {
       subline:  parsed.subline  || copy.subline,
       cta:      parsed.cta      || copy.cta,
       style:    (parsed.style || '').trim(),
-      color:    (parsed.color || '').trim()
+      color:    (parsed.color || '').trim(),
+      adjust:   (parsed.adjust && typeof parsed.adjust === 'object') ? parsed.adjust : {}
     };
     adFaRenderSuggestion(uid);
     if (thinking) thinking.style.display = 'none';
     if (result)   result.style.display = 'block';
+    // Du valde "ändra direkt": tillämpa förslaget på annonsen på en gång.
+    adFaApply(uid, formatId);
   } catch (e) {
     if (thinking) thinking.style.display = 'none';
     if (errEl) {
@@ -9396,6 +9426,21 @@ function adFaApply(uid, formatId) {
     // Kom ihåg den nya stilen för denna annons (för nedladdning/spar).
     if (!window._adFaStyleOverride) window._adFaStyleOverride = {};
     window._adFaStyleOverride[uid] = newStyle;
+  }
+  // Om AI föreslog layout-justeringar – sätt dem (klämda inom giltiga intervall).
+  if (s.adjust && Object.keys(s.adjust).length) {
+    if (!window._adgenAdjust) window._adgenAdjust = {};
+    if (!window._adgenAdjust[uid]) window._adgenAdjust[uid] = {};
+    const a = window._adgenAdjust[uid];
+    const clamp = function(v, lo, hi){ v = parseFloat(v); return isNaN(v) ? null : Math.max(lo, Math.min(hi, v)); };
+    if (s.adjust.yOffset != null) { const v = clamp(s.adjust.yOffset, -1, 1); if (v != null) a.yOffset = v; }
+    if (s.adjust.size != null)    { const v = clamp(s.adjust.size, 0.7, 1.3); if (v != null) a.size = v; }
+    if (s.adjust.overlay != null) { const v = clamp(s.adjust.overlay, 0, 1); if (v != null) a.overlay = v; }
+    if (['auto','left','center','right'].indexOf(s.adjust.side) > -1) a.side = s.adjust.side;
+    // Rita om med justeringarna och uppdatera reglagen visuellt så de hoppar med.
+    adgenRedrawOne(uid, formatId);
+    const holder = document.getElementById('adj-holder-' + uid);
+    if (holder) holder.innerHTML = adgenAdjustBlockHtml(uid, formatId);
   }
   const applied = document.getElementById('adfa-applied-' + uid);
   if (applied) applied.style.display = 'block';
