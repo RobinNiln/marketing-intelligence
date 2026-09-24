@@ -11201,6 +11201,9 @@ function drawAdOnCanvas(canvas, formatId, fmt, copy, useStyle, accentColor) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = fmt.w, H = fmt.h;
+  // Hög skalningskvalitet – annars blir nedskalade foton mjuka/grumliga.
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.clearRect(0, 0, W, H);
   const accent = accentColor || (adgenBrandStyle().color);
   const variant = (useStyle === 'template-dark') ? 'dark' : 'light';
@@ -11342,11 +11345,27 @@ function drawAdBoldText(p) {
   // "motorkalibrering") ut ur bilden – wrapText kan inte bryta mitt i ord.
   let headlineSz = Math.round(W * 0.12);
   headlineSz = fitFontToWidth(ctx, copy.headline || '', W - pad * 2, headlineSz, '800', Math.round(W * 0.055));
-  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + headlineSz + 'px ' + adgenFontFamily();
+  const hlLines = estimateLines(ctx, copy.headline || '', W - pad * 2);
+  const hlBlockH = hlLines * headlineSz * 0.98;
+
+  // Smart placering: lägg rubriken i bildens lugnaste zon (undvik ansikte/
+  // detaljer). Faller tillbaka på topp om ingen bild eller om mitten är lugnast.
+  const zonesInfo = analyzeImageZones();
+  let hlTop = Math.round(H * 0.07); // standard: uppe
+  if (zonesInfo) {
+    if (zonesInfo.bestZone === 'bottom') {
+      // Lägg rubriken nedtill, men lämna plats för ev. CTA under.
+      hlTop = H - Math.round(H * (hasCta ? 0.20 : 0.08)) - hlBlockH;
+    } else if (zonesInfo.bestZone === 'middle') {
+      hlTop = Math.round(H / 2 - hlBlockH / 2);
+    } // 'top' → behåll standard uppe
+    hlTop = Math.max(Math.round(H * 0.05), hlTop); // aldrig ovanför kanten
+  }
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12;
-  wrapText(ctx, copy.headline || '', pad, Math.round(H * 0.07), W - pad * 2, headlineSz * 0.98);
+  ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 14;
+  wrapText(ctx, copy.headline || '', pad, hlTop, W - pad * 2, headlineSz * 0.98);
   ctx.shadowBlur = 0;
 
   // CTA nedtill. Djärv text bärs av den ENORMA rubriken på fotot – därför
@@ -11818,6 +11837,62 @@ function drawAdLogo(ctx, W, H) {
 }
 
 // Hjälpare: rita bakgrundsbilden beskuren till en yta (x,y,w,h på canvasen).
+// Analyserar den uppladdade bilden och avgör var text bäst placeras: den zon
+// som är lugnast (minst variation → sällan ansikte/detaljer) och vilken
+// textfärg som funkar där. Ritar bilden litet på en dold canvas och läser
+// pixlar – snabbt (60x60 räcker för att mäta zoner). Cachas per bild.
+function analyzeImageZones() {
+  const img = _adgenImage;
+  if (!img || !img.complete || !img.naturalWidth) return null;
+  // Cache: analysera bara om det är en ny bild.
+  if (window._adgenZoneCache && window._adgenZoneCacheSrc === img.src) return window._adgenZoneCache;
+
+  const N = 60;
+  const c = document.createElement('canvas');
+  c.width = N; c.height = N;
+  const cx = c.getContext('2d');
+  try { cx.drawImage(img, 0, 0, N, N); } catch (e) { return null; }
+  let data;
+  try { data = cx.getImageData(0, 0, N, N).data; } catch (e) { return null; }
+
+  // Tre horisontella zoner: topp, mitt, botten.
+  const zones = [
+    { name:'top',    y0:0,              y1:Math.floor(N/3) },
+    { name:'middle', y0:Math.floor(N/3),y1:Math.floor(2*N/3) },
+    { name:'bottom', y0:Math.floor(2*N/3),y1:N }
+  ];
+  zones.forEach(function(z){
+    let sum = 0, sumSq = 0, n = 0;
+    for (let py = z.y0; py < z.y1; py++) {
+      for (let px = 0; px < N; px++) {
+        const i = (py * N + px) * 4;
+        // Perceptuell ljushet 0–255.
+        const lum = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+        sum += lum; sumSq += lum*lum; n++;
+      }
+    }
+    const mean = sum / n;
+    const variance = sumSq / n - mean * mean;   // hög = stökig zon (ansikte, detaljer)
+    z.lum = mean;
+    z.busy = Math.sqrt(Math.max(0, variance)); // standardavvikelse = "stökighet"
+  });
+
+  // Poäng: lugna zoner (låg busy) är bäst för text. Lägre busy = högre poäng.
+  zones.forEach(function(z){ z.score = -z.busy; });
+  zones.sort(function(a,b){ return b.score - a.score; });
+  const best = zones[0];
+
+  const result = {
+    zones: zones,
+    bestZone: best.name,                       // 'top' | 'middle' | 'bottom'
+    textOnLight: best.lum > 140,               // ljus zon → mörk text
+    allBusy: zones.every(function(z){ return z.busy > 55; }) // hela bilden stökig
+  };
+  window._adgenZoneCache = result;
+  window._adgenZoneCacheSrc = img.src;
+  return result;
+}
+
 function drawAdImageInto(ctx, x, y, w, h) {
   // Rita platshållare om bilden saknas ELLER inte är färdigladdad/giltig.
   // (En Image kan finnas men ännu inte vara klar – då kraschar drawImage.)
