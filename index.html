@@ -1629,7 +1629,7 @@ body.newsroom-mode{background:#FBFAF7}
 #active-project-bar.has-project .sp-link-text{color:#9c7d2e}
 #active-project-bar.has-project svg{stroke:#C9A84C}
 #active-project-bar.has-project .sp-link-desc{color:#9c7d2e;font-weight:600}
-.sp-links{display:flex;flex-direction:column;padding:8px 0;flex:1}
+.sp-links{display:flex;flex-direction:column;padding:8px 0;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}
 /* Gruppetikett i menyn. Syns bara när menyn är utfälld – infälld visas bara
    ikoner, då vore en textrubrik meningslös. En tunn linje markerar gruppen. */
 .sp-group-label{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
@@ -2019,7 +2019,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     </button>
     <button class="sp-link" data-page="analys-page" onclick="goToAnalys()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V4"/><path d="M3 18h16"/><path d="M7 15V9M11 15V5M15 15v-4M19 15V7"/></svg>
-      <span class="sp-link-body"><span class="sp-link-text">Analys</span><span class="sp-link-desc">Användning &amp; kampanjrapporter</span></span>
+      <span class="sp-link-body"><span class="sp-link-text">Analys</span><span class="sp-link-desc">Användning &amp; rapporter</span></span>
     </button>
 
     <div class="sp-group-label">Innehåll</div>
