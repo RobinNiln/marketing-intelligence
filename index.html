@@ -12172,14 +12172,8 @@ function drawTallClean(p) {
 
 // Hjälpare: rita radbruten text UPPÅT från en bottenpunkt (för nedre-justerad text).
 function wrapTextUp(ctx, text, x, bottomY, maxW, lineH) {
-  const words = (text || '').split(' ');
-  const lines = []; let line = '';
-  words.forEach(function(w){
-    const t = line + (line ? ' ' : '') + w;
-    if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; }
-    else line = t;
-  });
-  if (line) lines.push(line);
+  // Samma radberäkning som resten – hanterar långa ord och manuella brytningar.
+  const lines = computeTextLines(ctx, text, maxW);
   ctx.textBaseline = 'bottom';
   for (let i = lines.length - 1, yy = bottomY; i >= 0; i--, yy -= lineH) {
     ctx.fillText(lines[i], x, yy);
@@ -12522,29 +12516,57 @@ function drawAdSplit(p) {
   }
 }
 
+// Delad radberäkning: returnerar en LISTA med rader, exakt som de kommer att
+// ritas. Både wrapText (som ritar) och estimateLines (som mäter höjd) använder
+// denna – så de kan aldrig hamna i otakt. Hanterar tre saker som saknades:
+//  1) manuella radbrytningar (\n) i texten respekteras
+//  2) ett ensamt ord som är bredare än ytan bryts (så det aldrig spiller ut)
+//  3) mätningen sker med den font som är aktiv just nu (anropa efter ctx.font)
+function computeTextLines(ctx, text, maxWidth) {
+  if (!text) return [];
+  const lines = [];
+  // Respektera manuella radbrytningar först.
+  String(text).split('\n').forEach(function(paragraph) {
+    const words = paragraph.split(' ');
+    let line = '';
+    words.forEach(function(word) {
+      // Ord som ensamt är bredare än ytan: bryt det tecken för tecken.
+      if (ctx.measureText(word).width > maxWidth && maxWidth > 0) {
+        if (line) { lines.push(line); line = ''; }
+        let chunk = '';
+        for (let ci = 0; ci < word.length; ci++) {
+          const test = chunk + word[ci];
+          if (ctx.measureText(test + '-').width > maxWidth && chunk) {
+            lines.push(chunk + '-'); chunk = word[ci];
+          } else { chunk = test; }
+        }
+        line = chunk;
+        return;
+      }
+      const test = line + (line ? ' ' : '') + word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line); line = word;
+      } else { line = test; }
+    });
+    lines.push(line);
+  });
+  return lines;
+}
+
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   if (!text) return;
-  const words = text.split(' ');
-  let line = '', curY = y;
-  words.forEach(function(word, i) {
-    const test = line + (line ? ' ' : '') + word;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      ctx.fillText(line, x, curY); line = word; curY += lineHeight;
-    } else { line = test; }
-    if (i === words.length - 1) ctx.fillText(line, x, curY);
+  const lines = computeTextLines(ctx, text, maxWidth);
+  let curY = y;
+  lines.forEach(function(line) {
+    ctx.fillText(line, x, curY);
+    curY += lineHeight;
   });
 }
 
 function estimateLines(ctx, text, maxWidth) {
   if (!text) return 0;
-  const words = text.split(' ');
-  let line = '', lines = 1;
-  words.forEach(function(word) {
-    const test = line + (line ? ' ' : '') + word;
-    if (ctx.measureText(test).width > maxWidth && line) { lines++; line = word; }
-    else line = test;
-  });
-  return lines;
+  // Samma beräkning som wrapText använder för att RITA – garanterat i takt.
+  return computeTextLines(ctx, text, maxWidth).length;
 }
 
 function roundRect(ctx, x, y, w, h, r) {
