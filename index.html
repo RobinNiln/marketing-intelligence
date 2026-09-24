@@ -3721,7 +3721,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <div style="font-size:12px;font-weight:600;color:#9A8570;margin:16px 0 8px">Sociala medier</div>
       <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed-square')"><div class="adgen-fmt-name">Meta Feed (kvadrat)</div><div class="adgen-fmt-size">1080 × 1080 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-feed-portrait')"><div class="adgen-fmt-name">Meta Feed (porträtt)</div><div class="adgen-fmt-size">1080 × 1350 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-stories')"><div class="adgen-fmt-name">Meta Stories / Reels</div><div class="adgen-fmt-size">1080 × 1920 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-landscape')"><div class="adgen-fmt-name">Meta Landscape</div><div class="adgen-fmt-size">1200 × 628 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'meta-instream')"><div class="adgen-fmt-name">Meta In-stream</div><div class="adgen-fmt-size">1920 × 1080 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'linkedin')"><div class="adgen-fmt-name">LinkedIn</div><div class="adgen-fmt-size">1200 × 628 px</div></div></div>
       <div style="font-size:12px;font-weight:600;color:#9A8570;margin:16px 0 8px">Internationella format (display / HTML5)</div>
-      <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-medium')"><div class="adgen-fmt-name">Medium Rectangle</div><div class="adgen-fmt-size">300 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-large-rect')"><div class="adgen-fmt-name">Large Rectangle</div><div class="adgen-fmt-size">336 × 280 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-leaderboard')"><div class="adgen-fmt-name">Leaderboard</div><div class="adgen-fmt-size">728 × 90 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-billboard')"><div class="adgen-fmt-name">Billboard</div><div class="adgen-fmt-size">970 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-halfpage')"><div class="adgen-fmt-name">Half Page</div><div class="adgen-fmt-size">300 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-skyscraper')"><div class="adgen-fmt-name">Wide Skyscraper</div><div class="adgen-fmt-size">160 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile')"><div class="adgen-fmt-name">Mobile Banner</div><div class="adgen-fmt-size">320 × 50 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile-large')"><div class="adgen-fmt-name">Large Mobile Banner</div><div class="adgen-fmt-size">320 × 100 px</div></div></div>
+      <div class="adgen-format-grid"><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-medium')"><div class="adgen-fmt-name">Medium Rectangle</div><div class="adgen-fmt-size">300 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-large-rect')"><div class="adgen-fmt-name">Large Rectangle</div><div class="adgen-fmt-size">336 × 280 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-leaderboard')"><div class="adgen-fmt-name">Leaderboard</div><div class="adgen-fmt-size">728 × 90 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-billboard')"><div class="adgen-fmt-name">Billboard</div><div class="adgen-fmt-size">970 × 250 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-halfpage')"><div class="adgen-fmt-name">Half Page</div><div class="adgen-fmt-size">300 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-skyscraper')"><div class="adgen-fmt-name">Wide Skyscraper</div><div class="adgen-fmt-size">160 × 600 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile')"><div class="adgen-fmt-name">Mobile Banner</div><div class="adgen-fmt-size">320 × 50 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile-large')"><div class="adgen-fmt-name">Large Mobile Banner</div><div class="adgen-fmt-size">320 × 100 px</div></div><div class="adgen-fmt" onclick="adgenToggleFmt(this,'iab-mobile-square')"><div class="adgen-fmt-name">Mobil kvadrat</div><div class="adgen-fmt-size">320 × 320 px</div></div></div>
       <div id="adcopy-error" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:1rem;margin-top:1rem"></div>
       <button class="adcopy-analyze-btn" id="adcopy-btn" onclick="generateAdGen()">Generera annonser →</button>
     </div>
@@ -9416,24 +9416,44 @@ function adFaRunCustom(uid, formatId) {
 // nytta av dem; för övriga döljs sektionen. Standardvärden = mallens original.
 function adgenAdjustBlockHtml(uid, formatId) {
   const style = uid.indexOf('__') > -1 ? uid.split('__')[1] : '';
-  // Vilka mallar stödjer justering (har rattarna inkopplade)?
-  const adjustable = ['template-boldtext','template-cleanphoto','template-cleanphoto-noc'];
-  if (adjustable.indexOf(style) === -1) return ''; // andra mallar: ingen justering ännu
+  // Vilka RATTAR varje mall faktiskt stödjer (inkopplade i ritkoden).
+  // Vi visar bara de rattar som gör något – aldrig en ratt som inte funkar.
+  const caps = {
+    'template-boldtext':        { size:true, y:true, side:true, overlay:true },
+    'template-cleanphoto':      { size:true, y:true, side:true, overlay:true },
+    'template-cleanphoto-noc':  { size:true, y:true, side:true, overlay:true },
+    'template-diagonal':        { size:true, y:true },
+    'template-colorblock':      { size:true },
+    'template-premium':         { size:true },
+    'template-split':           { size:true, y:true },
+    'template-light':           { size:true },
+    'template-dark':            { size:true }
+  };
+  let cap = caps[style];
+  // Format-medvetet: på breda banners (låg höjd) är bara storlek meningsfull –
+  // det finns ingen höjd att flytta i, och ingen bild-sida att välja.
+  const fmt = ADGEN_FORMATS[formatId];
+  if (cap && fmt && (fmt.w / fmt.h) >= 2.2) cap = { size:true };
+  if (!cap) return ''; // mall utan justering
   const a = adgenAdjustFor(uid);
-  return '' +
-    '<div class="adj-sec">Justera placering</div>' +
+  let html = '<div class="adj-sec">Justera</div>';
+  if (cap.y) html +=
     '<div class="adj-row"><label>Höjd <span>upp ↔ ner</span></label>' +
-      '<input type="range" min="-100" max="100" value="' + Math.round(a.yOffset*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'yOffset\',this.value/100)"></div>' +
+      '<input type="range" min="-100" max="100" value="' + Math.round(a.yOffset*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'yOffset\',this.value/100)"></div>';
+  if (cap.size) html +=
     '<div class="adj-row"><label>Rubrikstorlek <span>mindre ↔ större</span></label>' +
-      '<input type="range" min="70" max="130" value="' + Math.round(a.size*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'size\',this.value/100)"></div>' +
+      '<input type="range" min="70" max="130" value="' + Math.round(a.size*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'size\',this.value/100)"></div>';
+  if (cap.side) html +=
     '<div class="adj-row"><label>Sida</label><div class="adj-seg">' +
       ['auto','left','center','right'].map(function(s){
         const lbl = {auto:'Auto',left:'Vänster',center:'Mitten',right:'Höger'}[s];
         return '<button class="' + (a.side===s?'on':'') + '" onclick="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'side\',\'' + s + '\',this)">' + lbl + '</button>';
-      }).join('') + '</div></div>' +
+      }).join('') + '</div></div>';
+  if (cap.overlay) html +=
     '<div class="adj-row"><label>Läsbarhet <span>platta bakom text</span></label>' +
-      '<input type="range" min="0" max="100" value="' + Math.round(a.overlay*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'overlay\',this.value/100)"></div>' +
-    '<button class="adj-reset" onclick="adgenResetAdjust(\'' + uid + '\',\'' + formatId + '\')">↺ Återställ placering</button>';
+      '<input type="range" min="0" max="100" value="' + Math.round(a.overlay*100) + '" oninput="adgenSetAdjust(\'' + uid + '\',\'' + formatId + '\',\'overlay\',this.value/100)"></div>';
+  html += '<button class="adj-reset" onclick="adgenResetAdjust(\'' + uid + '\',\'' + formatId + '\')">↺ Återställ</button>';
+  return html;
 }
 
 // Sätter ett justeringsvärde och ritar om annonsen direkt.
@@ -10689,6 +10709,9 @@ const ADGEN_FORMATS = {
   'iab-skyscraper':     { label:'Wide Skyscraper',       w:160,  h:600,  html5:true,  group:'display' },
   'iab-mobile':         { label:'Mobile Banner',         w:320,  h:50,   html5:true,  group:'display' },
   'iab-mobile-large':   { label:'Large Mobile Banner',   w:320,  h:100,  html5:true,  group:'display' },
+  // 320x320 (mobil kvadrat) produceras i dubbel upplösning 640x640 för skärpa
+  // på moderna mobilskärmar, enligt IAB:s rekommendation. Ritas som kvadrat.
+  'iab-mobile-square':  { label:'Mobil kvadrat (320×320)', w:640, h:640, html5:false, group:'display' },
   // Svenska IAB-standardformat (Svensk Display-standard 2.2)
   'se-panorama-120':    { label:'Panorama',              w:980,  h:120,  html5:true,  group:'swedish' },
   'se-panorama-240':    { label:'Panorama',              w:980,  h:240,  html5:true,  group:'swedish' },
@@ -11385,6 +11408,7 @@ function drawAdOnCanvas(canvas, formatId, fmt, copy, useStyle, accentColor, uid)
 // Ljus bakgrund, serif-känsla, centrerad text, tunn kontur-CTA. Lugnt/exklusivt.
 function drawAdPremium(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   // Ljus, varm bakgrund.
   ctx.fillStyle = '#efe9e0';
   ctx.fillRect(0, 0, W, H);
@@ -11398,8 +11422,8 @@ function drawAdPremium(p) {
   const hasCta = !!(copy.cta && copy.cta.trim());
   const hasSub = !!(copy.subline && copy.subline.trim());
 
-  // Centrerad, elegant typografi i nedre fältet.
-  const headlineSz = Math.round(W * 0.062);
+  // Centrerad, elegant typografi i nedre fältet. Rubrikstorlek via "size".
+  const headlineSz = Math.round(W * 0.062 * adj.size);
   const sublineSz  = Math.round(W * 0.03);
   const ctaSz      = Math.round(W * 0.028);
 
@@ -11734,6 +11758,7 @@ function roundRect2(ctx, x, y, w, h, r, stroke) {
 
 function drawAdColorBlock(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
 
   // Hela bakgrunden i accentfärgen. Om accenten är väldigt ljus (t.ex. vit)
   // ser ett "färgblock" blekt ut – då använder vi en mörk bakgrund i stället,
@@ -11755,7 +11780,7 @@ function drawAdColorBlock(p) {
   const hasSub = !!(copy.subline && copy.subline.trim());
 
   // Rubrik stor upptill. Krymp så långa ord inte rinner ut ur kanten.
-  let headlineSz = Math.round(W * 0.085);
+  let headlineSz = Math.round(W * 0.085 * adj.size);
   const sublineSz  = Math.round(W * 0.036);
   headlineSz = fitFontToWidth(ctx, copy.headline || '', textMaxW, headlineSz, '800', Math.round(W * 0.05));
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
@@ -11816,6 +11841,7 @@ function drawAdColorBlock(p) {
 
 function drawAdDiagonal(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   const isWide = W / H > 1.4;
 
   ctx.fillStyle = '#1c1a1e';
@@ -11842,7 +11868,7 @@ function drawAdDiagonal(p) {
   else { tx = pad; tw = W - pad * 2; ty = H * 0.66; }
 
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const headlineSz = isWide ? Math.round(H * 0.11) : Math.round(W * 0.078);
+  const headlineSz = Math.round((isWide ? H * 0.11 : W * 0.078) * adj.size);
   const ctaSz = isWide ? Math.round(H * 0.05) : Math.round(W * 0.036);
 
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
@@ -11868,6 +11894,9 @@ function drawAdDiagonal(p) {
     // Säkerställ att blocket aldrig går under nederkanten.
     if (ty + blockH > H - pad) ty = H - pad - blockH;
   }
+  // Justering: flytta textblocket upp/ner, men håll det inom annonsen.
+  ty += Math.round(adj.yOffset * H * 0.25);
+  ty = Math.max(pad, Math.min(ty, H - blockH - pad));
 
   ctx.fillStyle = '#ffffff';
   wrapText(ctx, copy.headline || '', tx, ty, tw, headlineSz * 1.1);
@@ -12201,9 +12230,9 @@ function bannerCta(ctx, copy, H, W) {
 // Autokrympning: rubriken minskas i steg tills hela textblocket ryms inom
 // bannerns höjd. Det garanterar att texten aldrig skärs av, oavsett hur
 // lång rubriken är eller hur smalt fältet blir.
-function bannerText(ctx, copy, x, W_area, H, color, subColor) {
+function bannerText(ctx, copy, x, W_area, H, color, subColor, sizeFactor) {
   const maxH = H - Math.round(H * 0.18); // lämna luft upp/ner
-  let hlSz = Math.round(H * 0.30);
+  let hlSz = Math.round(H * 0.30 * (sizeFactor || 1));
   const subSz = Math.round(H * 0.17);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
 
@@ -12260,7 +12289,7 @@ function drawBannerClean(p) {
   const pad = Math.round(H * 0.22);
   const cta = bannerCta(ctx, copy, H, W);
   const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
-  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.85)');
+  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.85)', (p.adj && p.adj.size) || 1);
   if (cta) {
     const cx = W - cta.w - pad, cy = (H - cta.h)/2;
     drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
@@ -12282,7 +12311,7 @@ function drawBannerSplit(p) {
   // Text + knapp ryms inom vänsterfältet.
   const innerW = splitX - pad * 2;
   const textW = (cta ? innerW - cta.w - pad : innerW);
-  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
+  bannerText(ctx, copy, pad, textW, H, '#ffffff', 'rgba(255,255,255,0.8)', (p.adj && p.adj.size) || 1);
   if (cta) {
     const cx = splitX - cta.w - pad, cy = (H - cta.h)/2;
     drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
@@ -12299,7 +12328,7 @@ function drawBannerColorBlock(p) {
   const pad = Math.round(H * 0.22);
   const cta = bannerCta(ctx, copy, H, W);
   const textW = (cta ? W - cta.w - pad*2.2 : W - pad*2) - pad;
-  bannerText(ctx, copy, pad, textW, H, onBlock, onBlock === '#ffffff' ? 'rgba(255,255,255,0.8)' : 'rgba(26,20,16,0.7)');
+  bannerText(ctx, copy, pad, textW, H, onBlock, onBlock === '#ffffff' ? 'rgba(255,255,255,0.8)' : 'rgba(26,20,16,0.7)', (p.adj && p.adj.size) || 1);
   if (cta) {
     const cx = W - cta.w - pad, cy = (H - cta.h)/2;
     // Knapp kontrasterar mot blocket.
@@ -12331,7 +12360,7 @@ function drawBannerDiagonal(p) {
   // och tar upp utrymmet fram till knappen jämnt.
   const tx = Math.round(W * 0.40);
   const textW = (cta ? W - cta.w - pad*1.6 : W - pad) - tx;
-  bannerText(ctx, copy, tx, textW, H, '#ffffff', 'rgba(255,255,255,0.8)');
+  bannerText(ctx, copy, tx, textW, H, '#ffffff', 'rgba(255,255,255,0.8)', (p.adj && p.adj.size) || 1);
   if (cta) {
     const cx = W - cta.w - pad, cy = (H - cta.h)/2;
     drawAdButton(ctx, cx, cy, cta.w, cta.h, p.accent, p.onAccent, copy.cta + ' →', cta.sz);
@@ -12447,6 +12476,7 @@ function drawAdHorizontal(p) {
 // Ren – bild bakgrund + toning, text staplad nertill. Funkar även smalt.
 function drawTallClean(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   drawAdImageInto(ctx, 0, 0, W, H);
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   grad.addColorStop(0, 'rgba(0,0,0,0.3)');
@@ -12455,9 +12485,10 @@ function drawTallClean(p) {
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
   const pad = Math.round(W * 0.07);
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const hlSz = Math.round(W * 0.085);
+  const hlSz = Math.round(W * 0.085 * adj.size);
   ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
-  let by = H - pad;
+  let by = H - pad - Math.round(adj.yOffset * H * 0.3);
+  by = Math.max(Math.round(H*0.3), Math.min(by, H - pad));
   if (hasCta) {
     const ctaSz = Math.round(W * 0.05);
     ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
@@ -12496,6 +12527,7 @@ function wrapTextUp(ctx, text, x, bottomY, maxW, lineH) {
 // Diagonal – bild och färgfält möts diagonalt, text nertill (raka ytor).
 function drawTallDiagonal(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   drawAdImageInto(ctx, 0, 0, W, H);
   ctx.save(); ctx.beginPath();
   ctx.moveTo(0, H * 0.52); ctx.lineTo(W, H * 0.42); ctx.lineTo(W, H); ctx.lineTo(0, H);
@@ -12503,9 +12535,10 @@ function drawTallDiagonal(p) {
   ctx.restore();
   const pad = Math.round(W * 0.07);
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const hlSz = Math.round(W * 0.08);
+  const hlSz = Math.round(W * 0.08 * adj.size);
   ctx.textAlign = 'left';
-  let by = H - pad;
+  let by = H - pad - Math.round(adj.yOffset * H * 0.3);
+  by = Math.max(Math.round(H*0.3), Math.min(by, H - pad));
   if (hasCta) {
     const ctaSz = Math.round(W * 0.048);
     ctx.font = '700 ' + ctaSz + 'px ' + adgenFontFamily();
@@ -12529,13 +12562,14 @@ function drawTallDiagonal(p) {
 // Färgblock – hel färg, rubrik upptill, bild HÖGT (nära rubriken), knapp nertill.
 function drawTallColorBlock(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   const accentLight = adgenLum(p.accent) > 200;
   const block = accentLight ? '#241f1b' : p.accent;
   ctx.fillStyle = block; ctx.fillRect(0, 0, W, H);
   const onBlock = adgenLum(block) > 150 ? '#1a1410' : '#ffffff';
   const pad = Math.round(W * 0.07);
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const hlSz = Math.round(W * 0.09);
+  const hlSz = Math.round(W * 0.09 * adj.size);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = onBlock;
@@ -12573,6 +12607,7 @@ function drawTallColorBlock(p) {
 // Djärv text – enorm rubrik på foto.
 function drawTallBoldText(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   drawAdImageInto(ctx, 0, 0, W, H);
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   grad.addColorStop(0, 'rgba(0,0,0,0.55)');
@@ -12581,7 +12616,7 @@ function drawTallBoldText(p) {
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
   const pad = Math.round(W * 0.07);
   const hasCta = !!(copy.cta && copy.cta.trim());
-  const hlSz = Math.round(W * 0.15);
+  const hlSz = Math.round(W * 0.15 * adj.size);
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = '800 ' + hlSz + 'px ' + adgenFontFamily();
   ctx.fillStyle = '#ffffff';
@@ -12611,13 +12646,14 @@ function drawTallBoldText(p) {
 // Premium – ljus, elegant, bild upptill, centrerad serif nedtill (raka hörn).
 function drawTallPremium(p) {
   const ctx = p.ctx, W = p.W, H = p.H, copy = p.copy;
+  const adj = p.adj || { yOffset:0, size:1, side:'auto', overlay:0 };
   ctx.fillStyle = '#efe9e0'; ctx.fillRect(0, 0, W, H);
   const imgH = Math.round(H * 0.60);
   drawAdImageInto(ctx, 0, 0, W, imgH);  // rak överkant, fyller bredden
   const pad = Math.round(W * 0.08);
   const hasCta = !!(copy.cta && copy.cta.trim());
   const cx = W / 2;
-  const hlSz = Math.round(W * 0.07);
+  const hlSz = Math.round(W * 0.07 * adj.size);
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
   ctx.font = '500 ' + hlSz + 'px Georgia,"Times New Roman",serif';
   ctx.fillStyle = '#2C2520';
