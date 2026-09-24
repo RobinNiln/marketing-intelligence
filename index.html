@@ -968,6 +968,63 @@ body.native-mode{background:#FBFAF7}
 .home-user-invite{border-style:dashed;color:var(--c-text-dim)}
 .home-user-invite .home-user-avatar{background:#c9c1b2}
 
+/* ── ANALYS-SIDAN ─────────────────────────────────────────────────────── */
+.analys-wrap{max-width:860px;margin:0 auto;padding:1.5rem 1.5rem 4rem}
+.analys-title{font-size:var(--fs-2xl);font-weight:700;letter-spacing:-0.02em;margin:4px 0 6px;color:var(--c-text)}
+.analys-intro{font-size:var(--fs-md);color:var(--c-text-dim);line-height:1.6;margin:0 0 1.6rem;max-width:600px}
+.analys-tabs{display:flex;gap:4px;background:var(--c-surface-2,#faf8f4);border:1px solid var(--c-line);border-radius:12px;padding:4px;margin-bottom:1.8rem;width:fit-content;max-width:100%;flex-wrap:wrap}
+.analys-tab{border:none;background:none;border-radius:9px;padding:9px 18px;font-size:13.5px;font-weight:600;color:var(--c-text-dim);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px}
+.analys-tab.on{background:var(--c-surface);color:var(--c-text);box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.analys-beta{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;background:#E9DFF7;color:#5B3E9E;padding:2px 6px;border-radius:5px}
+.analys-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:#9c7d2e;margin:1.8rem 0 0.9rem}
+.analys-label:first-of-type{margin-top:0}
+.analys-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--c-line);border:1px solid var(--c-line);border-radius:12px;overflow:hidden}
+.analys-stat{background:var(--c-surface);padding:14px 18px}
+.analys-stat b{display:block;font-size:23px;font-weight:800;line-height:1;letter-spacing:-0.02em;color:var(--c-text)}
+.analys-stat b.accent{color:#9c7d2e}
+.analys-stat span{display:block;font-size:11.5px;color:var(--c-text-dim);margin-top:6px}
+.analys-card{background:var(--c-surface);border:1px solid var(--c-line);border-radius:12px;padding:1.3rem 1.4rem}
+.analys-bars{display:flex;flex-direction:column;gap:9px}
+.analys-bar-row{display:flex;align-items:center;gap:11px}
+.analys-bar-label{width:140px;flex-shrink:0;font-size:13px;color:var(--c-text-dim)}
+.analys-bar-track{flex:1;height:15px;background:#f4f1ea;border-radius:5px;overflow:hidden}
+.analys-bar-fill{height:100%;border-radius:5px;min-width:2px}
+.analys-bar-val{width:26px;text-align:right;font-size:13px;font-weight:700;color:var(--c-text)}
+.analys-weeks{display:flex;align-items:flex-end;gap:8px;height:96px}
+.analys-wcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%}
+.analys-wbar{width:100%;background:#C9A84C;border-radius:4px 4px 0 0;min-height:3px}
+.analys-wnum{font-size:11px;font-weight:700;color:var(--c-text)}
+.analys-wlbl{font-size:10px;color:var(--c-text-dim)}
+.analys-krow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--c-line-faint);font-size:13.5px;gap:10px}
+.analys-krow:last-child{border-bottom:none}
+.analys-krow .kn{font-weight:600;color:var(--c-text)}
+.analys-krow .kc{color:var(--c-text-dim);font-size:12.5px;text-align:right;flex-shrink:0}
+.analys-beta-note{background:#F3EDFB;border:1px solid #DDCBF3;border-radius:12px;padding:12px 16px;font-size:12.5px;color:#5B3E9E;line-height:1.6;margin-bottom:1.6rem}
+.analys-chan{display:flex;gap:10px;margin-bottom:0.4rem;flex-wrap:wrap}
+.analys-chan button{flex:1;min-width:180px;border:1.5px solid var(--c-line);background:var(--c-surface);border-radius:11px;padding:13px;font-size:13.5px;font-weight:600;color:var(--c-text-dim);cursor:pointer;font-family:inherit}
+.analys-chan button.on{border-color:var(--c-text);color:var(--c-text)}
+.analys-drop{border:2px dashed #d8d2c6;border-radius:14px;padding:2.2rem;text-align:center;background:var(--c-surface-2,#faf8f4);cursor:pointer;transition:border-color 0.15s,background 0.15s}
+.analys-drop:hover,.analys-drop.drag{border-color:#C9A84C;background:#faf6ec}
+.analys-drop-i{font-size:26px;margin-bottom:8px}
+.analys-drop-t{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--c-text)}
+.analys-drop-s{font-size:12.5px;color:var(--c-text-dim)}
+.analys-cerr{background:#FCEBEB;border:1px solid #F1C9C9;border-radius:12px;padding:12px 16px;font-size:13px;color:#A32D2D;line-height:1.55;margin-top:1rem}
+.analys-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.analys-kpi{background:var(--c-surface);border:1px solid var(--c-line);border-radius:11px;padding:13px 15px}
+.analys-kpi b{display:block;font-size:19px;font-weight:800;letter-spacing:-0.02em;color:var(--c-text)}
+.analys-kpi span{display:block;font-size:10.5px;color:var(--c-text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600}
+.analys-ai-card{background:linear-gradient(160deg,#fff,#faf6ec);border:1.5px solid #EAD9A8;border-radius:14px;padding:1.4rem 1.5rem;margin-top:1.2rem}
+.analys-ai-head{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:#9c7d2e;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px}
+.analys-ai-loading{font-size:13px;color:var(--c-text-dim);padding:6px 0}
+.analys-ai-read{font-size:14px;line-height:1.65;color:#3a352d;margin-bottom:14px}
+.analys-rec{display:flex;gap:11px;padding:11px 0;border-top:1px solid #efe6cf}
+.analys-rec-n{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#C9A84C;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.analys-rec-t{font-size:13.5px;line-height:1.55;color:var(--c-text)}
+.analys-rec-t b{font-weight:700}
+.analys-disc{font-size:12px;color:var(--c-text-dim);margin-top:14px;line-height:1.6;font-style:italic}
+.analys-empty{text-align:center;color:var(--c-text-dim);padding:2rem 1rem;font-size:14px;line-height:1.6}
+@media(max-width:640px){.analys-stats,.analys-kpis{grid-template-columns:repeat(2,1fr)}.analys-bar-label{width:100px}}
+
 /* Campaign Planner-resultat */
 .planner-phase{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem}
 .planner-phase-head{display:flex;align-items:center;gap:14px;margin-bottom:0.9rem}
@@ -1866,6 +1923,7 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <div id="active-project-modal">
@@ -1954,6 +2012,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
     <button class="sp-link" data-page="fraga-page" onclick="goToFraga()">
       <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l1.8 4.4L17 9l-4.2 1.6L11 15l-1.8-4.4L5 9l4.2-1.6z"/><path d="M5.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8L3 18l1.8-.7z"/></svg>
       <span class="sp-link-body"><span class="sp-link-text">Fråga Mava</span><span class="sp-link-desc">Din AI-medhjälpare</span></span>
+    </button>
+    <button class="sp-link" data-page="analys-page" onclick="goToAnalys()">
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V4"/><path d="M3 18h16"/><path d="M7 15V9M11 15V5M15 15v-4M19 15V7"/></svg>
+      <span class="sp-link-body"><span class="sp-link-text">Analys</span><span class="sp-link-desc">Användning &amp; kampanjrapporter</span></span>
     </button>
 
     <div class="sp-group-label">Innehåll</div>
@@ -2283,6 +2345,82 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
         <span class="home-notices-label">Nytt i Mava</span>
       </div>
       <div id="home-notices-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ANALYS – egen produktionsstatistik + kampanjrapporter (Beta) ══ -->
+<div id="analys-page" style="display:none;min-height:100vh;background:#F5F3EE">
+  <nav class="tools-nav">
+    <div style="display:flex;align-items:center;gap:16px">
+      <button class="nav-back" onclick="goBack()" title="Tillbaka" aria-label="Tillbaka"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <button class="mava-logo on-light" onclick="goToLanding()"><img src="images/mava-symbol.png" alt="Mava" style="height:28px;width:28px"><span class="mava-word" style="font-size:18px">Mava</span></button>
+    </div>
+  </nav>
+
+  <div class="analys-wrap">
+    <div class="home-eyebrow"><span></span>Analys</div>
+    <h1 class="analys-title">Analys &amp; insikter</h1>
+    <p class="analys-intro">Se hur ni använder Mava – och låt AI:n läsa era kampanjrapporter och föreslå smartare beslut inför nästa gång.</p>
+
+    <div class="analys-tabs">
+      <button class="analys-tab on" id="analys-tab-1" onclick="analysTab(1)">Mava-användning</button>
+      <button class="analys-tab" id="analys-tab-2" onclick="analysTab(2)">Kampanjrapporter <span class="analys-beta">Beta</span></button>
+    </div>
+
+    <!-- ── FLIK 1: Mava-användning ── -->
+    <div id="analys-t1">
+      <div class="analys-stats" id="analys-stats">
+        <div class="analys-stat"><b id="an-total">–</b><span>produktioner totalt</span></div>
+        <div class="analys-stat"><b id="an-month">–</b><span>senaste 30 dagarna</span></div>
+        <div class="analys-stat"><b id="an-projects">–</b><span>kunder / projekt</span></div>
+        <div class="analys-stat"><b id="an-top" class="accent">–</b><span>mest använda</span></div>
+      </div>
+
+      <div class="analys-label">Vad Mava används till</div>
+      <div class="analys-card"><div id="an-tools" class="analys-bars"></div></div>
+
+      <div class="analys-label">Aktivitet senaste 8 veckorna</div>
+      <div class="analys-card"><div id="an-weeks" class="analys-weeks"></div></div>
+
+      <div class="analys-label">Per kund / projekt</div>
+      <div class="analys-card"><div id="an-projects-list"></div></div>
+    </div>
+
+    <!-- ── FLIK 2: Kampanjrapporter (Beta) ── -->
+    <div id="analys-t2" style="display:none">
+      <div class="analys-beta-note">
+        <b>Beta.</b> Kampanjanalysen är under uppbyggnad. Idag stöds export från Meta Ads och Google Ads (CSV eller XLSX). Läser Mava inte din fil rätt – hör av dig så lägger vi till formatet.
+      </div>
+
+      <div class="analys-label">1. Välj kanal</div>
+      <div class="analys-chan">
+        <button class="on" id="chan-meta" onclick="analysSetChannel('meta')">Meta (Facebook/Instagram)</button>
+        <button id="chan-google" onclick="analysSetChannel('google')">Google Ads</button>
+      </div>
+
+      <div class="analys-label">2. Ladda upp rapporten</div>
+      <div class="analys-drop" id="analys-drop" onclick="document.getElementById('analys-file').click()">
+        <input type="file" id="analys-file" accept=".csv,.xlsx,.xls" style="display:none" onchange="analysFileChosen(this.files)">
+        <div class="analys-drop-i">📄</div>
+        <div class="analys-drop-t" id="analys-drop-t">Släpp din Meta-export här, eller klicka för att välja fil</div>
+        <div class="analys-drop-s">CSV eller XLSX exporterad från annonshanteraren</div>
+      </div>
+
+      <div id="analys-campaign-error" class="analys-cerr" style="display:none"></div>
+
+      <!-- Resultat -->
+      <div id="analys-campaign-result" style="display:none">
+        <div class="analys-label" id="analys-kpi-label">Nyckeltal</div>
+        <div class="analys-kpis" id="analys-kpis"></div>
+
+        <div class="analys-ai-card" id="analys-ai-card">
+          <div class="analys-ai-head">✦ Så läser Mava kampanjen</div>
+          <div id="analys-ai-body">
+            <div class="analys-ai-loading">AI:n läser din kampanjdata…</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -5025,7 +5163,7 @@ function nativeReset(){
    TOOLS HUB + NAVIGATION
 ══════════════════════════════════════════ */
 
-const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page','fraga-page','airadar-page'];
+const ALL_PAGES = ['landing','auth-page','home-page','faq-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','native-page','app','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','tools-page','fraga-page','airadar-page','analys-page'];
 
 function hideAll(){
   ALL_PAGES.forEach(id=>{
@@ -5136,6 +5274,8 @@ function navigateTo(page){
     case 'planner-page':  goToPlanner(); break;
     case 'adcopy-page':   goToAdCopy(); break;
     case 'dist-page':     if (typeof goToDist === 'function') goToDist(); else goToTools(); break;
+    case 'airadar-page':  goToAiRadar(); break;
+    case 'analys-page':   goToAnalys(); break;
     default:              goToHome();
   }
 }
@@ -5469,6 +5609,410 @@ function renderHomeUsers(){
 /* Placeholder tills team-inbjudan är byggt. */
 function homeInviteUser(){
   alert('Team-inbjudan kommer snart. Då kan du koppla fler användare till kontot.');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ANALYS-SIDAN
+   Flik 1: egen produktionsstatistik (data finns redan i Supabase).
+   Flik 2 (Beta): ladda upp kampanjrapport (Meta/Google, CSV/XLSX) → nyckeltal
+   räknas i webbläsaren → AI:n tolkar mot varumärkesprofilen.
+   ══════════════════════════════════════════════════════════════════════════ */
+let _analysChannel = 'meta';
+
+async function goToAnalys(){
+  if (!_currentUser) { goToAuth(); return; }
+  hideAll();
+  document.getElementById('analys-page').style.display = 'block';
+  setActivePanelLink('analys-page');
+  window.scrollTo(0,0);
+  analysTab(1);
+  renderAnalysUsage();
+  setupAnalysDrop();
+}
+
+function analysTab(n){
+  document.getElementById('analys-t1').style.display = (n === 1) ? 'block' : 'none';
+  document.getElementById('analys-t2').style.display = (n === 2) ? 'block' : 'none';
+  document.getElementById('analys-tab-1').classList.toggle('on', n === 1);
+  document.getElementById('analys-tab-2').classList.toggle('on', n === 2);
+}
+
+/* ── Flik 1: Mava-användning ─────────────────────────────────────────────── */
+async function renderAnalysUsage(){
+  const { data, error } = await fetchProductions();
+  const items = data || [];
+
+  if (error) {
+    document.getElementById('an-tools').innerHTML = '<div class="analys-empty">Kunde inte ladda data just nu.</div>';
+    return;
+  }
+
+  // Sifferrad
+  document.getElementById('an-total').textContent = items.length;
+  const now = Date.now();
+  document.getElementById('an-month').textContent = items.filter(function(it){
+    return (now - new Date(it.created_at).getTime()) <= 30*24*60*60*1000;
+  }).length;
+
+  // Per verktyg
+  const counts = {};
+  items.forEach(function(it){ counts[it.tool] = (counts[it.tool] || 0) + 1; });
+
+  let topTool = '–', topN = 0;
+  Object.keys(counts).forEach(function(t){ if (counts[t] > topN) { topN = counts[t]; topTool = TOOL_LABELS[t] || t; } });
+  document.getElementById('an-top').textContent = items.length ? topTool : '–';
+
+  // Antal distinkta projekt (+ ev. "utan projekt")
+  const projSet = {};
+  let hasNoProject = false;
+  items.forEach(function(it){
+    if (it.project_id) projSet[it.project_id] = true; else hasNoProject = true;
+  });
+  document.getElementById('an-projects').textContent = Object.keys(projSet).length + (hasNoProject ? 1 : 0);
+
+  // Staplar per verktyg
+  const bars = document.getElementById('an-tools');
+  if (items.length === 0) {
+    bars.innerHTML = '<div class="analys-empty">Inga produktioner än. Skapa något i ett verktyg så dyker din statistik upp här.</div>';
+  } else {
+    const maxN = Math.max.apply(null, Object.values(counts));
+    const order = ['adstudio','airadar','newsroom','native','market-pulse','brief','planner'];
+    bars.innerHTML = order.filter(function(t){ return counts[t]; }).map(function(t){
+      const n = counts[t] || 0;
+      const pct = maxN ? Math.round((n / maxN) * 100) : 0;
+      const color = TOOL_COLORS[t] || '#C9A84C';
+      return '<div class="analys-bar-row">' +
+        '<div class="analys-bar-label">' + escapeHtmlLib(TOOL_LABELS[t] || t) + '</div>' +
+        '<div class="analys-bar-track"><div class="analys-bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<div class="analys-bar-val">' + n + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  renderAnalysWeeks(items);
+  renderAnalysProjects(items);
+}
+
+function renderAnalysWeeks(items){
+  const box = document.getElementById('an-weeks');
+  if (!items || items.length === 0) { box.innerHTML = '<div class="analys-empty">Ingen aktivitet än.</div>'; return; }
+  const now = new Date();
+  const weekMs = 7*24*60*60*1000;
+  const buckets = [];
+  for (let i = 7; i >= 0; i--) {
+    const end = now.getTime() - i*weekMs;
+    buckets.push({ start: end - weekMs, end: end, count: 0 });
+  }
+  items.forEach(function(it){
+    const t = new Date(it.created_at).getTime();
+    for (let b = 0; b < buckets.length; b++) {
+      if (t > buckets[b].start && t <= buckets[b].end) { buckets[b].count++; break; }
+    }
+  });
+  const max = Math.max.apply(null, buckets.map(function(b){ return b.count; }));
+  box.innerHTML = buckets.map(function(b, i){
+    const h = max ? Math.round((b.count / max) * 100) : 0;
+    const d = new Date(b.end - weekMs/2);
+    const label = (i === 7) ? 'Nu' : d.toLocaleDateString('sv-SE', { day:'numeric', month:'short' });
+    return '<div class="analys-wcol">' +
+      '<div class="analys-wnum">' + (b.count || '') + '</div>' +
+      '<div class="analys-wbar" style="height:' + h + '%' + (b.count === 0 ? ';background:#ece8df' : '') + '"></div>' +
+      '<div class="analys-wlbl">' + label + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderAnalysProjects(items){
+  const box = document.getElementById('an-projects-list');
+  if (!items || items.length === 0) { box.innerHTML = '<div class="analys-empty">Inga produktioner än.</div>'; return; }
+
+  // Gruppera per projekt-id. Namn hämtas från _projectsCache om det finns, annars id.
+  const groups = {};
+  items.forEach(function(it){
+    const key = it.project_id || '__none__';
+    if (!groups[key]) groups[key] = { count: 0, last: 0 };
+    groups[key].count++;
+    const t = new Date(it.created_at).getTime();
+    if (t > groups[key].last) groups[key].last = t;
+  });
+
+  const nameFor = function(key){
+    if (key === '__none__') return 'Utan projekt';
+    if (Array.isArray(_projectsCache)) {
+      const p = _projectsCache.filter(function(x){ return String(x.id) === String(key); })[0];
+      if (p && p.name) return p.name;
+    }
+    return 'Projekt';
+  };
+
+  const rows = Object.keys(groups).map(function(key){
+    return { name: nameFor(key), count: groups[key].count, last: groups[key].last };
+  }).sort(function(a, b){ return b.count - a.count; });
+
+  box.innerHTML = rows.map(function(r){
+    const when = r.last ? new Date(r.last).toLocaleDateString('sv-SE', { day:'numeric', month:'short' }) : '';
+    return '<div class="analys-krow">' +
+      '<div class="kn">' + escapeHtmlLib(r.name) + '</div>' +
+      '<div class="kc">' + r.count + ' produktion' + (r.count === 1 ? '' : 'er') + (when ? ' · senast ' + when : '') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── Flik 2: Kampanjrapporter (Beta) ─────────────────────────────────────── */
+function analysSetChannel(ch){
+  _analysChannel = ch;
+  document.getElementById('chan-meta').classList.toggle('on', ch === 'meta');
+  document.getElementById('chan-google').classList.toggle('on', ch === 'google');
+  const label = (ch === 'meta') ? 'Meta' : 'Google Ads';
+  document.getElementById('analys-drop-t').textContent = 'Släpp din ' + label + '-export här, eller klicka för att välja fil';
+}
+
+function setupAnalysDrop(){
+  const drop = document.getElementById('analys-drop');
+  if (!drop || drop._wired) return;
+  drop._wired = true;
+  ['dragenter','dragover'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); });
+  });
+  drop.addEventListener('drop', function(e){
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) analysFileChosen(e.dataTransfer.files);
+  });
+}
+
+async function analysFileChosen(files){
+  const errEl = document.getElementById('analys-campaign-error');
+  errEl.style.display = 'none';
+  if (!files || !files.length) return;
+  const file = files[0];
+  const name = file.name.toLowerCase();
+
+  let rows;
+  try {
+    if (name.endsWith('.csv')) {
+      rows = parseCsvRows(await file.text());
+    } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
+      if (typeof XLSX === 'undefined') throw new Error('XLSX-läsaren kunde inte laddas. Kontrollera din uppkoppling och ladda om sidan.');
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+    } else {
+      throw new Error('Filformatet stöds inte. Ladda upp en CSV- eller XLSX-fil.');
+    }
+  } catch (err) {
+    errEl.textContent = err.message || 'Kunde inte läsa filen.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const metrics = extractCampaignMetrics(rows);
+  if (!metrics || metrics._fieldsFound === 0) {
+    errEl.innerHTML = 'Mava kände inte igen några kända kolumner i filen. Kontrollera att det är en rapport från ' +
+      (_analysChannel === 'meta' ? 'Meta Ads' : 'Google Ads') + ' med kolumner som visningar, klick, kostnad m.m. – eller hör av dig så lägger vi till formatet.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  renderCampaignKpis(metrics, file.name);
+  runCampaignAi(metrics, file.name);
+}
+
+/* Enkel men robust CSV-parser: hanterar citattecken och kommatecken i fält. */
+function parseCsvRows(text){
+  // Ta bort ev. BOM.
+  text = text.replace(/^﻿/, '');
+  // Gissa avgränsare: semikolon är vanligt i svenska exporter.
+  const firstLine = text.slice(0, text.indexOf('\n') >= 0 ? text.indexOf('\n') : text.length);
+  const delim = (firstLine.split(';').length > firstLine.split(',').length) ? ';' : ',';
+  const rows = [];
+  let field = '', row = [], inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i+1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === delim) { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\r') { /* ignorera */ }
+      else field += c;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+/* Mappar kända kolumnnamn (Meta + Google, sv + en) till nyckeltal.
+   Summerar över alla rader så en rapport med många rader (per dag/annons)
+   ändå ger totaler. Returnerar även _fieldsFound för att avgöra om filen
+   över huvud taget kändes igen. */
+function extractCampaignMetrics(rows){
+  if (!rows || rows.length < 2) return { _fieldsFound: 0 };
+  // Hitta header-raden (första raden med minst två icke-tomma celler).
+  let headerIdx = 0;
+  for (let i = 0; i < rows.length; i++) {
+    const nonEmpty = rows[i].filter(function(c){ return String(c).trim() !== ''; }).length;
+    if (nonEmpty >= 2) { headerIdx = i; break; }
+  }
+  const header = rows[headerIdx].map(function(h){ return String(h).toLowerCase().trim(); });
+
+  // Synonymer per nyckeltal.
+  const MAP = {
+    impressions: ['impressions','visningar','exponeringar','impr.','impr'],
+    reach:       ['reach','räckvidd'],
+    clicks:      ['clicks','länkklick','länkklick (alla)','klick','clicks (all)','link clicks','klick (alla)'],
+    spend:       ['amount spent','amount spent (sek)','spend','kostnad','belopp spenderat','belopp spenderat (sek)','cost','total kostnad'],
+    conversions: ['conversions','resultat','results','konverteringar','purchases','köp','leads'],
+    ctr:         ['ctr','ctr (all)','ctr (länkklickfrekvens)','ctr (alla)','klickfrekvens'],
+    cpc:         ['cpc','cpc (all)','cost per click','kostn./klick','kostnad per klick','cpc (kostnad per länkklick)'],
+    revenue:     ['revenue','conversion value','konverteringsvärde','purchase conversion value','intäkt','köpvärde']
+  };
+
+  const colIndex = {};
+  let found = 0;
+  Object.keys(MAP).forEach(function(key){
+    for (let c = 0; c < header.length; c++) {
+      if (MAP[key].indexOf(header[c]) !== -1) { colIndex[key] = c; found++; break; }
+    }
+  });
+  if (found === 0) return { _fieldsFound: 0 };
+
+  const num = function(v){
+    if (v == null) return 0;
+    // Ta bort valutatecken, blanksteg, procent; hantera svensk decimalkomma.
+    let s = String(v).replace(/[^\d,.\-]/g, '').trim();
+    if (s === '') return 0;
+    // Om både , och . finns: anta att . är tusental, , är decimal (svensk stil) → ta bort ., byt , mot .
+    if (s.indexOf(',') !== -1 && s.indexOf('.') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+    else if (s.indexOf(',') !== -1) s = s.replace(',', '.');
+    const n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  };
+
+  const sum = { impressions:0, reach:0, clicks:0, spend:0, conversions:0, revenue:0 };
+  let campaignName = '';
+  const nameCol = header.indexOf('campaign name');
+  const nameColSv = header.indexOf('kampanjnamn');
+  const nameC = nameCol !== -1 ? nameCol : nameColSv;
+
+  for (let r = headerIdx + 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || row.filter(function(c){ return String(c).trim() !== ''; }).length === 0) continue;
+    if (colIndex.impressions != null) sum.impressions += num(row[colIndex.impressions]);
+    if (colIndex.reach       != null) sum.reach       += num(row[colIndex.reach]);
+    if (colIndex.clicks      != null) sum.clicks      += num(row[colIndex.clicks]);
+    if (colIndex.spend       != null) sum.spend       += num(row[colIndex.spend]);
+    if (colIndex.conversions != null) sum.conversions += num(row[colIndex.conversions]);
+    if (colIndex.revenue     != null) sum.revenue     += num(row[colIndex.revenue]);
+    if (!campaignName && nameC !== -1 && row[nameC]) campaignName = String(row[nameC]).trim();
+  }
+
+  // Härledda tal (räkna själva om de inte fanns som kolumn).
+  const m = {
+    _fieldsFound: found,
+    campaignName: campaignName,
+    impressions: sum.impressions,
+    reach: sum.reach,
+    clicks: sum.clicks,
+    spend: sum.spend,
+    conversions: sum.conversions,
+    revenue: sum.revenue
+  };
+  m.ctr = m.impressions ? (m.clicks / m.impressions) * 100 : null;
+  m.cpc = m.clicks ? (m.spend / m.clicks) : null;
+  m.cpa = m.conversions ? (m.spend / m.conversions) : null;
+  m.roas = (m.spend && m.revenue) ? (m.revenue / m.spend) : null;
+  return m;
+}
+
+function renderCampaignKpis(m, filename){
+  document.getElementById('analys-campaign-result').style.display = 'block';
+  const title = m.campaignName ? ('Nyckeltal – ' + m.campaignName) : ('Nyckeltal – ' + filename);
+  document.getElementById('analys-kpi-label').textContent = title;
+
+  const kr = function(n){ return Math.round(n).toLocaleString('sv-SE') + ' kr'; };
+  const int = function(n){ return Math.round(n).toLocaleString('sv-SE'); };
+  const cards = [];
+  cards.push(['Spend', m.spend ? kr(m.spend) : '–']);
+  cards.push(['Visningar', m.impressions ? int(m.impressions) : '–']);
+  if (m.reach) cards.push(['Räckvidd', int(m.reach)]);
+  cards.push(['Klick', m.clicks ? int(m.clicks) : '–']);
+  cards.push(['CTR', m.ctr != null ? m.ctr.toFixed(2).replace('.', ',') + ' %' : '–']);
+  cards.push(['CPC', m.cpc != null ? m.cpc.toFixed(2).replace('.', ',') + ' kr' : '–']);
+  if (m.conversions) cards.push(['Konverteringar', int(m.conversions)]);
+  if (m.cpa != null) cards.push(['CPA', Math.round(m.cpa).toLocaleString('sv-SE') + ' kr']);
+  if (m.roas != null) cards.push(['ROAS', m.roas.toFixed(1).replace('.', ',') + 'x']);
+
+  document.getElementById('analys-kpis').innerHTML = cards.map(function(c){
+    return '<div class="analys-kpi"><b>' + c[1] + '</b><span>' + c[0] + '</span></div>';
+  }).join('');
+}
+
+async function runCampaignAi(m, filename){
+  const body = document.getElementById('analys-ai-body');
+  body.innerHTML = '<div class="analys-ai-loading">AI:n läser din kampanjdata…</div>';
+
+  const fmt = function(v, suffix){ return (v == null) ? 'saknas' : (typeof v === 'number' ? v.toLocaleString('sv-SE') : v) + (suffix || ''); };
+  const channel = (_analysChannel === 'meta') ? 'Meta (Facebook/Instagram)' : 'Google Ads';
+  const summary =
+    'Kanal: ' + channel + '\n' +
+    'Kampanj: ' + (m.campaignName || filename) + '\n' +
+    'Spend: ' + (m.spend ? Math.round(m.spend).toLocaleString('sv-SE') + ' kr' : 'saknas') + '\n' +
+    'Visningar: ' + fmt(m.impressions || null) + '\n' +
+    'Räckvidd: ' + fmt(m.reach || null) + '\n' +
+    'Klick: ' + fmt(m.clicks || null) + '\n' +
+    'CTR: ' + (m.ctr != null ? m.ctr.toFixed(2) + ' %' : 'saknas') + '\n' +
+    'CPC: ' + (m.cpc != null ? m.cpc.toFixed(2) + ' kr' : 'saknas') + '\n' +
+    'Konverteringar: ' + fmt(m.conversions || null) + '\n' +
+    'CPA: ' + (m.cpa != null ? Math.round(m.cpa) + ' kr' : 'saknas') + '\n' +
+    'ROAS: ' + (m.roas != null ? m.roas.toFixed(1) + 'x' : 'saknas');
+
+  const prompt =
+    'Du är en erfaren digital media-strateg som hjälper en marknadsförare att förstå sin kampanjrapport och ta smarta beslut inför nästa kampanj.\n\n' +
+    'Här är nyckeltalen från en kampanj (räknade ur deras uppladdade rapport):\n"""\n' + summary + '\n"""\n\n' +
+    'Ge en kort, ärlig läsning av kampanjen och konkreta råd. Var specifik och undvik floskler. ' +
+    'Om ett tal saknas, anta inget – nämn hellre att det inte gick att läsa ut. Basera råden på de tal som faktiskt finns.\n\n' +
+    'Svara med ENBART giltig JSON (ingen text runt, inga kodblock):\n' +
+    '{\n' +
+    '  "reading": "<2-4 meningar: vad datan säger, styrkor och svagheter>",\n' +
+    '  "recommendations": [\n' +
+    '    { "title": "<kort rubrik>", "text": "<1-2 meningar konkret råd>" }\n' +
+    '  ]\n' +
+    '}\n' +
+    'Ge 2-3 rekommendationer.';
+
+  try {
+    const data = await safeFetch([{ role:'user', content: prompt + brandGuidance() }], 80000, 'ad-copy');
+    const raw = (data.content || []).map(function(i){ return i.text || ''; }).join('');
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    const res = JSON.parse(cleaned);
+    renderCampaignAi(res);
+  } catch (err) {
+    body.innerHTML = '<div class="analys-cerr" style="margin-top:0">' +
+      'Kunde inte hämta AI-tolkningen: ' + escapeHtmlLib(err.message || 'okänt fel') + '<br>' +
+      'Nyckeltalen ovan stämmer ändå – de räknas i din webbläsare. Sitter du bakom en brandvägg som blockerar Mavas server kan AI-delen vara otillgänglig just nu.' +
+      '</div>';
+  }
+}
+
+function renderCampaignAi(res){
+  const body = document.getElementById('analys-ai-body');
+  const recs = Array.isArray(res.recommendations) ? res.recommendations : [];
+  body.innerHTML =
+    '<div class="analys-ai-read">' + escapeHtmlLib(res.reading || '') + '</div>' +
+    recs.map(function(r, i){
+      return '<div class="analys-rec">' +
+        '<div class="analys-rec-n">' + (i+1) + '</div>' +
+        '<div class="analys-rec-t"><b>' + escapeHtmlLib(r.title || '') + '</b> ' + escapeHtmlLib(r.text || '') + '</div>' +
+      '</div>';
+    }).join('') +
+    '<div class="analys-disc">Obs: analysen bygger på den data du laddat upp. Kontrollera alltid siffrorna mot din annonsplattform innan större beslut.</div>';
 }
 
 /* Onboarding: tre steg baserade på ärlig data.
@@ -7044,7 +7588,7 @@ function applyPanelState() {
 }
 
 // Sidor där panelen ska synas (inloggade "app"-sidor, ej landningssidan).
-const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','fraga-page'];
+const PANEL_PAGES = ['home-page','faq-page','tools-page','library-page','projects-page','project-detail-page','brand-page','plan-page','billing-page','app','native-page','dist-page','adcopy-page','newsroom-page','brief-page','planner-page','fraga-page','analys-page'];
 
 // Visar panelen bara när man är inloggad OCH på en inre app-sida.
 function updateSidePanel(currentPage) {
