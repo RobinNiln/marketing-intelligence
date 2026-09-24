@@ -888,7 +888,7 @@ body.native-mode{background:#FBFAF7}
    Nyckeltalen sitter ihop som en rad med hårfina linjer i stället för
    tre separata kort – tätare, mer verktygskänsla. Korten har tunn ram
    och liten radie enligt systemet.                                     */
-.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+.home-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;
   background:var(--c-line);border:1px solid var(--c-line);
   border-radius:var(--rad-md);overflow:hidden;margin-bottom:var(--sp-4)}
 .home-stat{background:var(--c-surface);padding:11px var(--sp-3)}
@@ -928,7 +928,45 @@ body.native-mode{background:#FBFAF7}
 .home-quick-btn{display:inline-flex;align-items:center;gap:10px;background:#faf8f4;border:1px solid #ece8df;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;color:#2C2520;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .home-quick-btn svg{flex-shrink:0}
 .home-quick-btn:hover{background:#f2efe8;border-color:#dcd6ca}
-@media(max-width:800px){.home-stats{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
+@media(max-width:800px){.home-stats{grid-template-columns:repeat(2,1fr)}.home-grid{grid-template-columns:1fr}.home-bar-label{width:90px}}
+@media(max-width:480px){.home-stats{grid-template-columns:1fr}}
+
+/* Sektionsrubrik mellan blocken – lugn, guldig, versal. */
+.home-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:#9c7d2e;margin:0 0 0.85rem}
+
+/* Kontextuell åtgärdsrad – syns bara när AI Radar har öppna åtgärder. */
+.home-action-banner{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:#FCF3E4;border:1px solid #EAD9A8;border-radius:var(--rad-md);
+  padding:13px 17px;margin-bottom:var(--sp-4);cursor:pointer;font-family:inherit;transition:background 0.15s}
+.home-action-banner:hover{background:#faedd4}
+.home-action-banner .ab-dot{width:8px;height:8px;border-radius:50%;background:#D97757;flex-shrink:0}
+.home-action-banner .ab-txt{font-size:13.5px;font-weight:600;color:#2C2520;flex:1;line-height:1.4}
+.home-action-banner .ab-txt em{font-style:normal;color:#9c7d2e}
+.home-action-banner .ab-go{font-size:13px;color:#9c7d2e;font-weight:700;flex-shrink:0}
+
+/* Fortsätt där du slutade. */
+.home-resume{display:flex;align-items:center;gap:15px;width:100%;text-align:left;
+  background:var(--c-surface);border:1px solid var(--c-line);border-radius:var(--rad-md);
+  padding:14px 16px;margin-bottom:1.5rem;cursor:pointer;font-family:inherit;transition:border-color 0.15s}
+.home-resume:hover{border-color:var(--c-accent)}
+.home-resume-thumb{width:48px;height:48px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#5F5E5A}
+.home-resume-body{flex:1;min-width:0}
+.home-resume-kind{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--c-text-dim);margin-bottom:3px}
+.home-resume-title{font-size:15px;font-weight:600;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-resume-cta{flex-shrink:0;background:var(--c-text);color:#fff;border-radius:100px;padding:9px 18px;font-size:13px;font-weight:600}
+
+/* Användare kopplade till kontot. */
+.home-users{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.home-user{display:flex;align-items:center;gap:9px;background:var(--c-surface);
+  border:1px solid var(--c-line);border-radius:100px;padding:7px 15px 7px 8px;font-size:13px;font-weight:600;color:var(--c-text)}
+.home-user-avatar{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.home-user-online{position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#1D9E75;border:2px solid var(--c-surface)}
+.home-user-name{line-height:1.15}
+.home-user-role{display:block;font-size:11px;color:var(--c-text-dim);font-weight:400}
+.home-user-invite{border-style:dashed;color:var(--c-text-dim)}
+.home-user-invite .home-user-avatar{background:#c9c1b2}
 
 /* Campaign Planner-resultat */
 .planner-phase{background:#fff;border:1px solid #ece8df;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem}
@@ -2188,63 +2226,63 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
       <button class="home-tip-btn" onclick="goToBrandProfile()">Fyll i profil</button>
     </div>
 
-    <!-- Notiser / vad är nytt -->
-    <div id="home-notices" class="home-notices" style="display:none">
-      <div class="home-notices-head">
-        <span class="home-notices-dot"></span>
-        <span class="home-notices-label">Nytt i Mava</span>
-      </div>
-      <div id="home-notices-list"></div>
-    </div>
-
-    <!-- Snabbstatistik -->
+    <!-- Snabbstatistik – en lugn sifferrad (ersätter graferna) -->
     <div class="home-stats" id="home-stats">
       <div class="home-stat"><div class="home-stat-num" id="stat-total">–</div><div class="home-stat-label">Produktioner totalt</div></div>
       <div class="home-stat"><div class="home-stat-num" id="stat-month">–</div><div class="home-stat-label">Senaste 30 dagarna</div></div>
-      <div class="home-stat"><div class="home-stat-num" id="stat-top">–</div><div class="home-stat-label">Mest använda verktyg</div></div>
+      <div class="home-stat"><div class="home-stat-num" id="stat-users">–</div><div class="home-stat-label">Aktiva användare</div></div>
+      <div class="home-stat"><div class="home-stat-num" id="stat-tools">–</div><div class="home-stat-label">Verktyg använda</div></div>
+      <div class="home-stat"><div class="home-stat-num" id="stat-top">–</div><div class="home-stat-label">Mest använda</div></div>
     </div>
 
-    <div class="home-grid">
-      <!-- Användningsgraf -->
-      <div class="home-card">
-        <div class="home-card-head">
-          <div class="home-card-title">Produktioner per verktyg</div>
-        </div>
-        <div id="home-chart" class="home-chart"></div>
-      </div>
+    <!-- Kontextuell åtgärdsrad – visas bara när AI Radar hittat något att fixa -->
+    <button id="home-action-banner" class="home-action-banner" style="display:none"></button>
 
-      <!-- Senaste produktioner + bibliotek-genväg -->
-      <div class="home-card">
-        <div class="home-card-head">
-          <div class="home-card-title">Senaste produktioner</div>
-          <button class="home-card-link" onclick="goToLibrary()">Till biblioteket →</button>
-        </div>
-        <div id="home-recent" class="home-recent"></div>
-      </div>
+    <!-- Fortsätt där du slutade – visas bara om det finns en senaste produktion -->
+    <div id="home-resume-wrap" style="display:none">
+      <div class="home-section-label">Fortsätt där du slutade</div>
+      <button id="home-resume" class="home-resume"></button>
     </div>
 
-    <!-- Aktivitet över tid -->
-    <div class="home-card" id="home-activity-card" style="margin-top:1.25rem;display:none">
+    <!-- Senaste produktioner -->
+    <div class="home-section-label">Senaste produktioner</div>
+    <div class="home-card" style="margin-bottom:1.5rem">
       <div class="home-card-head">
-        <div class="home-card-title">Aktivitet senaste 8 veckorna</div>
+        <div class="home-card-title">Dina produktioner</div>
+        <button class="home-card-link" onclick="goToLibrary()">Till biblioteket →</button>
       </div>
-      <div id="home-activity" class="home-activity"></div>
+      <div id="home-recent" class="home-recent"></div>
     </div>
 
-    <!-- Snabbåtkomst verktyg -->
-    <div class="home-card" style="margin-top:1.25rem">
+    <!-- Skapa något nytt -->
+    <div class="home-section-label">Skapa något nytt</div>
+    <div class="home-card" style="margin-bottom:1.5rem">
       <div class="home-card-head">
         <div class="home-card-title">Snabbstart</div>
         <button class="home-card-link" onclick="goToTools()">Alla verktyg →</button>
       </div>
       <div class="home-quick">
-        <button class="home-quick-btn" style="border-left:3px solid #1D9E75" onclick="showApp()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13V7M6 13V3M10 13V9M14 13V5"/></svg>Market Pulse</button>
-        <button class="home-quick-btn" style="border-left:3px solid #C9A84C" onclick="goToBrief()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4z"/><path d="M10 2v3h3M6 8h4M6 11h4"/></svg>The Brief</button>
+        <button class="home-quick-btn" style="border-left:3px solid #7F77DD" onclick="goToAdCopy()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/></svg>AdStudio</button>
+        <button class="home-quick-btn" style="border-left:3px solid #2C2520" onclick="goToAiRadar()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>AI Radar</button>
         <button class="home-quick-btn" style="border-left:3px solid #378ADD" onclick="goToNewsroom()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 6h6M5 9h4"/></svg>Newsroom</button>
         <button class="home-quick-btn" style="border-left:3px solid #D85A30" onclick="goToNative()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h10v10H3z"/><path d="M6 7h4M6 10h4"/></svg>Native Auto Reach</button>
-        <button class="home-quick-btn" style="border-left:3px solid #7F77DD" onclick="goToAdCopy()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><circle cx="6" cy="6" r="1.3"/><path d="M14 10l-3-3-5 5"/></svg>AdStudio</button>
+        <button class="home-quick-btn" style="border-left:3px solid #1D9E75" onclick="showApp()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13V7M6 13V3M10 13V9M14 13V5"/></svg>Market Pulse</button>
+        <button class="home-quick-btn" style="border-left:3px solid #C9A84C" onclick="goToBrief()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4z"/><path d="M10 2v3h3M6 8h4M6 11h4"/></svg>The Brief</button>
         <button class="home-quick-btn" style="border-left:3px solid #9c7d2e" onclick="goToPlanner()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5F5E5A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6h12M5 2v3M11 2v3M5 9h3M5 11h5"/></svg>Campaign Planner</button>
       </div>
+    </div>
+
+    <!-- Användare kopplade till företaget -->
+    <div class="home-section-label" id="home-users-label">Användare kopplade till kontot</div>
+    <div id="home-users" class="home-users"></div>
+
+    <!-- Notiser / vad är nytt – diskret längst ner -->
+    <div id="home-notices" class="home-notices" style="display:none;margin-top:2rem">
+      <div class="home-notices-head">
+        <span class="home-notices-dot"></span>
+        <span class="home-notices-label">Nytt i Mava</span>
+      </div>
+      <div id="home-notices-list"></div>
     </div>
   </div>
 </div>
@@ -5279,18 +5317,17 @@ function renderHomeNotices(){
 
 async function renderHomeData(profileFilled){
   const { data, error } = await fetchProductions();
-  const chart  = document.getElementById('home-chart');
   const recent = document.getElementById('home-recent');
 
   if (error) {
-    chart.innerHTML  = '<div class="home-empty">Kunde inte ladda data just nu.</div>';
-    recent.innerHTML = '';
+    recent.innerHTML = '<div class="home-empty">Kunde inte ladda data just nu.</div>';
     return;
   }
 
   const items = data || [];
+  _libraryItems = items; // så libraryOpen kan hitta dem
 
-  // ── Snabbstatistik ──
+  // ── Sifferrad ──
   document.getElementById('stat-total').textContent = items.length;
 
   const now = Date.now();
@@ -5302,6 +5339,7 @@ async function renderHomeData(profileFilled){
   // Räkna per verktyg.
   const counts = {};
   items.forEach(function(it){ counts[it.tool] = (counts[it.tool] || 0) + 1; });
+  document.getElementById('stat-tools').textContent = Object.keys(counts).length;
 
   // Mest använda verktyg.
   let topTool = '–';
@@ -5309,30 +5347,19 @@ async function renderHomeData(profileFilled){
   Object.keys(counts).forEach(function(t){ if (counts[t] > topN) { topN = counts[t]; topTool = TOOL_LABELS[t] || t; } });
   document.getElementById('stat-top').textContent = items.length ? topTool : '–';
 
-  // ── Graf: en stapel per verktyg ──
-  if (items.length === 0) {
-    chart.innerHTML = '<div class="home-empty">Inga produktioner än. Skapa något i ett verktyg så dyker din statistik upp här.</div>';
-  } else {
-    const maxN = Math.max.apply(null, Object.values(counts));
-    // Visa alla verktyg i fast ordning, även de med 0, så grafen känns komplett.
-    const order = ['market-pulse','brief','planner','newsroom','native','adstudio','airadar'];
-    chart.innerHTML = order.map(function(t){
-      const n = counts[t] || 0;
-      const pct = maxN ? Math.round((n / maxN) * 100) : 0;
-      const color = TOOL_COLORS[t] || '#C9A84C';
-      return '<div class="home-bar-row">' +
-        '<div class="home-bar-label">' + (TOOL_LABELS[t] || t) + '</div>' +
-        '<div class="home-bar-track"><div class="home-bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
-        '<div class="home-bar-val">' + n + '</div>' +
-      '</div>';
-    }).join('');
-  }
+  // Aktiva användare – teamet kopplat till kontot (renderas separat nedan).
+  renderHomeUsers();
+
+  // ── Fortsätt där du slutade – senaste produktionen som en snabb återingång ──
+  renderHomeResume(items);
+
+  // ── Kontextuell åtgärdsrad – öppna åtgärder från senaste AI Radar-analysen ──
+  renderHomeActionBanner(items);
 
   // ── Senaste produktioner (max 5) ──
   if (items.length === 0) {
     recent.innerHTML = '<div class="home-empty">Dina sparade produktioner visas här.</div>';
   } else {
-    _libraryItems = items; // så libraryOpen kan hitta dem
     recent.innerHTML = items.slice(0, 5).map(function(it){
       const date = new Date(it.created_at).toLocaleDateString('sv-SE', { month:'short', day:'numeric' });
       const label = TOOL_LABELS[it.tool] || it.tool;
@@ -5349,9 +5376,99 @@ async function renderHomeData(profileFilled){
 
   // ── Onboarding-checklista ──
   renderHomeOnboarding(items, profileFilled);
+}
 
-  // ── Aktivitet över tid ──
-  renderHomeActivity(items);
+/* Fortsätt där du slutade: senaste produktionen, som en tydlig återingång.
+   Döljs helt om det inte finns någon produktion än. */
+function renderHomeResume(items){
+  const wrap = document.getElementById('home-resume-wrap');
+  const btn  = document.getElementById('home-resume');
+  if (!wrap || !btn) return;
+  if (!items || items.length === 0) { wrap.style.display = 'none'; return; }
+
+  const it = items[0]; // fetchProductions returnerar nyast först
+  const label = TOOL_LABELS[it.tool] || it.tool;
+  const color = TOOL_COLORS[it.tool] || '#C9A84C';
+  btn.style.borderLeft = '3px solid ' + color;
+  btn.innerHTML =
+    '<span class="home-resume-thumb" style="background:' + color + '1a">' + toolIconSvg(it.tool) + '</span>' +
+    '<span class="home-resume-body">' +
+      '<span class="home-resume-kind">' + escapeHtmlLib(label) + '</span>' +
+      '<span class="home-resume-title">' + escapeHtmlLib(it.title) + '</span>' +
+    '</span>' +
+    '<span class="home-resume-cta">Öppna →</span>';
+  btn.onclick = function(){ libraryOpen(it.id); };
+  wrap.style.display = 'block';
+}
+
+/* Kontextuell åtgärdsrad: om den senaste AI Radar-analysen har åtgärder att
+   fixa, visa en rad som tar användaren rakt in i analysen. Annars göms den. */
+function renderHomeActionBanner(items){
+  const banner = document.getElementById('home-action-banner');
+  if (!banner) return;
+  banner.style.display = 'none';
+
+  // Hitta senaste sparade AI Radar-produktionen.
+  const radar = (items || []).filter(function(it){ return it.tool === 'airadar'; })[0];
+  if (!radar) return;
+
+  // Räkna åtgärder ("fix"-fynd) i resultatet, om de finns.
+  let payload = radar.payload;
+  try { if (typeof payload === 'string') payload = JSON.parse(payload); } catch(e){ payload = null; }
+  const res = payload && payload.result;
+  const findings = (res && Array.isArray(res.findings)) ? res.findings : [];
+  const fixes = findings.filter(function(f){ return f && f.type !== 'ok' && f.status !== 'ok'; });
+  if (fixes.length === 0) return;
+
+  const site = (payload && payload.url ? String(payload.url) : '')
+    .replace(/^https?:\/\//,'').replace(/\/$/,'') || 'din senaste analys';
+  const n = fixes.length;
+  banner.innerHTML =
+    '<span class="ab-dot"></span>' +
+    '<span class="ab-txt"><em>' + n + ' ' + (n === 1 ? 'åtgärd' : 'åtgärder') + '</em> väntar från din AI-sök-analys av ' + escapeHtmlLib(site) + '</span>' +
+    '<span class="ab-go">Åtgärda →</span>';
+  banner.onclick = function(){ libraryOpen(radar.id); };
+  banner.style.display = 'flex';
+}
+
+/* Användare kopplade till kontot. Idag finns bara den inloggade användaren –
+   fler dyker upp automatiskt när team-inloggning finns. Visar den gröna
+   pricken för dig (aktiv nu) och en "Bjud in"-knapp. */
+function renderHomeUsers(){
+  const box = document.getElementById('home-users');
+  const label = document.getElementById('home-users-label');
+  const statUsers = document.getElementById('stat-users');
+  if (!box) return;
+
+  // Företagsnamn från profilen, om ifyllt.
+  const company = (_brandProfile && _brandProfile.company) ? _brandProfile.company : null;
+  if (label) label.textContent = company ? ('Användare kopplade till ' + company) : 'Användare kopplade till kontot';
+
+  // Bygg listan över kända användare. Idag: den inloggade.
+  const users = [];
+  const email = (_currentUser && _currentUser.email) ? _currentUser.email : '';
+  const name = email ? email.split('@')[0] : 'Du';
+  users.push({ name: name, role: 'Du · aktiv nu', online: true, color: '#7F77DD' });
+
+  if (statUsers) statUsers.textContent = users.length;
+
+  box.innerHTML = users.map(function(u){
+    const initials = u.name.replace(/[^a-zA-ZåäöÅÄÖ ]/g,'').split(/[.\s_-]+/).filter(Boolean)
+      .slice(0,2).map(function(w){ return w.charAt(0).toUpperCase(); }).join('') || 'D';
+    return '<div class="home-user">' +
+      '<span class="home-user-avatar" style="background:' + u.color + '">' + escapeHtmlLib(initials) +
+        (u.online ? '<span class="home-user-online"></span>' : '') + '</span>' +
+      '<span class="home-user-name">' + escapeHtmlLib(u.name) +
+        '<span class="home-user-role">' + escapeHtmlLib(u.role) + '</span></span>' +
+    '</div>';
+  }).join('') +
+  '<button class="home-user home-user-invite" onclick="homeInviteUser()">' +
+    '<span class="home-user-avatar">+</span>Bjud in</button>';
+}
+
+/* Placeholder tills team-inbjudan är byggt. */
+function homeInviteUser(){
+  alert('Team-inbjudan kommer snart. Då kan du koppla fler användare till kontot.');
 }
 
 /* Onboarding: tre steg baserade på ärlig data.
