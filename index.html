@@ -649,6 +649,17 @@ textarea{resize:vertical;min-height:88px;line-height:1.65}
 .save-modal-save{flex:1;background:#2C2520;color:#fff;border:none;border-radius:100px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
 .save-modal-save:hover{background:#433a30}
 
+/* Osparat-arbete-dialog */
+.unsaved-overlay{position:fixed;inset:0;background:rgba(44,37,32,0.32);z-index:400;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.unsaved-overlay.open{display:flex}
+.unsaved-box{background:#FBFAF7;border-radius:18px;padding:1.8rem 1.9rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(44,37,32,0.25)}
+.unsaved-title{font-size:18px;font-weight:700;color:#2C2520;margin-bottom:8px}
+.unsaved-text{font-size:14px;color:#6b655c;line-height:1.6;margin-bottom:1.6rem}
+.unsaved-actions{display:flex;gap:10px;align-items:center}
+.unsaved-cancel{background:#fff;color:#6b5d47;border:1.5px solid #e6e1d6;border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.unsaved-leave{background:none;color:#A32D2D;border:none;padding:10px 12px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto}
+.unsaved-save{background:#2C2520;color:#fff;border:none;border-radius:100px;padding:10px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+
 
 /* ─── ADDITIONAL MOBILE FIXES ─── */
 @media(max-width:640px){
@@ -3672,6 +3683,10 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 2h6l3 3v7a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 2v3h4"/></svg>
           Spara i bibliotek
         </button>
+        <button class="brief-action-btn primary" onclick="briefToAdStudio()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="10" height="10" rx="1.5"/><circle cx="5" cy="5" r="1"/><path d="M12 8l-2.5-2.5L5 10"/></svg>
+          Skapa annons av briefen
+        </button>
       </div>
 
       <div id="brief-faska-slot"></div>
@@ -4370,7 +4385,37 @@ body.panel-open #fm-panel{right:254px;max-width:calc(100vw - 278px)}
 window.addEventListener('load', function(){
   const bg = document.getElementById('hero-bg');
   if(bg) setTimeout(()=>bg.classList.add('loaded'), 100);
+  installUnsavedGuard();
 });
+
+/* Fångar klick på meny-navigering INNAN de körs (capture-fas). Finns osparat
+   arbete pausar vi klicket, frågar användaren, och släpper bara igenom om de
+   väljer att lämna (eller efter att de sparat). */
+function installUnsavedGuard(){
+  const panel = document.getElementById('side-panel');
+  if (!panel || panel._guardWired) return;
+  panel._guardWired = true;
+  panel.addEventListener('click', function(e){
+    if (!_dirtyWork) return; // inget att skydda
+    const link = e.target.closest('.sp-link');
+    if (!link) return;
+    // Toggle-knappen och aktivt-projekt-baren navigerar inte bort – släpp dem.
+    if (link.classList.contains('sp-toggle')) return;
+    if (link.id === 'active-project-bar') return;
+    // Tillbaka-knappen skyddar sig själv via goBack() – dubbelfråga inte.
+    if (link.classList.contains('sp-back')) return;
+    // Stoppa klicket och kör guarden. Vi klonar inte om-klicket; istället
+    // navigerar guarden själv genom att köra länkens onclick igen när det är ok.
+    const orig = link.getAttribute('onclick');
+    if (!orig) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    guardUnsavedThen(function(){
+      // Kör länkens ursprungliga navigering.
+      try { (new Function(orig)).call(link); } catch(err){ console.error(err); }
+    });
+  }, true); // capture
+}
 
 const PROXY_URL='https://timrobin-proxy-production.up.railway.app/api/analyze';
 const STORAGE_KEY='tr_last_result';
@@ -5098,6 +5143,7 @@ Total kampanjbudget: ${budget.toLocaleString('sv-SE')} kr`;
 }
 
 function renderNativeArticle(article, label) {
+  markWorkDirty('native', 'Native Auto Reach', function(){ return nativeSave(); });
   document.getElementById('native-result-headline').textContent = article.headline||'';
   document.getElementById('native-result-ingress').textContent  = article.ingress||'';
   document.getElementById('native-result-body').innerHTML       = mdToHtml(article.body);
@@ -5159,6 +5205,7 @@ function nativeSendByEmail(){
 }
 
 function nativeReset(){
+  markWorkClean();
   document.getElementById('native-result').style.display='none';
   document.getElementById('native-form-section').style.display='block';
   document.getElementById('native-btn').disabled=false;
@@ -5254,14 +5301,87 @@ function pushNav(page){
   if (_navHistory.length > 25) _navHistory.shift();
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   SKYDD MOT ATT TAPPA OSPARAT ARBETE
+   Ett verktyg som visar ett färskt (ännu ej sparat) resultat markeras som
+   "dirty". Om användaren då försöker navigera bort via menyn eller tillbaka-
+   knappen får de en fråga: Spara / Lämna ändå / Avbryt.
+   markWorkClean() anropas när något sparats eller när ett verktyg nollställs.
+   _openingFromLibrary hindrar att en ÅTERÖPPNAD (redan sparad) produktion
+   felaktigt markeras som osparad.
+   ══════════════════════════════════════════════════════════════════════════ */
+let _dirtyWork = null;          // { tool, label, saveFn } eller null
+let _openingFromLibrary = false; // true medan libraryOpen ritar upp en sparad post
+
+function markWorkDirty(tool, label, saveFn){
+  if (_openingFromLibrary) return; // återöppnad post är redan sparad
+  _dirtyWork = { tool: tool, label: label || 'ditt arbete', saveFn: (typeof saveFn === 'function' ? saveFn : null) };
+}
+function markWorkClean(){ _dirtyWork = null; }
+
+/* Kollar om det finns osparat arbete och frågar användaren.
+   proceed() körs om det är ok att navigera vidare. */
+function guardUnsavedThen(proceed){
+  if (!_dirtyWork) { proceed(); return; }
+  const w = _dirtyWork;
+  openUnsavedModal(w, {
+    onLeave: function(){ markWorkClean(); proceed(); },
+    onSave: function(){
+      // Spara först, navigera sedan. Om ingen sparfunktion finns: bara fortsätt.
+      if (w.saveFn) {
+        Promise.resolve(w.saveFn()).then(function(){
+          // saveFn hanterar själv om användaren avbryter spar-dialogen.
+          // Vi navigerar vidare oavsett – men bara om arbetet faktiskt blev rent.
+          if (!_dirtyWork) proceed();
+        });
+      } else { markWorkClean(); proceed(); }
+    }
+  });
+}
+
+/* Enkel bekräftelse-dialog. Byggs on-the-fly så vi slipper mer markup. */
+function openUnsavedModal(work, handlers){
+  let overlay = document.getElementById('unsaved-modal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'unsaved-modal';
+    overlay.className = 'unsaved-overlay';
+    overlay.innerHTML =
+      '<div class="unsaved-box">' +
+        '<div class="unsaved-title">Du har osparat arbete</div>' +
+        '<div class="unsaved-text" id="unsaved-text"></div>' +
+        '<div class="unsaved-actions">' +
+          '<button class="unsaved-cancel" id="unsaved-cancel">Avbryt</button>' +
+          '<button class="unsaved-leave" id="unsaved-leave">Lämna ändå</button>' +
+          '<button class="unsaved-save" id="unsaved-save">Spara</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  const hasSave = !!work.saveFn;
+  document.getElementById('unsaved-text').textContent =
+    'Ditt resultat i ' + (work.label || 'det här verktyget') + ' är inte sparat än. Lämnar du sidan försvinner det.';
+  const saveBtn = document.getElementById('unsaved-save');
+  saveBtn.style.display = hasSave ? '' : 'none';
+  const close = function(){ overlay.classList.remove('open'); };
+  document.getElementById('unsaved-cancel').onclick = function(){ close(); };
+  document.getElementById('unsaved-leave').onclick = function(){ close(); handlers.onLeave(); };
+  saveBtn.onclick = function(){ close(); handlers.onSave(); };
+  overlay.onclick = function(e){ if (e.target === overlay) close(); };
+  overlay.classList.add('open');
+}
+
 function goBack(){
-  // Ta bort nuvarande sida; gå till den innan.
-  _navHistory.pop();
-  const prev = _navHistory[_navHistory.length - 1];
-  _navigatingBack = true;
-  if (!prev) { goToHome(); }
-  else navigateTo(prev);
-  _navigatingBack = false;
+  // Skydda osparat arbete även när man går bakåt (via panelens eller sidans
+  // egen tillbaka-knapp).
+  guardUnsavedThen(function(){
+    _navHistory.pop();
+    const prev = _navHistory[_navHistory.length - 1];
+    _navigatingBack = true;
+    if (!prev) { goToHome(); }
+    else navigateTo(prev);
+    _navigatingBack = false;
+  });
 }
 
 // Skickar användaren till en sida via dess id. Används av goBack.
@@ -5941,6 +6061,7 @@ function extractCampaignMetrics(rows){
 }
 
 function renderCampaignKpis(m, filename){
+  markWorkDirty('campaign', 'Kampanjanalys', function(){ return saveCampaignAnalysis(); });
   document.getElementById('analys-campaign-result').style.display = 'block';
   const title = m.campaignName ? ('Nyckeltal – ' + m.campaignName) : ('Nyckeltal – ' + filename);
   document.getElementById('analys-kpi-label').textContent = title;
@@ -6059,6 +6180,7 @@ async function saveCampaignAnalysis(){
     else { btn.textContent = '✓ Sparad'; setTimeout(function(){ btn.disabled = false; btn.textContent = 'Spara analys i bibliotek'; }, 2200); }
   }
   if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+  else markWorkClean();
 }
 
 /* Öppnar en sparad kampanjanalys igen från biblioteket. */
@@ -6616,6 +6738,58 @@ async function briefSave() {
   const { error } = await saveProduction('brief', choice.title || suggested, r, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
   if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+  else markWorkClean();
+}
+
+/* ── Brygga: Brief → AdStudio ───────────────────────────────────────────────
+   Tar den aktuella briefen och förifyller AdStudio-formuläret med företag,
+   kampanj, huvudbudskap och målgrupp som stil-referens. Användaren landar på
+   ett ifyllt formulär och kan finjustera innan hen genererar annonsen. */
+function briefStripMd(s){
+  return String(s || '')
+    .replace(/[#*_`>]/g, '')       // ta bort markdown-tecken
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // länkar → text
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function briefFirstSentence(s){
+  const t = briefStripMd(s);
+  const m = t.match(/^[^.!?]*[.!?]/);
+  return (m ? m[0] : t).slice(0, 220).trim();
+}
+function briefToAdStudio(){
+  const r = window._briefResult;
+  if (!r) { toast('Ingen brief att utgå från.', 'info'); return; }
+  // Briefen är osparad tills användaren sparar den – men att gå till AdStudio
+  // ska inte trigga osparat-varningen, för vi tar med oss innehållet dit.
+  markWorkClean();
+  goToAdCopy();
+  // Vänta så AdStudio-formuläret hunnit ritas.
+  setTimeout(function(){
+    const set = function(id, v){ const el = document.getElementById(id); if (el && v) el.value = v; };
+    const company = window._briefCompany || (r.campaign_name ? '' : '');
+    set('ac-company', briefStripMd(company));
+    set('ac-product', briefStripMd(r.campaign_name || ''));
+    // Huvudbudskap: första meningen ur briefens budskap-sektion.
+    set('ac-message', briefFirstSentence(r.message || r.goals || ''));
+    // Målgrupp + bakgrund som stil-/kontextreferens.
+    const ref = [];
+    if (r.audience) ref.push('Målgrupp: ' + briefStripMd(r.audience));
+    if (r.message)  ref.push('Budskap: ' + briefStripMd(r.message));
+    set('ac-reference', ref.join('\n').slice(0, 600));
+    const formSec = document.getElementById('adcopy-form-section');
+    if (formSec) formSec.style.display = 'block';
+    const resSec = document.getElementById('adcopy-result');
+    if (resSec) resSec.style.display = 'none';
+    const banner = document.getElementById('adgen-preselect-banner');
+    if (banner) {
+      banner.textContent = 'Förifyllt från din brief' + (r.campaign_name ? ' "' + briefStripMd(r.campaign_name) + '"' : '') +
+        '. Ladda upp en bild, välj format och justera texten innan du genererar.';
+      banner.style.display = 'block';
+    }
+    window.scrollTo(0, 0);
+    toast('Fält förifyllda från briefen.', 'info');
+  }, 120);
 }
 
 /* ── Redigera brief-resultat ────────────────────────────────────────────────
@@ -6785,6 +6959,7 @@ async function saveToolResult(tool, result, defaultTitle, btnId) {
     setTimeout(function(){ btn.textContent = orig; }, 2000);
   }
   if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+  else markWorkClean();
 }
 
 function marketSave() {
@@ -7358,6 +7533,11 @@ function libraryOpen(id) {
   const item = _libraryItems.find(function(it){ return it.id === id; });
   if (!item) return;
   const savedLabel = 'Sparad · ' + new Date(item.created_at).toLocaleDateString('sv-SE');
+  // Återöppnad post är redan sparad – hindra att renderingen markerar dirty,
+  // och nollställ ev. tidigare dirty-läge.
+  _openingFromLibrary = true;
+  markWorkClean();
+  setTimeout(function(){ _openingFromLibrary = false; }, 900);
 
   if (item.tool === 'brief') {
     goToBrief();
@@ -8597,6 +8777,7 @@ function goToAiRadar(){
 }
 
 function airadarReset(){
+  markWorkClean();
   document.getElementById('airadar-result').style.display='none';
   document.getElementById('airadar-form-section').style.display='block';
 }
@@ -8863,6 +9044,7 @@ function buildAiRadarPrompt(url, content){
 function airEsc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function renderAiRadar(r){
+  markWorkDirty('airadar', 'AI Radar', function(){ return saveAiRadar(); });
   const gradeClass = { low:'air-g-low', mid:'air-g-mid', good:'air-g-good' };
   const gradeLabel = { low:'Svag', mid:'Okej', good:'Stark' };
   const barColor = { low:'#D97757', mid:'#C9A84C', good:'#1D9E75' };
@@ -8934,6 +9116,7 @@ async function saveAiRadar(){
   const { error } = await saveProduction('airadar', choice.title || ('AI Radar – ' + title), payload, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000); }
   if (error) alert('Kunde inte spara: ' + (error.message || error));
+  else markWorkClean();
 }
 
 // ── Fixa detta: generera AI-sök-optimerat innehåll för en enskild åtgärd ──────
@@ -9105,6 +9288,7 @@ Svara ENBART med ett JSON-objekt i exakt detta format – ingen text utanför JS
 }
 
 function renderPlanResult(plan, label){
+  markWorkDirty('planner', 'Campaign Planner', function(){ return plannerSave(); });
   document.getElementById('planner-form-section').style.display = 'none';
   document.getElementById('planner-result-section').style.display = 'block';
   window._plannerLabel = label || '';
@@ -9178,9 +9362,11 @@ async function plannerSave(){
   const { error } = await saveProduction('planner', choice.title || suggested, plan, choice.projectId);
   if (btn) { btn.disabled = false; btn.innerHTML = '✓ Sparad'; setTimeout(function(){ btn.textContent = 'Spara i bibliotek'; }, 2000); }
   if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+  else markWorkClean();
 }
 
 function plannerReset(){
+  markWorkClean();
   document.getElementById('planner-result-section').style.display = 'none';
   document.getElementById('planner-form-section').style.display = 'block';
   window.scrollTo(0,0);
@@ -10754,6 +10940,7 @@ async function fmPanelSend() {
 }
 
 function renderNewsroomResult(result, typeLabel) {
+  markWorkDirty('newsroom', 'Newsroom', function(){ return newsroomSave(); });
   document.getElementById('nr-result-type').textContent = typeLabel || '';
   window._newsroomLabel = typeLabel || '';
   _editState['newsroom'] = false;
@@ -10888,6 +11075,7 @@ function newsroomEmail() {
 }
 
 function newsroomReset() {
+  markWorkClean();
   window._newsroomResult = null;
   document.getElementById('newsroom-result').style.display = 'none';
   document.getElementById('newsroom-form-section').style.display = 'block';
@@ -11366,6 +11554,7 @@ function mdToHtml(text) {
 }
 
 function renderBriefResult(r, label, company) {
+    markWorkDirty('brief', 'The Brief', function(){ return briefSave(); });
     document.getElementById('br-result-label').textContent   = label || '';
     document.getElementById('br-result-title').textContent   = r.campaign_name || (company || '') + ' – Kampanjbrief';
     document.getElementById('br-result-background').innerHTML = mdToHtml(r.background);
@@ -11451,6 +11640,7 @@ function briefEmail() {
 }
 
 function briefReset() {
+  markWorkClean();
   window._briefResult = null;
   _briefGoals = [];
   document.querySelectorAll('.brief-goal').forEach(g => g.classList.remove('sel'));
@@ -11926,6 +12116,7 @@ async function generateAdGen() {
     document.getElementById('adcopy-loading').style.display = 'none';
     hideMavaLoading();
     document.getElementById('adcopy-result').style.display = 'block';
+    markWorkDirty('adstudio', 'AdStudio', function(){ return adgenSave(); });
     // Säkerställ att valt typsnitt är inladdat innan första ritningen.
     const font = _adgenFont || 'Inter';
     if (document.fonts && document.fonts.load) {
@@ -13757,6 +13948,7 @@ function adgenDownloadAll() {
 }
 
 function adgenReset() {
+  markWorkClean();
   _adgenImage = null; _adgenImageDataUrl = null; _adgenLogo = null; _adgenLogoDataUrl = null; _adgenFormats = []; _adgenCopyData = null;
   const prev = document.getElementById('adgen-preview');
   if (prev) { prev.style.display='none'; prev.src=''; }
@@ -13863,6 +14055,7 @@ async function adgenSave() {
     setTimeout(function(){ btn.innerHTML = (btn.dataset.orig || 'Spara i bibliotek'); }, 2000);
   }
   if (error) toast('Kunde inte spara: ' + (error.message || error), 'error');
+  else markWorkClean();
 }
 function adcopyReset(){ adgenReset(); }
 function renderAdCopyFormats(){}
